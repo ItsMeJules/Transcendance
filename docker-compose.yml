@@ -1,0 +1,31 @@
+services:
+
+  backend:
+    build:
+      context: ./docker
+      dockerfile: ./back.dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./back:/workspace/back
+    networks:
+      - app
+    depends_on:
+      - bdd
+
+  bdd:
+    image: postgres:latest
+    env_file:
+    - ./env_files/bdd.env
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - app
+
+volumes:
+  data:
+
+networks:
+  app:
