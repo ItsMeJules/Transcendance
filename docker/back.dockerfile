@@ -7,4 +7,6 @@ RUN apt-get update \
 
 WORKDIR /workspace/back
 
+RUN npm install @nestjs/common
+
 ENTRYPOINT ["npm", "run", "start:dev"]
