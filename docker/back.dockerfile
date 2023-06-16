@@ -7,6 +7,9 @@ RUN apt-get update \
 
 WORKDIR /workspace/back
 
-RUN npm install @nestjs/common
+RUN npm install @nestjs/common \
+	&& npm install @nestjs/config \
+	&& npm install @nestjs/typeorm typeorm
+	&& npm install @hapi/joi @types/hapi__joi
 
 ENTRYPOINT ["npm", "run", "start:dev"]
