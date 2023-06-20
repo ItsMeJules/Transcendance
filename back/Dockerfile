@@ -9,6 +9,6 @@ WORKDIR /workspace/back
 
 COPY . .
 
-RUN npm install
+RUN npm install && npx prisma generate
 
 ENTRYPOINT ["npm", "run", "start:dev"]
