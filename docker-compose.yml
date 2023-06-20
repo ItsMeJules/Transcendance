@@ -5,7 +5,7 @@ services:
       context: ./back
       dockerfile: ./Dockerfile
     env_file:
-    - ./back/back.env
+    - ./back/.env
     ports:
       - 3000:3000
     networks:
