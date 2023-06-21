@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 
+import { User as UserModel } from '@prisma/client'
+
 import { UserService } from '../../database/service/user.service';
 import { UserDTO } from '../dto/user.dto';
 
@@ -13,9 +15,8 @@ export class UserController {
 	}
 
 	@Post()
-	postUserInfo(@Body() userDto: UserDTO): string {
-		this.userService.createUser({username: userDto.name})
-		return "Ce sont les informations que l'user a rentre: " + userDto.name
+	async postUserInfo(@Body() userDto: UserDTO): Promise<UserModel> {
+		return this.userService.createUser({username: userDto.name})
 	}
 
 }
