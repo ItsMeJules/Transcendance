@@ -11,6 +11,8 @@ WORKDIR /workspace/back
 
 COPY . .
 
+COPY ./DockerUtils/script.sh /workspace/back/entrypoint.sh
+
 RUN npm install && npx prisma generate 
 
-ENTRYPOINT ["npm", "run", "start:dev"]
+ENTRYPOINT ["bash", "entrypoint.sh"]
