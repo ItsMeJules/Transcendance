@@ -1,5 +1,18 @@
 services:
 
+  frontend:
+    build:
+      context: ./front
+      dockerfile: ./Dockerfile
+    env_file:
+    - ./front/.env
+    ports:
+      - 4000:4000
+    networks:
+      - app
+    depends_on:
+      - backend
+
   backend:
     build:
       context: ./back

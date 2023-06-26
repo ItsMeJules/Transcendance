@@ -1,6 +1,6 @@
 FROM node:lts
 
-EXPOSE 3000 5555
+EXPOSE 3000 4000 5555
 
 # 5555 for npx prisma studio
 

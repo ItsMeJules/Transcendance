@@ -11,6 +11,14 @@ async function bootstrap() {
     transform: true
   }));
 
+  // Configuration CORS
+  app.enableCors({
+    origin: 'http://localhost:4000', // Ajoutez l'URL de votre frontend React ici
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Origin,Accept,Content-Type,Authorization',
+    credentials: true,
+  });
+
   await app.listen(3000);
 }
 

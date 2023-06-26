@@ -1,7 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 function App() {
+  useEffect(() => {
+    axios.get('http://localhost:3000/hello').then((res) => {
+      console.log(res.data); // Affiche la réponse du serveur dans la console
+    });
+  }, []);
+  
   return (
     <div className="App">
       <header className="App-header">
