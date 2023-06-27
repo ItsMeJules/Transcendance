@@ -8,10 +8,13 @@ services:
     - ./front/.env
     ports:
       - 4000:4000
+    volumes:
+      - ./front:/workspace/front
     networks:
       - app
     depends_on:
       - backend
+    restart: always
 
   backend:
     build:
@@ -22,10 +25,13 @@ services:
     ports:
       - 3000:3000
       - 5555:5555
+    volumes:
+      - ./back:/workspace/back
     networks:
       - app
     depends_on:
       - bdd
+    restart: always
 
   bdd:
     image: postgres:latest

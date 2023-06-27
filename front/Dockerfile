@@ -6,8 +6,4 @@ RUN apt-get update
 
 WORKDIR /workspace/front
 
-COPY . .
-
-RUN npm install && npm install axios
-
-ENTRYPOINT ["bash", "entrypoint.sh"]
+ENTRYPOINT ["npm", "start"]
