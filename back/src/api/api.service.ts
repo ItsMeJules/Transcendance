@@ -7,4 +7,3 @@ export class ApiService {
 		return bigInt;
 	}
 }
-
