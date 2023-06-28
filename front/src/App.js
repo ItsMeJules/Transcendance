@@ -1,14 +1,19 @@
 import logo from './logo.svg';
 import './App.css';
-import axios from 'axios';
 import { useEffect } from 'react';
 
 function App() {
   useEffect(() => {
-    axios.get('http://localhost:3000/hello').then((res) => {
-      console.log(res.data); // Affiche la réponse du serveur dans la console
-    });
-  }, []);
+    fetch('http://localhost:3000/hello')
+	.then((resp) => resp.text())
+	.then(data => {
+		console.log(data);
+	})
+	.catch(error => {
+		console.log("wtf");
+		console.log(error);
+  	})
+	},[]);
   
   return (
     <div className="App">
