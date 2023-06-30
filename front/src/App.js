@@ -1,21 +1,30 @@
 import logo from './logo.svg';
+import {v4 as uuidv4} from 'uuid';
 import './App.css';
-// import '../../ApiCall';
-import { useEffect } from 'react';
+// import { RequestURI } from './callback/api/CodeForToken';
+
+function RequestURI() {
+	let redirectURL = {
+		state: uuidv4(),
+		client_id: process.env.REACT_APP_CLIENT_ID,
+		redirect_uri: process.env.REACT_APP_REDIRECT_URI,
+		response_type: "code"
+	}
+	// Add scope when i know what it means
+	let url = `https://api.intra.42.fr/oauth/authorize?client_id=${redirectURL.client_id}&redirect_uri=${redirectURL.redirect_uri}&response_type=${redirectURL.response_type}&state=${redirectURL.state}`;
+	console.log(url);
+	document.location = (url)
+}
 
 function App() {
-  useEffect(() => {
-    fetch('http://localhost:3000/hello')
-	.then((resp) => resp.text())
-	.then(data => {
-		console.log(data);
-	})
+	fetch('http://localhost:3000/hello')
+	.then(resp => resp.text())
+	.then(text => { console.log(text);})
 	.catch(error => {
-		console.log("wtf");
 		console.log(error);
-  	})
-	},[]);
-  
+	  });
+	fetch({RequestURI})
+
   return (
     <div className="App">
       <header className="App-header">
@@ -31,6 +40,7 @@ function App() {
         >
           Learn React
         </a>
+		<button onClick={RequestURI}>OAuth42</button>
       </header>
     </div>
   );

@@ -17,7 +17,7 @@ export class ApiController {
 
 	@Get('callback')
 	// @Redirect('/success') // Redirect to a success page after handling the callback
-	handleCallback(@Query('code') authorizationCode: string, @Res() res: Response): void {
+	async handleCallback(@Query('code') authorizationCode: string, @Res() res: Response): void {
 		console.log(authorizationCode);
 		console.log(res);
 		if (!authorizationCode) {
