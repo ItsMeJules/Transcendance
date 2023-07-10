@@ -1,7 +1,7 @@
 import { Controller, Get , Query , Redirect , Res } from '@nestjs/common';
 
-import { ApiService } from './api.service';
-import { AuthReqQuery } from './dto/auth.req.query';
+import { ApiService } from '../services/api.service';
+import { AuthReqQuery } from '../dto/auth.req.query';
 
 
 @Controller('api')
@@ -17,7 +17,7 @@ export class ApiController {
 
 	@Get('callback')
 	// @Redirect('/success') // Redirect to a success page after handling the callback
-	async handleCallback(@Query('code') authorizationCode: string, @Res() res: Response): void {
+	async handleCallback(@Query('code') authorizationCode: string, @Res() res: Response): Promise<void> {
 		console.log(authorizationCode);
 		console.log(res);
 		if (!authorizationCode) {
