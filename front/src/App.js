@@ -11,9 +11,22 @@ function RequestURI() {
 		response_type: "code"
 	}
 	// Add scope when i know what it means
-	let url = `https://api.intra.42.fr/oauth/authorize?client_id=${redirectURL.client_id}&redirect_uri=${redirectURL.redirect_uri}&response_type=${redirectURL.response_type}&state=${redirectURL.state}`;
+	let url = 'http://localhost:3000/api/callback';
 	console.log(url);
-	document.location = (url)
+	document.location = (url) // 
+}
+
+function RequestURIGoogle() {
+	let redirectURL = {
+		state: uuidv4(),
+		client_id: process.env.REACT_APP_CLIENT_ID,
+		redirect_uri: process.env.REACT_APP_REDIRECT_URI,
+		response_type: "code"
+	}
+	// Add scope when i know what it means
+	let url = 'http://localhost:3000/api/auth/google/login';
+	console.log(url);
+	document.location = (url) // 
 }
 
 function App() {
@@ -41,6 +54,7 @@ function App() {
           Learn React
         </a>
 		<button onClick={RequestURI}>OAuth42</button>
+		<button onClick={RequestURIGoogle}>OAuthGoogle</button>
       </header>
     </div>
   );

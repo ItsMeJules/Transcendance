@@ -11,8 +11,12 @@ datasource db {
 }
 
 model User {
-  id              Int @id @default(autoincrement())
-  username        String @unique
-  friends         User[] @relation("friends")
-  friendsRelation User[] @relation("friends")
+	id              Int @id @default(autoincrement())
+	username        String @unique
+	name			String
+	surname			String
+	email           String @unique
+
+	friends         User[] @relation("friends")
+	friendsRelation User[] @relation("friends")
 }
