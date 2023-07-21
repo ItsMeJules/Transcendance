@@ -18,5 +18,4 @@ export class UserController {
 	async postUserInfo(@Body() userDto: UserDTO): Promise<UserModel> {
 		return this.userService.createUser({username: userDto.name})
 	}
-
 }
