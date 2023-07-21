@@ -11,8 +11,32 @@ datasource db {
 }
 
 model User {
-  id              Int @id @default(autoincrement())
-  username        String @unique
-  friends         User[] @relation("friends")
-  friendsRelation User[] @relation("friends")
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email String @unique
+  hash  String
+
+  firstName String?
+  lastName  String?
+  userName String?
+  Bookmark  Bookmark[]
+
+  @@map("users")
+}
+
+model Bookmark {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String?
+  link        String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("bookmarks")
 }

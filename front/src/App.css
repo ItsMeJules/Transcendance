@@ -36,3 +36,111 @@
     transform: rotate(360deg);
   }
 }
+
+.page-container {
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.video {
+  position: absolute;
+  z-index: 20;
+  width: auto;
+  object-fit: cover;
+  transition: opacity 2s ease-in-out; /* Adjust the duration as desired */
+  background-color: black; /* Set the default background color to black */
+}
+
+.video.fade-in {
+  opacity: 1;
+}
+
+.video.fade-out {
+  opacity: 0;
+}
+
+.background-video.hide .video {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease-in-out;
+}
+
+.background-video.show .video {
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.bg-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.font-dune {
+  font-family: dune, sans-serif;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form-label {
+  border-radius: 4px;
+  padding: 5px 20px;
+  margin: 0px 0;
+  box-sizing: border-box;
+}
+
+.edit-form-label {
+  border-radius: 4px;
+  text-align: left;
+  padding: 5px 5px;
+  margin: 0px 0px;
+  /* box-sizing: border-box; */
+}
+
+.input-field:focus {
+  /* Your focus styles */
+  outline: 3px solid white;
+}
+
+.signup-button {
+  color: black;
+  background-color: white;
+  /* border: 2px solid black; */
+  border-radius: 4px;
+  padding: 7px;
+  transition-duration: 0.4s;
+}
+
+.signup-button:hover {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
+}
+
+.save-changes-button {
+  color: white;
+  background-color: #4db650;
+  /* border: 2px solid black; */
+  border-radius: 4px;
+  padding: 7px;
+  transition-duration: 0.4s;
+}
+
+.save-changes-button:hover {
+  background-color: #52d157; /* Green */
+  color: white;
+  box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
+}

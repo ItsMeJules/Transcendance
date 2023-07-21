@@ -1,13 +1,23 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "DUNE";
+    src: url("../public/fonts/Dune_Rise.otf");
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+    font-family: "YKAR";
+    src: url("../public/fonts/Ykar_free_for_personal_use.otf");
+}
+
+@font-face {
+    font-family: "ARTYPA";
+    src: url("../public/fonts/Artypa-Regular.otf");
+}
+
+@font-face {
+    font-family: "LOT";
+    src: url("../public/fonts/Lot-Regular.otf");
 }
