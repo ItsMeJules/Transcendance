@@ -30,15 +30,15 @@ services:
     networks:
       - app
     depends_on:
-      - bdd
+      - dev-db
     restart: always
 
-  bdd:
+  dev-db:
     image: postgres:latest
     env_file:
     - ./bdd.env
     ports:
-      - 5434:5432
+      - 5432:5432
     volumes:
       - data:/var/lib/postgresql/data
     networks:

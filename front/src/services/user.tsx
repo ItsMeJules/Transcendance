@@ -60,6 +60,11 @@ class User {
         }
     }
 
+    getDataFromStorage(userData: string) {
+        return localStorage.getItem('userData');
+
+    }
+
     getData(): UserData | null {
         return ({
             id: this.id,
@@ -72,9 +77,41 @@ class User {
         });
     }
 
+    getId(): string {
+        if (this.id){
+            return this.id;
+        } else {
+            return "";
+        }
+    }
+
     getEmail(): string {
         if (this.email){
             return this.email;
+        } else {
+            return "";
+        }
+    }
+
+    getUsername(): string {
+        if (this.userName){
+            return this.userName;
+        } else {
+            return "";
+        }
+    }
+
+    getFirstName(): string {
+        if (this.firstName){
+            return this.firstName;
+        } else {
+            return "";
+        }
+    }
+
+    getLastName(): string {
+        if (this.lastName){
+            return this.lastName;
         } else {
             return "";
         }

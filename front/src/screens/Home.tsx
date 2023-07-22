@@ -48,9 +48,9 @@ export const Home = () => {
   };
 
   const handleTimeUpdate = () => {
-    if (playSecondVideo && video2Ref.current && video2Ref.current.currentTime >= video2Ref.current.duration) {
+    // if (playSecondVideo && video2Ref.current && video2Ref.current.currentTime >= video2Ref.current.duration) {
       history('/login');
-    }
+    // }
   };
 
   const getCurrentDimension = () => {

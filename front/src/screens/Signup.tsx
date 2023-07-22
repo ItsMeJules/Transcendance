@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, FormEvent, useContext } from "react";
 import ParticleSlow from "../components/ParticleSlow"
 import { keyframes } from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from "react-hook-form";
 import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
 import AuthContext from "../context/AuthProvider";
 import axios from "../api/axios";

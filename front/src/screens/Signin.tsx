@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, FormEvent, useContext } from "react";
 import ParticleSlow from "../components/ParticleSlow"
 import { keyframes } from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from "react-hook-form";
 import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
 import AuthContext from "../context/AuthProvider";
 import axios from "axios";
@@ -40,24 +39,21 @@ export const Signin = () => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log(email, password);
 
         try {
-            console.log(API_ROUTES.SIGN_UP);
             const response = await axios.post(API_ROUTES.SIGN_UP,
                 JSON.stringify({ email: email, password: password }),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 })
+            // console.log(response);
             User.getInstance().setAccessToken(response.data.accessToken);
-            console.log(User.getInstance().getAccessToken());
             setEmail('');
             setPassword('');
             setSuccess(true);
 
         } catch (err: any) {
-            // console.log(err.response);
             console.log(err.response.data.message);
             if (!err?.response) {
                 setErrMsg('No Server Response');

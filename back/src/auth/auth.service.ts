@@ -14,8 +14,9 @@ export class AuthService {
         private config: ConfigService) { }
 
     async signup(dto: AuthDto) {
+        console.log(dto)
+
         // generate the password hash
-        console.log("OKKKKKKKKKK")
         const hash = await argon.hash(dto.password);
 
         // save the new user in the db

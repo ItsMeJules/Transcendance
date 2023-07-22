@@ -12,7 +12,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // Delete StrictMode for production!!
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <AuthProvider >
         {/* <AppWrapper> */}
@@ -20,7 +20,7 @@ root.render(
         {/* </AppWrapper> */}
       </AuthProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

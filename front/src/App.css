@@ -144,3 +144,31 @@
   color: white;
   box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
 }
+
+.placeholder-black::placeholder {
+  color: black;
+}
+
+.placeholder-gray::placeholder {
+  color:  gray;
+}
+
+.required:after {
+  vertical-align: super;
+  font-size: small;
+  content:" *";
+  color: red;
+}
+
+.invalid-feedback {
+  position: relative; /* Set the position to absolute */
+  border: #282c34;
+  top: -12%; /* Position the error message below the input */
+  left: 0; /* Align the error message with the left edge of the input */
+  width: 100%; /* Make the error message span the entire width of the input */
+  /* background-color: #fff; Set the background color to match the input background */
+  color: red; /* Set the text color for the error message */
+  font-size: 10px; /* Set the font size for the error message */
+  padding: 0px; /* Add padding to the error message for better visibility */
+  z-index: 1; /* Set a higher z-index to position the error message above other elements */
+}

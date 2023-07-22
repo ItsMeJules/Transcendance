@@ -9,7 +9,7 @@ async function bootstrap() {
   }));
   app.enableCors({
     origin: 'http://localhost:3000',
-    methods: ['POST', 'GET'],
+    methods: ['POST', 'GET', 'PATCH'],
     credentials: true,
   });
   await app.listen(3333);
