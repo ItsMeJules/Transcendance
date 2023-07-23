@@ -8,6 +8,7 @@ export interface UserData {
     firstName: string | null;
     lastName: string | null;
     userName: string | null;
+    profilePicture: string | null;
 }
 
 class User {
@@ -19,6 +20,7 @@ class User {
     private firstName: string | null = null;
     private lastName: string | null = null;
     private userName: string | null = null;
+    private profilePicture: string | null = null;
     private accessToken: string | null = null;
     private axiosInstance: AxiosInstance;
 
@@ -49,6 +51,7 @@ class User {
         this.firstName = data.firstName || null;
         this.lastName = data.lastName || null;
         this.userName = data.userName || null;
+        this.profilePicture = data.profilePicture || null;
         // }
     }
 
@@ -74,6 +77,7 @@ class User {
             firstName: this.firstName,
             lastName: this.lastName,
             userName: this.userName,
+            profilePicture: this.profilePicture,
         });
     }
 
@@ -112,6 +116,14 @@ class User {
     getLastName(): string {
         if (this.lastName){
             return this.lastName;
+        } else {
+            return "";
+        }
+    }
+
+    getProfilePicture(): string {
+        if (this.profilePicture){
+            return this.profilePicture;
         } else {
             return "";
         }

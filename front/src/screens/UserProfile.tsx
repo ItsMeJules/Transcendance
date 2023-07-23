@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "../utils/constants";
 import User from "../services/user";
@@ -15,7 +15,6 @@ export const UserProfile: React.FC = () => {
     const userInstance = User.getInstance().getAxiosInstance();
     const isSmallScreen = useMediaQuery({ query: "(max-width: 768px)" });
     const logout = useLogout();
-
 
     const fetchUserProfile = async () => {
         try {
@@ -42,6 +41,7 @@ export const UserProfile: React.FC = () => {
             setUserData(userData);
             User.getInstance().setUserFromResponseData(userData);
             console.log(User.getInstance().getData());
+            console.log(User.getInstance().getProfilePicture());
         } else {
             // If no user data in localStorage, fetch it from the server
             fetchUserProfile();
@@ -83,7 +83,7 @@ export const UserProfile: React.FC = () => {
 
                     <div className=" d-flex justify-content-center">
                         <div className="d-flex justify-content-center">
-                            <MDBCardImage src='/images/logo.png' className="rounded-circle" fluid style={{ width: '100px' }} />
+                            <MDBCardImage src={User.getInstance().getProfilePicture()} className="rounded-circle" fluid style={{ width: '100px' }} />
                         </div>
                     </div>
 

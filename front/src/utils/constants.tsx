@@ -5,7 +5,7 @@ export const API_ROUTES = {
     SIGN_IN: `${API_URL}/auth/signin`,
     USER_PROFILE: `${API_URL}/users/me`,
     USER_PROFILE_EDIT: `${API_URL}/users`,
-    UPLOAD_PROFILE_PIC: `${API_URL}/users/uploadpic`,
+    UPLOAD_PROFILE_PIC: `${API_URL}/users/upload-profile-picture`,
 }
 
 export const APP_ROUTES = {

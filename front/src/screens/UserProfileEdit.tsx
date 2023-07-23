@@ -59,7 +59,7 @@ export const UserProfileEdit: React.FC = () => {
             localStorage.setItem('userData', JSON.stringify(userData));
             setUserData(userData);
             User.getInstance().setUserFromResponseData(userData);
-            console.log(User.getInstance().getData());
+            // console.log(User.getInstance().getData());
             setEmail(User.getInstance().getEmail());
             setUserName(User.getInstance().getUsername());
             setFirstName(User.getInstance().getFirstName());
@@ -177,12 +177,10 @@ export const UserProfileEdit: React.FC = () => {
       const uploadProfilePic = async () => {
         if (profilePic) {
           const formData = new FormData();
-          formData.append("profilePic", profilePic);
+          formData.append("profilePicture", profilePic);
           
           try {
-            // Make an API call to upload the profile picture
-            // You can use axios or any other HTTP library for this
-            await axios.post(API_ROUTES.UPLOAD_PROFILE_PIC, formData, {
+            await axios.post('http://localhost:3333/users/pf', formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${User.getInstance().getAccessToken()}`,

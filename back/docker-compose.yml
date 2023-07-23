@@ -1,9 +1,9 @@
 version: '3.8'
 services:
-  dev-db:
+  back-dev-db-1:
     image: postgres:latest
     ports:
-        - 5434:5432
+        - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123

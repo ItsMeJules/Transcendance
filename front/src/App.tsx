@@ -11,6 +11,7 @@ import { Leaderboard } from './screens/Leaderboard';
 import { UserProfile } from './screens/UserProfile';
 import { UserProfileEdit } from './screens/UserProfileEdit';
 import { APP_ROUTES } from './utils/constants';
+import { Test } from './screens/Test';
 
 function App() {
 
@@ -44,6 +45,7 @@ function App() {
           <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
           <Route path="/play" element={<Play />} />
           <Route path="/users/all" element={<Leaderboard />} />
+          <Route path="/test" element={<Test />}/>
         </Routes>
       </AppWrapper>
     </div>
