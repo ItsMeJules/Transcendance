@@ -70,7 +70,7 @@ export const UserProfile: React.FC = () => {
 
     return (
         <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
-            <MDBContainer className="py-5" style={{ width: isSmallScreen ? '90%' : '60%', maxWidth: '500px' }}>
+            <MDBContainer className="py-5" style={{ width: isSmallScreen ? '90%' : '60%', maxWidth: '500px', minWidth: '400px' }}>
                 <MDBCard className="flex" style={{ borderRadius: '15px' }}>
                     <div className="d-flex align-items-center mt-2 ml-1 mr-1 border" style={{ justifyContent: "space-between" }}>
                         <Link className="border" to={APP_ROUTES.USER_PROFILE_EDIT}>
@@ -88,31 +88,29 @@ export const UserProfile: React.FC = () => {
                     </div>
 
                     <div className="d-flex flex-grow-2">
-                        <MDBCardBody className="text-left d-flex flex-column" style={{ width: '30%' }}>
+                        <MDBCardBody className="text-left d-flex flex-column" style={{ width: '20%' }}>
                             <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '0px' }}>
-                                <MDBTypography tag="h5" className="custooltip required "
-                                    style={{ fontSize: screenSize.width > 500 ? 20 : 20 * screenSize.width * 0.002 }}
-                                    data-tooltip="Required">
+                                <MDBTypography tag="h5" className="custooltip required " data-tooltip="Required">
                                     Email
                                 </MDBTypography>
                             </div>
-                            <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '15px' }}>                                <MDBTypography tag="h4"
-                                style={{ fontSize: screenSize.width > 500 ? 20 : 20 * screenSize.width * 0.002 }}>
-                                Username
-                            </MDBTypography>
+                            <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '15px' }}>
+                                <MDBTypography tag="h5">
+                                    Username
+                                </MDBTypography>
                             </div>
-                            <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '15px' }}>                                <MDBTypography tag="h4"
-                                style={{ fontSize: screenSize.width > 500 ? 20 : 20 * screenSize.width * 0.002 }}>
-                                First name
-                            </MDBTypography>
+                            <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '15px' }}>
+                                <MDBTypography tag="h5">
+                                    First name
+                                </MDBTypography>
                             </div>
-                            <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '15px' }}>                                <MDBTypography tag="h4"
-                                style={{ fontSize: screenSize.width > 500 ? 20 : 20 * screenSize.width * 0.002 }}>
-                                Last name
-                            </MDBTypography>
+                            <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '15px' }}>
+                                <MDBTypography tag="h5">
+                                    Last name
+                                </MDBTypography>
                             </div>
                         </MDBCardBody>
-                        <MDBCardBody className="text-left" style={{ minWidth: '0px', marginTop:'3px' }}>
+                        <MDBCardBody className="text-left" style={{ minWidth: '0px', marginTop: '3px' }}>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
                                 <MDBTypography tag="h5" style={{ width: '100%', minWidth: '0px' }}>{User.getInstance().getData()?.email} </MDBTypography>
                             </div>
