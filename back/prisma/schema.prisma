@@ -16,6 +16,7 @@ model User {
 	name			String
 	surname			String
 	email           String @unique
+	profilePicture	String
 
 	friends         User[] @relation("friends")
 	friendsRelation User[] @relation("friends")
