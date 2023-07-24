@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "users" ALTER COLUMN "userLevel" SET DATA TYPE DOUBLE PRECISION;

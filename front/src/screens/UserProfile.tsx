@@ -15,6 +15,10 @@ export const UserProfile: React.FC = () => {
     const userInstance = User.getInstance().getAxiosInstance();
     const isSmallScreen = useMediaQuery({ query: "(max-width: 768px)" });
     const logout = useLogout();
+    const [value, setValue] = useState<number | null>(null);
+
+
+
 
     const fetchUserProfile = async () => {
         try {
@@ -35,17 +39,27 @@ export const UserProfile: React.FC = () => {
 
     useEffect(() => {
         // Check if user data exists in localStorage
-        const storedData = localStorage.getItem('userData');
-        if (storedData) {
-            const userData = JSON.parse(storedData);
-            setUserData(userData);
-            User.getInstance().setUserFromResponseData(userData);
-            console.log(User.getInstance().getData());
-            console.log(User.getInstance().getProfilePicture());
-        } else {
-            // If no user data in localStorage, fetch it from the server
-            fetchUserProfile();
-        }
+        // const storedData = localStorage.getItem('userData');
+        // if (storedData) {
+        //     const userData = JSON.parse(storedData);
+        //     setUserData(userData);
+        //     User.getInstance().setUserFromResponseData(userData);
+        //     console.log(User.getInstance().getData());
+        //     console.log(User.getInstance().getProfilePicture());
+        // } else {
+        // If no user data in localStorage, fetch it from the server
+
+        // const progressBar = document.getElementById('progress-bar');
+
+        // if (progressBar) {
+        //     const percentage = (1 / 10) * 100;
+        //     progressBar.style.backgroundPosition = `${percentage}% 100%`;
+        // }
+
+
+        
+
+        fetchUserProfile();
     }, []);
 
     const getCurrentDimension = () => {
@@ -72,9 +86,10 @@ export const UserProfile: React.FC = () => {
         <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
             <MDBContainer
                 className="py-5"
-                style={{ width: isSmallScreen ? '90%' : '60%', maxWidth: '500px', minWidth: '400px' }}
-            >
+                style={{ width: isSmallScreen ? '90%' : '60%', maxWidth: '500px', minWidth: '400px' }}>
+
                 <MDBCard className="flex" style={{ borderRadius: '15px' }}>
+
                     <div className="d-flex align-items-center mr-2 ml-3 mt-2" style={{ justifyContent: "space-between" }}>
                         <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT} style={{ padding: '0px' }}>
                             <MDBCardImage src='/images/edit_profile.png' fluid style={{ width: '30px' }} />
@@ -85,16 +100,20 @@ export const UserProfile: React.FC = () => {
                     </div>
 
                     <div className="d-flex justify-content-center">
-                        <div className="d-flex justify-content-center">
+                        {User.getInstance().getProfilePicture() ? (
                             <div className="profile-picture-container">
-                                {User.getInstance().getProfilePicture() ? (
-                                    <img src={User.getInstance().getProfilePicture()} alt="Profile" />
-                                ) : (
-                                    <span>No Profile Picture</span>
-                                )}
+
+                                <img src={User.getInstance().getProfilePicture()} alt="Profile" />
+
                             </div>
-                        </div>
+                        ) : (
+                            <div className="empty-profile-picture-container">
+                                <span style={{ fontSize: '1rem' }}>No profile picture</span>
+                            </div>
+                        )}
                     </div>
+
+                    <div className="fade-line" style={{ marginTop: '20px' }}></div>
 
                     <div className="d-flex flex-grow-2">
                         <MDBCardBody className="text-left d-flex flex-column" style={{ width: '20%', minWidth: '140px' }}>
@@ -111,7 +130,7 @@ export const UserProfile: React.FC = () => {
                                 <MDBTypography tag="h5" style={{ minWidth: '100px' }}>Last name</MDBTypography>
                             </div>
                         </MDBCardBody>
-                        
+
                         <MDBCardBody className="text-left" style={{ minWidth: '0px', marginTop: '3px' }}>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
                                 <MDBTypography
@@ -168,19 +187,62 @@ export const UserProfile: React.FC = () => {
                             </div>
                         </MDBCardBody>
                     </div>
-                    <div className="d-flex justify-content-between text-center mt-5 mb-2">
-                        <div>
-                            <MDBCardText className="mb-1 h5">8471</MDBCardText>
-                            <MDBCardText className="small text-muted mb-0">Wallets Balance</MDBCardText>
+
+                    <div className="fade-line" style={{ marginTop: '-10px' }}></div>
+
+
+                    <div className="flex text-center mt-3">
+                        <div className="justify-center" style={{ width: '100%' }}>
+                            <MDBCardText className="mb-1 h5">
+                                {User.getInstance().getGamesPlayed()}
+                            </MDBCardText>
+                            <MDBCardText className="small text-muted mb-0">
+                                Games played
+                            </MDBCardText>
                         </div>
-                        <div className="px-3">
-                            <MDBCardText className="mb-1 h5">8512</MDBCardText>
-                            <MDBCardText className="small text-muted mb-0">Followers</MDBCardText>
+
+                        <div className="justify-center" style={{ width: '100%' }}>
+                            <MDBCardText className="mb-1 h5">
+                                {User.getInstance().getGamesWon()}
+                            </MDBCardText>
+                            <MDBCardText className="small text-muted mb-0">
+                                Games won
+                            </MDBCardText>
                         </div>
-                        <div>
-                            <MDBCardText className="mb-1 h5">4751</MDBCardText>
-                            <MDBCardText className="small text-muted mb-0">Total Transactions</MDBCardText>
+                    </div>
+                    <div className="flex text-center mt-4 mb-4">
+                        <div className="justify-center" style={{ width: '100%' }}>
+                            <MDBCardText className="mb-1 h5">
+                                {User.getInstance().getUserPoints()}
+                            </MDBCardText>
+                            <MDBCardText className="small text-muted mb-0">
+                                Points won
+                            </MDBCardText>
                         </div>
+
+
+
+
+                        <div className="justify-center" style={{ width: '100%' }}>
+                            
+                            <div className="progress-container">
+
+                                <div 
+                                className="animated-gradient"
+                                id="progress-bar"
+                                style={{height:'28px'}}></div>
+                            </div>
+
+                            <MDBCardText className="small text-muted mb-0">
+                                Level {User.getInstance().getUserLevel()}
+                            </MDBCardText>
+
+                        </div>
+
+
+
+
+
                     </div>
                 </MDBCard>
             </MDBContainer>

@@ -26,7 +26,8 @@ export class UserService {
                 ...dto,
             },
         });
-        delete user.hash;
+        if (user)
+            delete user.hash;
         return user;
     }
 
@@ -57,11 +58,11 @@ export class UserService {
 
         // Delete the previous profile picture from the file system
         const urlObj = new URL(oldProfilePictureUrl);
-        const pathToDelete = process.cwd() + this.config.get('PUBLIC_FOLDER') +  urlObj.pathname;
+        const pathToDelete = process.cwd() + this.config.get('PUBLIC_FOLDER') + urlObj.pathname;
         if (pathToDelete && urlObj.pathname !== this.config.get('IMAGES_FOLDER') + this.config.get('DEFAULT_PROFILE_PICTURE')) {
             try {
                 fs.unlinkSync(pathToDelete);
-            } catch (err:any) { }
+            } catch (err: any) { }
         }
     }
 }

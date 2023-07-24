@@ -297,3 +297,16 @@
   cursor: pointer;
   padding: 0;
 }
+
+.fade-line {
+  height: 1px;
+  background-color: #E6E6E6;
+  width:100%;
+  /* margin: 20 auto; */
+  background-image: linear-gradient(left , white 10%, #E6E6E6 50%, white 90%);
+  background-image: -o-linear-gradient(left , white 10%, #E6E6E6 50%, white 90%);
+  background-image: -moz-linear-gradient(left , white 10%, #E6E6E6 50%, white 90%);
+  background-image: -webkit-linear-gradient(left , white 10%, #E6E6E6 50%, white 90%);
+  background-image: -ms-linear-gradient(left , white 10%, #E6E6E6 50%, white 90%);
+  background-image: -webkit-gradient( linear, left bottom, right bottom, color-stop(0.1, white), color-stop(0.5, gray), color-stop(0.90, white) );
+}

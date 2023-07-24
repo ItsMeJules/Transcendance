@@ -193,12 +193,10 @@ export const UserProfileEdit: React.FC = () => {
             <MDBContainer className="py-5" style={{ width: isSmallScreen ? '90%' : '60%', maxWidth: '500px', minWidth: '400px' }}>
                 <MDBCard className="flex" style={{ borderRadius: '15px' }}>
 
-                    <div className="d-flex align-items-center mr-2 mt-2" style={{ justifyContent: "right" }}>
-                        <div className="">
-                            <button title="Log out" onClick={logout}>
-                                <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
-                            </button>
-                        </div>
+                    <div className="d-flex align-items-center mr-2 ml-3 mt-2" style={{ justifyContent: "right" }}>
+                        <button title="Log out" onClick={logout}>
+                            <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
+                        </button>
                     </div>
 
 
@@ -214,8 +212,6 @@ export const UserProfileEdit: React.FC = () => {
                                 <span style={{ fontSize: '1rem' }}>No profile picture</span>
                             </div>
                         )}
-
-
                     </div>
 
                     <div className="d-flex justify-content-center" style={{ marginTop: '10px' }}>
@@ -225,9 +221,12 @@ export const UserProfileEdit: React.FC = () => {
                         </label>
                     </div>
 
+                    <div className="fade-line" style={{ marginTop: '20px' }}>
+
+                    </div>
 
                     <div className="d-flex flex-grow-2">
-                    <MDBCardBody className="text-left d-flex flex-column" style={{ width: '20%', minWidth: '140px' }}>
+                        <MDBCardBody className="text-left d-flex flex-column" style={{ width: '20%', minWidth: '140px' }}>
                             <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '0px' }}>
                                 <MDBTypography tag="h5" style={{ minWidth: '100px' }}>Email</MDBTypography>
                             </div>

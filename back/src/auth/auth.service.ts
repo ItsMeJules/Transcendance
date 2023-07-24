@@ -28,8 +28,13 @@ export class AuthService {
                     email: dto.email,
                     hash,
                     profilePicture: absoluteUrl,
+                    gamesPlayed: 0,
+                    gamesWon: 0,
+                    userPoints: 0,
+                    userLevel: 1.4,
                 },
             });
+            console.log(this.signToken(user.id, user.email));
             return this.signToken(user.id, user.email);
         }
         catch (error) {
@@ -79,7 +84,7 @@ export class AuthService {
                 secret: secret,
             },
         );
-
+            console.log(token);
         return {
             accessToken: token,
         };

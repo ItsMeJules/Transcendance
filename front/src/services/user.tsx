@@ -9,6 +9,11 @@ export interface UserData {
     lastName: string | null;
     userName: string | null;
     profilePicture: string | null;
+    gamesPlayed: number | null;
+    gamesWon: number | null;
+    userPoints: number | null;
+    userLevel: number | null;
+
 }
 
 class User {
@@ -21,6 +26,10 @@ class User {
     private lastName: string | null = null;
     private userName: string | null = null;
     private profilePicture: string | null = null;
+    private gamesPlayed: number | null = null;
+    private gamesWon: number | null = null;
+    private userPoints: number | null = null;
+    private userLevel: number | null = null;
     private accessToken: string | null = null;
     private axiosInstance: AxiosInstance;
 
@@ -42,8 +51,6 @@ class User {
     }
 
     setUserFromResponseData(data: UserData) {
-        // const data: UserData | null = JSON.parse(localStorage.getItem('userData') || 'null');
-        // if (data) {
         this.id = data.id || null;
         this.createdAt = data.createdAt || null;
         this.updatedAt = data.updatedAt || null;
@@ -52,7 +59,10 @@ class User {
         this.lastName = data.lastName || null;
         this.userName = data.userName || null;
         this.profilePicture = data.profilePicture || null;
-        // }
+        this.gamesPlayed = data.gamesPlayed || null;
+        this.gamesWon = data.gamesWon || null;
+        this.userPoints = data.userPoints || null;
+        this.userLevel = data.userLevel || null;
     }
 
     setAccessToken(accessToken: string) {
@@ -78,11 +88,15 @@ class User {
             lastName: this.lastName,
             userName: this.userName,
             profilePicture: this.profilePicture,
+            gamesPlayed: this.gamesPlayed,
+            gamesWon: this.gamesWon,
+            userPoints: this.userPoints,
+            userLevel: this.userLevel,
         });
     }
 
     getId(): string {
-        if (this.id){
+        if (this.id) {
             return this.id;
         } else {
             return "";
@@ -90,7 +104,7 @@ class User {
     }
 
     getEmail(): string {
-        if (this.email){
+        if (this.email) {
             return this.email;
         } else {
             return "";
@@ -98,7 +112,7 @@ class User {
     }
 
     getUsername(): string {
-        if (this.userName){
+        if (this.userName) {
             return this.userName;
         } else {
             return "";
@@ -106,7 +120,7 @@ class User {
     }
 
     getFirstName(): string {
-        if (this.firstName){
+        if (this.firstName) {
             return this.firstName;
         } else {
             return "";
@@ -114,7 +128,7 @@ class User {
     }
 
     getLastName(): string {
-        if (this.lastName){
+        if (this.lastName) {
             return this.lastName;
         } else {
             return "";
@@ -122,13 +136,41 @@ class User {
     }
 
     getProfilePicture(): string {
-        if (this.profilePicture){
+        if (this.profilePicture) {
             return this.profilePicture;
         } else {
             return "";
         }
     }
 
+    getGamesPlayed(): number {
+        if (this.gamesPlayed)
+            return this.gamesPlayed;
+        else
+            return 0;
+    }
+
+    getGamesWon(): number {
+        if (this.gamesWon)
+            return this.gamesWon;
+        else
+            return 0;
+    }
+
+    getUserPoints(): number {
+        if (this.userPoints)
+            return this.userPoints;
+        else
+            return 0;
+    }
+
+    getUserLevel(): number {
+        if (this.userLevel)
+            return this.userLevel;
+        else
+            return 0;
+    }
+    
     getAccessToken(): string | null {
         return this.accessToken;
     }
