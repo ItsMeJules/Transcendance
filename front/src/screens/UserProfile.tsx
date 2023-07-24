@@ -111,6 +111,7 @@ export const UserProfile: React.FC = () => {
                                 <MDBTypography tag="h5" style={{ minWidth: '100px' }}>Last name</MDBTypography>
                             </div>
                         </MDBCardBody>
+                        
                         <MDBCardBody className="text-left" style={{ minWidth: '0px', marginTop: '3px' }}>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
                                 <MDBTypography
@@ -127,13 +128,43 @@ export const UserProfile: React.FC = () => {
                                 </MDBTypography>
                             </div>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
-                                <MDBTypography tag="h5" style={{ marginTop: '15px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{User.getInstance().getData()?.userName}</MDBTypography>
+                                <MDBTypography
+                                    tag="h5"
+                                    style={{
+                                        marginTop: '15px',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap'
+                                    }}
+                                    title={User.getInstance().getData()?.userName}>
+                                    {User.getInstance().getData()?.userName}
+                                </MDBTypography>
                             </div>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
-                                <MDBTypography tag="h5" style={{ marginTop: '15px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{User.getInstance().getData()?.firstName}</MDBTypography>
+                                <MDBTypography
+                                    tag="h5"
+                                    style={{
+                                        marginTop: '15px',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap'
+                                    }}
+                                    title={User.getInstance().getData()?.firstName}>
+                                    {User.getInstance().getData()?.firstName}
+                                </MDBTypography>
                             </div>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
-                                <MDBTypography tag="h5" style={{ marginTop: '15px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{User.getInstance().getData()?.lastName}</MDBTypography>
+                                <MDBTypography
+                                    tag="h5"
+                                    style={{
+                                        marginTop: '15px',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap'
+                                    }}
+                                    title={User.getInstance().getData()?.lastName}>
+                                    {User.getInstance().getData()?.lastName}
+                                </MDBTypography>
                             </div>
                         </MDBCardBody>
                     </div>

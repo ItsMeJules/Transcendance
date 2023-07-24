@@ -2,8 +2,8 @@
 
 set -m
 
-npx prisma migrate dev --name new &
-npx prisma migrate deploy &
+npx prisma migrate dev --name init &
+# npx prisma migrate deploy &
 npm run start:dev &
 npx prisma studio
 

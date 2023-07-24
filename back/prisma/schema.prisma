@@ -24,6 +24,12 @@ model User {
   userName  String?
 
   profilePicture String?
+
+  gamesPlayed Int?
+  gamesWon Int?
+
+  userPoints Int?
+  userLevel Int?
   
   Bookmark  Bookmark[]
 

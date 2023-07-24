@@ -30,10 +30,10 @@ services:
     networks:
       - app
     depends_on:
-      - dev-db
+      - bdd
     restart: always
 
-  dev-db:
+  bdd:
     image: postgres:latest
     env_file:
     - ./bdd.env
