@@ -32,6 +32,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -48,8 +49,10 @@
   z-index: 20;
   width: auto;
   object-fit: cover;
-  transition: opacity 2s ease-in-out; /* Adjust the duration as desired */
-  background-color: black; /* Set the default background color to black */
+  transition: opacity 2s ease-in-out;
+  /* Adjust the duration as desired */
+  background-color: black;
+  /* Set the default background color to black */
 }
 
 .video.fade-in {
@@ -125,7 +128,8 @@
 }
 
 .signup-button:hover {
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
+  /* Green */
   color: white;
   box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
 }
@@ -140,7 +144,8 @@
 }
 
 .save-changes-button:hover {
-  background-color: #52d157; /* Green */
+  background-color: #52d157;
+  /* Green */
   color: white;
   box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
 }
@@ -150,25 +155,145 @@
 }
 
 .placeholder-gray::placeholder {
-  color:  gray;
+  color: gray;
 }
 
 .required:after {
   vertical-align: super;
   font-size: small;
-  content:" *";
+  content: " *";
   color: red;
 }
 
 .invalid-feedback {
-  position: relative; /* Set the position to absolute */
+  position: relative;
+  /* Set the position to absolute */
   border: #282c34;
-  top: -12%; /* Position the error message below the input */
-  left: 0; /* Align the error message with the left edge of the input */
-  width: 100%; /* Make the error message span the entire width of the input */
+  top: -12%;
+  /* Position the error message below the input */
+  left: 0;
+  /* Align the error message with the left edge of the input */
+  width: 100%;
+  /* Make the error message span the entire width of the input */
   /* background-color: #fff; Set the background color to match the input background */
-  color: red; /* Set the text color for the error message */
-  font-size: 10px; /* Set the font size for the error message */
-  padding: 0px; /* Add padding to the error message for better visibility */
-  z-index: 1; /* Set a higher z-index to position the error message above other elements */
+  color: red;
+  /* Set the text color for the error message */
+  font-size: 10px;
+  /* Set the font size for the error message */
+  padding: 0px;
+  /* Add padding to the error message for better visibility */
+  z-index: 1;
+  /* Set a higher z-index to position the error message above other elements */
+}
+
+.profile-picture-container {
+  width: 100px;
+  /* Set a fixed width */
+  height: 100px;
+  /* Set a fixed height */
+  border-radius: 50%;
+  /* To make it circular for square images */
+  overflow: hidden;
+  /* To hide any part of the image that exceeds the container's dimensions */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-picture-container img {
+  width: 100%;
+  /* Make the image cover the entire container maintaining aspect ratio */
+  height: 100%;
+  /* Make the image cover the entire container maintaining aspect ratio */
+  object-fit: cover;
+  /* Crop or pad the image as needed to maintain aspect ratio */
+}
+
+.empty-profile-picture-container {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
+}
+
+.border {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.file-input-label {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: center;
+}
+
+.file-input {
+  position: relative;
+  opacity: 1;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.custom-file-input {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: center;
+  font-size: small;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.custom-file-input input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.hover-container {
+  position: relative;
+}
+
+.hover-text {
+  opacity: 1;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  font-size: x-small;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  padding: 1px 2px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  transition: opacity 0.5s ease;
+}
+
+.hover-button:hover .hover-text {
+  opacity: 1;
+}
+
+.hover-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }

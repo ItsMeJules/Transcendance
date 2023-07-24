@@ -23,7 +23,8 @@ export const UserProfileEdit: React.FC = () => {
     const userLastName = User.getInstance().getLastName();
     const [isLastNameEmpty, setIsLastNameEmpty] = useState(true);
 
-    const [profilePic, setProfilePic] = useState<File | null>(null);
+    const [profilePic, setProfilePic] = useState(User.getInstance().getProfilePicture());
+
 
     const [email, setEmail] = useState('');
     const initialEmail = User.getInstance().getEmail();
@@ -59,11 +60,11 @@ export const UserProfileEdit: React.FC = () => {
             localStorage.setItem('userData', JSON.stringify(userData));
             setUserData(userData);
             User.getInstance().setUserFromResponseData(userData);
-            // console.log(User.getInstance().getData());
             setEmail(User.getInstance().getEmail());
             setUserName(User.getInstance().getUsername());
             setFirstName(User.getInstance().getFirstName());
             setLastName(User.getInstance().getLastName());
+            setProfilePic(User.getInstance().getProfilePicture());
         } catch (err: any) {
             console.log("Error:" + err.response.data.message);
         }
@@ -167,63 +168,70 @@ export const UserProfileEdit: React.FC = () => {
         }
     }
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          setProfilePic(file);
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const imageFile = e.target.files?.[0];
+        if (imageFile) {
+            const formData = new FormData();
+            formData.append("profilePicture", imageFile);
+            console.log("OKKKKKK")
+            try {
+                await axios.post('http://localhost:3333/users/pf', formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${User.getInstance().getAccessToken()}`,
+                    },
+                });
+                fetchUserProfile();
+            } catch (error) {
+                console.error("Failed to upload profile picture:", error);
+            }
         }
-      };
-
-      const uploadProfilePic = async () => {
-        if (profilePic) {
-          const formData = new FormData();
-          formData.append("profilePicture", profilePic);
-          
-          try {
-            await axios.post('http://localhost:3333/users/pf', formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${User.getInstance().getAccessToken()}`,
-              },
-            });
-      
-            // Profile picture uploaded successfully
-            // You may want to update the user's profile picture URL in the state or fetch the updated user data from the server
-          } catch (error) {
-            // Handle error if the upload fails
-            console.error("Failed to upload profile picture:", error);
-          }
-        }
-      };
+    };
 
     return (
         <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
             <MDBContainer className="py-5" style={{ width: isSmallScreen ? '90%' : '60%', maxWidth: '500px' }}>
                 <MDBCard className="flex" style={{ borderRadius: '15px' }}>
 
-                    <div className="d-flex align-items-center mt-2 ml-1 mr-1 border" style={{ justifyContent: "right" }}>
-                        <button onClick={logout}>
-                            <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
-                        </button>
-                    </div>
-                    <div className=" d-flex justify-content-center">
-                        <div className="d-flex justify-content-center">
-                            <MDBCardImage src='/images/logo.png' className="rounded-circle" fluid style={{ width: '100px' }} />
+                    <div className="d-flex align-items-center mr-2 mt-2" style={{ justifyContent: "right" }}>
+                        <div className="">
+                            <button title="Log out" onClick={logout}>
+                                <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
+                            </button>
                         </div>
                     </div>
-                    <div className=" d-flex justify-content-center">
-                        <div className="d-flex justify-content-center">
+
+
+                    <div className="d-flex justify-content-center">
+                        {profilePic ? (
+                            <div className="profile-picture-container">
+
+                                <img src={profilePic} alt="Profile" />
+
+                            </div>
+                        ) : (
+                            <div className="empty-profile-picture-container">
+                                <span style={{ fontSize: '1rem' }}>No profile picture</span>
+                            </div>
+                        )}
+
+
+                    </div>
+
+                    <div className="d-flex justify-content-center" style={{ marginTop: '10px' }}>
+                        <label className="custom-file-input">
                             <input type="file" accept="image/*" onChange={handleImageChange} />
-                            <button onClick={uploadProfilePic}>Upload Profile Picture</button>
-                        </div>
+                            Upload Profile Picture
+                        </label>
                     </div>
+
 
                     <div className="d-flex flex-grow-2">
                         <MDBCardBody className="text-left d-flex flex-column" style={{ width: '30%' }}>
                             <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '0px' }}>
-                                <MDBTypography tag="h5" className="custooltip required "
-                                    style={{ fontSize: screenSize.width > 500 ? 20 : 20 * screenSize.width * 0.002 }}
-                                    data-tooltip="Required">
+                                {/* <MDBTypography tag="h5" className="custooltip required " */}
+                                <MDBTypography tag="h5"
+                                    style={{ fontSize: screenSize.width > 500 ? 20 : 20 * screenSize.width * 0.002 }}>
                                     Email
                                 </MDBTypography>
                             </div>
@@ -246,37 +254,12 @@ export const UserProfileEdit: React.FC = () => {
                         <MDBCardBody className="text-left" style={{ minWidth: '0px' }}>
                             <form action="POST" onSubmit={handleSubmit}>
                                 <div className="" style={{ height: '35px', minWidth: '0px' }}>
-                                    <input type="text"
-                                        autoComplete="off"
-                                        placeholder={User.getInstance().getEmail()}
-                                        id="emailaddress"
-                                        value={email}
-                                        className={`border ${isEmailEmpty ? "placeholder-gray" : "placeholder-black"
-                                            } input-field edit-form-label ${emailError ? "is-invalid" : ""}`}
-                                        style={{ width: '100%', minWidth: '0px' }}
-                                        onChange={(e) => {
-                                            const inputValue = e.target.value;
-                                            if (inputValue !== User.getInstance().getEmail()) {
-                                                setEmail(inputValue);
-                                                validateEmail(inputValue);
-                                            } else {
-                                                setEmail(User.getInstance().getEmail());
-                                                setEmailError("");
-                                            }
-                                        }}
-                                        aria-describedby="emailErrorText" // Add the aria-describedby attribute
-                                    />
-                                    {emailError && (
-                                        <div
-                                            className="invalid-feedback"
-                                            id="emailErrorText" // Set the id of the error message container
-                                        >
-                                            {emailError}
-                                        </div>
-                                    )}
+                                    <MDBTypography tag="h5" style={{ width: '100%', minWidth: '0px', marginTop: '3px' }}>
+                                        {User.getInstance().getData()?.email}
+                                    </MDBTypography>
                                 </div>
 
-                                <div className="" style={{ height: '35px', minWidth: '0px', marginTop: '15px' }}>
+                                <div className="" style={{ height: '35px', minWidth: '0px', marginTop: '5px' }}>
                                     <input type="text"
                                         autoComplete="off"
                                         placeholder="Enter username"
@@ -329,3 +312,40 @@ export const UserProfileEdit: React.FC = () => {
     );
 
 }
+
+
+
+
+
+
+
+// <div className="" style={{ height: '35px', minWidth: '0px' }}>
+//                                     <input type="text"
+//                                         autoComplete="off"
+//                                         placeholder={User.getInstance().getEmail()}
+//                                         id="emailaddress"
+//                                         value={email}
+//                                         className={`border ${isEmailEmpty ? "placeholder-gray" : "placeholder-black"
+//                                             } input-field edit-form-label ${emailError ? "is-invalid" : ""}`}
+//                                         style={{ width: '100%', minWidth: '0px' }}
+//                                         onChange={(e) => {
+//                                             const inputValue = e.target.value;
+//                                             if (inputValue !== User.getInstance().getEmail()) {
+//                                                 setEmail(inputValue);
+//                                                 validateEmail(inputValue);
+//                                             } else {
+//                                                 setEmail(User.getInstance().getEmail());
+//                                                 setEmailError("");
+//                                             }
+//                                         }}
+//                                         aria-describedby="emailErrorText" // Add the aria-describedby attribute
+//                                     />
+//                                     {emailError && (
+//                                         <div
+//                                             className="invalid-feedback"
+//                                             id="emailErrorText" // Set the id of the error message container
+//                                         >
+//                                             {emailError}
+//                                         </div>
+//                                     )}
+//                                 </div>

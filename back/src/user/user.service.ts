@@ -63,8 +63,5 @@ export class UserService {
                 fs.unlinkSync(pathToDelete);
             } catch (err:any) { }
         }
-
-
-
     }
 }

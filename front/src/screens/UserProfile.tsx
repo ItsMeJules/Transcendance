@@ -70,58 +70,70 @@ export const UserProfile: React.FC = () => {
 
     return (
         <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
-            <MDBContainer className="py-5" style={{ width: isSmallScreen ? '90%' : '60%', maxWidth: '500px', minWidth: '400px' }}>
+            <MDBContainer
+                className="py-5"
+                style={{ width: isSmallScreen ? '90%' : '60%', maxWidth: '500px', minWidth: '400px' }}
+            >
                 <MDBCard className="flex" style={{ borderRadius: '15px' }}>
-                    <div className="d-flex align-items-center mt-2 ml-1 mr-1 border" style={{ justifyContent: "space-between" }}>
-                        <Link className="border" to={APP_ROUTES.USER_PROFILE_EDIT}>
+                    <div className="d-flex align-items-center mr-2 ml-3 mt-2" style={{ justifyContent: "space-between" }}>
+                        <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT} style={{ padding: '0px' }}>
                             <MDBCardImage src='/images/edit_profile.png' fluid style={{ width: '30px' }} />
                         </Link>
-                        <button onClick={logout}>
+                        <button title="Log out" onClick={logout}>
                             <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
                         </button>
                     </div>
 
-                    <div className=" d-flex justify-content-center">
+                    <div className="d-flex justify-content-center">
                         <div className="d-flex justify-content-center">
-                            <MDBCardImage src={User.getInstance().getProfilePicture()} className="rounded-circle" fluid style={{ width: '100px' }} />
+                            <div className="profile-picture-container">
+                                {User.getInstance().getProfilePicture() ? (
+                                    <img src={User.getInstance().getProfilePicture()} alt="Profile" />
+                                ) : (
+                                    <span>No Profile Picture</span>
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     <div className="d-flex flex-grow-2">
-                        <MDBCardBody className="text-left d-flex flex-column" style={{ width: '20%' }}>
+                        <MDBCardBody className="text-left d-flex flex-column" style={{ width: '20%', minWidth: '140px' }}>
                             <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '0px' }}>
-                                <MDBTypography tag="h5" className="custooltip required " data-tooltip="Required">
-                                    Email
-                                </MDBTypography>
+                                <MDBTypography tag="h5" style={{ minWidth: '100px' }}>Email</MDBTypography>
                             </div>
                             <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '15px' }}>
-                                <MDBTypography tag="h5">
-                                    Username
-                                </MDBTypography>
+                                <MDBTypography tag="h5" style={{ minWidth: '100px' }}>Username</MDBTypography>
                             </div>
                             <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '15px' }}>
-                                <MDBTypography tag="h5">
-                                    First name
-                                </MDBTypography>
+                                <MDBTypography tag="h5" style={{ minWidth: '100px' }}>First name</MDBTypography>
                             </div>
                             <div className="align-items-center d-flex" style={{ height: '35px', marginTop: '15px' }}>
-                                <MDBTypography tag="h5">
-                                    Last name
-                                </MDBTypography>
+                                <MDBTypography tag="h5" style={{ minWidth: '100px' }}>Last name</MDBTypography>
                             </div>
                         </MDBCardBody>
                         <MDBCardBody className="text-left" style={{ minWidth: '0px', marginTop: '3px' }}>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
-                                <MDBTypography tag="h5" style={{ width: '100%', minWidth: '0px' }}>{User.getInstance().getData()?.email} </MDBTypography>
+                                <MDBTypography
+                                    tag="h5"
+                                    style={{
+                                        width: '100%',
+                                        minWidth: '0px',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap'
+                                    }}
+                                    title={User.getInstance().getData()?.email}>
+                                    {User.getInstance().getData()?.email}
+                                </MDBTypography>
                             </div>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
-                                <MDBTypography tag="h5" style={{ marginTop: '15px' }}>{User.getInstance().getData()?.userName}</MDBTypography>
+                                <MDBTypography tag="h5" style={{ marginTop: '15px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{User.getInstance().getData()?.userName}</MDBTypography>
                             </div>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
-                                <MDBTypography tag="h5" style={{ marginTop: '15px' }}>{User.getInstance().getData()?.firstName}</MDBTypography>
+                                <MDBTypography tag="h5" style={{ marginTop: '15px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{User.getInstance().getData()?.firstName}</MDBTypography>
                             </div>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>
-                                <MDBTypography tag="h5" style={{ marginTop: '15px' }}>{User.getInstance().getData()?.lastName}</MDBTypography>
+                                <MDBTypography tag="h5" style={{ marginTop: '15px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{User.getInstance().getData()?.lastName}</MDBTypography>
                             </div>
                         </MDBCardBody>
                     </div>
