@@ -6,16 +6,28 @@ import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import { PayloadDto } from './dto/payload.dto';
+
 
 @Injectable()
 export class AuthService {
     constructor(
         private prisma: PrismaService,
-        private jwt: JwtService,
+        private jwtService: JwtService,
         private config: ConfigService) { }
 
+
+    async login(user: any/*, is2FAAuthenticated: boolean*/): Promise<any> {
+        const payload: PayloadDto = {
+            id: user.id,
+            // is2FAEnabled: user.twoFactorAuthStatus,
+            // is2FAAuthenticated,
+        };
+        console.log('payload: ', payload);
+        return this.jwtService.sign(payload);
+    }
+
     async signup(dto: AuthDto) {
-        console.log(dto)
 
         // Set default profile pic
         const profilePictureUrl = '/images/logo.png';
@@ -31,7 +43,7 @@ export class AuthService {
                     gamesPlayed: 0,
                     gamesWon: 0,
                     userPoints: 0,
-                    userLevel: 1.4,
+                    userLevel: 1.4, // a changer
                 },
             });
             console.log(this.signToken(user.id, user.email));
@@ -70,23 +82,32 @@ export class AuthService {
 
     async signToken(
         userId: number,
-        email: string): Promise<{ accessToken: string }> {
-        const payload = {
-            sub: userId,
-            email
-        };
-        const secret = this.config.get('JWT_SECRET');
+        email: string): Promise< any > {
+        // const payload = {
+        //     sub: userId,
+        //     email
+        // };
+        // const secret = this.config.get('JWT_SECRET');
 
-        const token = await this.jwt.signAsync(
-            payload,
-            {
-                expiresIn: '30m',
-                secret: secret,
-            },
-        );
-        console.log(token);
-        return {
-            accessToken: token,
+        const payload: PayloadDto = {
+            id: userId,
+            // is2FAEnabled: user.twoFactorAuthStatus,
+            // is2FAAuthenticated,
         };
+        console.log('payload: ', payload);
+        return {
+                accessToken: this.jwtService.sign(payload) }
+
+        // const token = await this.jwtService.signAsync(
+        //     payload,
+        //     {
+        //         expiresIn: '30m',
+        //         secret: secret,
+        //     },
+        // );
+        // console.log(token);
+        // return {
+        //     accessToken: token,
+        // };
     }
 }

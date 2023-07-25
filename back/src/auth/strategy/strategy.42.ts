@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-42';
-import { UserService } from '../../../database/service/user.service'
+import { UserService } from 'src/user/user.service';
 import { AuthService } from '../auth.service';
 
 @Injectable()
@@ -22,10 +22,11 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42')
 		console.log('before findOrCreateUserOAuth');
 		const user = await this.userService.findOrCreateUserOAuth({
 			username: profile._json.login,
-			name: profile._json.first_name,
-			surname: profile._json.last_name,
+			firstName: profile._json.first_name,
+			lastName: profile._json.last_name,
 			email: profile._json.email,
 			profilePicture: profile._json.image.link,
+			hash: '',
 		});
 		console.log('after findOrCreateUserOAuth');
 		return user ;

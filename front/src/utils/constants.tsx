@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3333'
+const API_URL = 'http://localhost:3000'
 
 export const API_ROUTES = {
     SIGN_UP: `${API_URL}/auth/signup`,

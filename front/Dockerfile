@@ -1,22 +1,16 @@
 FROM node:lts
 
-<<<<<<< HEAD
-EXPOSE 3000
+EXPOSE 4000
 
-RUN apt-get update && npm install
+RUN apt-get update
 
 # RUN npm install
 
 WORKDIR /workspace/front
 
+COPY package*.json ./
+
+RUN npm install
 
 
-=======
-EXPOSE 3000 4000
-
-RUN apt-get update
-
-WORKDIR /workspace/front
-
->>>>>>> Api42
 ENTRYPOINT ["npm", "start"]

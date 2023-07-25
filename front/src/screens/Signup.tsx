@@ -39,6 +39,17 @@ export const Signup = () => {
         }
     }, [success]);
 
+    function RequestURI() {
+        let url = 'http://localhost:3000/auth/42/login';
+        document.location = (url) // 
+    }
+
+    function RequestURIGoogle() {
+        let url = 'http://localhost:3000/auth/google/login';
+        document.location = (url) // 
+    }
+
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         console.log(email, password);
@@ -140,7 +151,12 @@ export const Signup = () => {
                                     Sign in.
                                 </Link>
                             </p>
+                            <div>
+                            <button className="text-white" onClick={RequestURI}>OAuth42</button>
+                            <button className="text-white" onClick={RequestURIGoogle}>OAuthGoogle</button>
                         </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>

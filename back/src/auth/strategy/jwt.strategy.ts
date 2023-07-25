@@ -7,17 +7,21 @@ import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt',) {
-    constructor(config: ConfigService, private prisma: PrismaService) {
+    constructor(configService: ConfigService, private prismaService: PrismaService) {
         super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: config.get('JWT_SECRET'),
+            jwtFromRequest: ExtractJwt.fromExtractors([
+				(req) => {
+				  return req.cookies?.access_token;
+				},
+			  ]),
+            secretOrKey: process.env.jwtSecret,
         });
     }
 
     async validate(payload: { sub: number, email: string }) {
 
         console.log("Validate:", payload);
-        const user = await this.prisma.user.findUnique({
+        const user = await this.prismaService.user.findUnique({
             where: {
                 id: payload.sub,
                 email: payload.email,
@@ -27,6 +31,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt',) {
         if (user)
             delete user.hash;
 
+        return user;
+    }
+
+    async validate_Cousin(payload: {id: number}) {
+		console.log('payload: ', payload);
+		console.log('payload.sub: ', payload.id);
+        const user = await this.prismaService.user.findUnique({where: {id: payload.id}});
+		console.log('user: ', user);
         return user;
     }
 }

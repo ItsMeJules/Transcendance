@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { Profile , Strategy } from 'passport-google-oauth20';
-import { UserService } from '../../../database/service/user.service';
+import { UserService } from 'src/user/user.service';
 import { AuthService } from '../auth.service';
 import { Injectable } from '@nestjs/common';
 
@@ -14,7 +14,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 		super({
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-			callbackURL: 'http://localhost:3000/api/auth/google/redirect',
+			callbackURL: 'http://localhost:3000/auth/google/redirect',
 			scope: ['profile', 'email'],
 		});
 	}
@@ -25,10 +25,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 		console.log('profile : ', profile);
 		const user = await this.userService.findOrCreateUserOAuth({
 			username: profile._json.name,
-			name: profile._json.given_name,
-			surname: profile._json.family_name,
+			firstName: profile._json.given_name,
+			lastName: profile._json.family_name,
 			email: profile._json.email,
 			profilePicture: profile._json.picture,
+			hash: '',
 		});
 		return user ;
 	}	
