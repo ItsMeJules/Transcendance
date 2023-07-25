@@ -11,12 +11,12 @@ datasource db {
 }
 
 model User {
-	id              Int @id @default(autoincrement())
+	id              Int @id @unique @default(autoincrement())
 	username        String @unique
-	name			String
-	surname			String
+	name			String?
+	surname			String?
 	email           String @unique
-	profilePicture	String
+	profilePicture	String?
 
 	friends         User[] @relation("friends")
 	friendsRelation User[] @relation("friends")

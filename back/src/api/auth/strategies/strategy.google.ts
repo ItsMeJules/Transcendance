@@ -7,8 +7,10 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
-	constructor(readonly userService: UserService,
+	constructor(
+		readonly userService: UserService,
 		readonly authService: AuthService) {
+		console.log('debugstrategygoogle');
 		super({
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,

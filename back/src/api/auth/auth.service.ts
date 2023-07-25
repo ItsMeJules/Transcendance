@@ -17,19 +17,21 @@ export class AuthService {
         // is2FAEnabled: user.twoFactorAuthStatus,
         // is2FAAuthenticated,
       };
+	  console.log('payload: ', payload);
       return this.jwtService.sign(payload);
   }
 
-  public async getUserfromAuthenticationToken(token: string) {
-    if (!token) return;
-    const payload: any = this.jwtService.verify(token, {
-      secret: process.env.jwtSecret
-    });
-    if (payload.id){
-      const userReturned = await this.userService.findOneById(payload.id);
-      console.log('userReturned: ', userReturned);
-      return userReturned;
-    }
-  }
+//   public async getUserfromAuthenticationToken(token: string) {
+// 	console.log('WOWOWOWOWOW');
+//     if (!token) return;
+//     const payload: any = this.jwtService.verify(token, {
+//       secret: process.env.jwtSecret
+//     });
+//     if (payload.id){
+//       const userReturned = await this.userService.findOneById(payload.id);
+//       console.log('userReturned: ', userReturned);
+//       return userReturned;
+//     }
+//   }
 
 }

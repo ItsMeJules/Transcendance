@@ -2,10 +2,10 @@
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "username" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "surname" TEXT NOT NULL,
+    "name" TEXT,
+    "surname" TEXT,
     "email" TEXT NOT NULL,
-    "profilePicture" TEXT NOT NULL,
+    "profilePicture" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -15,6 +15,9 @@ CREATE TABLE "_friends" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
