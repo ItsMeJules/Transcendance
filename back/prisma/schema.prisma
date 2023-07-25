@@ -22,7 +22,7 @@ model User {
 
   firstName String?
   lastName  String?
-  userName  String?
+  userName  String? @unique
 
   profilePicture String?
 
