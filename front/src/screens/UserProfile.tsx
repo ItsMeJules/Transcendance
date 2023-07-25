@@ -220,15 +220,12 @@ export const UserProfile: React.FC = () => {
                             </MDBCardText>
                         </div>
 
-
-
-
                         <div className="justify-center" style={{ width: '100%' }}>
                             
                             <div className="progress-container">
 
                                 <div 
-                                className="animated-gradient"
+                                className="progress-bar"
                                 id="progress-bar"
                                 style={{height:'28px'}}></div>
                             </div>
@@ -238,10 +235,6 @@ export const UserProfile: React.FC = () => {
                             </MDBCardText>
 
                         </div>
-
-
-
-
 
                     </div>
                 </MDBCard>

@@ -1,59 +1,16 @@
- 
-  .progress-bar-container {
-  width: 100%;
-  border-width: 2px;
-  border-color: black;
+.progress-bar {
+  height: 24px;
+  width:  360px;
   border-radius: 10px;
-  overflow: hidden;
+  background-color: lightblue;
+  margin: 50px;
 }
 
-.progress-container {
-    width: 100%;
-    position: relative;
-  }
-
-  .animated-gradient {
-    height: 20px; /* Set the height of your progress bar as needed */
-    background: linear-gradient(to right, rgb(255, 241, 113) 0%, rgb(255, 181, 44) 50%, rgb(140, 255, 74) 100%);
-    width: 100%; /* Set the width to 100% for 100% completion */
-    background-size: 200% 100%;
-    background-position: 0 100%;
-    border-width: 2px;
-    border-color: black;
-    border-radius: 10px;
-  }
-  
-  .animated-gradient::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%; /* Set the width to 100% for 100% completion */
-    height: 100%;
-    background: linear-gradient(to right, rgb(255, 241, 113) 0%, rgb(255, 181, 44) 50%, rgb(140, 255, 74) 100%);
-    background-size: 200% 100%;
-    background-position: 0 100%;
-    border-radius: 10px 0 0 10px;
-  }
-  
-  .animated-gradient::after {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 0; /* Set the width to 0 for 0% completion */
-    height: 100%;
-    background: linear-gradient(to right, rgb(255, 181, 44) 0%, rgb(140, 255, 74) 100%);
-    border-radius: 0 10px 10px 0;
-  }
-  
-  @keyframes gradient { 
-    0%   { background-position: 0 0; }
-    100% { background-position: -200% 0; }
-  }
-/* 
-  animation: gradient 0s infinite;
-  animation-fill-mode: forwards;
-  animation-timing-function: linear; */
+.progress-bar > div {
+   width: 0%;
+   height: 100%;
+   border-radius: 10px;
+   background-image: linear-gradient(to right, lightskyblue, blue);
+   background-size: 360px 100%;
+   transition: width 200ms;
+}

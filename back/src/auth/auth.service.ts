@@ -16,7 +16,7 @@ export class AuthService {
 
     async signup(dto: AuthDto) {
         console.log(dto)
-        
+
         // Set default profile pic
         const profilePictureUrl = '/images/logo.png';
         const absoluteUrl = this.config.get('API_BASE_URL') + `${profilePictureUrl}`;
@@ -84,7 +84,7 @@ export class AuthService {
                 secret: secret,
             },
         );
-            console.log(token);
+        console.log(token);
         return {
             accessToken: token,
         };
