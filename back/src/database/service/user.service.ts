@@ -21,7 +21,7 @@ export class UserService {
 		return this.prismaService.user.findUnique({where: {email}})
 	}
 
-	async findOrCreateUserGoogle(data: Prisma.UserCreateInput): Promise<User> {
+	async findOrCreateUserOAuth(data: Prisma.UserCreateInput): Promise<User> {
 		let user: User = await this.isEmailTaken(data.email);
 		if (user) { return user }
 

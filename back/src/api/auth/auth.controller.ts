@@ -5,21 +5,44 @@ import { GoogleAuthGuard } from './guards/guard.google';
 import { UserService } from '../../database/service/user.service';
 import { AuthService } from './auth.service';
 import { JwtGuard } from './guards/guard.jwt';
+import { FortyTwoAuthGuard } from './guards/guard.42';
+import { get } from 'http';
 
 @Controller('api/auth')
 export class AuthController {
 	constructor(private readonly userService: UserService,
 				private readonly authService: AuthService) {}
+				
+	@Get('42/login')
+	@UseGuards(FortyTwoAuthGuard)
+	handle42Login() {
+		console.log('42 Authentification');
+		return { msg: '42 Authentification'};
+	}
+	
+	@Get('42/redirect')
+	@UseGuards(FortyTwoAuthGuard)
+	async handle42Redirect(@Req() req, @Res({ passthrough: true }) res: Response) { //@Res? Passthrough?
+	  const access_token = await this.authService.login(req.user /*, false*/);
+	  console.log('token going to cookie: ', access_token);
+	  res.cookie('access_token', access_token, {
+		httpOnly: true,
+		maxAge: 60 * 60 * 24 * 10000,
+		sameSite: 'lax',
+	  });
+	  res.redirect('http://localhost:3000/api/auth/test123');
+	}
+				
 	@Get('google/login')
 	@UseGuards(GoogleAuthGuard)
-	handleLogin() {
+	handleGoogleLogin() {
 		console.log('google Authentification');
 		return { msg: 'google Authentification'};
 	}
 
 	@Get('google/redirect')
 	@UseGuards(GoogleAuthGuard)
-	async handleRedirect(@Req() req, @Res({ passthrough: true }) res: Response) {
+	async handleGoogleRedirect(@Req() req, @Res({ passthrough: true }) res: Response) {
 	  // Le décorateur @Get indique que cette méthode gère les requêtes HTTP GET pour l'URL "google/redirect".
 	  // Le décorateur @UseGuards(GoogleAuthGuard) indique que le "GoogleAuthGuard" sera utilisé pour authentifier cette route.
 	

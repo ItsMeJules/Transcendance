@@ -10,20 +10,22 @@ import { PrismaService } from 'src/database/service/prisma.service';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/strategy.jwt';
 import { PassportModule } from '@nestjs/passport';
+import { FortyTwoStrategy } from './strategies/strategy.42';
 
 @Module({
 	imports: [PrismaModule,
 		UserModule,
-		PassportModule, // ADD 2 lines from vscode?
+		PassportModule,
 		JwtModule.register({
 		secret: process.env.jwtSecret,
-		signOptions: { expiresIn: '1d' },
+		signOptions: { expiresIn: '1d' }, // ?
 	  }),],
 	controllers: [AuthController],
 	providers: [GoogleStrategy, 
+				FortyTwoStrategy,
 				UserService, 
 				PrismaService,
 				AuthService,
-				JwtStrategy],
+				JwtStrategy], // why no guards?
 })
 export class AuthModule {}

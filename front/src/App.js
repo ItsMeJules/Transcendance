@@ -11,7 +11,7 @@ function RequestURI() {
 		response_type: "code"
 	}
 	// Add scope when i know what it means
-	let url = 'http://localhost:3000/api/callback';
+	let url = 'http://localhost:3000/api/auth/42/login';
 	console.log(url);
 	document.location = (url) // 
 }
