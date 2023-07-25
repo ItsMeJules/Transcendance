@@ -12,27 +12,27 @@ datasource db {
 }
 
 model User {
-   // passer en unique? qu est ce qu il se passe si qqn ssaie de le modif?
-  id        Int      @id @default(autoincrement())
+  id Int @id @unique @default(autoincrement())
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email String @unique
-  hash  String
-
-  firstName String?
-  lastName  String?
-  userName  String? @unique
-
+  username       String? @unique
+  firstName      String?
+  lastName       String?
+  email          String  @unique
   profilePicture String?
+  hash           String
 
   gamesPlayed Int?
-  gamesWon Int?
+  gamesWon    Int?
+  userPoints  Int?
+  userLevel   Decimal?
 
-  userPoints Int?
-  userLevel Decimal?
-  
-  Bookmark  Bookmark[]
+  friends         User[] @relation("friends")
+  friendsRelation User[] @relation("friends")
+
+  Bookmark Bookmark[]
 
   @@map("users")
 }

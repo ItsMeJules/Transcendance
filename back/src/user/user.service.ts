@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import { EditUserDto } from './dto';
-import { User } from '@prisma/client';
+import { User, Prisma } from '@prisma/client';
 import { Multer, multer } from 'multer';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { URL } from 'url';
+import { PrismaService } from '../prisma/prisma.service';
+
 
 @Injectable()
 export class UserService {
@@ -65,4 +66,33 @@ export class UserService {
             } catch (err: any) { }
         }
     }
+
+    async createUser(data : Prisma.UserCreateInput): Promise<User> {
+		if (!!(await this.isUserNameTaken(data.username)))
+			return null;
+		return this.prisma.user.create({ data });
+	}
+
+	async isUserNameTaken(username: string): Promise<User> {
+		return this.prisma.user.findUnique({where: {username}})
+	}
+
+	async isEmailTaken(email: string): Promise<User> {
+		return this.prisma.user.findUnique({where: {email}})
+	}
+
+	async findOrCreateUserOAuth(data: Prisma.UserCreateInput): Promise<User> {
+		let user: User = await this.isEmailTaken(data.email);
+		if (user) { return user }
+
+		const createdUser = await this.prisma.user.create({ data });
+
+		return createdUser;
+	}
+
+	async findOneById(id: number): Promise<User | null> {
+		const user: User | null= await this.prisma.user.findUnique({ where: { id } });
+		console.log('coucou');
+		return user;
+	}
 }

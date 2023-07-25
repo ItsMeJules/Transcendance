@@ -4,7 +4,7 @@ import { AuthDto } from './auth/dto';
 @Injectable()
 export class AppService {
   getHello(): string {
-    return 'Hello World!';
+    return 'reqqer';
   }
 
   async test(dto: AuthDto) {

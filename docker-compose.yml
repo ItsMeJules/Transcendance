@@ -7,7 +7,7 @@ services:
     env_file:
     - ./front/.env
     ports:
-      - 3000:3000
+      - 4000:4000
     volumes:
       - ./front:/workspace/front
     networks:
