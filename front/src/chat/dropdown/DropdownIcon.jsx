@@ -10,7 +10,7 @@ export default class DropdownIcon extends React.Component {
 
 	render() {
 		return (
-			<div className="dropdown-icon">
+			<div className="dropdown-icon" style={{borderTopRightRadius: this.props.chatToggled ? "0px" : "5px",}}>
 
 				{this.props.chatToggled &&
 						<input className="dropdown-input" placeholder="Ecrivez un message.." />
