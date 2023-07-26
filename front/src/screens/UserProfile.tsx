@@ -9,6 +9,8 @@ import { UserData } from "../services/user";
 import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import useLogout from "../hooks/useLogout";
+import Cookies from 'js-cookie';
+
 
 export const UserProfile: React.FC = () => {
     const [userData, setUserData] = useState<UserData | null>(null);
@@ -17,15 +19,12 @@ export const UserProfile: React.FC = () => {
     const logout = useLogout();
     const [value, setValue] = useState<number | null>(null);
 
-
-
-
     const fetchUserProfile = async () => {
         try {
             const response = await axios.get(API_ROUTES.USER_PROFILE,
-            {
-                withCredentials: true
-            });
+                {
+                    withCredentials: true
+                });
             const userData = response.data;
             localStorage.setItem('userData', JSON.stringify(userData));
             setUserData(userData);
@@ -66,17 +65,25 @@ export const UserProfile: React.FC = () => {
 
 
     const handleLogout = async () => {
-        console.log("OK LOLO");
         try {
-            await axios.get(API_ROUTES.LOG_OUT, {
-              withCredentials: true,
+            // Make a POST request to the logout endpoint
+            const response = await axios.post(API_ROUTES.LOG_OUT, null, {
+                withCredentials: true, // Send cookies with the request
             });
-            // window.location.href = APP_ROUTES.HOME;
-            // Handle the response if needed
-          } catch (err: any) {
-            console.log("Error:", err.response.data.message);
-          }
-    };
+
+            if (response.status === 201) {
+                console.log("LOGOUT OK");
+                // Logout successful, do any additional cleanup or redirection
+                window.location.href = APP_ROUTES.HOME;
+            } else {
+                // Handle logout failure or error if needed
+                console.error('Logout failed:', response.status);
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+
+    }
 
     const [screenSize, setScreenSize] = useState(getCurrentDimension());
 
@@ -92,6 +99,7 @@ export const UserProfile: React.FC = () => {
     }, [screenSize])
 
     return (
+
         <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
             <MDBContainer
                 className="py-5"
@@ -103,6 +111,7 @@ export const UserProfile: React.FC = () => {
                         <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT} style={{ padding: '0px' }}>
                             <MDBCardImage src='/images/edit_profile.png' fluid style={{ width: '30px' }} />
                         </Link>
+
                         <button title="Log out" onClick={handleLogout}>
                             <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
                         </button>
@@ -230,13 +239,13 @@ export const UserProfile: React.FC = () => {
                         </div>
 
                         <div className="justify-center" style={{ width: '100%' }}>
-                            
+
                             <div className="progress-container">
 
-                                <div 
-                                className="progress-bar"
-                                id="progress-bar"
-                                style={{height:'28px'}}></div>
+                                <div
+                                    className="progress-bar"
+                                    id="progress-bar"
+                                    style={{ height: '28px' }}></div>
                             </div>
 
                             <MDBCardText className="small text-muted mb-0">

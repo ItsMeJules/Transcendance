@@ -66,14 +66,9 @@ export class UserController {
     // }
 
 
-    @Get('logout')
-    async logout(@Res() res: Response) {
-        console.log("LOLOLO");
-        res.cookie('access_token', '', {
-            httpOnly: true,
-            maxAge: 0,
-            sameSite: 'lax',
-        });
-        // res.redirect('http://localhost:4000');
-    }
+    @Post('logout')
+    async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
+        res.clearCookie('access_token');
+        res.json({ message: 'Logout successful' });
+    }   
 }

@@ -8,8 +8,7 @@ const useLogout = () => {
       const response = await axios.get(API_ROUTES.LOG_OUT, {
         withCredentials: true,
       });
-      // window.location.href = APP_ROUTES.HOME;
-      // Handle the response if needed
+      window.location.href = APP_ROUTES.HOME;
     } catch (err: any) {
       console.log("Error:", err.response.data.message);
     }
