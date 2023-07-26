@@ -63,7 +63,11 @@ export const UserProfileEdit: React.FC = () => {
             setUsername(User.getInstance().getUsername());
             setFirstName(User.getInstance().getFirstName());
             setLastName(User.getInstance().getLastName());
+            
             setProfilePic(User.getInstance().getProfilePicture());
+            setProfilePic(User.getInstance().getProfilePicture());
+
+
         } catch (err: any) {
             console.log("Error:" + err.response.data.message);
         }
@@ -109,19 +113,8 @@ export const UserProfileEdit: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        const emailToSubmit = email || initialEmail;
 
-        // console.log(userId, emailToSubmit, userName, firstName, lastName);
-        validateEmail(emailToSubmit);
-        if (emailError) {
-            // If email is invalid, don't proceed with form submission
-            console.log("email error");
-            return;
-        }
         const dataToSend: any = {};
-        if (emailToSubmit) {
-            dataToSend.email = emailToSubmit;
-        }
         if (username) {
             dataToSend.username = username;
         }
@@ -133,8 +126,6 @@ export const UserProfileEdit: React.FC = () => {
         }
 
         try {
-            // const data = JSON.stringify({ email: emailToSubmit });
-
             console.log("1 dataToSend:", dataToSend);
 
             const response = await axios.patch(
@@ -152,16 +143,6 @@ export const UserProfileEdit: React.FC = () => {
 
         } catch (err: any) {
             console.log(err.response.data.message);
-            // if (!err?.response) {
-            //     setErrMsg('No Server Response');
-            // } else if (err.response?.status === 400) {
-            //     setErrMsg('Missing email or password');
-            // } else if (err.response?.status === 401) {
-            //     setErrMsg('Unauthorized');
-            // } else {
-            //     setErrMsg('Login failed');
-            // }
-            // errRef.current?.focus();
         }
     }
 
@@ -185,6 +166,9 @@ export const UserProfileEdit: React.FC = () => {
         }
     };
 
+
+
+
     return (
         <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
             <MDBContainer className="py-5" style={{ width: isSmallScreen ? '90%' : '60%', maxWidth: '500px', minWidth: '400px' }}>
@@ -201,12 +185,12 @@ export const UserProfileEdit: React.FC = () => {
                         {profilePic ? (
                             <div className="profile-picture-container">
 
-                                <img src={profilePic} alt="" />
+                                <img src={profilePic} alt={profilePic} />
 
                             </div>
                         ) : (
                             <div className="empty-profile-picture-container">
-                                <span style={{ fontSize: '1rem' }}>LOOOOOOOL</span>
+                                <span style={{ fontSize: '1rem' }}>{profilePic}</span>
                             </div>
                         )}
                     </div>
@@ -298,7 +282,6 @@ export const UserProfileEdit: React.FC = () => {
 
                         </MDBCardBody>
                     </div>
-
 
                     <div className="d-flex justify-content-between text-center mt-5 mb-2">
                     </div>

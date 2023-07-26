@@ -57,40 +57,43 @@ export class UserService {
         });
 
         // Delete the previous profile picture from the file system
-        const urlObj = new URL(oldProfilePictureUrl);
-        const pathToDelete = process.cwd() + this.config.get('PUBLIC_FOLDER') + urlObj.pathname;
-        if (pathToDelete && urlObj.pathname !== this.config.get('IMAGES_FOLDER') + this.config.get('DEFAULT_PROFILE_PICTURE')) {
-            try {
+        try {
+            const urlObj = new URL(oldProfilePictureUrl);
+            const pathToDelete = process.cwd() + this.config.get('PUBLIC_FOLDER') + urlObj.pathname;
+            if (pathToDelete && urlObj.pathname !== this.config.get('IMAGES_FOLDER') + this.config.get('DEFAULT_PROFILE_PICTURE')) {
                 fs.unlinkSync(pathToDelete);
-            } catch (err: any) { }
+            }
+        } catch (err: any) {
+
         }
+
     }
 
-    async createUser(data : Prisma.UserCreateInput): Promise<User> {
-		if (!!(await this.isUserNameTaken(data.username)))
-			return null;
-		return this.prisma.user.create({ data });
-	}
+    async createUser(data: Prisma.UserCreateInput): Promise<User> {
+        if (!!(await this.isUserNameTaken(data.username)))
+            return null;
+        return this.prisma.user.create({ data });
+    }
 
-	async isUserNameTaken(username: string): Promise<User> {
-		return this.prisma.user.findUnique({where: {username}})
-	}
+    async isUserNameTaken(username: string): Promise<User> {
+        return this.prisma.user.findUnique({ where: { username } })
+    }
 
-	async isEmailTaken(email: string): Promise<User> {
-		return this.prisma.user.findUnique({where: {email}})
-	}
+    async isEmailTaken(email: string): Promise<User> {
+        return this.prisma.user.findUnique({ where: { email } })
+    }
 
-	async findOrCreateUserOAuth(data: Prisma.UserCreateInput): Promise<User> {
-		let user: User = await this.isEmailTaken(data.email);
-		if (user) { return user }
+    async findOrCreateUserOAuth(data: Prisma.UserCreateInput): Promise<User> {
+        let user: User = await this.isEmailTaken(data.email);
+        if (user) { return user }
 
-		const createdUser = await this.prisma.user.create({ data });
+        const createdUser = await this.prisma.user.create({ data });
 
-		return createdUser;
-	}
+        return createdUser;
+    }
 
-	async findOneById(id: number): Promise<User | null> {
-		const user: User | null= await this.prisma.user.findUnique({ where: { id } });
-		return user;
-	}
+    async findOneById(id: number): Promise<User | null> {
+        const user: User | null = await this.prisma.user.findUnique({ where: { id } });
+        return user;
+    }
 }

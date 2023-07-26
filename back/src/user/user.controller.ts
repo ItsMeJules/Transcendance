@@ -47,7 +47,6 @@ export class UserController {
             fileFilter: imageFileFilter,
         })
     )
-
     async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
 
         return this.userService.uploadProfilePic(user, file);
