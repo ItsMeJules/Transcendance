@@ -3,7 +3,7 @@ import React from "react";
 import "./ChatDropdown.scss"
 
 import ChatContainer from "./ChatContainer";
-import DropdownIcon from "./DropdownIcon";
+import ChatDropdownIcon from "./ChatDropdownIcon";
 
 export default class ChatDropdown extends React.Component {
 
@@ -11,7 +11,8 @@ export default class ChatDropdown extends React.Component {
 		super(props)
 
 		this.state = {
-			chatToggled: false
+			chatToggled: false,
+			chatOpeningFinished: false,
 		}
 	}
 
@@ -19,18 +20,30 @@ export default class ChatDropdown extends React.Component {
 		this.setState((prevState) => ({chatToggled: !prevState.chatToggled}))
 	}
 
+	transitionEnd(e) {
+		if (e.target !== e.currentTarget)
+			return
+			
+		this.setState((prevState) => ({chatOpeningFinished: !prevState.chatOpeningFinished}))
+	}
+
 	render() {
-		const chatToggled = this.state.chatToggled;
+		const {chatToggled, chatOpeningFinished } = this.state
 
 		return (
 			<div className="chat">
 
-				<DropdownIcon
+				<ChatDropdownIcon
 					onClick={this.toggleChat.bind(this)}
 					chatToggled={chatToggled}
-					name="Chat"	
+					chatOpeningFinished={chatOpeningFinished}
+					name="Chat"
 				/>
-				<ChatContainer chatToggled={chatToggled}/>
+				
+				<ChatContainer
+					chatToggled={chatToggled}
+					transitionEnd={this.transitionEnd.bind(this)}
+				/>
 
 			</div>
 		)

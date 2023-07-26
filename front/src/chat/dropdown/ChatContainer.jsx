@@ -16,7 +16,7 @@ export default class ChatContainer extends React.Component {
 		super(props)
 
 		this.state = {
-			messages: []
+			messages: [],
 		}
 	}
 
@@ -31,8 +31,13 @@ export default class ChatContainer extends React.Component {
 		}
 
 		return (
-			<div className="chat-container" style={style}>
+			<div className="chat-container"
+				style={style}
+				onTransitionEnd={(e) => this.props.transitionEnd(e)}
+			>
+				
 				<ChatMessage messages={this.state.messages}/>
+
 			</div>
 		)
 	}
