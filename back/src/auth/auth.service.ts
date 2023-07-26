@@ -85,7 +85,7 @@ export class AuthService {
 
 
         const payload = {
-            sub: userId,
+            id: userId,
             email
         };
         const secret = process.env.jwtSecret;
