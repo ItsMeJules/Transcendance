@@ -17,22 +17,16 @@ export class AuthService {
         private config: ConfigService) { }
 
 
-    async login(user: any/*, is2FAAuthenticated: boolean*/): Promise<any> {
+    async login(user: any): Promise<any> {
         const payload: PayloadDto = {
             id: user.id,
-            // is2FAEnabled: user.twoFactorAuthStatus,
-            // is2FAAuthenticated,
         };
-        console.log('payload: ', payload);
         return this.jwtService.sign(payload);
     }
 
     async signup(dto: AuthDto) {
-
-        // Set default profile pic
         const profilePictureUrl = '/images/logo.png';
         const absoluteUrl = this.config.get('API_BASE_URL') + `${profilePictureUrl}`;
-        // Hash password
         const hash = await argon.hash(dto.password);
         try {
             const user = await this.prisma.user.create({
@@ -43,10 +37,10 @@ export class AuthService {
                     gamesPlayed: 0,
                     gamesWon: 0,
                     userPoints: 0,
-                    userLevel: 1.4, // a changer
+                    userLevel: 1.4,
                 },
             });
-            console.log(this.signToken(user.id, user.email));
+            const access_token = this.signToken(user.id, user.email);
             return this.signToken(user.id, user.email);
         }
         catch (error) {
@@ -67,13 +61,10 @@ export class AuthService {
             },
         });
         if (!user) throw new ForbiddenException('Credentials incorrect',);
-
-        // Compare password
         const pwMatches = await argon.verify(
             user.hash,
             dto.password,
         );
-        // If password does not match throw exception
         if (!pwMatches) throw new ForbiddenException(
             'Credentials incorrect',
         );
@@ -82,32 +73,37 @@ export class AuthService {
 
     async signToken(
         userId: number,
-        email: string): Promise< any > {
-        // const payload = {
-        //     sub: userId,
-        //     email
+        email: string): Promise<string> {
+        
+        
+        // const payload: PayloadDto = {
+        //     id: userId,
         // };
-        // const secret = this.config.get('JWT_SECRET');
-
-        const payload: PayloadDto = {
-            id: userId,
-            // is2FAEnabled: user.twoFactorAuthStatus,
-            // is2FAAuthenticated,
-        };
-        console.log('payload: ', payload);
-        return {
-                accessToken: this.jwtService.sign(payload) }
-
-        // const token = await this.jwtService.signAsync(
-        //     payload,
-        //     {
-        //         expiresIn: '30m',
-        //         secret: secret,
-        //     },
-        // );
-        // console.log(token);
         // return {
-        //     accessToken: token,
-        // };
+        //     accessToken: this.jwtService.sign(payload)
+        // }
+
+
+        const payload = {
+            sub: userId,
+            email
+        };
+        const secret = process.env.jwtSecret;
+
+        console.log('Secret:', process.env.jwtSecret);
+
+        const token = await this.jwtService.signAsync(
+            payload,
+            {
+                expiresIn: '30m',
+                secret: secret,
+            },
+        );
+        console.log("token:", token);
+        return token;
     }
+
+
+
+    
 }

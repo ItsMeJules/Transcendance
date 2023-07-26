@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Req, UseGuards, Post, UseInterceptors, UploadedFile, ConsoleLogger } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Req, UseGuards, Post, UseInterceptors, UploadedFile, ConsoleLogger, Res } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { Request } from 'express';
@@ -10,6 +10,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { Multer, multer, diskStorage } from 'multer';
 import { MulterModule } from '@nestjs/platform-express';
 import { editFileName, imageFileFilter } from './module';
+import { Response } from 'express';
 
 
 @UseGuards(JwtGuard)
@@ -19,7 +20,7 @@ export class UserController {
 
     @Get('me')
     getMe(@GetUser() user: User) {
-
+        // console.log('USERRRRRRRRRR:', user);
         return user;
     }
 
@@ -46,6 +47,7 @@ export class UserController {
             fileFilter: imageFileFilter,
         })
     )
+
     async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
 
         return this.userService.uploadProfilePic(user, file);
@@ -62,4 +64,16 @@ export class UserController {
     //     console.log(absoluteUrl);
     //     return absoluteUrl;
     // }
+
+
+    @Get('logout')
+    async logout(@Res() res: Response) {
+        console.log("LOLOLO");
+        res.cookie('access_token', '', {
+            httpOnly: true,
+            maxAge: 0,
+            sameSite: 'lax',
+        });
+        // res.redirect('http://localhost:4000');
+    }
 }

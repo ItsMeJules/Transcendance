@@ -10,8 +10,16 @@ export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post('signup')
-    signup(@Body() dto: AuthDto) {
-        return this.authService.signup(dto)
+    async handleSignup(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response) {
+        const access_token = await this.authService.signup(dto);
+        console.log("Access token befor cookie res:", access_token);
+
+        res.cookie('access_token', access_token, {
+            httpOnly: true,
+            maxAge: 60 * 60 * 24 * 10000,
+            sameSite: 'lax',
+        });
+        return { message: 'Signup successful' };
     }
 
     @HttpCode(HttpStatus.OK)
@@ -23,7 +31,7 @@ export class AuthController {
     @Get('42/login')
     @UseGuards(FortyTwoAuthGuard)
     handle42Login() {
-        console.log('42 Authentification');
+        // console.log('42 Authentification');
         return { msg: '42 Authentification' };
     }
 
@@ -31,7 +39,7 @@ export class AuthController {
     @UseGuards(FortyTwoAuthGuard)
     async handle42Redirect(@Req() req, @Res({ passthrough: true }) res: Response) { //@Res? Passthrough?
         const access_token = await this.authService.login(req.user /*, false*/);
-        console.log('token going to cookie: ', access_token);
+        // console.log('token going to cookie: ', access_token);
         res.cookie('access_token', access_token, {
             httpOnly: true,
             maxAge: 60 * 60 * 24 * 10000,
@@ -43,7 +51,7 @@ export class AuthController {
     @Get('google/login')
     @UseGuards(GoogleAuthGuard)
     handleGoogleLogin() {
-        console.log('google Authentification');
+        // console.log('google Authentification');
         return { msg: 'google Authentification' };
     }
 
@@ -58,7 +66,7 @@ export class AuthController {
         // Il sera stocké dans la propriété "user" de l'objet "req".
         // L'utilisateur authentifié est utilisé pour générer un access_token ci-dessous.
         const access_token = await this.authService.login(req.user /*, false*/);
-        console.log(access_token);
+        // console.log(access_token);
 
         // Définir un cookie nommé "access_token" sur la réponse "res".
         // Ce cookie contiendra l'access_token généré ci-dessus.
@@ -69,6 +77,8 @@ export class AuthController {
             maxAge: 60 * 60 * 24 * 10000,
             sameSite: 'lax',
         });
+        res.redirect('http://localhost:4000/profile/me');
+
 
         // Rediriger l'utilisateur vers l'URL "http://localhost:3000/auth/test123".
         // Cela signifie que lorsque l'utilisateur accède à cette route "google/redirect", il sera automatiquement redirigé vers "http://localhost:3000/auth/test123".
@@ -77,7 +87,7 @@ export class AuthController {
         // Notez que la méthode ne renvoie rien (void). Cela est courant pour les méthodes de gestion de routes dans NestJS.
         // Si vous décommentez "return (access_token);", cela ne renverra que l'access_token sans effectuer la redirection.
         // La redirection sera ignorée si vous renvoyez quelque chose de la méthode.
-        res.redirect('http://localhost:3000/auth/test123');
+        // res.redirect('http://localhost:3000/users/me');
         //   return (access_token);
     }
 
@@ -86,5 +96,7 @@ export class AuthController {
     async test123(@Res() res) {
         res.json('good');
     }
+
+    
 
 }

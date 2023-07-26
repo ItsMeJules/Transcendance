@@ -29,7 +29,7 @@ export const UserProfileEdit: React.FC = () => {
     const [email, setEmail] = useState('');
     const initialEmail = User.getInstance().getEmail();
     const [emailError, setEmailError] = useState('');
-    const [userName, setUserName] = useState(userUsername);
+    const [username, setUsername] = useState(userUsername);
     const [firstName, setFirstName] = useState(userFirstName);
     const [lastName, setLastName] = useState(userLastName);
     const [userData, setUserData] = useState<UserData | null>(null);
@@ -51,17 +51,16 @@ export const UserProfileEdit: React.FC = () => {
 
     const fetchUserProfile = async () => {
         try {
-            const response = await axios.get(API_ROUTES.USER_PROFILE, {
-                headers: {
-                    'Authorization': `Bearer ${User.getInstance().getAccessToken()}`
-                }
-            });
+            const response = await axios.get(API_ROUTES.USER_PROFILE,
+                {
+                    withCredentials: true
+                });
             const userData = response.data;
             localStorage.setItem('userData', JSON.stringify(userData));
             setUserData(userData);
             User.getInstance().setUserFromResponseData(userData);
             setEmail(User.getInstance().getEmail());
-            setUserName(User.getInstance().getUsername());
+            setUsername(User.getInstance().getUsername());
             setFirstName(User.getInstance().getFirstName());
             setLastName(User.getInstance().getLastName());
             setProfilePic(User.getInstance().getProfilePicture());
@@ -123,8 +122,8 @@ export const UserProfileEdit: React.FC = () => {
         if (emailToSubmit) {
             dataToSend.email = emailToSubmit;
         }
-        if (userName) {
-            dataToSend.userName = userName;
+        if (username) {
+            dataToSend.username = username;
         }
         if (firstName) {
             dataToSend.firstName = firstName;
@@ -142,9 +141,7 @@ export const UserProfileEdit: React.FC = () => {
                 API_ROUTES.USER_PROFILE_EDIT,
                 dataToSend,
                 {
-                    headers: {
-                        'Authorization': `Bearer ${User.getInstance().getAccessToken()}`
-                    }
+                    withCredentials: true
                 });
             const userData = response.data;
             localStorage.setItem('userData', JSON.stringify(userData));
@@ -175,11 +172,11 @@ export const UserProfileEdit: React.FC = () => {
             formData.append("profilePicture", imageFile);
             console.log("OKKKKKK")
             try {
-                await axios.post('http://localhost:3333/users/pf', formData, {
+                await axios.post('http://localhost:3000/users/pf', formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${User.getInstance().getAccessToken()}`,
                     },
+                    withCredentials: true, // Add this line to include the withCredentials option
                 });
                 fetchUserProfile();
             } catch (error) {
@@ -204,12 +201,12 @@ export const UserProfileEdit: React.FC = () => {
                         {profilePic ? (
                             <div className="profile-picture-container">
 
-                                <img src={profilePic} alt="Profile" />
+                                <img src={profilePic} alt="" />
 
                             </div>
                         ) : (
                             <div className="empty-profile-picture-container">
-                                <span style={{ fontSize: '1rem' }}>No profile picture</span>
+                                <span style={{ fontSize: '1rem' }}>LOOOOOOOL</span>
                             </div>
                         )}
                     </div>
@@ -263,11 +260,11 @@ export const UserProfileEdit: React.FC = () => {
                                         autoComplete="off"
                                         placeholder="Enter username"
                                         id="username"
-                                        value={userName}
+                                        value={username}
                                         className={`border ${isUsernameEmpty && !isInputFocused ? "placeholder-gray" : "placeholder-black"
                                             } input-field edit-form-label`}
                                         style={{ width: '100%', minWidth: '0px' }}
-                                        onChange={(e) => setUserName(e.target.value)} />
+                                        onChange={(e) => setUsername(e.target.value)} />
                                 </div>
 
                                 <div className="" style={{ height: '35px', minWidth: '0px', marginTop: '15px' }}>

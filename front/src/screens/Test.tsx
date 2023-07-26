@@ -13,7 +13,7 @@ export const Test = () => {
     const fetchProfilePicture = async () => {
         try {
             console.log("1:", User.getInstance().getAccessToken());
-            const response = await axios.get('http://localhost:3333/users/get-profile-picture', {
+            const response = await axios.get('http://localhost:3000/users/get-profile-picture', {
                 headers: {
                     'Authorization': `Bearer ${User.getInstance().getAccessToken()}`
                 }

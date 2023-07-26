@@ -8,7 +8,7 @@ export class AppService {
   }
 
   async test(dto: AuthDto) {
-    console.log(dto);
+    // console.log(dto);
   }
 
 }

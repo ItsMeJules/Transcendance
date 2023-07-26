@@ -46,7 +46,7 @@ export const Signup = () => {
 
     function RequestURIGoogle() {
         let url = 'http://localhost:3000/auth/google/login';
-        document.location = (url) // 
+        window.location.href = url; // Use window.location.href to trigger the redirect
     }
 
 
@@ -152,11 +152,11 @@ export const Signup = () => {
                                 </Link>
                             </p>
                             <div>
-                            <button className="text-white" onClick={RequestURI}>OAuth42</button>
-                            <button className="text-white" onClick={RequestURIGoogle}>OAuthGoogle</button>
+                                <button className="text-white" onClick={RequestURI}>OAuth42</button>
+                                <button className="text-white" onClick={RequestURIGoogle}>OAuthGoogle</button>
+                            </div>
                         </div>
-                        </div>
-                        
+
                     </div>
                 </div>
             </div>

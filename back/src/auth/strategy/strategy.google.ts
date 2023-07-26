@@ -23,8 +23,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 		console.log('accessToken : ', accessToken);
 		console.log('refreshToken : ', refreshToken);
 		console.log('profile : ', profile);
-		const user = await this.userService.findOrCreateUserOAuth({
-			username: profile._json.name,
+		const user = await this.userService.findOrCreateUserOAuth({ // protect with try catch
+			username: profile._json.name,	
 			firstName: profile._json.given_name,
 			lastName: profile._json.family_name,
 			email: profile._json.email,

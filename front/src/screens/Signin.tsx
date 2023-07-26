@@ -47,8 +47,8 @@ export const Signin = () => {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 })
-            // console.log(response);
-            User.getInstance().setAccessToken(response.data.accessToken);
+            // User.getInstance().setAccessToken(response.data.accessToken);
+            console.log(response);
             setEmail('');
             setPassword('');
             setSuccess(true);

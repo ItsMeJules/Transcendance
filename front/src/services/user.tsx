@@ -7,7 +7,7 @@ export interface UserData {
     email: string | null;
     firstName: string | null;
     lastName: string | null;
-    userName: string | null;
+    username: string | null;
     profilePicture: string | null;
     gamesPlayed: number | null;
     gamesWon: number | null;
@@ -24,7 +24,7 @@ class User {
     private email: string | null = null;
     private firstName: string | null = null;
     private lastName: string | null = null;
-    private userName: string | null = null;
+    private username: string | null = null;
     private profilePicture: string | null = null;
     private gamesPlayed: number | null = null;
     private gamesWon: number | null = null;
@@ -57,7 +57,7 @@ class User {
         this.email = data.email || null;
         this.firstName = data.firstName || null;
         this.lastName = data.lastName || null;
-        this.userName = data.userName || null;
+        this.username = data.username || null;
         this.profilePicture = data.profilePicture || null;
         this.gamesPlayed = data.gamesPlayed || null;
         this.gamesWon = data.gamesWon || null;
@@ -86,7 +86,7 @@ class User {
             email: this.email,
             firstName: this.firstName,
             lastName: this.lastName,
-            userName: this.userName,
+            username: this.username,
             profilePicture: this.profilePicture,
             gamesPlayed: this.gamesPlayed,
             gamesWon: this.gamesWon,
@@ -112,8 +112,8 @@ class User {
     }
 
     getUsername(): string {
-        if (this.userName) {
-            return this.userName;
+        if (this.username) {
+            return this.username;
         } else {
             return "";
         }

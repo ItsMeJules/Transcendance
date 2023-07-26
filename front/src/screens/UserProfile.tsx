@@ -22,10 +22,9 @@ export const UserProfile: React.FC = () => {
 
     const fetchUserProfile = async () => {
         try {
-            const response = await axios.get(API_ROUTES.USER_PROFILE, {
-                headers: {
-                    'Authorization': `Bearer ${User.getInstance().getAccessToken()}`
-                }
+            const response = await axios.get(API_ROUTES.USER_PROFILE,
+            {
+                withCredentials: true
             });
             const userData = response.data;
             localStorage.setItem('userData', JSON.stringify(userData));
@@ -55,10 +54,6 @@ export const UserProfile: React.FC = () => {
         //     const percentage = (1 / 10) * 100;
         //     progressBar.style.backgroundPosition = `${percentage}% 100%`;
         // }
-
-
-        
-
         fetchUserProfile();
     }, []);
 
@@ -68,6 +63,20 @@ export const UserProfile: React.FC = () => {
             height: window.innerHeight
         }
     }
+
+
+    const handleLogout = async () => {
+        console.log("OK LOLO");
+        try {
+            await axios.get(API_ROUTES.LOG_OUT, {
+              withCredentials: true,
+            });
+            // window.location.href = APP_ROUTES.HOME;
+            // Handle the response if needed
+          } catch (err: any) {
+            console.log("Error:", err.response.data.message);
+          }
+    };
 
     const [screenSize, setScreenSize] = useState(getCurrentDimension());
 
@@ -94,7 +103,7 @@ export const UserProfile: React.FC = () => {
                         <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT} style={{ padding: '0px' }}>
                             <MDBCardImage src='/images/edit_profile.png' fluid style={{ width: '30px' }} />
                         </Link>
-                        <button title="Log out" onClick={logout}>
+                        <button title="Log out" onClick={handleLogout}>
                             <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
                         </button>
                     </div>
@@ -155,8 +164,8 @@ export const UserProfile: React.FC = () => {
                                         textOverflow: 'ellipsis',
                                         whiteSpace: 'nowrap'
                                     }}
-                                    title={User.getInstance().getData()?.userName}>
-                                    {User.getInstance().getData()?.userName}
+                                    title={User.getInstance().getData()?.username}>
+                                    {User.getInstance().getData()?.username}
                                 </MDBTypography>
                             </div>
                             <div className="" style={{ height: '35px', minWidth: '0px' }}>

@@ -7,4 +7,6 @@ WORKDIR /workspace/back
 RUN apt-get update \
 	&& npm i -g @nestjs/cli
 
+# RUN apt-get install nginx
+
 ENTRYPOINT ["bash", "entrypoint.sh"]

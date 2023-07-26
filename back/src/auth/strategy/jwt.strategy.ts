@@ -10,18 +10,21 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt',) {
     constructor(configService: ConfigService, private prismaService: PrismaService) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
-				(req) => {
-
-				  return req.cookies?.access_token;
-				},
-			  ]),
+                (req) => {
+                    // console.log("Cookie", req.cookies);
+                    return req.cookies?.access_token;
+                },
+            ]),
+            // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: process.env.jwtSecret,
         });
     }
 
-    async validate_iac(payload: { sub: number, email: string }) {
+    async validate(payload: { sub: number, email: string }) {
 
-        console.log("Validate:", payload);
+        // console.log("Validate:", payload,
+        //     " and pyload.sub:", payload.sub,
+        //     " and payload.email", payload.email);
         const user = await this.prismaService.user.findUnique({
             where: {
                 id: payload.sub,
@@ -35,11 +38,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt',) {
         return user;
     }
 
-    async validate(payload: {id: number}) {
-		console.log('payload: ', payload);
-		console.log('payload.sub: ', payload.id);
-        const user = await this.prismaService.user.findUnique({where: {id: payload.id}});
-		console.log('user: ', user);
-        return user;
-    }
+    // async validatergr(payload: {id: number}) {
+    // 	console.log('payload: ', payload);
+    // 	console.log('payload.sub: ', payload.id);
+    //     const user = await this.prismaService.user.findUnique({where: {id: payload.id}});
+    // 	console.log('user: ', user);
+    //     return user;
+    // }
 }

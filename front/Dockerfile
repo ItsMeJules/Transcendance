@@ -10,6 +10,9 @@ WORKDIR /workspace/front
 
 COPY package*.json ./
 
+# RUN apt-get install nginx
+
+
 RUN npm install
 
 

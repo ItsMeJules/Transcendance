@@ -16,5 +16,5 @@ export class EditUserDto {
 
     @IsString()
     @IsOptional()
-    userName?: string
+    username?: string
 }
