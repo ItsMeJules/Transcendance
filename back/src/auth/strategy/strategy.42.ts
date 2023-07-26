@@ -16,10 +16,6 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42')
 	}
 
 	async validate(accessToken: string, refreshToken: string, profile: any): Promise<any> { //promise? <any?> void?
-		console.log('accessToken : ', accessToken); // DTO concept?
-		console.log('refreshToken : ', refreshToken);
-		console.log('profile : ', profile);
-		console.log('before findOrCreateUserOAuth');
 		const user = await this.userService.findOrCreateUserOAuth({
 			username: profile._json.login,
 			firstName: profile._json.first_name,
@@ -28,7 +24,6 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42')
 			profilePicture: profile._json.image.link,
 			hash: '',
 		});
-		console.log('after findOrCreateUserOAuth');
 		return user ;
 	}
 }

@@ -10,7 +10,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 	constructor(
 		readonly userService: UserService,
 		readonly authService: AuthService) {
-		console.log('debugstrategygoogle');
 		super({
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -20,9 +19,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 	}
 
 	async validate(accessToken: string, refreshToken: string, profile: Profile) : Promise<User> {
-		console.log('accessToken : ', accessToken);
-		console.log('refreshToken : ', refreshToken);
-		console.log('profile : ', profile);
 		const user = await this.userService.findOrCreateUserOAuth({ // protect with try catch
 			username: profile._json.name,	
 			firstName: profile._json.given_name,

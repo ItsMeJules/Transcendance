@@ -89,9 +89,6 @@ export class AuthService {
             email
         };
         const secret = process.env.jwtSecret;
-
-        console.log('Secret:', process.env.jwtSecret);
-
         const token = await this.jwtService.signAsync(
             payload,
             {
@@ -99,7 +96,6 @@ export class AuthService {
                 secret: secret,
             },
         );
-        console.log("token:", token);
         return token;
     }
 

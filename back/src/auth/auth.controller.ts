@@ -12,8 +12,6 @@ export class AuthController {
     @Post('signup')
     async handleSignup(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response) {
         const access_token = await this.authService.signup(dto);
-        console.log("Access token befor cookie res:", access_token);
-
         res.cookie('access_token', access_token, {
             httpOnly: true,
             maxAge: 60 * 60 * 24 * 10000,

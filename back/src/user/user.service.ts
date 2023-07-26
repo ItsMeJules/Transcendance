@@ -18,7 +18,6 @@ export class UserService {
         userId: number,
         dto: EditUserDto
     ) {
-        console.log(dto);
         const user = await this.prisma.user.update({
             where: {
                 id: userId,
@@ -92,7 +91,6 @@ export class UserService {
 
 	async findOneById(id: number): Promise<User | null> {
 		const user: User | null= await this.prisma.user.findUnique({ where: { id } });
-		console.log('coucou');
 		return user;
 	}
 }

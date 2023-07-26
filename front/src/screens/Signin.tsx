@@ -48,13 +48,11 @@ export const Signin = () => {
                     withCredentials: true
                 })
             // User.getInstance().setAccessToken(response.data.accessToken);
-            console.log(response);
             setEmail('');
             setPassword('');
             setSuccess(true);
 
         } catch (err: any) {
-            console.log(err.response.data.message);
             if (!err?.response) {
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 400) {

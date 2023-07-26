@@ -23,7 +23,7 @@ export const Test = () => {
             // setUserData(userData);
             // User.getInstance().setUserFromResponseData(userData);
             // console.log(User.getInstance().getData());
-            console.log("2:", response.data);
+            // console.log("2:", response.data);
             setProfilePicture(response.data);
         } catch (err: any) {
             console.log("Error:" + err.response.data.message);
