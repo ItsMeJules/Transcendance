@@ -1,5 +1,7 @@
 import React from "react";
 
+import UpArrow from "../../assets/up-arrow.png"
+
 export default class DropdownIcon extends React.Component {
 
 	constructor(props) {
@@ -8,9 +10,13 @@ export default class DropdownIcon extends React.Component {
 
 	render() {
 		return (
-			<div className="dropdown-icon" onClick={this.props.onClick}>
-				<input placeholder="Ecrivez du texte.."></input>
-				<div className="dropdown-icon-text">{this.props.name}</div>
+			<div className="dropdown-icon">
+
+				{this.props.chatToggled &&
+						<input className="dropdown-input" placeholder="Ecrivez un message.." />
+				}
+
+				<img className="dropdown-arrow-toggle" src={UpArrow} onClick={this.props.onClick} />
 			</div>
 		)
 	}

@@ -15,20 +15,46 @@
 		justify-content: flex-end;
 		align-items: flex-end;
 
+		position: relative;
+
 		border-radius: 5px;
 
 		background-color: #007bff;
 		color: #fff;
 
 		width: 250px;
-		height: 20px;
-		padding: 10px;
+		height: 40px;
 
 		cursor: pointer;
 
 		&:hover {
 			transition: background-color 0.2s ease-in-out;
 			background-color: #409cff;
+		}
+
+		.dropdown-input {
+			position: absolute;
+			
+			top: 4px;
+			left: 2px;
+
+			width: 210px;
+			height: 30px;
+
+			border-radius: 5px;
+			
+			outline: none;
+			border: none;
+		}
+
+		.dropdown-arrow-toggle {
+			position: absolute;
+
+			top: 10px;
+			right: 5px;
+
+			width: 25px;
+			height: 25px;
 		}
 
 	}
@@ -44,7 +70,7 @@
 		border-top-left-radius: 5px;
 		border-top-right-radius: 5px;
 
-		width: 270px;
+		width: 250px;
 
 		.message {}
 
