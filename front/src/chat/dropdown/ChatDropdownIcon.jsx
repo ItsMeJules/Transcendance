@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import UpArrow from "../../assets/up-arrow.png"
 import RightArrow from "../../assets/right-arrow.png"
 
-function DropDownInput({chatToggled, send}) {
+function DropDownInput({chatToggled, sendData}) {
 	const [value, setValue] = useState()
 
 	if (!chatToggled)
@@ -22,7 +22,7 @@ function DropDownInput({chatToggled, send}) {
 				className="dropdown-arrow-send"
 				alt="Send"
 				src={RightArrow}
-				onClick={() => send(value)}
+				onClick={() => sendData(value)}
 			/>
 		</div>
 	)
@@ -49,7 +49,7 @@ export default class ChatDropdownIcon extends React.Component {
 		return (
 			<div className="dropdown-icon" style={dropDownStyle}>
 
-				<DropDownInput chatToggled={chatToggled} send={this.props.send}/>
+				<DropDownInput chatToggled={chatToggled} sendData={this.props.sendData}/>
 
 				<img
 					className="dropdown-arrow-toggle"

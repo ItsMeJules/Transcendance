@@ -39,12 +39,11 @@ export default class ChatDropdown extends React.Component {
 		const { socket } = this.state;
 
 		if (socket) {
-		  socket.emit("message", data);
+			socket.emit("message", data);
 		}
 	}
 
 	onNewMessage = (message) => {
-		console.log("test")
 		this.setState((prevState) => ({messages: [...prevState.messages, message]}));
 	}
 
@@ -70,7 +69,7 @@ export default class ChatDropdown extends React.Component {
 					chatToggled={chatToggled}
 					chatOpeningFinished={chatOpeningFinished}
 					name="Chat"
-					send={this.sendData.bind(this)}
+					sendData={this.sendData.bind(this)}
 				/>
 				
 				<ChatContainer
