@@ -3,6 +3,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post, Get, UseGuards, Res, Req 
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 import { Response } from 'express';
+import { AuthDtoUp } from './dto/authup.dto';
 
 
 @Controller('auth')
@@ -10,7 +11,7 @@ export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post('signup')
-    async handleSignup(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response) {
+    async handleSignup(@Body() dto: AuthDtoUp, @Res({ passthrough: true }) res: Response) {
         const access_token = await this.authService.signup(dto);
         res.cookie('access_token', access_token, {
             httpOnly: true,
@@ -22,8 +23,14 @@ export class AuthController {
 
     @HttpCode(HttpStatus.OK)
     @Post('signin')
-    signin(@Body() dto: AuthDto) {
-        return this.authService.signin(dto)
+    async signin(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response) {
+        const access_token = await this.authService.signin(dto);
+        res.cookie('access_token', access_token, {
+            httpOnly: true,
+            maxAge: 60 * 60 * 24 * 10000,
+            sameSite: 'lax',
+        });
+        return { message: 'Signin successful' };
     }
 
     @Get('42/login')

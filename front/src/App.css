@@ -87,12 +87,6 @@
   font-family: dune, sans-serif;
 }
 
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .login-form-container {
   display: flex;
   flex-direction: column;

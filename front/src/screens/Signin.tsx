@@ -27,6 +27,18 @@ export const Signin = () => {
         }
     }, [])
 
+    function RequestURI() {
+        let url = process.env.REACT_APP_FOTRYTWO_LOGIN_URL;
+        if (url)
+            document.location = (url) // 
+    }
+
+    function RequestURIGoogle() {
+        let url = process.env.REACT_APP_GOOGLE_LOGIN_URL;
+        if (url)
+            window.location.href = url; // Use window.location.href to trigger the redirect
+    }
+
     useEffect(() => {
         setErrMsg('');
     }, [email, password])
@@ -41,7 +53,7 @@ export const Signin = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post(API_ROUTES.SIGN_UP,
+            const response = await axios.post(API_ROUTES.SIGN_IN,
                 JSON.stringify({ email: email, password: password }),
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -67,23 +79,25 @@ export const Signin = () => {
     }
 
     return (
-        <div className="login-container flex justify-center border border-white" style={{ zIndex: '1' }}>
-            <GlowTextSignin className="font-dune items-center border border-white justify-center text-bold text-white" style={{ fontSize: '2rem', paddingTop: '50px', zIndex: '1' }}>
+        <div className="login-container">
+            
+            <GlowTextSignin
+                className="signin-container border border-white"
+                style={{ fontSize: '2rem', zIndex: '1', minWidth: '200px' }}>
                 sign in
             </GlowTextSignin>
 
-            <p ref={errRef} className={errMsg ? "errmsg text-white" :
+            {/* <p ref={errRef} className={errMsg ? "errmsg text-white" :
                 "offscreen"} aria-live="assertive">
                 {errMsg}
-            </p>
+            </p> */}
 
-            <div className="flex items-center justify-center flex border border-white w-full" style={{ top: '50px', position: 'relative', zIndex: '1' }}>
-                <div className="flex justify-center border border-red" style={{ height: '500px', width: 400, position: 'relative', zIndex: '1' }}>
-                    <div className="flex"
-                        style={{ flexDirection: 'column', top: '25px', height: '300px', width: 350, position: 'relative' }}>
+            <div className="main-login-container">
+                <div className="secondary-login-container">
+                    <div className="form-master-container">
 
                         <div className="flex border border-white"
-                            style={{ height: '250px', width: 350, marginBottom: '10px' }}>
+                            style={{  height: '230px', width: 350, marginBottom: '0px' }}>
                             <form onSubmit={handleSubmit}
                                 action="POST"
                                 className="login-form-container w-full h-full">
@@ -123,12 +137,21 @@ export const Signin = () => {
                                         Sign in
                                     </button>
                                 </div>
-
                             </form>
                         </div>
 
-                        <div className=" justify-center items-center border border-white"
-                            style={{ top: '275px', height: '50px', width: 350, position: "absolute" }}>
+                        <div className="flex border items-center" style={{ flexDirection: "column" }}>
+                            <div className="loginBtn loginBtn--42 text-white">
+                                <button className="text-white" onClick={RequestURI}>Continue with 42</button>
+
+                            </div>
+                            <div className="flex" style={{ marginTop: '15px' }}>
+                                <button className="loginBtn loginBtn--google text-white" onClick={RequestURIGoogle}>Continue with Google</button>
+                            </div>
+
+                        </div>
+
+                        <div className="border">
                             <p className="flex justify-center items-center text-white">
                                 No account yet?&nbsp;
                                 <Link to={APP_ROUTES.SIGN_UP} className="text-white">
@@ -136,6 +159,7 @@ export const Signin = () => {
                                 </Link>
                             </p>
                         </div>
+
                     </div>
                 </div>
             </div>

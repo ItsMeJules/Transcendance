@@ -7,6 +7,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { PayloadDto } from './dto/payload.dto';
+import { AuthDtoUp } from "./dto/authup.dto";
 
 
 @Injectable()
@@ -24,7 +25,7 @@ export class AuthService {
         return this.jwtService.sign(payload);
     }
 
-    async signup(dto: AuthDto) {
+    async signup(dto: AuthDtoUp) {
         const profilePictureUrl = '/images/logo.png';
         const absoluteUrl = this.config.get('API_BASE_URL') + `${profilePictureUrl}`;
         const hash = await argon.hash(dto.password);
@@ -32,6 +33,7 @@ export class AuthService {
             const user = await this.prisma.user.create({
                 data: {
                     email: dto.email,
+                    username: dto.username,
                     hash,
                     profilePicture: absoluteUrl,
                     gamesPlayed: 0,
@@ -54,7 +56,6 @@ export class AuthService {
     }
 
     async signin(dto: AuthDto) {
-
         const user = await this.prisma.user.findUnique({
             where: {
                 email: dto.email,
