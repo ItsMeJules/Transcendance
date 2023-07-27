@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 
 import UpArrow from "../../assets/up-arrow.png"
+import RightArrow from "../../assets/right-arrow.png"
 
-function DropDownInput() {
+function DropDownInput({chatToggled, send}) {
+	const [value, setValue] = useState()
+
+	if (!chatToggled)
+		return <div className="dropdown-click-to-chat">Cliquez la flèche pour chatter</div>
+
 	return (
-		<input className="dropdown-input" placeholder="Ecrivez un message.." />
+		<div className="dropdown-input">
+			<input
+				className="dropdown-input-button"
+				onChange={(e) => setValue(e.target.value)}
+				value={value}
+				placeholder="Ecrivez un message.." 
+			/>
+
+			<img
+				className="dropdown-arrow-send"
+				alt="Send"
+				src={RightArrow}
+				onClick={() => send(value)}
+			/>
+		</div>
 	)
 }
 
@@ -29,9 +49,15 @@ export default class ChatDropdownIcon extends React.Component {
 		return (
 			<div className="dropdown-icon" style={dropDownStyle}>
 
-				{chatToggled && <DropDownInput />}
+				<DropDownInput chatToggled={chatToggled} send={this.props.send}/>
 
-				<img className="dropdown-arrow-toggle" alt="Up-Arrow" src={UpArrow} style={arrowStyle} onClick={onClick} />
+				<img
+					className="dropdown-arrow-toggle"
+					alt="Up-Arrow"
+					src={UpArrow}
+					style={arrowStyle}
+					onClick={onClick}
+				/>
 			</div>
 		)
 	}

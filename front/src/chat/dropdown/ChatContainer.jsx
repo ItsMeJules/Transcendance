@@ -2,26 +2,14 @@ import React from "react";
 
 function ChatMessage({ messages }) {
   return (
-    <div>
-      {messages.map((message, index) => (
-        <div key={index}>{message}</div>
-      ))}
-    </div>
-  );
+    <div>{messages.map((message, index) => <div key={index}>{message}</div> )}</div>
+  )
 }
 
 export default class ChatContainer extends React.Component {
 
 	constructor(props) {
 		super(props)
-
-		this.state = {
-			messages: [],
-		}
-	}
-
-	onNewMessage(message) {
-		this.setState((prevState) => ({messages: [...prevState, message]}))
 	}
 
 	render() {
@@ -36,7 +24,7 @@ export default class ChatContainer extends React.Component {
 				onTransitionEnd={(e) => this.props.transitionEnd(e)}
 			>
 				
-				<ChatMessage messages={this.state.messages}/>
+				<ChatMessage messages={this.props.messages}/>
 
 			</div>
 		)

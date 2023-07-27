@@ -1,4 +1,5 @@
 import React from "react";
+import { io } from 'socket.io-client';
 
 import "./ChatDropdown.scss"
 
@@ -13,7 +14,38 @@ export default class ChatDropdown extends React.Component {
 		this.state = {
 			chatToggled: false,
 			chatOpeningFinished: false,
+			socket: null,
+			messages: [],
 		}
+	}
+
+	componentDidMount() {
+		const newSocket = io("http://localhost:3000");
+		this.setState({ socket: newSocket });
+	
+		newSocket.on("message", this.onNewMessage);
+	}
+
+	componentWillUnmount() {
+		const { socket } = this.state;
+
+		if (socket) {
+		  socket.off("message", this.onNewMessage);
+		  socket.disconnect();
+		}
+	}
+
+	sendData(data) {
+		const { socket } = this.state;
+
+		if (socket) {
+		  socket.emit("message", data);
+		}
+	}
+
+	onNewMessage = (message) => {
+		console.log("test")
+		this.setState((prevState) => ({messages: [...prevState.messages, message]}));
 	}
 
 	toggleChat() {
@@ -28,7 +60,7 @@ export default class ChatDropdown extends React.Component {
 	}
 
 	render() {
-		const {chatToggled, chatOpeningFinished } = this.state
+		const {chatToggled, chatOpeningFinished, messages } = this.state
 
 		return (
 			<div className="chat">
@@ -38,11 +70,13 @@ export default class ChatDropdown extends React.Component {
 					chatToggled={chatToggled}
 					chatOpeningFinished={chatOpeningFinished}
 					name="Chat"
+					send={this.sendData.bind(this)}
 				/>
 				
 				<ChatContainer
 					chatToggled={chatToggled}
 					transitionEnd={this.transitionEnd.bind(this)}
+					messages={messages}
 				/>
 
 			</div>
