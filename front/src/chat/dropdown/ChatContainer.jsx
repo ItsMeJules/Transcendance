@@ -2,7 +2,7 @@ import React from "react";
 
 function ChatMessage({ messages }) {
   return (
-    <div>{messages.map((message, index) => <div key={index}>{message}</div> )}</div>
+    <div>{messages.map((message, index) => <div className="message" key={index}>{message}</div> )}</div>
   )
 }
 

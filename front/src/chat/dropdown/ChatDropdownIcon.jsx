@@ -9,12 +9,20 @@ function DropDownInput({chatToggled, sendData}) {
 	if (!chatToggled)
 		return <div className="dropdown-click-to-chat">Cliquez la flèche pour chatter</div>
 
+	const handleEnterPressed = (e) => {
+		if (e.key === "Enter") {
+			sendData(value);
+			setValue(""); // Clear the input after pressing Enter
+		  }
+	}
+
 	return (
 		<div className="dropdown-input">
 			<input
 				className="dropdown-input-button"
 				onChange={(e) => setValue(e.target.value)}
 				value={value}
+				onKeyDown={(e) => handleEnterPressed(e)}
 				placeholder="Ecrivez un message.." 
 			/>
 
@@ -22,7 +30,10 @@ function DropDownInput({chatToggled, sendData}) {
 				className="dropdown-arrow-send"
 				alt="Send"
 				src={RightArrow}
-				onClick={() => sendData(value)}
+				onClick={() => {
+					sendData(value)
+					setValue("")
+				}}
 			/>
 		</div>
 	)
