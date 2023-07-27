@@ -10,24 +10,29 @@ import { BookmarkModule } from './bookmark/bookmark.module';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { PrismaModule } from './prisma/prisma.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
 
 @Module({
   imports: [
     JwtModule.register({
-			secret: process.env.jwtSecret,
-		  }),
+      secret: process.env.jwtSecret,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MulterModule.register({
-      dest: './',
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'), // Set the root path to the "public" folder.
     }),
-    AuthModule, 
-    UserModule, 
+    // MulterModule.register({
+    //   dest: '/public/images', // Destination folder for storing uploaded images.
+    // }),
+    AuthModule,
+    UserModule,
     BookmarkModule,
-    PrismaModule],
+    PrismaModule,
+  ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
 })
-
 export class AppModule {}

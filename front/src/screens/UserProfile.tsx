@@ -30,6 +30,8 @@ export const UserProfile: React.FC = () => {
             setUserData(userData);
             User.getInstance().setUserFromResponseData(userData);
             console.log(User.getInstance().getData());
+            console.log("And profile pic::", User.getInstance().getData()?.profilePicture);
+
         } catch (err: any) {
             console.log("Error:" + err.response.data.message);
         }
