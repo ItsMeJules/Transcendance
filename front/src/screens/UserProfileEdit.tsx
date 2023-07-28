@@ -22,10 +22,8 @@ export const UserProfileEdit: React.FC = () => {
     const [isFirstNameEmpty, setIsFirstNameEmpty] = useState(true);
     const userLastName = User.getInstance().getLastName();
     const [isLastNameEmpty, setIsLastNameEmpty] = useState(true);
-
+    const [errMsg, setErrMsg] = useState('');
     const [profilePic, setProfilePic] = useState(User.getInstance().getProfilePicture());
-
-
     const [email, setEmail] = useState('');
     const initialEmail = User.getInstance().getEmail();
     const [emailError, setEmailError] = useState('');
@@ -36,18 +34,6 @@ export const UserProfileEdit: React.FC = () => {
     const userInstance = User.getInstance().getAxiosInstance();
     const isSmallScreen = useMediaQuery({ query: "(max-width: 768px)" });
     const history = useNavigate();
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = e.target.value;
-    };
-
-    const handleInputFocus = () => {
-        setIsInputFocused(true);
-    };
-
-    const handleInputBlur = () => {
-        setIsInputFocused(false);
-    };
 
     const fetchUserProfile = async () => {
         try {
@@ -63,11 +49,7 @@ export const UserProfileEdit: React.FC = () => {
             setUsername(User.getInstance().getUsername());
             setFirstName(User.getInstance().getFirstName());
             setLastName(User.getInstance().getLastName());
-            
             setProfilePic(User.getInstance().getProfilePicture());
-            setProfilePic(User.getInstance().getProfilePicture());
-
-
         } catch (err: any) {
             console.log("Error:" + err.response.data.message);
         }
@@ -76,40 +58,6 @@ export const UserProfileEdit: React.FC = () => {
     useEffect(() => {
         fetchUserProfile();
     }, []);
-
-    const getCurrentDimension = () => {
-        return {
-            width: window.innerWidth,
-            height: window.innerHeight
-        }
-    }
-
-    const [screenSize, setScreenSize] = useState(getCurrentDimension());
-
-    useEffect(() => {
-        const updateDimension = () => {
-            setScreenSize(getCurrentDimension())
-        }
-        window.addEventListener('resize', updateDimension);
-
-        return (() => {
-            window.removeEventListener('resize', updateDimension);
-        })
-    }, [screenSize])
-
-    const validateEmail = (email: string) => {
-        // Simple regex pattern to check email format with domain validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (email === "") {
-            setEmailError("");
-        }
-        else if (!emailRegex.test(email)) {
-            setEmailError("Invalid email format");
-        } else {
-            setEmailError("");
-        }
-    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();

@@ -3,7 +3,9 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
 import './css/ProgressBar.css'
 import './css/LoginButtons.css'
-import './css/Signin.css'
+import './css/Signin.scss'
+import './css/Toast.scss'
+import './css/UserProfile.scss'
 import { Home } from './screens/Home';
 import { Signin } from './screens/Signin';
 import { Signup } from './screens/Signup';

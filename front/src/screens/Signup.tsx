@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
 import AuthContext from "../context/AuthProvider";
 import axios from "../api/axios";
-import { AxiosError } from "axios";
+import { AxiosError, HttpStatusCode } from "axios";
 import { APP_ROUTES, API_ROUTES } from "../utils/constants";
 import { text_glow, GlowTextSignin } from "../utils";
 
@@ -20,11 +20,11 @@ export const Signup = () => {
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
 
-    useEffect(() => {
-        if (emailRef.current) {
-            emailRef.current.focus();
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (emailRef.current) {
+    //         emailRef.current.focus();
+    //     }
+    // }, [])
 
     useEffect(() => {
         setErrMsg('');
@@ -51,6 +51,7 @@ export const Signup = () => {
             setPassword('');
             setSuccess(true);
         } catch (err: any) {
+
             // console.log(err.response);
             console.log(err.response.data.message);
             if (!err?.response) {
@@ -59,10 +60,31 @@ export const Signup = () => {
                 setErrMsg('Missing email or password');
             } else if (err.response?.status === 401) {
                 setErrMsg('Unauthorized');
-            } else {
+
+            } else if (err.response?.status === 403) {
+                setErrMsg('Credentials taken');
+            }
+            else {
                 setErrMsg('Login failed');
             }
-            errRef.current?.focus();
+            launch_toast()
+            // errRef.current?.focus();
+        }
+    }
+
+    let isToastVisible = false;
+    function launch_toast() {
+        var x = document.getElementById("toast");
+        if (x && !isToastVisible) {
+            isToastVisible = true;
+            x.className = "show";
+            setTimeout(function () {
+                if (x) {
+                    x.className = x.className.replace("show", "");
+                    // Reset the flag when the toast animation is completed
+                    isToastVisible = false;
+                }
+            }, 3000);
         }
     }
 
@@ -85,9 +107,7 @@ export const Signup = () => {
                                 action="POST"
                                 className="login-form-container w-full h-full">
 
-                                <label htmlFor="email"
-                                    className="left-aligned-text w-full text-white"
-                                    style={{ zIndex: '1' }}>
+                                <label htmlFor="email" className="form-text-login">
                                     Email address
                                 </label>
 
@@ -95,13 +115,12 @@ export const Signup = () => {
                                     placeholder="youremail@email.com"
                                     id="emailaddress"
                                     value={email}
-                                    className="input-field login-form-label flex text-black"
+                                    className="input-text-login"
                                     style={{ marginTop: '10px' }}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required />
 
-                                <label htmlFor="username"
-                                    className="flex left-aligned-text  w-full text-white"
+                                <label htmlFor="username" className="form-text-login"
                                     style={{ marginTop: '10px' }}>
                                     Username
                                 </label>
@@ -110,13 +129,13 @@ export const Signup = () => {
                                     id="username"
                                     name="username"
                                     value={username}
-                                    className="input-field login-form-label flex text-black"
+                                    className="input-text-login"
                                     style={{ marginTop: '10px' }}
                                     onChange={(e) => setUsername(e.target.value)}
+                                    maxLength={100}
                                     required />
 
-                                <label htmlFor="password"
-                                    className="flex left-aligned-text  w-full text-white"
+                                <label htmlFor="password" className="form-text-login"
                                     style={{ marginTop: '10px' }}>
                                     Password
                                 </label>
@@ -125,9 +144,10 @@ export const Signup = () => {
                                     id="password"
                                     name="password"
                                     value={password}
-                                    className="input-field login-form-label flex text-black"
+                                    className="input-text-login"
                                     style={{ marginTop: '10px' }}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    maxLength={100}
                                     required />
 
                                 <div className="flex justify-center items-center" style={{ marginTop: '10px' }}>
@@ -151,6 +171,14 @@ export const Signup = () => {
                     </div>
                 </div>
             </div>
+
+            <div id="toast">
+                <div id="img">
+                    <img src='/images/error.png' alt="Error" />
+                </div>
+                <div id="desc">{errMsg}</div>
+            </div>
+
         </div>
     )
 }

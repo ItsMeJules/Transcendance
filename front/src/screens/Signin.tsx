@@ -21,12 +21,6 @@ export const Signin = () => {
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
 
-    useEffect(() => {
-        if (emailRef.current) {
-            emailRef.current.focus();
-        }
-    }, [])
-
     function RequestURI() {
         let url = process.env.REACT_APP_FOTRYTWO_LOGIN_URL;
         if (url)
@@ -65,22 +59,42 @@ export const Signin = () => {
             setSuccess(true);
 
         } catch (err: any) {
+            console.log(err.response.data.message);
             if (!err?.response) {
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 400) {
                 setErrMsg('Missing email or password');
             } else if (err.response?.status === 401) {
                 setErrMsg('Unauthorized');
-            } else {
+            } else if (err.response?.status === 403) {
+                setErrMsg('Credentials incorrect');
+            }
+            else {
                 setErrMsg('Login failed');
             }
-            errRef.current?.focus();
+            launch_toast()
+        }
+    }
+
+    let isToastVisible = false;
+    function launch_toast() {
+        var x = document.getElementById("toast");
+        if (x && !isToastVisible) {
+            isToastVisible = true;
+            x.className = "show";
+            setTimeout(function () {
+                if (x) {
+                    x.className = x.className.replace("show", "");
+                    // Reset the flag when the toast animation is completed
+                    isToastVisible = false;
+                }
+            }, 3000);
         }
     }
 
     return (
         <div className="login-container">
-            
+
             <GlowTextSignin
                 className="signin-container border border-white"
                 style={{ fontSize: '2rem', zIndex: '1', minWidth: '200px' }}>
@@ -97,14 +111,12 @@ export const Signin = () => {
                     <div className="form-master-container">
 
                         <div className="flex border border-white"
-                            style={{  height: '230px', width: 350, marginBottom: '0px' }}>
+                            style={{ height: '230px', width: 350, marginBottom: '0px' }}>
                             <form onSubmit={handleSubmit}
                                 action="POST"
                                 className="login-form-container w-full h-full">
 
-                                <label htmlFor="email"
-                                    className="left-aligned-text w-full text-white"
-                                    style={{ zIndex: '1' }}>
+                                <label htmlFor="email" className="form-text-login">
                                     Email address
                                 </label>
 
@@ -112,13 +124,14 @@ export const Signin = () => {
                                     placeholder="youremail@email.com"
                                     id="emailaddress"
                                     value={email}
-                                    className="input-field login-form-label flex text-black"
+                                    className="input-text-login"
                                     style={{ marginTop: '10px' }}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required />
 
-                                <label htmlFor="password"
-                                    className="flex left-aligned-text  w-full text-white"
+                                <span className="cd-error-message">Error message here!</span>
+
+                                <label htmlFor="password" className="form-text-login"
                                     style={{ marginTop: '10px' }}>
                                     Password
                                 </label>
@@ -127,9 +140,10 @@ export const Signin = () => {
                                     id="password"
                                     name="password"
                                     value={password}
-                                    className="input-field login-form-label flex text-black"
+                                    className="input-text-login"
                                     style={{ marginTop: '10px' }}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    maxLength={100}
                                     required />
 
                                 <div className="flex justify-center items-center" style={{ marginTop: '10px' }}>
@@ -163,6 +177,14 @@ export const Signin = () => {
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div id="toast">
+                <div id="img">
+                    <img src='/images/error.png' alt="Error" />
+                </div>
+                <div id="desc">{errMsg}</div>
+            </div>
+
+        </div >
     )
 }

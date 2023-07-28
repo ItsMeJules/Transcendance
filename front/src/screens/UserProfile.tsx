@@ -1,12 +1,12 @@
 import React, { useEffect, useReducer, useState } from "react";
-import axios from "axios";
+import axios, { HttpStatusCode } from "axios";
 import { API_ROUTES, APP_ROUTES } from "../utils/constants";
 import User from "../services/user";
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
 import Particle from "../components/Particle";
 import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
 import { UserData } from "../services/user";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import useLogout from "../hooks/useLogout";
 import Cookies from 'js-cookie';
@@ -14,10 +14,9 @@ import Cookies from 'js-cookie';
 
 export const UserProfile: React.FC = () => {
     const [userData, setUserData] = useState<UserData | null>(null);
+    const [errMsg, setErrMsg] = useState('');
     const userInstance = User.getInstance().getAxiosInstance();
     const isSmallScreen = useMediaQuery({ query: "(max-width: 768px)" });
-    const logout = useLogout();
-    const [value, setValue] = useState<number | null>(null);
 
     const fetchUserProfile = async () => {
         try {
@@ -29,76 +28,66 @@ export const UserProfile: React.FC = () => {
             localStorage.setItem('userData', JSON.stringify(userData));
             setUserData(userData);
             User.getInstance().setUserFromResponseData(userData);
-            console.log(User.getInstance().getData());
-            console.log("And profile pic::", User.getInstance().getData()?.profilePicture);
-
         } catch (err: any) {
-            console.log("Error:" + err.response.data.message);
+            if (!err?.response) {
+                setErrMsg('No Server Response');
+            } else if (err.response?.status === 400) {
+                setErrMsg('Bad request');
+            } else if (err.response?.status === 401) {
+                setErrMsg('Unauthorized');
+                window.location.href = APP_ROUTES.HOME;
+            }
+            else {
+                setErrMsg('Error');
+            }
+            launch_toast()
         }
     };
 
     useEffect(() => {
-        // Check if user data exists in localStorage
-        // const storedData = localStorage.getItem('userData');
-        // if (storedData) {
-        //     const userData = JSON.parse(storedData);
-        //     setUserData(userData);
-        //     User.getInstance().setUserFromResponseData(userData);
-        //     console.log(User.getInstance().getData());
-        //     console.log(User.getInstance().getProfilePicture());
-        // } else {
-        // If no user data in localStorage, fetch it from the server
-
-        // const progressBar = document.getElementById('progress-bar');
-
-        // if (progressBar) {
-        //     const percentage = (1 / 10) * 100;
-        //     progressBar.style.backgroundPosition = `${percentage}% 100%`;
-        // }
         fetchUserProfile();
     }, []);
 
-    const getCurrentDimension = () => {
-        return {
-            width: window.innerWidth,
-            height: window.innerHeight
-        }
-    }
-
-
     const handleLogout = async () => {
         try {
-            // Make a POST request to the logout endpoint
             const response = await axios.post(API_ROUTES.LOG_OUT, null, {
-                withCredentials: true, // Send cookies with the request
+                withCredentials: true,
             });
-
             if (response.status === 201) {
-                console.log("LOGOUT OK");
-                // Logout successful, do any additional cleanup or redirection
                 window.location.href = APP_ROUTES.HOME;
             } else {
-                // Handle logout failure or error if needed
                 console.error('Logout failed:', response.status);
             }
-        } catch (error) {
-            console.error('Logout error:', error);
+        } catch (err: any) {
+            if (!err?.response) {
+                setErrMsg('No Server Response');
+            } else if (err.response?.status === 400) {
+                setErrMsg('Bad request');
+            } else if (err.response?.status === 401) {
+                setErrMsg('Unauthorized');
+                window.location.href = APP_ROUTES.HOME;
+            }
+            else {
+                setErrMsg('Logout failed');
+            }
+            launch_toast()
         }
-
     }
 
-    const [screenSize, setScreenSize] = useState(getCurrentDimension());
-
-    useEffect(() => {
-        const updateDimension = () => {
-            setScreenSize(getCurrentDimension())
+    let isToastVisible = false;
+    function launch_toast() {
+        var x = document.getElementById("toast");
+        if (x && !isToastVisible) {
+            isToastVisible = true;
+            x.className = "show";
+            setTimeout(function () {
+                if (x) {
+                    x.className = x.className.replace("show", "");
+                    isToastVisible = false;
+                }
+            }, 3000);
         }
-        window.addEventListener('resize', updateDimension);
-
-        return (() => {
-            window.removeEventListener('resize', updateDimension);
-        })
-    }, [screenSize])
+    }
 
     return (
 
@@ -259,6 +248,13 @@ export const UserProfile: React.FC = () => {
                     </div>
                 </MDBCard>
             </MDBContainer>
+
+            <div id="toast">
+                <div id="img">
+                    <img src='/images/error.png' alt="Error" />
+                </div>
+                <div id="desc">{errMsg}</div>
+            </div>
         </div>
     );
 
