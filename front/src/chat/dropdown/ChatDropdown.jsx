@@ -20,6 +20,7 @@ export default class ChatDropdown extends React.Component {
 	}
 
 	componentDidMount() {
+		// Connexion au back avec les web-sockets
 		const newSocket = io("http://localhost:3000");
 		this.setState({ socket: newSocket });
 	
@@ -72,6 +73,7 @@ export default class ChatDropdown extends React.Component {
 					sendData={this.sendData.bind(this)}
 				/>
 				
+
 				<ChatContainer
 					chatToggled={chatToggled}
 					transitionEnd={this.transitionEnd.bind(this)}

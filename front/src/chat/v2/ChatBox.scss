@@ -1,7 +1,3 @@
-body {
-	background-color: black;
-}
-
 .chat-container {
 	display: flex;
 	flex-direction: column;
@@ -14,12 +10,72 @@ body {
 	width: 100vw;
 
 	.metadata-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+
 		height: 5vh;
 		width: 20vw;
 
 		background-color: blue;
 
-		.metadata {}
+		.more {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-start;
+			align-items: center;
+
+			height: 100%;
+			width: 10%;
+
+			padding-left: 10px;
+
+			background-color: green;
+
+			.plus-symbol::before,
+			.plus-symbol::after {
+				content: '';
+				position: absolute;
+				width: 20px;
+				height: 2px;
+				background-color: black;
+			}
+
+			.plus-symbol::before {
+				transform: rotate(90deg);
+			}
+
+			.plus-symbol::after {
+				transform: rotate(180deg);
+			}
+		}
+
+		.metadata {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-end;
+			align-items: center;
+
+			height: 100%;
+			width: 90%;
+
+			background-color: blueviolet;
+
+			.chat-info {
+				height: 100%;
+				width: 100%;
+
+				background-color: lime;
+			}
+
+			.chat-icon {
+				height: 100%;
+				width: 17%;
+
+				background-color: deeppink;
+			}
+		}
 	}
 
 	.messages-container {
@@ -40,7 +96,7 @@ body {
 		height: 5vh;
 		width: 20vw;
 
-		background-color: green;
+		background-color: white;
 
 		.text {
 			display: flex;
@@ -51,32 +107,28 @@ body {
 			height: 100%;
 			width: 85%;
 
-			background-color: yellow;
-
 			.text-input {
 				display: flex;
 				flex-direction: row;
 				justify-content: flex-end;
 				align-items: center;
 
-				height: 60%;
+				height: 80%;
 				width: 90%;
-
-				background-color: #f0f0f0;
 
 				border-radius: 5rem;
 				box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, .8);
 
 				input {
 					flex: 1;
-					
+
 					height: 100%;
 					width: 100%;
 
 					background: transparent;
-					
+
 					padding: 0 1rem;
-					
+
 					font-size: 1rem;
 					color: #333;
 
@@ -96,8 +148,8 @@ body {
 					margin-right: 15px;
 
 					.arrow-img {
-						max-height: 350%;
-						max-width: 350%;
+						max-height: 80%;
+						max-width: 100%;
 					}
 				}
 			}
@@ -113,7 +165,7 @@ body {
 			height: 100%;
 			width: 15%;
 
-			background-color: aqua;
+			cursor: pointer;
 
 			.arrow-img {
 				max-height: 100%;
