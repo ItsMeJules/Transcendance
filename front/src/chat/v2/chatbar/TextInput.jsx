@@ -5,16 +5,14 @@ import TextSend from "./TextSend"
 const TextInput = ({ sendData }) => {
   const [value, setValue] = useState("")
 
-  // const handleSend = () => {
-  //     sendData(value);
-  //     setValue("")
-  // }
+  const handleSend = () => {
+    sendData(value);
+    setValue("")
+  }
 
   const handleEnterPressed = (e) => {
-    if (e.key === "Enter") {
-      sendData(value);
-      setValue("")
-    }
+    if (e.key === "Enter")
+      handleSend()
   }
 
   return (
@@ -27,9 +25,7 @@ const TextInput = ({ sendData }) => {
       />
       <TextSend
         hasText={!!value}
-        setValue={setValue}
-        value={value}
-        sendData={sendData}
+        handleSend={handleSend}
       />
     </div>
   )

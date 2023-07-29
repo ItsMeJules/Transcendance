@@ -3,18 +3,18 @@ import { io } from 'socket.io-client';
 
 import "./ChatBox.scss"
 
-import ChatToggler from "./chatbar/ChatToggler";
+import ChatBar from "./chatbar/ChatBar";
 import ChatContainer from "./chat_container/ChatContainer";
 import ChatMetadata from "./metadata/ChatMetadata";
 
 export default function ChatBox() {
   const [chatToggled, setChatToggled] = useState(false)
-	const [messages, setMessages] = useState([])
-  const [socket, setSocket] = useState(null); 
-  
+  const [messages, setMessages] = useState([])
+  const [socket, setSocket] = useState(null);
+
   const onNewMessage = (message) => {
-		setMessages([...messages, message]);
-	}
+    setMessages(messages => [...messages, message]);
+  }
 
   useEffect(() => {
     const newSocket = io("http://localhost:3000");
@@ -30,23 +30,23 @@ export default function ChatBox() {
     };
   }, []);
 
-	const sendData = (data) => {
-		if (socket)
-			socket.emit("message", data);
-	}
+  const sendData = (data) => {
+    if (socket)
+      socket.emit("message", data);
+  }
 
-	return (
-		<div className="chat-container">
-			<ChatMetadata />
-			<ChatContainer
+  return (
+    <div className="chat-container">
+      <ChatMetadata />
+      <ChatContainer
         messages={messages}
         chatToggled={chatToggled}
       />
-			<ChatToggler
+      <ChatBar
         chatToggled={chatToggled}
         setChatToggled={setChatToggled}
         sendData={sendData}
       />
-		</div>
-	)
+    </div>
+  )
 }

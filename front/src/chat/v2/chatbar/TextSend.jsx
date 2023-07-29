@@ -2,7 +2,7 @@ import React from "react";
 
 import RightArrow from "../../../assets/arrow-right.png"
 
-const TextSend = ({hasText, setValue, value, sendData}) => {
+const TextSend = ({ hasText, handleSend }) => {
   const sendStyle = {
     transition: "transform 0.3s ease",
   }
@@ -15,8 +15,6 @@ const TextSend = ({hasText, setValue, value, sendData}) => {
     event.target.style.transform = "scale(1)";
   };
 
-  console.log(hasText)
-
   return (
     <div className="text-send">
       <img
@@ -26,10 +24,7 @@ const TextSend = ({hasText, setValue, value, sendData}) => {
         style={sendStyle}
         onMouseEnter={hasText ? handleHover : null}
         onMouseLeave={hasText ? handleHoverOut : null}
-        onClick={() => {
-          sendData(value)
-          setValue("")
-        }}
+        onClick={handleSend}
       />
     </div>
   )

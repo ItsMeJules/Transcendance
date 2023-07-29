@@ -1,6 +1,6 @@
 import React from "react";
 
-const ChatMessage = ({messages}) => {
+const ChatMessage = ({ messages }) => {
   return (
     <div>
       {messages.map((message, index) =>
