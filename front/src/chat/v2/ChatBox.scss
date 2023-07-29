@@ -21,34 +21,44 @@
 		background-color: blue;
 
 		.more {
-			display: flex;
-			flex-direction: row;
-			justify-content: flex-start;
-			align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
 
 			height: 100%;
-			width: 10%;
-
-			padding-left: 10px;
+			width: 13%;
 
 			background-color: green;
+      
+      .plus-symbol {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
 
-			.plus-symbol::before,
-			.plus-symbol::after {
-				content: '';
-				position: absolute;
-				width: 20px;
-				height: 2px;
-				background-color: black;
-			}
+        &::before,
+        &::after {
+          position: absolute;
 
-			.plus-symbol::before {
-				transform: rotate(90deg);
-			}
+          content: '';
 
-			.plus-symbol::after {
-				transform: rotate(180deg);
-			}
+          width: 50%;
+          height: 4%;
+
+          background-color: black;
+        }
+      
+        &::before {
+          transform: rotate(90deg);
+        }
+      
+        &::after {
+          transform: rotate(180deg);
+        }
+      }
+      
 		}
 
 		.metadata {
