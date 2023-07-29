@@ -12,14 +12,9 @@ const useLogout = () => {
     } catch (err: any) {
       console.log("Error:", err.response.data.message);
     }
-
-    // After logout logic
-    // document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    // console.log(APP_ROUTES.HOME);
-     // Manually navigate to the home page
   }, []);
 
-  return logout; // Return the logout function
+  return logout;
 };
 
 export default useLogout;

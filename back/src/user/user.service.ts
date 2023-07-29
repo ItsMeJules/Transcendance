@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException, ConsoleLogger } from '@nestjs/common';
 import { EditUserDto } from './dto';
 import { User, Prisma } from '@prisma/client';
 import { Multer, multer } from 'multer';
@@ -6,22 +6,44 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { URL } from 'url';
 import { PrismaService } from '../prisma/prisma.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { use } from 'passport';
+
+const MAX_FILE_SIZE = 1024 * 1024 * 10; // 1 MB (you can adjust this value as needed)
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService, private config: ConfigService) {}
 
   async editUser(userId: number, dto: EditUserDto) {
-    const user = await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        ...dto,
-      },
-    });
-    if (user) delete user.hash;
-    return user;
+    console.log(dto.username.length);
+
+    if (dto.username.length > 100)
+      throw new ForbiddenException('Username too long');
+    else if (dto.firstName.length > 100)
+      throw new ForbiddenException('First name too long');
+    else if (dto.lastName.length > 100)
+      throw new ForbiddenException('Last name too long');
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          ...dto,
+        },
+      });
+      if (user) delete user.hash;
+      return user;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          // Add more errors handlers or a default one?
+          throw new ForbiddenException('Username taken');
+        }
+      }
+      throw error;
+    }
   }
 
   async findAll() {
@@ -33,6 +55,9 @@ export class UserService {
       originalname: file.originalname,
       filename: file.filename,
     };
+
+    if (file.size > MAX_FILE_SIZE)
+      throw new ForbiddenException('File too large (>10MB)');
 
     const newProfilePictureUrl =
       this.config.get('API_BASE_URL') +
@@ -86,10 +111,34 @@ export class UserService {
     if (user) {
       return user;
     }
-
-    const createdUser = await this.prisma.user.create({ data });
-
-    return createdUser;
+    let usernameAvailable = false;
+    let modifiedUsername = data.username;
+    // Check if username is taken
+    while (!usernameAvailable) {
+      const userNameCheck = await this.isUserNameTaken(modifiedUsername);
+      console.log('test:', userNameCheck);
+      if (!userNameCheck) {
+        usernameAvailable = true;
+      } else {
+        const randomSuffix = Math.floor(Math.random() * 9); // You can adjust the range of the random number as needed
+        modifiedUsername = data.username + randomSuffix;
+      }
+    }
+    data.username = modifiedUsername;
+    console.log("username:", data.username);
+    // Create user with new username
+    try {
+      const createdUser = await this.prisma.user.create({ data });
+      return createdUser;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          // Add more errors handlers or a default one?
+          throw new ForbiddenException('Username taken');
+        }
+      }
+      throw error;
+    }
   }
 
   async findOneById(id: number): Promise<User | null> {

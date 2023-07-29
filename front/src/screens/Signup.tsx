@@ -8,6 +8,7 @@ import axios from "../api/axios";
 import { AxiosError, HttpStatusCode } from "axios";
 import { APP_ROUTES, API_ROUTES } from "../utils/constants";
 import { text_glow, GlowTextSignin } from "../utils";
+import ToastErrorMessage from "../components/ToastErrorMessage";
 
 export const Signup = () => {
     const { setAuth } = useContext(AuthContext);
@@ -20,12 +21,6 @@ export const Signup = () => {
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
 
-    // useEffect(() => {
-    //     if (emailRef.current) {
-    //         emailRef.current.focus();
-    //     }
-    // }, [])
-
     useEffect(() => {
         setErrMsg('');
     }, [email, password])
@@ -35,6 +30,10 @@ export const Signup = () => {
             history('/profile/me')
         }
     }, [success]);
+
+    const resetErrMsg = () => {
+        setErrMsg(''); // Reset errMsg to an empty string
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -46,13 +45,11 @@ export const Signup = () => {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 })
-            // console.log(response.data);
             setEmail('');
             setPassword('');
             setSuccess(true);
         } catch (err: any) {
 
-            // console.log(err.response);
             console.log(err.response.data.message);
             if (!err?.response) {
                 setErrMsg('No Server Response');
@@ -62,29 +59,16 @@ export const Signup = () => {
                 setErrMsg('Unauthorized');
 
             } else if (err.response?.status === 403) {
-                setErrMsg('Credentials taken');
+                if (err.response.data.message === 'Username too long')
+                    setErrMsg('Username too long');
+                else if (err.response.data.message === 'Password too long')
+                    setErrMsg('Password too long');
+                else
+                    setErrMsg('Credentials taken');
             }
             else {
                 setErrMsg('Login failed');
             }
-            launch_toast()
-            // errRef.current?.focus();
-        }
-    }
-
-    let isToastVisible = false;
-    function launch_toast() {
-        var x = document.getElementById("toast");
-        if (x && !isToastVisible) {
-            isToastVisible = true;
-            x.className = "show";
-            setTimeout(function () {
-                if (x) {
-                    x.className = x.className.replace("show", "");
-                    // Reset the flag when the toast animation is completed
-                    isToastVisible = false;
-                }
-            }, 3000);
         }
     }
 
@@ -108,7 +92,7 @@ export const Signup = () => {
                                 className="login-form-container w-full h-full">
 
                                 <label htmlFor="email" className="form-text-login">
-                                    Email address
+                                    Email address {errMsg}
                                 </label>
 
                                 <input type="email"
@@ -172,13 +156,7 @@ export const Signup = () => {
                 </div>
             </div>
 
-            <div id="toast">
-                <div id="img">
-                    <img src='/images/error.png' alt="Error" />
-                </div>
-                <div id="desc">{errMsg}</div>
-            </div>
-
+            <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
         </div>
     )
 }

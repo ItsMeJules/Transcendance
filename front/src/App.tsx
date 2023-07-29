@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
-import './css/ProgressBar.css'
+import './css/ProgressBar.scss'
 import './css/LoginButtons.css'
 import './css/Signin.scss'
 import './css/Toast.scss'
