@@ -14,7 +14,7 @@ const ChatBar = ({ setChatToggled, chatToggled, sendData }) => {
   return (
     <div className="chatbar-container">
       <div className="text">
-        <TextInput sendData={sendData} />
+        {chatToggled && <TextInput sendData={sendData} />}
       </div>
 
       <div className="toggler">

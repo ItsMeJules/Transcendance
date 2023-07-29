@@ -4,7 +4,7 @@ export default function ChatMetadata() {
 	return (
     <div className="metadata-container">
       <div className="more">
-        <div className="circle plus-symbol" />
+        <div className="more-symbol" />
       </div>
 
       <div className="metadata">

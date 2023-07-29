@@ -1,186 +1,192 @@
 .chat-container {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-end;
-	align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
 
-	background-color: red;
+  background-color: red;
 
-	height: 100vh;
-	width: 100vw;
+  height: 100vh;
+  width: 100vw;
 
-	.metadata-container {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
+  .metadata-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
 
-		height: 5vh;
-		width: 20vw;
+    height: 5vh;
+    width: 20vw;
 
-		background-color: blue;
+    background-color: blue;
 
-		.more {
+    .more {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      position: relative;
 
-			height: 100%;
-			width: 13%;
+      height: 100%;
+      width: 13%;
 
-			background-color: green;
+      background-color: green;
       
-      .plus-symbol {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+      transition: top 1s, bottom 1s;
+
+      .more-symbol {
+        position: relative;
+        width: 50%;
+        height: 4%;
+        background-color: black;
 
         &::before,
         &::after {
+          content: "";
           position: absolute;
-
-          content: '';
-
-          width: 50%;
-          height: 4%;
-
+          width: 100%;
+          height: 100%;
           background-color: black;
+          transition: top 0.3s, bottom 0.3s;
         }
       
         &::before {
-          transform: rotate(90deg);
+          top: -400%;
         }
       
         &::after {
-          transform: rotate(180deg);
+          bottom: -400%;
         }
       }
-      
-		}
 
-		.metadata {
-			display: flex;
-			flex-direction: row;
-			justify-content: flex-end;
-			align-items: center;
+      &:hover .more-symbol::before {
+        top: -600%;
+      }
+    
+      &:hover .more-symbol::after {
+        bottom: -600%;
+      }
+    }
 
-			height: 100%;
-			width: 90%;
+    .metadata {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
 
-			background-color: blueviolet;
+      height: 100%;
+      width: 90%;
 
-			.chat-info {
-				height: 100%;
-				width: 100%;
+      background-color: blueviolet;
 
-				background-color: lime;
-			}
+      .chat-info {
+        height: 100%;
+        width: 100%;
 
-			.chat-icon {
-				height: 100%;
-				width: 17%;
+        background-color: lime;
+      }
 
-				background-color: deeppink;
-			}
-		}
-	}
+      .chat-icon {
+        height: 100%;
+        width: 17%;
 
-	.messages-container {
-		height: 50vh;
-		width: 20vw;
+        background-color: deeppink;
+      }
+    }
+  }
 
-		background-color: pink;
+  .messages-container {
+    height: 50vh;
+    width: 20vw;
 
-		.message {}
-	}
+    background-color: pink;
 
-	.chatbar-container {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: flex-start;
+    .message {}
+  }
 
-		height: 5vh;
-		width: 20vw;
+  .chatbar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
 
-		background-color: white;
+    height: 5vh;
+    width: 20vw;
 
-		.text {
-			display: flex;
-			flex-direction: row;
-			justify-content: center;
-			align-items: center;
+    background-color: white;
 
-			height: 100%;
-			width: 85%;
+    .text {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
 
-			.text-input {
-				display: flex;
-				flex-direction: row;
-				justify-content: flex-end;
-				align-items: center;
+      height: 100%;
+      width: 85%;
 
-				height: 80%;
-				width: 90%;
+      .text-input {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
 
-				border-radius: 5rem;
-				box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, .8);
+        height: 80%;
+        width: 90%;
 
-				input {
-					flex: 1;
+        border-radius: 5rem;
+        box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, .8);
 
-					height: 100%;
-					width: 100%;
+        input {
+          flex: 1;
 
-					background: transparent;
+          height: 100%;
+          width: 100%;
 
-					padding: 0 1rem;
+          background: transparent;
 
-					font-size: 1rem;
-					color: #333;
+          padding: 0 1rem;
 
-					outline: none;
-					border: none;
-				}
+          font-size: 1rem;
+          color: #333;
 
-				.text-send {
-					display: flex;
-					flex-direction: row;
-					justify-content: center;
-					align-items: center;
+          outline: none;
+          border: none;
+        }
 
-					height: 100%;
-					width: 8%;
+        .text-send {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
 
-					margin-right: 15px;
+          height: 100%;
+          width: 8%;
 
-					.arrow-img {
-						max-height: 80%;
-						max-width: 100%;
-					}
-				}
-			}
+          margin-right: 15px;
 
-		}
+          .arrow-img {
+            max-height: 80%;
+            max-width: 100%;
+          }
+        }
+      }
 
-		.toggler {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
+    }
 
-			height: 100%;
-			width: 15%;
+    .toggler {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
 
-			cursor: pointer;
+      height: 100%;
+      width: 15%;
 
-			.arrow-img {
-				max-height: 100%;
-				max-width: 100%;
-			}
-		}
-	}
+      cursor: pointer;
+
+      .arrow-img {
+        max-height: 100%;
+        max-width: 100%;
+      }
+    }
+  }
 }
