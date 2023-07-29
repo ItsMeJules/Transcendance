@@ -20,7 +20,9 @@ export default function ChatBox() {
     const newSocket = io("http://localhost:3000");
     setSocket(newSocket);
 
-    newSocket.on("message", onNewMessage);
+    newSocket.on("connect", () => {
+      newSocket.on("message", onNewMessage);
+    })
 
     return () => {
       if (newSocket) {

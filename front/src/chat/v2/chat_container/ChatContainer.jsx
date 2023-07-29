@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import ChatMessage from "./ChatMessage";
 
-const ChatContainer = ({ chatToggled, messages }) => {
+const ChatContainer = ({ chatToggled, messagesReceived }) => {
   const style = {
     transition: "height 1s ease",
     height: chatToggled ? "50vh" : "0vh",
@@ -10,7 +10,7 @@ const ChatContainer = ({ chatToggled, messages }) => {
 
   return (
     <div className="messages-container" style={style}>
-      <ChatMessage messages={messages} />
+      <ChatMessage messagesReceived={messagesReceived} />
     </div>
   )
 }
