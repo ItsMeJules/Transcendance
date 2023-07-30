@@ -6,6 +6,8 @@ const TextInput = ({ sendData }) => {
   const [value, setValue] = useState("")
 
   const handleSend = () => {
+    if (!value)
+      return ;
     sendData(value);
     setValue("")
   }
