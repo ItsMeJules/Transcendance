@@ -6,7 +6,7 @@ const TextInput = ({ sendData }) => {
   const [value, setValue] = useState("")
 
   const handleSend = () => {
-    if (!value)
+    if (!value.trim())
       return ;
     sendData(value);
     setValue("")
@@ -26,7 +26,7 @@ const TextInput = ({ sendData }) => {
         onKeyDown={(e) => handleEnterPressed(e)}
       />
       <TextSend
-        hasText={!!value}
+        hasText={!!value.trim()}
         handleSend={handleSend}
       />
     </div>
