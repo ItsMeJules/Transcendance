@@ -1,19 +1,16 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-
 export interface UserData {
     id: string | null;
     createdAt: string | null;
     updatedAt: string | null;
     email: string | null;
     firstName: string | null;
-    lastName: string | null;
+    lastName: string | null;    
     username: string | null;
     profilePicture: string | null;
     gamesPlayed: number | null;
     gamesWon: number | null;
     userPoints: number | null;
     userLevel: number | null;
-
 }
 
 class User {
@@ -30,13 +27,8 @@ class User {
     private gamesWon: number | null = null;
     private userPoints: number | null = null;
     private userLevel: number | null = null;
-    private accessToken: string | null = null;
-    private axiosInstance: AxiosInstance;
 
-    private constructor() {
-        this.axiosInstance = axios.create();
-        this.accessToken = localStorage.getItem('accessToken');
-        this.updateHeaders();
+    constructor() {
     }
 
     static getInstance() {
@@ -59,23 +51,14 @@ class User {
         this.lastName = data.lastName || null;
         this.username = data.username || null;
         this.profilePicture = data.profilePicture || null;
-        this.gamesPlayed = data.gamesPlayed || null;
-        this.gamesWon = data.gamesWon || null;
-        this.userPoints = data.userPoints || null;
-        this.userLevel = data.userLevel || null;
-    }
-
-    setAccessToken(accessToken: string) {
-        if (accessToken) {
-            this.accessToken = accessToken;
-            localStorage.setItem('accessToken', accessToken);
-            this.updateHeaders();
-        }
+        this.gamesPlayed = data.gamesPlayed;
+        this.gamesWon = data.gamesWon;
+        this.userPoints = data.userPoints;
+        this.userLevel = data.userLevel;
     }
 
     getDataFromStorage(userData: string) {
         return localStorage.getItem('userData');
-
     }
 
     getData(): UserData | null {
@@ -171,21 +154,6 @@ class User {
             return 0;
     }
     
-    getAccessToken(): string | null {
-        return this.accessToken;
-    }
-
-    private updateHeaders() {
-        if (this.accessToken) {
-            this.axiosInstance.defaults.headers.common['Authorization'] = 'Bearer ${this.accessToken}';
-        } else {
-            delete this.axiosInstance.defaults.headers.common['Authorization'];
-        }
-    }
-
-    getAxiosInstance(): AxiosInstance {
-        return this.axiosInstance;
-    }
 }
 
 export default User;

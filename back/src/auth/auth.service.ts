@@ -45,10 +45,6 @@ export class AuthService {
           username: dto.username,
           hash,
           profilePicture: absoluteUrl,
-          gamesPlayed: 0,
-          gamesWon: 0,
-          userPoints: 0,
-          userLevel: 0,
         },
       });
       const access_token = this.signToken(user.id, user.email);

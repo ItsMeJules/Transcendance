@@ -32,11 +32,11 @@ export class UserService {
   async editUser(userId: number, dto: EditUserDto) {
     console.log(dto.username.length);
 
-    if (dto.username.length > 100)
+    if (dto.username && dto.username.length > 100)
       throw new ForbiddenException('Username too long');
-    else if (dto.firstName.length > 100)
+    else if (dto.firstName && dto.firstName.length > 100)
       throw new ForbiddenException('First name too long');
-    else if (dto.lastName.length > 100)
+    else if (dto.lastName && dto.lastName.length > 100)
       throw new ForbiddenException('Last name too long');
     try {
       const user = await this.prisma.user.update({
@@ -105,7 +105,7 @@ export class UserService {
         };
       } else {
         throw new Error(
-          'Unsupported file format. Only JPEG and PNG are supported.',
+          'File format not supported',
         );
       }
       await sharp(file.path).toFormat(fileExtension).jpeg(compressionOptions).toFile(newPicPath);
@@ -172,7 +172,6 @@ export class UserService {
     }
     data.username = modifiedUsername;
     console.log('username:', data.username);
-    // Create user with new username
     try {
       const createdUser = await this.prisma.user.create({ data });
       return createdUser;
@@ -192,5 +191,14 @@ export class UserService {
       where: { id },
     });
     return user;
+  }
+
+  async getLeaderboard(): Promise<User[]> {
+    const leaderboard = await this.prisma.user.findMany({
+      orderBy: {
+        userPoints: 'desc', // Sorting by the 'score' field in descending order (highest to lowest)
+      },
+    });
+    return leaderboard;
   }
 }

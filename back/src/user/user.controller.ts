@@ -43,6 +43,15 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('leaderboard')
+  async getLeaderBoard() {
+    const all = await this.userService.getLeaderboard();
+
+    console.log("all:", all);
+
+    return all;
+  }
+
   @Patch()
   editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {
     return this.userService.editUser(userId, dto);
@@ -55,7 +64,7 @@ export class UserController {
         destination: 'public/images/',
         filename: editFileName,
       }),
-      fileFilter: imageFileFilter
+      // fileFilter: imageFileFilter
     }),
   )
   @UseFilters(CustomExceptionFilter)

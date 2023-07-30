@@ -27,7 +27,6 @@ export const UserProfileEdit: React.FC = () => {
   const [firstName, setFirstName] = useState(userFirstName);
   const [lastName, setLastName] = useState(userLastName);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const userInstance = User.getInstance().getAxiosInstance();
   const history = useNavigate();
 
 

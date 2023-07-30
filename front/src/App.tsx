@@ -12,11 +12,11 @@ import { Signup } from './screens/Signup';
 import { Play } from './screens/Play';
 import { Route, Routes, NavLink } from 'react-router-dom';
 import AppWrapper from './AppWrapper';
-import { Leaderboard } from './screens/Leaderboard';
 import { UserProfile } from './screens/UserProfile';
 import { UserProfileEdit } from './screens/UserProfileEdit';
 import { APP_ROUTES } from './utils/constants';
 import { Test } from './screens/Test';
+import LeaderBoard from './LeaderBoard/LeaderBoard';
 
 function App() {
 
@@ -48,8 +48,8 @@ function App() {
           <Route path={APP_ROUTES.SIGN_UP} element={<Signup />} />
           <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
           <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
-          <Route path="/play" element={<Play />} />
-          <Route path="/users/all" element={<Leaderboard />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
+          {/* <Route path="/users/all" element={<Leaderboard />} /> */}
           <Route path="/test" element={<Test />}/>
         </Routes>
       </AppWrapper>

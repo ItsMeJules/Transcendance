@@ -5,7 +5,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse();
     response.status(400).json({
-      message: "File format is not supported",
+      message: "Wrong format / file too big >10MB",
       HttpStatus
     });
   }

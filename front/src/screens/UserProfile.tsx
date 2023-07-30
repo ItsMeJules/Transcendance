@@ -8,7 +8,6 @@ import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
 import { UserData } from "../services/user";
 import { Link, useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-import useLogout from "../hooks/useLogout";
 import Cookies from 'js-cookie';
 import ToastErrorMessage from "../components/ToastErrorMessage";
 import getProgressBarClass from "../components/ProgressBarClass";
