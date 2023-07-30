@@ -9,130 +9,135 @@
   height: 100vh;
   width: 100vw;
 
-  .metadata-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
+  .toggler {
+    transition: height 1s ease;
 
-    height: 5vh;
-    width: 20vw;
-
-    background-color: blue;
-
-    .more {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      height: 100%;
-      width: 13%;
-
-      background-color: green;
-      
-      transition: top 1s, bottom 1s;
-
-      .more-symbol {
-        position: relative;
-        width: 50%;
-        height: 4%;
-        background-color: black;
-
-        &::before,
-        &::after {
-          content: "";
-          
-          position: absolute;
-          
-          width: 100%;
-          height: 100%;
-          
-          background-color: black;
-          
-          transition: top 0.3s, bottom 0.3s;
-        }
-      
-        &::before {
-          top: -400%;
-        }
-      
-        &::after {
-          bottom: -400%;
-        }
-      }
-
-      &:hover .more-symbol::before {
-        top: -600%;
-      }
-    
-      &:hover .more-symbol::after {
-        bottom: -600%;
-      }
-    }
-
-    .metadata {
+    .metadata-container {
       display: flex;
       flex-direction: row;
-      justify-content: flex-end;
+      justify-content: flex-start;
       align-items: center;
-
+  
+      height: 5vh;
+      width: 100%;
+  
+      background-color: blue;
+  
+      .more {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+  
+        height: 100%;
+        width: 13%;
+  
+        background-color: green;
+        
+        transition: top 1s, bottom 1s;
+  
+        .more-symbol {
+          position: relative;
+          width: 50%;
+          height: 4%;
+          background-color: black;
+  
+          &::before,
+          &::after {
+            content: "";
+            
+            position: absolute;
+            
+            width: 100%;
+            height: 100%;
+            
+            background-color: black;
+            
+            transition: top 0.3s, bottom 0.3s;
+          }
+        
+          &::before {
+            top: -400%;
+          }
+        
+          &::after {
+            bottom: -400%;
+          }
+        }
+  
+        &:hover .more-symbol::before {
+          top: -600%;
+        }
+      
+        &:hover .more-symbol::after {
+          bottom: -600%;
+        }
+      }
+  
+      .metadata {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+  
+        height: 100%;
+        width: 90%;
+  
+        background-color: blueviolet;
+  
+        .chat-info {
+          height: 100%;
+          width: 100%;
+  
+          background-color: lime;
+        }
+  
+        .chat-icon {
+          height: 100%;
+          width: 17%;
+  
+          background-color: deeppink;
+        }
+      }
+    }
+  
+    .messages-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      
       height: 100%;
-      width: 90%;
-
-      background-color: blueviolet;
-
-      .chat-info {
-        height: 100%;
-        width: 100%;
-
-        background-color: lime;
+      width: 20vw;
+  
+      background-color: #E8EBF5;
+  
+      .message-self, .message-other {
+        display: inline-block;
+        
+        box-shadow: 8px -8px 10px -7px rgba(0, 0, 0, .4);
+        
+        word-wrap: break-word;
+        max-width: 70%;
+        
+        border-radius: 8px;
+        margin-top: 5px;
+        padding: 5px;
       }
-
-      .chat-icon {
-        height: 100%;
-        width: 17%;
-
-        background-color: deeppink;
+  
+      .message-self {
+        align-self: flex-end;
+  
+        background-color: limegreen;
+      }
+  
+      .message-other {
+        align-self: flex-start;
+  
+        background-color: gray;
       }
     }
-  }
-
-  .messages-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    
-    height: 50vh;
-    width: 20vw;
-
-    background-color: #E8EBF5;
-
-    .message-self, .message-other {
-      display: inline-block;
-      
-      box-shadow: 8px -8px 10px -7px rgba(0, 0, 0, .4);
-      
-      word-wrap: break-word;
-      max-width: 100%;
-      
-      border-radius: 8px;
-      margin-top: 5px;
-      padding: 5px;
-    }
-
-    .message-self {
-      align-self: flex-end;
-
-      background-color: limegreen;
-    }
-
-    .message-other {
-      align-self: flex-start;
-
-      background-color: gray;
-    }
+  
   }
 
   .chatbar-container {
@@ -145,6 +150,7 @@
     width: 20vw;
 
     background-color: white;
+    z-index: 1;
 
     .text {
       display: flex;

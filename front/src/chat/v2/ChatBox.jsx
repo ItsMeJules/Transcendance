@@ -39,13 +39,17 @@ export default function ChatBox() {
       socketRef.current.emit("message", data);
   }
 
+  const style = {
+    height: chatToggled ? "50vh" : "0vh",
+  }
+
   return (
     <div className="chat-container">
-      <ChatMetadata />
-      <ChatContainer
-        messagesReceived={messages}
-        chatToggled={chatToggled}
-      />
+      <div className="toggler" style={style}>
+        <ChatMetadata />
+        <ChatContainer messagesReceived={messages} />
+      </div>
+      
       <ChatBar
         chatToggled={chatToggled}
         setChatToggled={setChatToggled}
