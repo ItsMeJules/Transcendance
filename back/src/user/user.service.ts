@@ -1,4 +1,10 @@
-import { Injectable, ForbiddenException, ConsoleLogger } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  ConsoleLogger,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { EditUserDto } from './dto';
 import { User, Prisma } from '@prisma/client';
 import { Multer, multer } from 'multer';
@@ -8,8 +14,10 @@ import { URL } from 'url';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { use } from 'passport';
+import sharp from 'sharp';
+import { constructPictureUrl, constructPicturePath, constructPicturePathNoImage } from './module';
 
-const MAX_FILE_SIZE = 1024 * 1024 * 10; // 1 MB (you can adjust this value as needed)
+const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
 @Injectable()
 export class UserService {
@@ -55,38 +63,54 @@ export class UserService {
       originalname: file.originalname,
       filename: file.filename,
     };
-
-    if (file.size > MAX_FILE_SIZE)
-      throw new ForbiddenException('File too large (>10MB)');
-
-    const newProfilePictureUrl =
-      this.config.get('API_BASE_URL') +
-      this.config.get('IMAGES_FOLDER') +
-      '/' +
-      response.filename;
-    const oldProfilePictureUrl = user.profilePicture;
-
-    console.log('new pic:', newProfilePictureUrl);
-
-    await this.prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        profilePicture: newProfilePictureUrl,
-      },
-    });
+    const oldPictureObj = new URL(user.profilePicture);
+    // Verify file size and delete file if too big
+    // if (file.size > MAX_FILE_SIZE) {
+    //   try {
+    //     const pathToDelete =
+    //       process.cwd() +
+    //       this.config.get('PUBLIC_FOLDER') +
+    //       this.config.get('IMAGES_FOLDER') +
+    //       '/' +
+    //       response.filename;
+    //     // console.log('Del 1:', pathToDelete);
+    //     fs.unlinkSync(pathToDelete);
+    //   } catch (err: any) {}
+    //   throw new ForbiddenException('File too large (>10MB)');
+    // }
+    // Compress and store file and delete uncompressed
+    try {
+      const newPicPath = constructPicturePath('cmp_' + response.filename);
+      console.log(newPicPath);
+      const newPicUrl = constructPictureUrl('cmp_' + response.filename);
+      // Define the compression settings
+      const compressionOptions = {
+        quality: 50, // Adjust the quality as needed (0 - 100)
+      };
+      await sharp(file.path).jpeg(compressionOptions).toFile(newPicPath);
+      await this.prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          profilePicture: newPicUrl,
+        },
+      });
+      // Delete imported file
+      fs.unlinkSync(file.path);
+    } catch (err: any) {
+      throw new InternalServerErrorException('Failed to compress the image.');
+    }
 
     // Delete the previous profile picture from the file system
     try {
-      const urlObj = new URL(oldProfilePictureUrl);
-      const pathToDelete =
-        process.cwd() + this.config.get('PUBLIC_FOLDER') + urlObj.pathname;
+      console.log(oldPictureObj.pathname);
+      const pathToDelete = constructPicturePathNoImage(oldPictureObj.pathname);
+      // console.log('Del 2:', pathToDelete);
       if (
         pathToDelete &&
-        urlObj.pathname !==
-          this.config.get('IMAGES_FOLDER') +
-            this.config.get('DEFAULT_PROFILE_PICTURE')
+        oldPictureObj.pathname !==
+          constructPicturePath(process.env.DEFAULT_PROFILE_PICTURE)
       ) {
         fs.unlinkSync(pathToDelete);
       }
@@ -125,7 +149,7 @@ export class UserService {
       }
     }
     data.username = modifiedUsername;
-    console.log("username:", data.username);
+    console.log('username:', data.username);
     // Create user with new username
     try {
       const createdUser = await this.prisma.user.create({ data });

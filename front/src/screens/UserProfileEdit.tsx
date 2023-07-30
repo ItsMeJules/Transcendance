@@ -52,6 +52,19 @@ export const UserProfileEdit: React.FC = () => {
       setProfilePic(User.getInstance().getProfilePicture());
     } catch (err: any) {
       console.log("Error:" + err.response.data.message);
+      if (!err?.response) {
+        setErrMsg('No Server Response');
+      } else if (err.response?.status === 400) {
+        setErrMsg('Missing username');
+      } else if (err.response?.status === 401) {
+        setErrMsg('Unauthorized');
+        history(APP_ROUTES.HOME);
+      } else if (err.response?.status === 403) {
+        setErrMsg(`${err.response.data.message}`);
+      }
+      else {
+        setErrMsg('Login failed');
+      }
     }
   };
 
@@ -93,6 +106,7 @@ export const UserProfileEdit: React.FC = () => {
         setErrMsg('Missing username');
       } else if (err.response?.status === 401) {
         setErrMsg('Unauthorized');
+        history(APP_ROUTES.HOME);
       } else if (err.response?.status === 403) {
         setErrMsg(`${err.response.data.message}`);
       }

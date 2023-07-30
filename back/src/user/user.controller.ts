@@ -13,17 +13,16 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
-import { Request } from 'express';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Multer, multer, diskStorage } from 'multer';
-import { MulterModule } from '@nestjs/platform-express';
 import { editFileName, imageFileFilter } from './module';
 import { Response } from 'express';
-import { join } from 'path';
+import { filesize } from 'filesize';
+
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -51,10 +50,9 @@ export class UserController {
     FileInterceptor('profilePicture', {
       storage: diskStorage({
         destination: 'public/images/',
-        // destination: join(__dirname, '..', 'public', 'images'),
         filename: editFileName,
       }),
-      fileFilter: imageFileFilter,
+      fileFilter: imageFileFilter
     }),
   )
   async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
