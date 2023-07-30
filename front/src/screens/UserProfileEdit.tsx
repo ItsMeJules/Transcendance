@@ -116,6 +116,31 @@ export const UserProfileEdit: React.FC = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(API_ROUTES.LOG_OUT, null, {
+        withCredentials: true,
+      });
+      if (response.status === 201) {
+        history(APP_ROUTES.HOME);
+      } else {
+        console.error('Logout failed:', response.status);
+      }
+    } catch (err: any) {
+      if (!err?.response) {
+        setErrMsg('No Server Response');
+      } else if (err.response?.status === 400) {
+        setErrMsg('Bad request');
+      } else if (err.response?.status === 401) {
+        setErrMsg('Unauthorized');
+        history(APP_ROUTES.HOME);
+      }
+      else {
+        setErrMsg('Logout failed');
+      }
+    }
+  }
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageFile = e.target.files?.[0];
     if (imageFile) {
@@ -131,15 +156,17 @@ export const UserProfileEdit: React.FC = () => {
         });
         fetchUserProfile();
       } catch (err: any) {
+        console.log(err.response.data.message);
         if (!err?.response) {
           setErrMsg('No Server Response');
         } else if (err.response?.status === 403) {
           setErrMsg(`${err.response.data.message}`);
-        }
+        } else
+          setErrMsg(err.response.data.message);
+        
       }
     }
   };
-
 
   return (
     <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
@@ -147,7 +174,7 @@ export const UserProfileEdit: React.FC = () => {
         <MDBCard className="profile-board-card">
 
           <div className="profil-board-header-edit-profile">
-            <button title="Log out" onClick={logout}>
+            <button title="Log out" onClick={handleLogout}>
               <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
             </button>
           </div>

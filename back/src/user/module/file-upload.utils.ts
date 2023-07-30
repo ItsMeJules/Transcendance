@@ -5,10 +5,8 @@ import * as fileType from 'file-type'; // Import the 'file-type' library
 
 
 export const imageFileFilter = (req, file, callback) => {
-  console.log('File size:', file.size);
-  console.log('Original name:', file.originalname);
-  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-    return callback(new Error('Only image files are allowed!'), false);
+  if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+    return callback(new Error('Only image files (JPG, JPEG, PNG) are allowed!'), false);
   }
   callback(null, true);
 };

@@ -14,8 +14,14 @@ import { URL } from 'url';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { use } from 'passport';
-import sharp from 'sharp';
-import { constructPictureUrl, constructPicturePath, constructPicturePathNoImage } from './module';
+import * as sharp from 'sharp';
+// import sharp from 'sharp';
+import {
+  constructPictureUrl,
+  constructPicturePath,
+  constructPicturePathNoImage,
+} from './module';
+import * as pactum from 'pactum';
 
 const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
@@ -65,29 +71,44 @@ export class UserService {
     };
     const oldPictureObj = new URL(user.profilePicture);
     // Verify file size and delete file if too big
-    // if (file.size > MAX_FILE_SIZE) {
-    //   try {
-    //     const pathToDelete =
-    //       process.cwd() +
-    //       this.config.get('PUBLIC_FOLDER') +
-    //       this.config.get('IMAGES_FOLDER') +
-    //       '/' +
-    //       response.filename;
-    //     // console.log('Del 1:', pathToDelete);
-    //     fs.unlinkSync(pathToDelete);
-    //   } catch (err: any) {}
-    //   throw new ForbiddenException('File too large (>10MB)');
-    // }
+    if (file.size > MAX_FILE_SIZE) {
+      try {
+        const pathToDelete =
+          process.cwd() +
+          this.config.get('PUBLIC_FOLDER') +
+          this.config.get('IMAGES_FOLDER') +
+          '/' +
+          response.filename;
+        // console.log('Del 1:', pathToDelete);
+        fs.unlinkSync(pathToDelete);
+      } catch (err: any) {}
+      throw new ForbiddenException('File too large (>10MB)');
+    }
     // Compress and store file and delete uncompressed
     try {
+      const fileExtension = file.originalname.split('.').pop()?.toLowerCase();
+      console.log(fileExtension);
       const newPicPath = constructPicturePath('cmp_' + response.filename);
       console.log(newPicPath);
       const newPicUrl = constructPictureUrl('cmp_' + response.filename);
       // Define the compression settings
-      const compressionOptions = {
-        quality: 50, // Adjust the quality as needed (0 - 100)
-      };
-      await sharp(file.path).jpeg(compressionOptions).toFile(newPicPath);
+      let compressionOptions;
+      if (fileExtension === 'jpg' || fileExtension === 'jpeg') {
+        compressionOptions = {
+          quality: 50, // Adjust the quality as needed (0 - 100)
+        };
+      } else if (fileExtension === 'png') {
+        compressionOptions = {
+          quality: 50, // Adjust the quality as needed (0 - 100)
+          progressive: true, // Enable progressive rendering for PNG
+          compressionLevel: 9, // Adjust compression level for PNG (0 - 9)
+        };
+      } else {
+        throw new Error(
+          'Unsupported file format. Only JPEG and PNG are supported.',
+        );
+      }
+      await sharp(file.path).toFormat(fileExtension).jpeg(compressionOptions).toFile(newPicPath);
       await this.prisma.user.update({
         where: {
           id: user.id,
@@ -99,6 +120,7 @@ export class UserService {
       // Delete imported file
       fs.unlinkSync(file.path);
     } catch (err: any) {
+      console.log(err);
       throw new InternalServerErrorException('Failed to compress the image.');
     }
 

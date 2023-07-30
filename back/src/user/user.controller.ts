@@ -10,6 +10,7 @@ import {
   UploadedFile,
   ConsoleLogger,
   Res,
+  UseFilters
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
@@ -22,7 +23,9 @@ import { Multer, multer, diskStorage } from 'multer';
 import { editFileName, imageFileFilter } from './module';
 import { Response } from 'express';
 import { filesize } from 'filesize';
-
+import { use } from 'passport';
+import { NestMiddleware } from '@nestjs/common';
+import { CustomExceptionFilter } from './module/CustomExceptionFilter';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -55,20 +58,10 @@ export class UserController {
       fileFilter: imageFileFilter
     }),
   )
+  @UseFilters(CustomExceptionFilter)
   async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
     return this.userService.uploadProfilePic(user, file);
   }
-
-  // @Get('get-profile-picture')
-  // sendProfilePicToFront(@GetUser() user: User, @Req() req: Request) {
-  //     const baseUrl = `${req.protocol}://${req.get('host')}`;
-
-  //     const profilePictureUrl = '/images/selfie.jpg';
-  //     const absoluteUrl = `${baseUrl}${profilePictureUrl}`;
-
-  //     console.log(absoluteUrl);
-  //     return absoluteUrl;
-  // }
 
   @Post('logout')
   async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
