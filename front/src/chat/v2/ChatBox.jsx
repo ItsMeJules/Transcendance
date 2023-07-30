@@ -9,7 +9,6 @@ import ChatMetadata from "./metadata/ChatMetadata";
 
 export default function ChatBox() {
   const [chatToggled, setChatToggled] = useState(false)
-  const [hideMessages, setHideMessages] = useState(false)
   const [messages, setMessages] = useState([])
   const socketRef = useRef(null);
 
@@ -40,28 +39,20 @@ export default function ChatBox() {
       socketRef.current.emit("message", data);
   }
 
-  const toggleChat = () => {
-    setChatToggled(current => { 
-      if (!current)
-        setHideMessages(false)
-      return !current
-    })
-  }
-
   const togglerTransition = {
     height: chatToggled ? "50vh" : "0vh",
   }
 
   return (
     <div className="chat-container">
-      <div className="toggler" style={togglerTransition} onTransitionEnd={() => { if (!chatToggled) setHideMessages(true)}}>
+      <div className="toggler" style={togglerTransition}>
         <ChatMetadata />
-        <ChatContainer messagesReceived={messages} hideMessages={hideMessages}/>
+        <ChatContainer messagesReceived={messages}/>
       </div>
       
       <ChatBar
         chatToggled={chatToggled}
-        toggleChat={toggleChat}
+        setChatToggled={setChatToggled}
         sendData={sendData}
       />
     </div>

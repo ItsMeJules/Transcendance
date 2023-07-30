@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useRef, useEffect } from "react";
 
 import ChatMessage from "./ChatMessage";
 
-const ChatContainer = ({ messagesReceived, hideMessages }) => {
+const ChatContainer = ({ messagesReceived }) => {
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messagesReceived]);
+
   return (
     <div className="messages-container">
-      {!hideMessages && <ChatMessage messagesReceived={messagesReceived} />}
+      <ChatMessage messagesReceived={messagesReceived} />
+      <div ref={messagesEndRef} />
     </div>
   )
 }

@@ -10,6 +10,10 @@
   width: 100vw;
 
   .toggler {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
     transition: height 1s ease;
 
     .metadata-container {
@@ -110,6 +114,7 @@
       height: 100%;
       width: 20vw;
   
+      overflow-y: scroll;
       background-color: #E8EBF5;
   
       .message-self, .message-other {
@@ -122,19 +127,22 @@
         
         border-radius: 8px;
         margin-top: 5px;
+        margin-bottom: 5px;
         padding: 5px;
       }
   
       .message-self {
         align-self: flex-end;
-  
         background-color: limegreen;
+        
+        margin-right: 5px;
       }
   
       .message-other {
         align-self: flex-start;
   
         background-color: gray;
+        margin-left: 5px;
       }
     }
   
