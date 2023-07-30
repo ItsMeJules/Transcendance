@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { io } from 'socket.io-client';
 
 import "./ChatBox.scss"
@@ -10,38 +10,40 @@ import ChatMetadata from "./metadata/ChatMetadata";
 export default function ChatBox() {
   const [chatToggled, setChatToggled] = useState(false)
   const [messages, setMessages] = useState([])
-  const [socket, setSocket] = useState(null);
+  const socketRef = useRef(null);
 
   const onNewMessage = (message) => {
-    setMessages(messages => [...messages, message]);
+    if (socketRef.current) {
+      message.self = message.clientId === socketRef.current.id;
+      setMessages(messages => [...messages, message]);
+    }
   }
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3000");
-    setSocket(newSocket);
+    socketRef.current = io("http://localhost:3000");
 
-    newSocket.on("connect", () => {
-      newSocket.on("message", onNewMessage);
-    })
+    socketRef.current.on("connect", () => {
+      socketRef.current.on("message", onNewMessage);
+    });
 
     return () => {
-      if (newSocket) {
-        newSocket.off("message", onNewMessage);
-        newSocket.disconnect();
+      if (socketRef.current) {
+        socketRef.current.off("message", onNewMessage);
+        socketRef.current.disconnect();
       }
     };
   }, []);
 
   const sendData = (data) => {
-    if (socket)
-      socket.emit("message", data);
+    if (socketRef.current)
+      socketRef.current.emit("message", data);
   }
 
   return (
     <div className="chat-container">
       <ChatMetadata />
       <ChatContainer
-        messages={messages}
+        messagesReceived={messages}
         chatToggled={chatToggled}
       />
       <ChatBar

@@ -1,14 +1,13 @@
 import React from "react";
 
-const ChatMessage = ({ messages }) => {
-
-  // return (
-  //   <div>
-  //     {messages.map((message, index) =>
-  //       <div className="message" key={index}>{message}</div>
-  //     )}
-  //   </div>
-  // )
+const ChatMessage = ({ messagesReceived }) => {
+  return (
+    <>
+      {messagesReceived.map((message, index) =>
+        <div className={"message-" + (message.self ? "self" : "other")}>{message.data}</div>
+      )}
+    </>
+  )
 }
 
 export default ChatMessage
