@@ -4,7 +4,7 @@ import UpArrow from "../../../assets/up-arrow.png"
 
 import TextInput from "./TextInput";
 
-const ChatBar = ({ setChatToggled, chatToggled, sendData }) => {
+const ChatBar = ({ toggleChat, chatToggled, sendData }) => {
 
   const arrowStyle = {
     transition: "transform 1s ease",
@@ -23,7 +23,7 @@ const ChatBar = ({ setChatToggled, chatToggled, sendData }) => {
           alt="Up-Arrow"
           src={UpArrow}
           style={arrowStyle}
-          onClick={() => setChatToggled(!chatToggled)}
+          onClick={() => toggleChat()}
         />
       </div>
     </div>

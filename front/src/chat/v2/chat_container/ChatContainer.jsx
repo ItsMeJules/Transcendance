@@ -2,10 +2,10 @@ import React, { useState } from "react";
 
 import ChatMessage from "./ChatMessage";
 
-const ChatContainer = ({ messagesReceived }) => {
+const ChatContainer = ({ messagesReceived, hideMessages }) => {
   return (
     <div className="messages-container">
-      <ChatMessage messagesReceived={messagesReceived} />
+      {!hideMessages && <ChatMessage messagesReceived={messagesReceived} />}
     </div>
   )
 }
