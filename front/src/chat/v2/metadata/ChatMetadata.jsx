@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function ChatMetadata() {
-	return (
+  const [isMoreActive, setIsMoreActive] = useState(false);
+
+  const handleMoreClick = () => {
+    setIsMoreActive(!isMoreActive);
+  };
+
+  return (
     <div className="metadata-container">
-      <div className="more">
-        <div className="more-symbol" />
+      <div className="more" onClick={handleMoreClick}>
+        <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
+          <span></span>
+        </div>
       </div>
 
       <div className="metadata">
@@ -12,5 +20,5 @@ export default function ChatMetadata() {
         <div className="chat-icon"></div>
       </div>
     </div>
-	)
+  );
 }
