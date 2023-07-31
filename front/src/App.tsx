@@ -6,6 +6,7 @@ import './css/LoginButtons.css'
 import './css/Signin.scss'
 import './css/Toast.scss'
 import './css/UserProfile.scss'
+import './LeaderBoard/LeaderBoard'
 import { Home } from './screens/Home';
 import { Signin } from './screens/Signin';
 import { Signup } from './screens/Signup';

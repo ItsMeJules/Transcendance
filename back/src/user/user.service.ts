@@ -70,6 +70,7 @@ export class UserService {
       filename: file.filename,
     };
     const oldPictureObj = new URL(user.profilePicture);
+
     // Verify file size and delete file if too big
     if (file.size > MAX_FILE_SIZE) {
       try {
@@ -84,14 +85,12 @@ export class UserService {
       } catch (err: any) {}
       throw new ForbiddenException('File too large (>10MB)');
     }
+
     // Compress and store file and delete uncompressed
     try {
       const fileExtension = file.originalname.split('.').pop()?.toLowerCase();
-      console.log(fileExtension);
       const newPicPath = constructPicturePath('cmp_' + response.filename);
-      console.log(newPicPath);
       const newPicUrl = constructPictureUrl('cmp_' + response.filename);
-      // Define the compression settings
       let compressionOptions;
       if (fileExtension === 'jpg' || fileExtension === 'jpeg') {
         compressionOptions = {
@@ -104,11 +103,12 @@ export class UserService {
           compressionLevel: 9, // Adjust compression level for PNG (0 - 9)
         };
       } else {
-        throw new Error(
-          'File format not supported',
-        );
+        throw new Error('File format not supported');
       }
-      await sharp(file.path).toFormat(fileExtension).jpeg(compressionOptions).toFile(newPicPath);
+      await sharp(file.path)
+        .toFormat(fileExtension)
+        .jpeg(compressionOptions)
+        .toFile(newPicPath);
       await this.prisma.user.update({
         where: {
           id: user.id,
@@ -117,7 +117,12 @@ export class UserService {
           profilePicture: newPicUrl,
         },
       });
+      console.log(file.path);
       // Delete imported file
+      if (
+        file.path !==
+          constructPicturePath(process.env.DEFAULT_PROFILE_PICTURE)
+      )
       fs.unlinkSync(file.path);
     } catch (err: any) {
       console.log(err);
@@ -133,9 +138,8 @@ export class UserService {
         pathToDelete &&
         oldPictureObj.pathname !==
           constructPicturePath(process.env.DEFAULT_PROFILE_PICTURE)
-      ) {
+      )
         fs.unlinkSync(pathToDelete);
-      }
     } catch (err: any) {}
   }
 

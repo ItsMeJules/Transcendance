@@ -14,6 +14,7 @@ import Cookies from 'js-cookie';
 import ToastErrorMessage from "../components/ToastErrorMessage";
 import getProgressBarClass from "../components/ProgressBarClass";
 import { UserArray } from "../services/UserArray";
+import './LeaderBoard.scss'
 
 
 const LeaderBoard: React.FC = () => {
@@ -57,7 +58,7 @@ const LeaderBoard: React.FC = () => {
           withCredentials: true
         });
 
-        console.log("ici:", response.data);
+      console.log("ici:", response.data);
       localStorage.setItem('leaderboardData', JSON.stringify(response.data));
 
       // let userInstance = User.getInstance();
@@ -70,10 +71,10 @@ const LeaderBoard: React.FC = () => {
         userInstance.setUserFromResponseData(userDatat);
         console.log("instance", userInstance);
         updatedUsers.push(userInstance);
-        console.log('2: ',updatedUsers);
+        console.log('2: ', updatedUsers);
       });
 
-      console.log('3: ',updatedUsers);
+      console.log('3: ', updatedUsers);
       setUsers(updatedUsers);
 
     } catch (err: any) {
@@ -87,24 +88,44 @@ const LeaderBoard: React.FC = () => {
   }, []);
 
   return (
-    <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
+    <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
       <MDBContainer className="profile-board-container">
         <MDBCard className="profile-board-card" style={{ textAlign: 'center', height: '600px' }}>
-          <div className="profile-board-header-show-profile">
-            <button title="Log out" onClick={handleLogout}>
-              <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
-            </button>
+
+          <div className="leaderboard">
+
+            <header className="leaderboard-header">
+
+              <div className="leaderboard-logout">
+                <button title="Log out" onClick={handleLogout}>
+                  <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
+                </button>
+              </div>
+
+              <h1 className="leaderboard__title">
+                <span className="leaderboard__title--top">
+                  Transcendance
+                </span>
+                <span className="leaderboard__title--bottom">
+                  Leaderboard
+                </span>
+              </h1>
+            </header>
           </div>
 
-          LeaderBoard
-
-          <ul>
+          <main className="leaderboard__profiles">
             {users.map((user) => (
-              <li key={user.getId()}>
-                {user.getUsername()} - Score: {user.getUserPoints()}
-              </li>
+              <article className="leaderboard__profile" key={user.getId()}>
+                <img
+                  src={user.getProfilePicture()}
+                  alt={user.getUsername()}
+                  className="leaderboard__picture"
+                />
+                <span className="leaderboard__name">{user.getUsername()}</span>
+                <span className="leaderboard__value">{user.getUserPoints()}</span>
+              </article>
             ))}
-          </ul>
+          </main>
 
         </MDBCard>
       </MDBContainer>
