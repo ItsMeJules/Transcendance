@@ -1,58 +1,52 @@
-import React, { useEffect, useReducer, useState } from "react";
-import axios, { HttpStatusCode } from "axios";
-import { API_ROUTES, APP_ROUTES } from "../utils/constants";
-import User from "../services/user";
+import React, { useDebugValue, useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { API_ROUTES, APP_ROUTES } from '../utils';
+import User from '../services/user';
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
-import Particle from "../components/Particle";
-import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
 import { UserData } from '../services/user';
-import { Link, useNavigate } from "react-router-dom";
-import { useMediaQuery } from "react-responsive";
-import Cookies from 'js-cookie';
-import ToastErrorMessage from "../components/ToastErrorMessage";
 import getProgressBarClass from "../components/ProgressBarClass";
-import DisplayData from "../UserProfile/components/DisplayData";
 
-export const UserProfile: React.FC = () => {
+
+interface UserProfileProps {
+  id: number;
+}
+
+const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
+  const { id } = useParams();
+  const [level, setLevel] = useState<number | null>(0);
+  const [dataFetched, setDataFetched] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [errMsg, setErrMsg] = useState('');
-  const [level, setLevel] = useState(0);
-  const progressBarClass = getProgressBarClass(level);
   const history = useNavigate();
+  const [errMsg, setErrMsg] = useState('');
+  const progressBarClass = getProgressBarClass(level);
 
-  const resetErrMsg = () => {
-    setErrMsg(''); // Reset errMsg to an empty string
-  };
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = async (id: string | undefined) => {
     try {
-      const response = await axios.get(API_ROUTES.USER_PROFILE,
+      const response = await axios.get(API_ROUTES.GENERIC_USER_PROFILE + id,
         {
           withCredentials: true
         });
-      const userData = response.data;
-      localStorage.setItem('userData', JSON.stringify(userData));
-      setUserData(userData);
-      User.getInstance().setUserFromResponseData(userData);
-      setLevel(User.getInstance().getUserLevel());
+      localStorage.setItem('generciUserData', JSON.stringify(response.data));
+      setUserData(response.data);
+      // console.log(userData);
+      if (userData)
+        setLevel(userData?.userLevel);
+      setDataFetched(true); // Set dataFetched to true after fetching the user data
+
     } catch (err: any) {
-      if (!err?.response) {
-        setErrMsg('No Server Response');        // OK
-      } else if (err.response?.status === 400) {
-        setErrMsg('Bad request');
-      } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized');
-        history(APP_ROUTES.HOME);
-      }
-      else {
-        setErrMsg('Error');
-      }
     }
   };
 
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
+    fetchUserProfile(id);
+  }, [id]);
+
+  // Add some loading handling while user data is fetched
+  if (!dataFetched) {
+    return <div>Loading...</div>;
+  }
 
   const handleLogout = async () => {
     try {
@@ -85,18 +79,15 @@ export const UserProfile: React.FC = () => {
         <MDBCard className="profile-board-card">
 
           <div className="profile-board-header-show-profile">
-            <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT} style={{ padding: '0px' }}>
-              <MDBCardImage src='/images/edit_profile.png' fluid style={{ width: '30px' }} />
-            </Link>
             <button title="Log out" onClick={handleLogout}>
               <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
             </button>
           </div>
 
           <div className="profile-pic-container">
-            {User.getInstance().getProfilePicture() ? (
+            {userData?.profilePicture ? (
               <div className="profile-pic-circle">
-                <img src={User.getInstance().getProfilePicture()} alt="" />
+                <img src={userData.profilePicture} alt="" />
               </div>
             ) : (
               <div className="empty-profile-picture-container">
@@ -107,9 +98,7 @@ export const UserProfile: React.FC = () => {
 
           <div className="fade-line" style={{ marginTop: '20px' }}></div>
 
-          <DisplayData  userData={userData} />
-
-          {/* <div className="information-display-main">
+          <div className="information-display-main">
             <MDBCardBody className="data-fields-name-main">
               <MDBTypography className="data-fields-name-sub-first" tag="h5">
                 Email
@@ -125,27 +114,27 @@ export const UserProfile: React.FC = () => {
               </MDBTypography>
             </MDBCardBody>
             <MDBCardBody className="data-values-main">
-              <MDBTypography tag="h5" className="data-values-sub-first" title={User.getInstance().getData()?.email}>
-                {User.getInstance().getData()?.email}
+              <MDBTypography tag="h5" className="data-values-sub-first" title={userData?.email}>
+                {userData?.email}
               </MDBTypography>
-              <MDBTypography tag="h5" className="data-values-sub-others" title={User.getInstance().getData()?.username}>
-                {User.getInstance().getData()?.username}
+              <MDBTypography tag="h5" className="data-values-sub-others" title={userData?.username}>
+                {userData?.username}
               </MDBTypography>
-              <MDBTypography tag="h5" className="data-values-sub-others" title={User.getInstance().getData()?.firstName}>
-                {User.getInstance().getData()?.firstName}
+              <MDBTypography tag="h5" className="data-values-sub-others" title={userData?.firstName}>
+                {userData?.firstName}
               </MDBTypography>
-              <MDBTypography tag="h5" className="data-values-sub-others" title={User.getInstance().getData()?.lastName}>
-                {User.getInstance().getData()?.lastName}
+              <MDBTypography tag="h5" className="data-values-sub-others" title={userData?.lastName}>
+                {userData?.lastName}
               </MDBTypography>
             </MDBCardBody>
-          </div> */}
+          </div>
 
           <div className="fade-line" style={{ marginTop: '-10px' }}></div>
 
           <div className="stats-first-container">
             <div className="stats-first-sub-container">
               <MDBCardText className="mb-1 h5">
-                {User.getInstance().getGamesPlayed()}
+                {userData?.gamesPlayed}
               </MDBCardText>
               <MDBCardText className="small text-muted mb-0">
                 Games played
@@ -154,7 +143,7 @@ export const UserProfile: React.FC = () => {
 
             <div className="stats-first-sub-container">
               <MDBCardText className="mb-1 h5">
-                {User.getInstance().getGamesWon()}
+                {userData?.gamesWon}
               </MDBCardText>
               <MDBCardText className="small text-muted mb-0">
                 Games won
@@ -164,7 +153,7 @@ export const UserProfile: React.FC = () => {
           <div className="stats-second-container">
             <div className="stats-second-sub-container">
               <MDBCardText className="mb-1 h5">
-                {User.getInstance().getUserPoints()}
+                {userData?.userPoints}
               </MDBCardText>
               <MDBCardText className="small text-muted mb-0">
                 Points won
@@ -183,9 +172,10 @@ export const UserProfile: React.FC = () => {
         </MDBCard>
       </MDBContainer>
 
-      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
+      {/* <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} /> */}
 
     </div>
   );
+};
 
-}
+export default GenericUserProfile;

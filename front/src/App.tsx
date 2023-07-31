@@ -18,6 +18,8 @@ import { UserProfileEdit } from './screens/UserProfileEdit';
 import { APP_ROUTES } from './utils/constants';
 import { Test } from './screens/Test';
 import LeaderBoard from './LeaderBoard/LeaderBoard';
+import GenericUserProfile from './UserProfile/GenericUserProfile';
+import { render } from '@testing-library/react';
 
 function App() {
 
@@ -50,6 +52,7 @@ function App() {
           <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
           <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
+          <Route path="/profile/:id" element={React.createElement(GenericUserProfile)}/>
           {/* <Route path="/users/all" element={<Leaderboard />} /> */}
           <Route path="/test" element={<Test />}/>
         </Routes>

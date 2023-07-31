@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState, useRef } from "react";
 import axios, { HttpStatusCode } from "axios";
-import { API_ROUTES, APP_ROUTES } from "../utils/constants";
+import { API_ROUTES, APP_ROUTES } from '../utils/constants';
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
 import Particle from "../components/Particle";
 import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
@@ -89,8 +89,8 @@ const LeaderBoard: React.FC = () => {
 
   return (
     <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
-      <MDBContainer className="profile-board-container">
-        <MDBCard className="profile-board-card" style={{ textAlign: 'center', height: '600px' }}>
+      <MDBContainer className="leaderboard-container">
+        <MDBCard className="leaderboard-card">
 
           <div className="leaderboard">
 
@@ -115,6 +115,8 @@ const LeaderBoard: React.FC = () => {
 
           <main className="leaderboard__profiles">
             {users.map((user) => (
+
+              <Link title="Show user profile" style={{textDecoration: 'none'}} to={APP_ROUTES.GENERIC_USER_PROFILE + user.getId()}>
               <article className="leaderboard__profile" key={user.getId()}>
                 <img
                   src={user.getProfilePicture()}
@@ -124,6 +126,8 @@ const LeaderBoard: React.FC = () => {
                 <span className="leaderboard__name">{user.getUsername()}</span>
                 <span className="leaderboard__value">{user.getUserPoints()}</span>
               </article>
+              </Link>
+
             ))}
           </main>
 

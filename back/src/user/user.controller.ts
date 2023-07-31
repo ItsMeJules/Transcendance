@@ -10,7 +10,9 @@ import {
   UploadedFile,
   ConsoleLogger,
   Res,
-  UseFilters
+  Param,
+  UseFilters,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
@@ -34,7 +36,6 @@ export class UserController {
 
   @Get('me')
   getMe(@GetUser() user: User) {
-    // console.log('USERRRRRRRRRR:', user);
     return user;
   }
 
@@ -45,12 +46,17 @@ export class UserController {
 
   @Get('leaderboard')
   async getLeaderBoard() {
+    console.log("OKKKKKKKKKKKKKKKKK");
     const all = await this.userService.getLeaderboard();
-
-    console.log("all:", all);
-
     return all;
   }
+  
+  @Get(':id')
+  async findUserById(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.findOneById(id);
+  }
+
+  
 
   @Patch()
   editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {

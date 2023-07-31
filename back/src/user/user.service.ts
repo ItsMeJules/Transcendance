@@ -22,6 +22,7 @@ import {
   constructPicturePathNoImage,
 } from './module';
 import * as pactum from 'pactum';
+import { connected } from 'process';
 
 const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
@@ -117,12 +118,6 @@ export class UserService {
           profilePicture: newPicUrl,
         },
       });
-      console.log(file.path);
-      // Delete imported file
-      if (
-        file.path !==
-          constructPicturePath(process.env.DEFAULT_PROFILE_PICTURE)
-      )
       fs.unlinkSync(file.path);
     } catch (err: any) {
       console.log(err);
@@ -131,13 +126,11 @@ export class UserService {
 
     // Delete the previous profile picture from the file system
     try {
-      console.log(oldPictureObj.pathname);
       const pathToDelete = constructPicturePathNoImage(oldPictureObj.pathname);
-      // console.log('Del 2:', pathToDelete);
       if (
         pathToDelete &&
         oldPictureObj.pathname !==
-          constructPicturePath(process.env.DEFAULT_PROFILE_PICTURE)
+          process.env.IMAGES_FOLDER + process.env.DEFAULT_PROFILE_PICTURE
       )
         fs.unlinkSync(pathToDelete);
     } catch (err: any) {}
@@ -192,7 +185,7 @@ export class UserService {
 
   async findOneById(id: number): Promise<User | null> {
     const user: User | null = await this.prisma.user.findUnique({
-      where: { id },
+      where: { id: id },
     });
     return user;
   }
