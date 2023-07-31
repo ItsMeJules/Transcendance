@@ -31,7 +31,6 @@ export class UserService {
   constructor(private prisma: PrismaService, private config: ConfigService) {}
 
   async editUser(userId: number, dto: EditUserDto) {
-    console.log(dto.username.length);
 
     if (dto.username && dto.username.length > 100)
       throw new ForbiddenException('Username too long');
