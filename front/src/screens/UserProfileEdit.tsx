@@ -56,49 +56,6 @@ export const UserProfileEdit: React.FC = () => {
     fetchUserProfile();
   }, []);
 
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-
-  //   const dataToSend: any = {};
-  //   if (username) {
-  //     dataToSend.username = username;
-  //   }
-  //   if (firstName) {
-  //     dataToSend.firstName = firstName;
-  //   }
-  //   if (lastName) {
-  //     dataToSend.lastName = lastName;
-  //   }
-
-  //   try {
-  //     const response = await axios.patch(
-  //       API_ROUTES.USER_PROFILE_EDIT,
-  //       dataToSend,
-  //       {
-  //         withCredentials: true
-  //       });
-  //     const userData = response.data;
-  //     localStorage.setItem('userData', JSON.stringify(userData));
-  //     setUserData(userData);
-  //     history(APP_ROUTES.USER_PROFILE);
-  //   } catch (err: any) {
-  //     console.log(err.response.data.message);
-  //     if (!err?.response) {
-  //       setErrMsg('No Server Response');
-  //     } else if (err.response?.status === 400) {
-  //       setErrMsg('Missing username');
-  //     } else if (err.response?.status === 401) {
-  //       setErrMsg('Unauthorized');
-  //       history(APP_ROUTES.HOME);
-  //     } else if (err.response?.status === 403) {
-  //       setErrMsg(`${err.response.data.message}`);
-  //     }
-  //     else {
-  //       setErrMsg('Login failed');
-  //     }
-  //   }
-  // };
-
   return (
     <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
       <MDBContainer className="profile-board-container">
@@ -116,48 +73,6 @@ export const UserProfileEdit: React.FC = () => {
 
 
           <EditUserFormValidation setErrMsg={setErrMsg} userData={userData}/>
-
-          {/* <div className="information-display-main">
-            <MDBCardBody className="data-fields-name-main">
-              <MDBTypography className="data-fields-name-sub-first" tag="h5">
-                Email
-              </MDBTypography>
-              <MDBTypography className="data-fields-name-sub-others" tag="h5">
-                Username
-              </MDBTypography>
-              <MDBTypography className="data-fields-name-sub-others" tag="h5">
-                First name
-              </MDBTypography>
-              <MDBTypography className="data-fields-name-sub-others" tag="h5">
-                Last name
-              </MDBTypography>
-            </MDBCardBody>
-            <MDBCardBody className="data-values-input-main">
-              <form action="POST" onSubmit={handleSubmit}>
-                <MDBTypography tag="h5" className="data-values-input-sub-first" title={userData?.email}>
-                  {userData?.email}
-                </MDBTypography>
-                <input type="text" autoComplete="off" placeholder="Enter username" id="username" value={username}
-                  className={`data-values-input-sub-second border edit-form-label`}
-                  onChange={(e) => setUsername(e.target.value)} maxLength={100} />
-
-                <input type="text" autoComplete="off" placeholder="Enter first name" id="firstname" value={firstName}
-                  className={`data-values-input-sub-others border edit-form-label`}
-                  onChange={(e) => setFirstName(e.target.value)} maxLength={100} />
-
-                <input type="text" autoComplete="off" placeholder="Enter last name" id="lastname" value={lastName}
-                  className={`data-values-input-sub-others border edit-form-label`}
-                  onChange={(e) => setLastName(e.target.value)} maxLength={100} />
-
-                <div className="save-button">
-                  <button type="submit" className="save-changes-button" style={{ marginTop: '10px' }}>
-                    Save changes
-                  </button>
-                </div>
-              </form>
-
-            </MDBCardBody>
-          </div> */}
 
           <div className="d-flex justify-content-between text-center mt-5 mb-2">
           </div>
