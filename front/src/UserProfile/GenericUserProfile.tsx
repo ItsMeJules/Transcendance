@@ -1,7 +1,7 @@
 import React, { useDebugValue, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { API_ROUTES, APP_ROUTES } from '../utils';
+import { API_ROUTES, APP_ROUTES, APP_URL } from '../utils';
 import User from '../services/user';
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
 import { UserData } from '../services/user';
@@ -32,7 +32,17 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
         });
       localStorage.setItem('generciUserData', JSON.stringify(response.data));
       setUserData(response.data);
-      // console.log(userData);
+      // console.log(response);
+      // if (response.data.redirectTo === "")
+      //   console.log("EMPYYYY");
+      // else if (response.data.redirectTo !== "")
+      //   console.log("NOT EMPTYYYY");
+
+      // if (response.data.redirectTo === APP_ROUTES.USER_PROFILE)
+      if (response.data.redirectTo === APP_URL + APP_ROUTES.USER_PROFILE) {
+        console.log("OKKK");
+        window.location.href = APP_ROUTES.USER_PROFILE;
+      }
       if (userData)
         setLevel(userData?.userLevel);
       setDataFetched(true); // Set dataFetched to true after fetching the user data

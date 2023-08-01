@@ -8,15 +8,14 @@ import User from "../services/user";
 import Users from "../services/Users";
 import { UserData } from "../services/user";
 import { Link, useNavigate } from "react-router-dom";
-import { useMediaQuery } from "react-responsive";
-import Cookies from 'js-cookie';
 import ToastErrorMessage from "../components/ToastErrorMessage";
-import getProgressBarClass from "../components/ProgressBarClass";
 import { UserArray } from "../services/UserArray";
 import './LeaderBoard.scss'
+import LogoutParent from "../hooks/logoutParent";
 
 
 const LeaderBoard: React.FC = () => {
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
   const history = useNavigate();
@@ -25,19 +24,19 @@ const LeaderBoard: React.FC = () => {
     setErrMsg(''); // Reset errMsg to an empty string
   };
 
-  const handleLogout = async () => {
+  const fetchUserProfile = async () => {
     try {
-      const response = await axios.post(API_ROUTES.LOG_OUT, null, {
-        withCredentials: true,
-      });
-      if (response.status === 201) {
-        history(APP_ROUTES.HOME);
-      } else {
-        console.error('Logout failed:', response.status);
-      }
+      const response = await axios.get(API_ROUTES.USER_PROFILE,
+        {
+          withCredentials: true
+        });
+      const userData = response.data;
+      localStorage.setItem('userData', JSON.stringify(userData));
+      setUserData(userData);
+      User.getInstance().setUserFromResponseData(userData);
     } catch (err: any) {
       if (!err?.response) {
-        setErrMsg('No Server Response');
+        setErrMsg('No Server Response');        // OK
       } else if (err.response?.status === 400) {
         setErrMsg('Bad request');
       } else if (err.response?.status === 401) {
@@ -45,10 +44,10 @@ const LeaderBoard: React.FC = () => {
         history(APP_ROUTES.HOME);
       }
       else {
-        setErrMsg('Logout failed');
+        setErrMsg('Error');
       }
     }
-  }
+  };
 
   const fetchLeaderboard = async () => {
     try {
@@ -57,23 +56,23 @@ const LeaderBoard: React.FC = () => {
           withCredentials: true
         });
 
-      console.log("ici:", response.data);
+      // console.log("ici:", response.data);
       localStorage.setItem('leaderboardData', JSON.stringify(response.data));
 
       // let userInstance = User.getInstance();
       // console.log("1 User:", userInstance);
       let updatedUsers: User[] = [];
-      console.log('1: ', updatedUsers);
+      // console.log('1: ', updatedUsers);
 
       response.data.forEach((userDatat: any) => {
         let userInstance = new User();
         userInstance.setUserFromResponseData(userDatat);
-        console.log("instance", userInstance);
+        // console.log("instance", userInstance);
         updatedUsers.push(userInstance);
-        console.log('2: ', updatedUsers);
+        // console.log('2: ', updatedUsers);
       });
 
-      console.log('3: ', updatedUsers);
+      // console.log('3: ', updatedUsers);
       setUsers(updatedUsers);
 
     } catch (err: any) {
@@ -83,6 +82,7 @@ const LeaderBoard: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchUserProfile();
     fetchLeaderboard();
   }, []);
 
@@ -95,11 +95,7 @@ const LeaderBoard: React.FC = () => {
 
             <header className="leaderboard-header">
 
-              <div className="leaderboard-logout">
-                <button title="Log out" onClick={handleLogout}>
-                  <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
-                </button>
-              </div>
+              <LogoutParent setErrMsg={setErrMsg} />
 
               <h1 className="leaderboard__title">
                 <span className="leaderboard__title--top">
@@ -115,16 +111,19 @@ const LeaderBoard: React.FC = () => {
           <main className="leaderboard__profiles">
             {users.map((user) => (
 
-              <Link title="Show user profile" style={{textDecoration: 'none'}} to={APP_ROUTES.GENERIC_USER_PROFILE + user.getId()}>
-              <article className="leaderboard__profile" key={user.getId()}>
-                <img
-                  src={user.getProfilePicture()}
-                  alt={user.getUsername()}
-                  className="leaderboard__picture"
-                />
-                <span className="leaderboard__name">{user.getUsername()}</span>
-                <span className="leaderboard__value">{user.getUserPoints()}</span>
-              </article>
+              <Link title="Show user profile"
+                style={{ textDecoration: 'none' }}
+                to={userData?.id == user.getId() ? APP_ROUTES.USER_PROFILE  : APP_ROUTES.GENERIC_USER_PROFILE + user.getId()}
+                key={user.getId()}>
+                <article className="leaderboard__profile" key={user.getId()}>
+                  <img
+                    src={user.getProfilePicture()}
+                    alt={user.getUsername()}
+                    className="leaderboard__picture"
+                  />
+                  <span className="leaderboard__name">{user.getUsername()}</span>
+                  <span className="leaderboard__value">{user.getUserPoints()}</span>
+                </article>
               </Link>
 
             ))}

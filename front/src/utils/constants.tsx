@@ -11,6 +11,8 @@ export const API_ROUTES = {
     GET_LEADERBOARD: `${API_URL}/users/leaderboard`,
 }
 
+export const APP_URL = 'http://localhost:4000'
+
 export const APP_ROUTES = {
     HOME:                 '/',
     SIGN_IN:              '/login',

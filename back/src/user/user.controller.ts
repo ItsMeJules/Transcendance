@@ -59,7 +59,7 @@ export class UserController {
     @Res({ passthrough: true }) res: Response,
   ) {
     if (userId === id)
-      return res.redirect('http://localhost:4000/profile/me')
+      return { redirectTo: 'http://localhost:4000/profile/me' };
     return this.userService.findOneById(id);
   }
 
