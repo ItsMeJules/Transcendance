@@ -1,0 +1,70 @@
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #000; /* Fond noir */
+}
+
+.container {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.game-board {
+	position: relative; /* Ajoute une position absolue pour centrer le game-board */
+	width: 600px;
+	height: 300px;
+	border: 2px solid #fff; /* Bordure blanche */
+	background-color: #000; /* Fond noir */
+	display: flex;
+	align-items: center;
+	justify-content: center; /* Centre les éléments horizontalement */
+}
+
+.paddle {
+	position: absolute;
+	width: 10px;
+	height: 80px;
+	background-color: #fff; /* Raquette blanche */
+	left: 10px; /* Raquette de gauche */
+}
+
+.paddle:nth-child(2) {
+	right: 10px; /* Raquette de droite */
+	left: auto;
+}
+
+.ball {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	background-color: #fff; /* Balle blanche */
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.timer {
+	position: absolute;
+	top: 10px; /* Déplace le timer vers le haut */
+	font-size: 24px;
+	color: #fff; /* Texte en blanc */
+}
+
+.time-out {
+	position: absolute;
+	top: 10px; /* Déplace le timer vers le haut */
+	font-size: 24px;
+	color: #fff; /* Texte en blanc */
+}
+
+.score-board {
+	display: flex;
+	justify-content: space-around;
+	width: 400px;
+	font-size: 18px;
+	margin-top: 20px;
+	color: #fff; /* Texte en blanc */
+}

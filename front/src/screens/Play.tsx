@@ -1,6 +1,7 @@
 import bg from "../images/bg4.jpg"
 import { Link, useNavigate } from 'react-router-dom';
-
+import GameBoard from '../game/components/GameBoard';
+import "../game/components/GameStyles.css"
 
 const myStyle={
     backgroundImage:
@@ -18,6 +19,7 @@ export const Play = () => {
     return (
         // <div style={{backgroundImage: bg}}></div>
         <div className="page-container">
+            <GameBoard />
             PLAY
             <Link to='/users/all'>GO TO LEADERBOARD</Link>
             {/* <img src={bg} alt="" /> */}
