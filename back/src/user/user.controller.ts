@@ -28,6 +28,8 @@ import { filesize } from 'filesize';
 import { use } from 'passport';
 import { NestMiddleware } from '@nestjs/common';
 import { CustomExceptionFilter } from './module/CustomExceptionFilter';
+import { HttpService } from '@nestjs/axios';
+import { AxiosResponse } from 'axios';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -46,17 +48,20 @@ export class UserController {
 
   @Get('leaderboard')
   async getLeaderBoard() {
-    console.log("OKKKKKKKKKKKKKKKKK");
     const all = await this.userService.getLeaderboard();
     return all;
   }
-  
+
   @Get(':id')
-  async findUserById(@Param('id', ParseIntPipe) id: number) {
+  async findUserById(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (userId === id)
+      return res.redirect('http://localhost:4000/profile/me')
     return this.userService.findOneById(id);
   }
-
-  
 
   @Patch()
   editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {

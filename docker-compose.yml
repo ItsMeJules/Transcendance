@@ -33,6 +33,19 @@ services:
       - bdd
     restart: always
 
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - ./front/build:/workspace/front/build
+    networks:
+      - app  
+
   bdd:
     image: postgres:latest
     env_file:

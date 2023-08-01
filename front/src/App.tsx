@@ -51,9 +51,8 @@ function App() {
           <Route path={APP_ROUTES.SIGN_UP} element={<Signup />} />
           <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
           <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
-          <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/profile/:id" element={React.createElement(GenericUserProfile)}/>
-          {/* <Route path="/users/all" element={<Leaderboard />} /> */}
+          <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
+          <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)}/>
           <Route path="/test" element={<Test />}/>
         </Routes>
       </AppWrapper>

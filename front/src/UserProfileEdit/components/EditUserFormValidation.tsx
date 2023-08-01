@@ -39,7 +39,7 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
       window.location.href = APP_ROUTES.USER_PROFILE;
       // history(APP_ROUTES.USER_PROFILE);
     } catch (err: any) {
-      console.log(err.response.data.message);
+      console.log(err.response?.data.message);
       if (!err?.response) {
         setErrMsg('No Server Response');
       } else if (err.response?.status === 400) {

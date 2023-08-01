@@ -6,6 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 import { join } from 'path';
 
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -21,8 +22,9 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: 'http://localhost:4000',
-    methods: ['POST', 'GET', 'PATCH'],
+    origin: ['http://localhost:4000', 'http://localhost:8000'],
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    methods: 'GET, PATCH, POST, PUT, DELETE, OPTIONS',
     credentials: true,
   });
 

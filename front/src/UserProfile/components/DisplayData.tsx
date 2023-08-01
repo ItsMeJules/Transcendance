@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
+import React from 'react';
+import { MDBCardBody, MDBTypography, } from 'mdb-react-ui-kit';
 import { UserData } from '../../services/user';
 
 interface DisplayDataProps {
