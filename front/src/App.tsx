@@ -1,22 +1,25 @@
 import React, { Component, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
-import './css/ProgressBar.css'
+import './css/ProgressBar.scss'
 import './css/LoginButtons.css'
 import './css/Signin.scss'
 import './css/Toast.scss'
 import './css/UserProfile.scss'
+import './LeaderBoard/LeaderBoard'
 import { Home } from './screens/Home';
 import { Signin } from './screens/Signin';
 import { Signup } from './screens/Signup';
 import { Play } from './screens/Play';
 import { Route, Routes, NavLink } from 'react-router-dom';
 import AppWrapper from './AppWrapper';
-import { Leaderboard } from './screens/Leaderboard';
 import { UserProfile } from './screens/UserProfile';
 import { UserProfileEdit } from './screens/UserProfileEdit';
 import { APP_ROUTES } from './utils/constants';
 import { Test } from './screens/Test';
+import LeaderBoard from './LeaderBoard/LeaderBoard';
+import GenericUserProfile from './UserProfile/GenericUserProfile';
+import { render } from '@testing-library/react';
 
 function App() {
 
@@ -48,8 +51,9 @@ function App() {
           <Route path={APP_ROUTES.SIGN_UP} element={<Signup />} />
           <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
           <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
-          <Route path="/play" element={<Play />} />
-          <Route path="/users/all" element={<Leaderboard />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
+          <Route path="/profile/:id" element={React.createElement(GenericUserProfile)}/>
+          {/* <Route path="/users/all" element={<Leaderboard />} /> */}
           <Route path="/test" element={<Test />}/>
         </Routes>
       </AppWrapper>

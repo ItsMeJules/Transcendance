@@ -45,10 +45,6 @@ export class AuthService {
           username: dto.username,
           hash,
           profilePicture: absoluteUrl,
-          gamesPlayed: 0,
-          gamesWon: 0,
-          userPoints: 0,
-          userLevel: 1.4,
         },
       });
       const access_token = this.signToken(user.id, user.email);
@@ -56,9 +52,9 @@ export class AuthService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
+          // Add more errors handlers or a default one?
           throw new ForbiddenException('Credentials taken');
         }
-        HttpStatus;
       }
       throw error;
     }
@@ -70,11 +66,10 @@ export class AuthService {
         email: dto.email,
       },
     });
-    if (!user || user.hash === "")
-        throw new ForbiddenException('Credentials incorrect');
+    if (!user || user.hash === '')
+      throw new ForbiddenException('Credentials incorrect');
     const pwMatches = await argon.verify(user.hash, dto.password);
-    if (!pwMatches)
-        throw new ForbiddenException('Credentials incorrect');
+    if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
     return this.signToken(user.id, user.email);
   }
 

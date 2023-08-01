@@ -10,20 +10,24 @@ import {
   UploadedFile,
   ConsoleLogger,
   Res,
+  Param,
+  UseFilters,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
-import { Request } from 'express';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Multer, multer, diskStorage } from 'multer';
-import { MulterModule } from '@nestjs/platform-express';
 import { editFileName, imageFileFilter } from './module';
 import { Response } from 'express';
-import { join } from 'path';
+import { filesize } from 'filesize';
+import { use } from 'passport';
+import { NestMiddleware } from '@nestjs/common';
+import { CustomExceptionFilter } from './module/CustomExceptionFilter';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -32,7 +36,6 @@ export class UserController {
 
   @Get('me')
   getMe(@GetUser() user: User) {
-    // console.log('USERRRRRRRRRR:', user);
     return user;
   }
 
@@ -40,6 +43,20 @@ export class UserController {
   async findAll() {
     return this.userService.findAll();
   }
+
+  @Get('leaderboard')
+  async getLeaderBoard() {
+    console.log("OKKKKKKKKKKKKKKKKK");
+    const all = await this.userService.getLeaderboard();
+    return all;
+  }
+  
+  @Get(':id')
+  async findUserById(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.findOneById(id);
+  }
+
+  
 
   @Patch()
   editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {
@@ -51,26 +68,15 @@ export class UserController {
     FileInterceptor('profilePicture', {
       storage: diskStorage({
         destination: 'public/images/',
-        // destination: join(__dirname, '..', 'public', 'images'),
         filename: editFileName,
       }),
-      fileFilter: imageFileFilter,
+      // fileFilter: imageFileFilter
     }),
   )
+  @UseFilters(CustomExceptionFilter)
   async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
     return this.userService.uploadProfilePic(user, file);
   }
-
-  // @Get('get-profile-picture')
-  // sendProfilePicToFront(@GetUser() user: User, @Req() req: Request) {
-  //     const baseUrl = `${req.protocol}://${req.get('host')}`;
-
-  //     const profilePictureUrl = '/images/selfie.jpg';
-  //     const absoluteUrl = `${baseUrl}${profilePictureUrl}`;
-
-  //     console.log(absoluteUrl);
-  //     return absoluteUrl;
-  // }
 
   @Post('logout')
   async logout(@Req() req, @Res({ passthrough: true }) res: Response) {

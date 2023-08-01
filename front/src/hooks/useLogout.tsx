@@ -1,25 +1,34 @@
 import React, { useCallback } from "react";
 import { APP_ROUTES, API_ROUTES } from "../utils";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const useLogout = () => {
-  const logout = useCallback(async () => {
-    try {
-      const response = await axios.get(API_ROUTES.LOG_OUT, {
-        withCredentials: true,
-      });
+const handleLogout = async (setErrMsg: (error: string) => void) => {
+  try {
+    const response = await axios.post(API_ROUTES.LOG_OUT, null, {
+      withCredentials: true,
+    });
+    if (response.status === 201) {
       window.location.href = APP_ROUTES.HOME;
-    } catch (err: any) {
-      console.log("Error:", err.response.data.message);
+    } else {
+      console.error('Logout failed:', response.status);
+      setErrMsg('Logout failed');
     }
-
-    // After logout logic
-    // document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    // console.log(APP_ROUTES.HOME);
-     // Manually navigate to the home page
-  }, []);
-
-  return logout; // Return the logout function
+  } catch (err: any) {
+    if (!err?.response) {
+      console.error('No Server Response');
+      setErrMsg('No Server Response');
+    } else if (err.response?.status === 400) {
+      console.error('Bad request');
+      setErrMsg('Bad request');
+    } else if (err.response?.status === 401) {
+      console.error('Unauthorized');
+      window.location.href = APP_ROUTES.HOME;
+    } else {
+      console.error('Unknown error occurred');
+      setErrMsg('Unknown error occurred');
+    }
+  }
 };
 
-export default useLogout;
+export default handleLogout;

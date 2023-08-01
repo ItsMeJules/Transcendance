@@ -12,6 +12,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { PrismaModule } from './prisma/prisma.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
+import { memoryStorage } from 'multer';
 
 @Module({
   imports: [
@@ -24,9 +25,9 @@ import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'), // Set the root path to the "public" folder.
     }),
-    // MulterModule.register({
-    //   dest: '/public/images', // Destination folder for storing uploaded images.
-    // }),
+    MulterModule.register({
+      dest: 'public/images/',
+    }),
     AuthModule,
     UserModule,
     BookmarkModule,

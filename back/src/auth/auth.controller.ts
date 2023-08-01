@@ -33,12 +33,16 @@ export class AuthController {
         return { message: 'Signin successful' };
     }
 
+    // add a filter like for image upload to return errors
+    // @usefilter
     @Get('42/login')
     @UseGuards(FortyTwoAuthGuard)
     handle42Login() {
         return { msg: '42 Authentification' };
     }
 
+    // add a filter like for image upload to return errors
+    // @usefilter
     @Get('42/redirect')
     @UseGuards(FortyTwoAuthGuard)
     async handle42Redirect(@Req() req, @Res({ passthrough: true }) res: Response) { //@Res? Passthrough?
