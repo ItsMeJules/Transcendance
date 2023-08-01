@@ -1,13 +1,9 @@
 import { useState, useRef, useEffect, FormEvent, useContext } from "react";
-import ParticleSlow from "../components/ParticleSlow"
-import { keyframes } from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
 import AuthContext from "../context/AuthProvider";
 import axios from "../api/axios";
-import { AxiosError, HttpStatusCode } from "axios";
 import { APP_ROUTES, API_ROUTES } from "../utils/constants";
-import { text_glow, GlowTextSignin } from "../utils";
+import { GlowTextSignin } from "../utils";
 import ToastErrorMessage from "../components/ToastErrorMessage";
 
 export const Signup = () => {

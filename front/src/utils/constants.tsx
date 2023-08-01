@@ -8,6 +8,7 @@ export const API_ROUTES = {
     USER_PROFILE_EDIT: `${API_URL}/users`,
     GENERIC_USER_PROFILE: `${API_URL}/users/`,
     UPLOAD_PROFILE_PIC: `${API_URL}/users/upload-profile-picture`,
+    ADD_FRIEND:         `${API_URL}/users/add-friend/`,
     GET_LEADERBOARD: `${API_URL}/users/leaderboard`,
 }
 

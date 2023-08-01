@@ -1,14 +1,17 @@
-import React, { useDebugValue, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_ROUTES, APP_ROUTES, APP_URL } from '../utils';
 import User from '../services/user';
-import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
+import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
 import { UserData } from '../services/user';
 import getProgressBarClass from "../components/ProgressBarClass";
 import DisplayData from './components/DisplayData';
 import DisplayStats from './components/DisplayStats';
 import ProfilePicContainer from './components/ProfilePicContainer';
+import LogoutParent from '../hooks/logoutParent';
+import { FaHeart } from 'react-icons/fa';
+
 
 interface UserProfileProps {
   id: number;
@@ -17,7 +20,6 @@ interface UserProfileProps {
 const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
   const { id } = useParams();
   const [level, setLevel] = useState<number | null>(0);
-  const [dataFetched, setDataFetched] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const history = useNavigate();
   const [errMsg, setErrMsg] = useState('');
@@ -32,22 +34,13 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
         });
       localStorage.setItem('generciUserData', JSON.stringify(response.data));
       setUserData(response.data);
-      // console.log(response);
-      // if (response.data.redirectTo === "")
-      //   console.log("EMPYYYY");
-      // else if (response.data.redirectTo !== "")
-      //   console.log("NOT EMPTYYYY");
-
-      // if (response.data.redirectTo === APP_ROUTES.USER_PROFILE)
-      if (response.data.redirectTo === APP_URL + APP_ROUTES.USER_PROFILE) {
-        console.log("OKKK");
+      if (response.data.redirectTo === APP_URL + APP_ROUTES.USER_PROFILE)
         window.location.href = APP_ROUTES.USER_PROFILE;
-      }
       if (userData)
         setLevel(userData?.userLevel);
-      setDataFetched(true); // Set dataFetched to true after fetching the user data
 
     } catch (err: any) {
+      // adequate error management
     }
   };
 
@@ -55,53 +48,61 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
     fetchUserProfile(id);
   }, [id]);
 
-  // Add some loading handling while user data is fetched
-  if (!dataFetched) {
-    return <div>Loading...</div>;
+  const addFriend = async (id: string | undefined) => {
+
+
+    const dataToSend: any = {};
+    if (id)
+      dataToSend.id = id;
+    console.log("datatosend:", id);
+    
+    try {
+      const response = await axios.patch(
+        API_ROUTES.ADD_FRIEND + id,
+        dataToSend,
+        {
+          withCredentials: true
+        });
+      console.log(response.data);
+    } catch (err: any) {
+      // adequate error management
+    }
+
   }
 
-  const handleLogout = async () => {
-    try {
-      const response = await axios.post(API_ROUTES.LOG_OUT, null, {
-        withCredentials: true,
-      });
-      if (response.status === 201) {
-        history(APP_ROUTES.HOME);
-      } else {
-        console.error('Logout failed:', response.status);
-      }
-    } catch (err: any) {
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-      } else if (err.response?.status === 400) {
-        setErrMsg('Bad request');
-      } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized');
-        history(APP_ROUTES.HOME);
-      }
-      else {
-        setErrMsg('Logout failed');
-      }
-    }
-  }
 
   return (
     <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
       <MDBContainer className="profile-board-container">
         <MDBCard className="profile-board-card">
+
+
+
           <div className="profile-board-header-show-profile">
-            <button title="Log out" onClick={handleLogout}>
-              <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
+
+            <button onClick={() => addFriend(id)}>
+              <FaHeart />
             </button>
+
+            <LogoutParent setErrMsg={setErrMsg} />
           </div>
+
           <ProfilePicContainer userData={userData} />
+
           <div className="fade-line" style={{ marginTop: '20px' }}></div>
+
           <DisplayData userData={userData} />
+
           <div className="fade-line" style={{ marginTop: '-10px' }}></div>
+
           <DisplayStats userData={userData} />
         </MDBCard>
       </MDBContainer>
 
+
+
+
+      {/* reactivate error message */}
       {/* <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} /> */}
 
     </div>

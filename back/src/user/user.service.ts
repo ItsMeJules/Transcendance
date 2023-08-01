@@ -1,28 +1,21 @@
 import {
   Injectable,
   ForbiddenException,
-  ConsoleLogger,
-  NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { EditUserDto } from './dto';
 import { User, Prisma } from '@prisma/client';
-import { Multer, multer } from 'multer';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { URL } from 'url';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { use } from 'passport';
 import * as sharp from 'sharp';
-// import sharp from 'sharp';
 import {
   constructPictureUrl,
   constructPicturePath,
   constructPicturePathNoImage,
 } from './module';
-import * as pactum from 'pactum';
-import { connected } from 'process';
 
 const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
@@ -197,4 +190,10 @@ export class UserService {
     });
     return leaderboard;
   }
+
+
+  async addFriend(userId: number, id: number) {
+    console.log("OKOK EHEHEHEH");
+  }
+
 }
