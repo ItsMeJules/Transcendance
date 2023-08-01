@@ -53,6 +53,7 @@ function App() {
           <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/profile/:id" element={React.createElement(GenericUserProfile)}/>
+          <Route path="/play" element={<Play />}/>
           {/* <Route path="/users/all" element={<Leaderboard />} /> */}
           <Route path="/test" element={<Test />}/>
         </Routes>
