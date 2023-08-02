@@ -10,8 +10,9 @@ import DisplayData from './components/DisplayData';
 import DisplayStats from './components/DisplayStats';
 import ProfilePicContainer from './components/ProfilePicContainer';
 import LogoutParent from '../hooks/logoutParent';
+import ToastErrorMessage from '../components/ToastErrorMessage';
 import { FaHeart } from 'react-icons/fa';
-
+import { IconContext } from 'react-icons';
 
 interface UserProfileProps {
   id: number;
@@ -21,10 +22,13 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
   const { id } = useParams();
   const [level, setLevel] = useState<number | null>(0);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const history = useNavigate();
+  const [iconColor, setIconColor] = useState('black');
   const [errMsg, setErrMsg] = useState('');
   const progressBarClass = getProgressBarClass(level);
 
+  const resetErrMsg = () => {
+    setErrMsg('');
+  }
 
   const fetchUserProfile = async (id: string | undefined) => {
     try {
@@ -32,12 +36,15 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
         {
           withCredentials: true
         });
-      localStorage.setItem('generciUserData', JSON.stringify(response.data));
-      setUserData(response.data);
+      localStorage.setItem('genericUserData', JSON.stringify(response.data.data.user.user));
+      setUserData(response.data.data.user.user);
+      if (response.data.data.friendStatus === 'Is friend')
+        setIconColor('red');
       if (response.data.redirectTo === APP_URL + APP_ROUTES.USER_PROFILE)
         window.location.href = APP_ROUTES.USER_PROFILE;
       if (userData)
         setLevel(userData?.userLevel);
+
 
     } catch (err: any) {
       // adequate error management
@@ -55,7 +62,7 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
     if (id)
       dataToSend.id = id;
     console.log("datatosend:", id);
-    
+
     try {
       const response = await axios.patch(
         API_ROUTES.ADD_FRIEND + id,
@@ -63,7 +70,12 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
         {
           withCredentials: true
         });
-      console.log(response.data);
+      console.log(response.data.friendStatus);
+      if (response.data.friendStatus === 'Is friend')
+        setIconColor('red');
+      else
+        setIconColor('black');
+
     } catch (err: any) {
       // adequate error management
     }
@@ -81,7 +93,10 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
           <div className="profile-board-header-show-profile">
 
             <button onClick={() => addFriend(id)}>
-              <FaHeart />
+              <IconContext.Provider
+                value={{ color: iconColor, size: '30px' }}>
+                <FaHeart />
+              </IconContext.Provider>
             </button>
 
             <LogoutParent setErrMsg={setErrMsg} />
@@ -103,7 +118,7 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
 
 
       {/* reactivate error message */}
-      {/* <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} /> */}
+      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
 
     </div>
   );

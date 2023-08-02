@@ -1,4 +1,4 @@
-import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client'
 
@@ -22,10 +22,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         await this.$disconnect();
     }
 
-    cleanDb() {
-        return this.$transaction([
-            // this.bookmark.deleteMany(),
-            this.user.deleteMany(),
-        ]);
-    }
+    // cleanDb() {
+    //     return this.$transaction([
+    //         // this.bookmark.deleteMany(),
+    //         this.user.deleteMany(),
+    //     ]);
+    // }
 }

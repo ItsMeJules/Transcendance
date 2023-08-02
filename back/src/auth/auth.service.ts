@@ -45,6 +45,10 @@ export class AuthService {
           username: dto.username,
           hash,
           profilePicture: absoluteUrl,
+          friends: { // Provide friends as an empty array of nested objects
+            create: [],
+          },
+
         },
       });
       const access_token = this.signToken(user.id, user.email);

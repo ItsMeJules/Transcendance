@@ -16,6 +16,7 @@ import {
   constructPicturePath,
   constructPicturePathNoImage,
 } from './module';
+import { Response } from 'express';
 
 const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
@@ -24,7 +25,6 @@ export class UserService {
   constructor(private prisma: PrismaService, private config: ConfigService) {}
 
   async editUser(userId: number, dto: EditUserDto) {
-
     if (dto.username && dto.username.length > 100)
       throw new ForbiddenException('Username too long');
     else if (dto.firstName && dto.firstName.length > 100)
@@ -52,6 +52,28 @@ export class UserService {
       throw error;
     }
   }
+
+  // async getUserById(userId: number, id: number, res: Response) {
+  //   if (userId === id)
+  //     return { redirectTo: 'http://localhost:4000/profile/me' };
+  //   try {
+  //     const is_user_friend = await this.prisma.user.findMany({
+  //       where: {
+  //         friends: {
+  //           some: {
+  //             id: id,
+  //           },
+  //         },
+  //       },
+  //     });
+  //     const user = this.findOneById(id);
+  //     console.log(user);
+  //     const data: any = {};
+  //     data.user = user;
+  //     if (is_user_friend.length !== 0) data.friendStatus = 'Is friend';
+  //     return { data };
+  //   } catch (err) {}
+  // }
 
   async findAll() {
     return this.prisma.user.findMany();
@@ -191,9 +213,45 @@ export class UserService {
     return leaderboard;
   }
 
+  async addFriendToggler(userId: number, friendId: number) {
+    try {
+      // Find the user and the friend based on their IDs
+      if (userId === friendId) return;
 
-  async addFriend(userId: number, id: number) {
-    console.log("OKOK EHEHEHEH");
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      const friend = await this.prisma.user.findUnique({
+        where: { id: friendId },
+      });
+
+      const is_user_friend = await this.prisma.user.findMany({
+        where: {
+          friends: {
+            some: {
+              id: friendId,
+            },
+          },
+        },
+      });
+      console.log(is_user_friend);
+      // Users are not friend => add to friends
+      if (is_user_friend.length === 0) {
+        await this.prisma.user.update({
+          where: { id: userId },
+          data: { friends: { connect: { id: friendId } } },
+        });
+        console.log(`Added ${friend.username} as friend to ${user.username}`);
+        return { friendStatus: 'Is friend' };
+      } else {
+        // Users are friend => remove from friends
+        await this.prisma.user.update({
+          where: { id: userId },
+          data: { friends: { disconnect: { id: friendId } } },
+        });
+        console.log(`Removed ${friend.username} as friend to ${user.username}`);
+        return { friendStatus: 'Is not friend' };
+      }
+    } catch (error) {
+      console.error('Error adding friend:', error);
+    }
   }
-
 }

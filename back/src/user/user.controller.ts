@@ -23,11 +23,13 @@ import { diskStorage } from 'multer';
 import { editFileName } from './module';
 import { Response } from 'express';
 import { CustomExceptionFilter } from './module/CustomExceptionFilter';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,
+    private prisma: PrismaService) {}
 
   @Get('me')
   getMe(@GetUser() user: User) {
@@ -53,14 +55,38 @@ export class UserController {
   ) {
     if (userId === id)
       return { redirectTo: 'http://localhost:4000/profile/me' };
-    return this.userService.findOneById(id);
+    try {
+      const is_user_friend = await this.prisma.user.findMany({
+        where: {
+          friends: {
+            some: {
+              id: id,
+            },
+          },
+        },
+      });
+      // console.log(is_user_friend);
+      const user: User | null = await this.prisma.user.findUnique({
+        where: { id: id },
+      });
+      // console.log(user);
+      const data: any = {};
+      data.user = {user};
+      data.friendStatus = '';
+      if (is_user_friend.length !== 0) data.friendStatus = 'Is friend';
+      console.log(data);
+      return { data };
+    } catch (err) {}
+    // return this.userService.findOneById(id);
   }
 
   @Patch('add-friend/:id')
-  async addFriend(@GetUser('id') userId: number,
-  @Param('id', ParseIntPipe) id: number) {
-    console.log("firends entered");
-    // return this.userService.addFriend(userId, id);
+  async addFriend(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) friendId: number,
+  ) {
+    console.log('firends entered');
+    return this.userService.addFriendToggler(userId, friendId);
   }
 
   @Patch()
@@ -81,8 +107,6 @@ export class UserController {
   async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
     return this.userService.uploadProfilePic(user, file);
   }
-
-
 
   @Post('logout')
   async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
