@@ -29,8 +29,7 @@ model User {
   userPoints  Int? @default(0)
   userLevel   Decimal? @default(0)
 
-  friends         User[] @relation("friends")
-  friendsRelation User[] @relation("friends")
+  friends User[] @relation("friends", references: [id])
 
   Bookmark Bookmark[]
 
