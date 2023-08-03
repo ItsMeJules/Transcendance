@@ -39,7 +39,6 @@ export class AuthService {
           userLevel: 1.4,
         },
       });
-      const access_token = this.signToken(user.id, user.email);
       return this.signToken(user.id, user.email);
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {

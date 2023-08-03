@@ -9,6 +9,8 @@ import { GoogleStrategy } from './strategy/strategy.google';
 import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FortyTwoStrategy } from './strategy/strategy.42';
+import { TwoFaModule } from './two-fa/two-fa.module';
+import { TwoFaService } from './two-fa/two-fa.service';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { FortyTwoStrategy } from './strategy/strategy.42';
     }),
     UserModule,
     PassportModule,
+    TwoFaModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -27,6 +30,7 @@ import { FortyTwoStrategy } from './strategy/strategy.42';
     PrismaService,
     AuthService,
     JwtStrategy,
+    TwoFaService,
   ], // why no guards?
 })
 export class AuthModule {}

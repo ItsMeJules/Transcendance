@@ -10,24 +10,27 @@ import { BookmarkModule } from './bookmark/bookmark.module';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { PrismaModule } from './prisma/prisma.module';
+import { TwoFaModule } from './auth/two-fa/two-fa.module';
+import { TwoFaService } from './auth/two-fa/two-fa.service';
 
 @Module({
   imports: [
     JwtModule.register({
-			secret: process.env.jwtSecret,
-		  }),
+      secret: process.env.jwtSecret,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     MulterModule.register({
       dest: './',
     }),
-    AuthModule, 
-    UserModule, 
+    AuthModule,
+    UserModule,
     BookmarkModule,
-    PrismaModule],
+    PrismaModule,
+    TwoFaModule,
+  ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
 })
-
 export class AppModule {}

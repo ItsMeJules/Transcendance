@@ -15,12 +15,17 @@ import { AuthDto } from './dto';
 import { authenticator } from 'otplib';
 import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
+import { TwoFaService } from './two-fa/two-fa.service';
+import { GetUser } from './decorator';
+import { User } from '@prisma/client';
+import { Response as ExResponse } from 'express'; // Import Express.js Response
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: UserService,
+    private twoFaService: TwoFaService,
   ) {}
 
   @Post('signup')
@@ -90,16 +95,19 @@ export class AuthController {
     res.json('good');
   }
 
-  @Get('generatesecret')
+  @Post('generatesecret')
   @UseGuards(JwtGuard)
-  generateOtpSecret(@Req() req: Request) {
-    const formattedKey = authenticator.generateSecret();
-    const formattedToken = authenticator.generate(formattedKey);
-    const user = 'acousini';
-    console.log(req);
-    const service = 'TranscenCul';
-    const otpauth = authenticator.keyuri(user, service, formattedKey);
-    return otpauth;
+  async register(
+    @Res() response: ExResponse, // Use Express.js Response type
+    @GetUser() user: User,
+  ): Promise<ArrayBuffer> {
+    const otpAuthUrlOne =
+      await this.twoFaService.generateTwoFactorAuthenticationSecret(user);
+
+    return this.twoFaService.pipeQrCodeStream(
+      response,
+      otpAuthUrlOne.otpAuthUrl,
+    );
   }
 
   @Post('verify')

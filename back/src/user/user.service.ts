@@ -96,4 +96,33 @@ export class UserService {
     });
     return user;
   }
+
+  // 2fa Implementation
+
+  async setTwoFactorAuthenticationSecret(
+    secret: string,
+    userId: number,
+  ): Promise<User> {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        twoFactorAuthenticationSecret: secret,
+      },
+    });
+    return user;
+  }
+
+  async turnOnTwoFactorAuthentication(userId: number): Promise<User> {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isTwoFactorAuthenticationEnabled: true,
+      },
+    });
+    return user;
+  }
 }
