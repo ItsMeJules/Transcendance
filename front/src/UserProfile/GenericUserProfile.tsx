@@ -37,7 +37,9 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
           withCredentials: true
         });
       localStorage.setItem('genericUserData', JSON.stringify(response.data.data.user.user));
+      // console.log(response.data);
       setUserData(response.data.data.user.user);
+      
       if (response.data.data.friendStatus === 'Is friend')
         setIconColor('red');
       if (response.data.redirectTo === APP_URL + APP_ROUTES.USER_PROFILE)
@@ -56,12 +58,9 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
   }, [id]);
 
   const addFriend = async (id: string | undefined) => {
-
-
     const dataToSend: any = {};
     if (id)
       dataToSend.id = id;
-    console.log("datatosend:", id);
 
     try {
       const response = await axios.patch(
@@ -70,16 +69,13 @@ const GenericUserProfile: React.FC<UserProfileProps> = ({ }) => {
         {
           withCredentials: true
         });
-      console.log(response.data.friendStatus);
       if (response.data.friendStatus === 'Is friend')
         setIconColor('red');
       else
         setIconColor('black');
-
     } catch (err: any) {
       // adequate error management
     }
-
   }
 
 

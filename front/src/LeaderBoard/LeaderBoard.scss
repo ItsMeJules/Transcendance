@@ -178,6 +178,9 @@
       font-size: 18px;
       letter-spacing: 0.6px;
       margin-left: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     &__value {

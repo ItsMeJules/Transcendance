@@ -29,11 +29,25 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService,
-    private prisma: PrismaService) {}
+    private prisma: PrismaService) { }
 
   @Get('me')
   getMe(@GetUser() user: User) {
     return user;
+  }
+
+  @Get('me/friends')
+  async getFriends(@GetUser() user: User) {
+    console.log("oke");
+    const userFriends = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      include: { friends: true },
+    });
+    // console.log(userFriends);
+    // if (!user) {
+    //   return res.status(404).json({ message: 'User not found' });
+    // }
+    return userFriends;
   }
 
   @Get('all')
@@ -56,28 +70,27 @@ export class UserController {
     if (userId === id)
       return { redirectTo: 'http://localhost:4000/profile/me' };
     try {
-      const is_user_friend = await this.prisma.user.findMany({
-        where: {
+      const userMain = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
           friends: {
-            some: {
-              id: id,
-            },
-          },
+            where: { id: id },
+            select: { id: true }
+          }
         },
       });
-      // console.log(is_user_friend);
+      // console.log("userMain:", userMain);
       const user: User | null = await this.prisma.user.findUnique({
         where: { id: id },
       });
-      // console.log(user);
+      // console.log("userToFind:", userToFind);
       const data: any = {};
-      data.user = {user};
+      data.user = { user };
       data.friendStatus = '';
-      if (is_user_friend.length !== 0) data.friendStatus = 'Is friend';
-      console.log(data);
+      if (userMain.friends.length !== 0) data.friendStatus = 'Is friend';
       return { data };
-    } catch (err) {}
-    // return this.userService.findOneById(id);
+    } catch (err) {
+    }
   }
 
   @Patch('add-friend/:id')
@@ -85,7 +98,6 @@ export class UserController {
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) friendId: number,
   ) {
-    console.log('firends entered');
     return this.userService.addFriendToggler(userId, friendId);
   }
 
