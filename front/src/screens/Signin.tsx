@@ -24,7 +24,7 @@ export const Signin = () => {
   }
 
   function RequestURIGoogle() {
-    let url = process.env.REACT_APP_GOOGLE_LOGIN_URL;
+    let url = '/api/auth/google/login';
     try {
       if (url)
         window.location.href = url; // Use window.location.href to trigger the redirect
