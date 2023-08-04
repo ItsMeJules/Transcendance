@@ -33,8 +33,7 @@ export class AuthService {
 
   async signup(dto: AuthDtoUp, res: Response) {
     const profilePictureUrl = '/images/logo.png';
-    const absoluteUrl =
-      this.config.get('API_BASE_URL') + `${profilePictureUrl}`;
+    const absoluteUrl = process.env.API_BASE_URL + `${profilePictureUrl}`;
     const hash = await argon.hash(dto.password);
     if (dto.username.length > 100)
       throw new ForbiddenException('Username too long');
@@ -53,12 +52,12 @@ export class AuthService {
         },
       });
       const access_token = this.signToken(user.id, user.email);
-      res.cookie('access_token', access_token, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 10000,
-        sameSite: 'lax',
-    });
-      return user;
+    //   res.cookie('access_token', access_token, {
+    //     httpOnly: true,
+    //     maxAge: 60 * 60 * 24 * 10000,
+    //     sameSite: 'lax',
+    // });
+      return access_token;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -71,6 +70,7 @@ export class AuthService {
   }
 
   async signin(dto: AuthDto) {
+
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,

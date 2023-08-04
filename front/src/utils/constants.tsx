@@ -6,6 +6,7 @@ export const API_ROUTES = {
     LOG_OUT: `${API_URL}/users/logout`,
     USER_PROFILE: `${API_URL}/users/me`,
     USER_PROFILE_EDIT: `${API_URL}/users`,
+    USER_PIC_CHANGE: `${API_URL}/users/pf`,
     USER_FRIENDS: `${API_URL}/users/me/friends`,
     GENERIC_USER_PROFILE: `${API_URL}/users/`,
     UPLOAD_PROFILE_PIC: `${API_URL}/users/upload-profile-picture`,

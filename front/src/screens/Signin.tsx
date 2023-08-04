@@ -18,7 +18,7 @@ export const Signin = () => {
 
   function RequestURI42() {
     console.log("ok");
-    let url = 'http://localhost:8000';
+    let url = '/api/auth/42/login';
     if (url)
       document.location = (url) // 
   }

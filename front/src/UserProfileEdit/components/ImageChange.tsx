@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserData } from '../../services/user';
 import axios from 'axios';
+import { API_ROUTES } from '../../utils';
 
 interface ImageChangeProps {
   setErrMsg: (error: string) => void; // Callback function to set errMsg in UserProfile component
@@ -10,12 +11,14 @@ interface ImageChangeProps {
 const ImageChange: React.FC<ImageChangeProps> = ({ setErrMsg, fetchUserProfile }) => {
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("IMAGE:", API_ROUTES.USER_PIC_CHANGE);
     const imageFile = e.target.files?.[0];
     if (imageFile) {
       const formData = new FormData();
       formData.append("profilePicture", imageFile);
       try {
-        await axios.post('http://localhost:3000/users/pf', formData, {
+        
+        await axios.post(API_ROUTES.USER_PIC_CHANGE, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

@@ -12,13 +12,12 @@ export class AuthController {
 
     @Post('signup')
     async handleSignup(@Body() dto: AuthDtoUp, @Res({ passthrough: true }) res: Response) {
-        const user = await this.authService.signup(dto, res);
-        // res.cookie('access_token', access_token, {
-        //     httpOnly: true,
-        //     maxAge: 60 * 60 * 24 * 10000,
-        //     sameSite: 'lax',
-        // });
-        return user;
+        const access_token = await this.authService.signup(dto, res);
+        res.cookie('access_token', access_token, {
+            httpOnly: true,
+            maxAge: 60 * 60 * 24 * 10000,
+            sameSite: 'lax',
+        });
     }
 
     @HttpCode(HttpStatus.OK)

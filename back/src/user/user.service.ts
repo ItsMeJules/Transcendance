@@ -57,35 +57,36 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-
-
   async uploadProfilePic(user: User, file: any) {
     const response = {
       originalname: file.originalname,
       filename: file.filename,
     };
-    const oldPictureObj = new URL(user.profilePicture);
+    const oldPictureObj = user.profilePicture;
 
     // Verify file size and delete file if too big
-    if (file.size > MAX_FILE_SIZE) {
-      try {
-        const pathToDelete =
-          process.cwd() +
-          this.config.get('PUBLIC_FOLDER') +
-          this.config.get('IMAGES_FOLDER') +
-          '/' +
-          response.filename;
-        // console.log('Del 1:', pathToDelete);
-        fs.unlinkSync(pathToDelete);
-      } catch (err: any) { }
-      throw new ForbiddenException('File too large (>10MB)');
-    }
+    // if (file.size > MAX_FILE_SIZE) {
+    //   try {
+    //     const pathToDelete =
+    //       process.cwd() +
+    //       this.config.get('PUBLIC_FOLDER') +
+    //       this.config.get('IMAGES_FOLDER') +
+    //       '/' +
+    //       response.filename;
+    //     console.log('Del 1:', pathToDelete);
+    //     fs.unlinkSync(pathToDelete);
+    //   } catch (err: any) { }
+    //   throw new ForbiddenException('File too large (>10MB)');
+    // }
 
     // Compress and store file and delete uncompressed
     try {
       const fileExtension = file.originalname.split('.').pop()?.toLowerCase();
       const newPicPath = constructPicturePath('cmp_' + response.filename);
       const newPicUrl = constructPictureUrl('cmp_' + response.filename);
+      console.log('filextenso:', fileExtension);
+      console.log('newpicpath:', newPicPath);
+      console.log('newpicurl:', newPicUrl);
       let compressionOptions;
       if (fileExtension === 'jpg' || fileExtension === 'jpeg') {
         compressionOptions = {
@@ -98,7 +99,7 @@ export class UserService {
           compressionLevel: 9, // Adjust compression level for PNG (0 - 9)
         };
       } else {
-        throw new Error('File format not supported');
+        throw new Error('File format not supported'); // better redirection
       }
       await sharp(file.path)
         .toFormat(fileExtension)
@@ -115,15 +116,17 @@ export class UserService {
       fs.unlinkSync(file.path);
     } catch (err: any) {
       console.log(err);
+      // better error redirection
       throw new InternalServerErrorException('Failed to compress the image.');
     }
 
     // Delete the previous profile picture from the file system
     try {
-      const pathToDelete = constructPicturePathNoImage(oldPictureObj.pathname);
+      const pathToDelete = "/workspace/back/public" + oldPictureObj.replace("/api", "");
+      console.log("pathtodelete:", pathToDelete);
       if (
         pathToDelete &&
-        oldPictureObj.pathname !==
+        oldPictureObj !==
         process.env.IMAGES_FOLDER + process.env.DEFAULT_PROFILE_PICTURE
       )
         fs.unlinkSync(pathToDelete);
