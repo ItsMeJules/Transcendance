@@ -64,29 +64,11 @@ export class UserService {
     };
     const oldPictureObj = user.profilePicture;
 
-    // Verify file size and delete file if too big
-    // if (file.size > MAX_FILE_SIZE) {
-    //   try {
-    //     const pathToDelete =
-    //       process.cwd() +
-    //       this.config.get('PUBLIC_FOLDER') +
-    //       this.config.get('IMAGES_FOLDER') +
-    //       '/' +
-    //       response.filename;
-    //     console.log('Del 1:', pathToDelete);
-    //     fs.unlinkSync(pathToDelete);
-    //   } catch (err: any) { }
-    //   throw new ForbiddenException('File too large (>10MB)');
-    // }
-
     // Compress and store file and delete uncompressed
     try {
       const fileExtension = file.originalname.split('.').pop()?.toLowerCase();
       const newPicPath = constructPicturePath('cmp_' + response.filename);
       const newPicUrl = constructPictureUrl('cmp_' + response.filename);
-      console.log('filextenso:', fileExtension);
-      console.log('newpicpath:', newPicPath);
-      console.log('newpicurl:', newPicUrl);
       let compressionOptions;
       if (fileExtension === 'jpg' || fileExtension === 'jpeg') {
         compressionOptions = {
@@ -123,7 +105,6 @@ export class UserService {
     // Delete the previous profile picture from the file system
     try {
       const pathToDelete = "/workspace/back/public" + oldPictureObj.replace("/api", "");
-      console.log("pathtodelete:", pathToDelete);
       if (
         pathToDelete &&
         oldPictureObj !==

@@ -18,19 +18,26 @@ const ImageChange: React.FC<ImageChangeProps> = ({ setErrMsg, fetchUserProfile }
       formData.append("profilePicture", imageFile);
       try {
         
-        await axios.post(API_ROUTES.USER_PIC_CHANGE, formData, {
+        const response = await axios.post(API_ROUTES.USER_PIC_CHANGE, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
           withCredentials: true, // Add this line to include the withCredentials option
         });
+        console.log('err:',response);
         fetchUserProfile();
       } catch (err: any) {
+        // catch unauthorized too!!!
+        console.log('err:',err);
         if (!err?.response) {
           setErrMsg('No Server Response');
         } else if (err.response?.status === 403) {
           setErrMsg(`${err.response.data.message}`);
-        } else
+        } else if (err.response?.status === 413) {
+          const errorResponse = err.response.data;
+          setErrMsg(errorResponse.error); // Set the error message to the errMsg variable
+        }
+        else
           setErrMsg(err.response.data.message);
 
       }

@@ -51,7 +51,7 @@ export class AuthController {
             maxAge: 60 * 60 * 24 * 10000,
             sameSite: 'lax',
         });
-        res.redirect('http://localhost:8000/profile/me');
+        res.redirect('/profile/me');
     }
 
     @Get('google/login')
@@ -68,7 +68,7 @@ export class AuthController {
             maxAge: 60 * 60 * 24 * 10000,
             sameSite: 'lax',
         });
-        res.redirect('http://localhost:8000/profile/me');
+        res.redirect('/profile/me');
     }
 
     @Get('test123')
