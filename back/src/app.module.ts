@@ -12,7 +12,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { PrismaModule } from './prisma/prisma.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
-import { memoryStorage } from 'multer';
+import { WebsocketGateway } from './websocket/websocket.gateway';
 
 @Module({
   imports: [
@@ -34,6 +34,6 @@ import { memoryStorage } from 'multer';
     PrismaModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, AuthService],
+  providers: [AppService, AuthService, WebsocketGateway,],
 })
 export class AppModule {}

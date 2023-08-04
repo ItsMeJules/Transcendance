@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000'
+export const API_URL = '/api'
 
 export const API_ROUTES = {
     SIGN_UP: `${API_URL}/auth/signup`,
@@ -13,7 +13,7 @@ export const API_ROUTES = {
     GET_LEADERBOARD: `${API_URL}/users/leaderboard`,
 }
 
-export const APP_URL = 'http://localhost:4000'
+export const APP_URL = 'http://localhost:8000'
 
 export const APP_ROUTES = {
     HOME:                 '/',

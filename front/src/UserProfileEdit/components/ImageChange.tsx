@@ -1,6 +1,6 @@
 import React from 'react';
 import { UserData } from '../../services/user';
-import axios from '../../api/axios';
+import axios from 'axios';
 
 interface ImageChangeProps {
   setErrMsg: (error: string) => void; // Callback function to set errMsg in UserProfile component

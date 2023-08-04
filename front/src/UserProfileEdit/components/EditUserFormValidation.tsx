@@ -1,8 +1,8 @@
 import React, { FormEvent, useState, useEffect } from 'react';
 import { UserData } from '../../services/user';
-import axios from '../../api/axios';
 import { MDBContainer, MDBCard, MDBCardBody, MDBTypography } from 'mdb-react-ui-kit';
 import { API_ROUTES, APP_ROUTES } from '../../utils';
+import axios from 'axios';
 
 interface EditUserFormValidationProps {
   setErrMsg: (error: string) => void;

@@ -23,6 +23,7 @@
     "react-scripts": "5.0.1",
     "react-tsparticles": "^2.10.1",
     "sass": "^1.64.2",
+    "socket.io-client": "^4.7.2",
     "styled-components": "^6.0.3",
     "tsparticles": "^2.10.1",
     "typescript": "^4.9.5",

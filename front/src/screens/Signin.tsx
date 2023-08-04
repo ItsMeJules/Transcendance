@@ -16,8 +16,9 @@ export const Signin = () => {
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
 
-  function RequestURI() {
-    let url = process.env.REACT_APP_FOTRYTWO_LOGIN_URL;
+  function RequestURI42() {
+    console.log("ok");
+    let url = 'http://localhost:8000';
     if (url)
       document.location = (url) // 
   }
@@ -143,7 +144,7 @@ export const Signin = () => {
 
             <div className="flex border items-center" style={{ flexDirection: "column" }}>
               <div className="loginBtn loginBtn--42 text-white">
-                <button className="text-white" onClick={RequestURI}>Continue with 42</button>
+                <button className="text-white" onClick={RequestURI42}>Continue with 42</button>
 
               </div>
               <div className="flex" style={{ marginTop: '15px' }}>

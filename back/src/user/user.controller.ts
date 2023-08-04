@@ -68,7 +68,7 @@ export class UserController {
     @Res({ passthrough: true }) res: Response,
   ) {
     if (userId === id)
-      return { redirectTo: 'http://localhost:4000/profile/me' };
+      return { redirectTo: 'http://localhost:8000/profile/me' };
     try {
       const userMain = await this.prisma.user.findUnique({
         where: { id: userId },

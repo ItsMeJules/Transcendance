@@ -6,8 +6,6 @@ services:
       dockerfile: ./Dockerfile
     env_file:
     - ./front/.env
-    ports:
-      - 4000:4000
     volumes:
       - ./front:/workspace/front
     networks:
@@ -23,7 +21,6 @@ services:
     env_file:
     - ./back/.env
     ports:
-      - 3000:3000
       - 5555:5555
     volumes:
       - ./back:/workspace/back
@@ -41,10 +38,11 @@ services:
     depends_on:
       - backend
       - frontend
-    volumes:
-      - ./front/build:/workspace/front/build
     networks:
-      - app  
+      - app
+    restart: always
+    logging:
+      driver: "none"
 
   bdd:
     image: postgres:latest
@@ -56,6 +54,7 @@ services:
       - data:/var/lib/postgresql/data
     networks:
       - app
+    restart: always
 
 volumes:
   data:
