@@ -12,13 +12,12 @@ export class AuthController {
 
     @Post('signup')
     async handleSignup(@Body() dto: AuthDtoUp, @Res({ passthrough: true }) res: Response) {
-        const access_token = await this.authService.signup(dto);
+        const access_token = await this.authService.signup(dto, res);
         res.cookie('access_token', access_token, {
             httpOnly: true,
             maxAge: 60 * 60 * 24 * 10000,
             sameSite: 'lax',
         });
-        return { message: 'Signup successful' };
     }
 
     @HttpCode(HttpStatus.OK)
@@ -52,7 +51,7 @@ export class AuthController {
             maxAge: 60 * 60 * 24 * 10000,
             sameSite: 'lax',
         });
-        res.redirect('http://localhost:4000/profile/me');
+        res.redirect('/profile/me');
     }
 
     @Get('google/login')
@@ -69,7 +68,7 @@ export class AuthController {
             maxAge: 60 * 60 * 24 * 10000,
             sameSite: 'lax',
         });
-        res.redirect('http://localhost:4000/profile/me');
+        res.redirect('/profile/me');
     }
 
     @Get('test123')

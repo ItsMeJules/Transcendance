@@ -1,14 +1,9 @@
 import { useState, useRef, useEffect, FormEvent, useContext } from "react";
-import ParticleSlow from "../components/ParticleSlow"
-import { keyframes } from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
 import AuthContext from "../context/AuthProvider";
 import axios from "axios";
-import { AxiosError } from "axios";
 import { APP_ROUTES, API_ROUTES } from "../utils/constants";
-import { text_glow, GlowTextSignin } from "../utils";
-import User from "../services/user";
+import { GlowTextSignin } from "../utils";
 import ToastErrorMessage from "../components/ToastErrorMessage";
 
 export const Signin = () => {
@@ -21,14 +16,15 @@ export const Signin = () => {
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
 
-  function RequestURI() {
-    let url = process.env.REACT_APP_FOTRYTWO_LOGIN_URL;
+  function RequestURI42() {
+    console.log("ok");
+    let url = '/api/auth/42/login';
     if (url)
       document.location = (url) // 
   }
 
   function RequestURIGoogle() {
-    let url = process.env.REACT_APP_GOOGLE_LOGIN_URL;
+    let url = '/api/auth/google/login';
     try {
       if (url)
         window.location.href = url; // Use window.location.href to trigger the redirect
@@ -148,7 +144,7 @@ export const Signin = () => {
 
             <div className="flex border items-center" style={{ flexDirection: "column" }}>
               <div className="loginBtn loginBtn--42 text-white">
-                <button className="text-white" onClick={RequestURI}>Continue with 42</button>
+                <button className="text-white" onClick={RequestURI42}>Continue with 42</button>
 
               </div>
               <div className="flex" style={{ marginTop: '15px' }}>

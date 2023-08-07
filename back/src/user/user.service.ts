@@ -1,37 +1,30 @@
 import {
   Injectable,
   ForbiddenException,
-  ConsoleLogger,
-  NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { EditUserDto } from './dto';
 import { User, Prisma } from '@prisma/client';
-import { Multer, multer } from 'multer';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { URL } from 'url';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { use } from 'passport';
 import * as sharp from 'sharp';
-// import sharp from 'sharp';
 import {
   constructPictureUrl,
   constructPicturePath,
   constructPicturePathNoImage,
 } from './module';
-import * as pactum from 'pactum';
-import { connected } from 'process';
+import { Response } from 'express';
 
 const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService, private config: ConfigService) {}
+  constructor(private prisma: PrismaService, private config: ConfigService) { }
 
   async editUser(userId: number, dto: EditUserDto) {
-
     if (dto.username && dto.username.length > 100)
       throw new ForbiddenException('Username too long');
     else if (dto.firstName && dto.firstName.length > 100)
@@ -69,22 +62,7 @@ export class UserService {
       originalname: file.originalname,
       filename: file.filename,
     };
-    const oldPictureObj = new URL(user.profilePicture);
-
-    // Verify file size and delete file if too big
-    if (file.size > MAX_FILE_SIZE) {
-      try {
-        const pathToDelete =
-          process.cwd() +
-          this.config.get('PUBLIC_FOLDER') +
-          this.config.get('IMAGES_FOLDER') +
-          '/' +
-          response.filename;
-        // console.log('Del 1:', pathToDelete);
-        fs.unlinkSync(pathToDelete);
-      } catch (err: any) {}
-      throw new ForbiddenException('File too large (>10MB)');
-    }
+    const oldPictureObj = user.profilePicture;
 
     // Compress and store file and delete uncompressed
     try {
@@ -103,7 +81,7 @@ export class UserService {
           compressionLevel: 9, // Adjust compression level for PNG (0 - 9)
         };
       } else {
-        throw new Error('File format not supported');
+        throw new Error('File format not supported'); // better redirection
       }
       await sharp(file.path)
         .toFormat(fileExtension)
@@ -120,19 +98,20 @@ export class UserService {
       fs.unlinkSync(file.path);
     } catch (err: any) {
       console.log(err);
+      // better error redirection
       throw new InternalServerErrorException('Failed to compress the image.');
     }
 
     // Delete the previous profile picture from the file system
     try {
-      const pathToDelete = constructPicturePathNoImage(oldPictureObj.pathname);
+      const pathToDelete = "/workspace/back/public" + oldPictureObj.replace("/api", "");
       if (
         pathToDelete &&
-        oldPictureObj.pathname !==
-          process.env.IMAGES_FOLDER + process.env.DEFAULT_PROFILE_PICTURE
+        oldPictureObj !==
+        process.env.IMAGES_FOLDER + process.env.DEFAULT_PROFILE_PICTURE
       )
         fs.unlinkSync(pathToDelete);
-    } catch (err: any) {}
+    } catch (err: any) { }
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
@@ -197,4 +176,40 @@ export class UserService {
     });
     return leaderboard;
   }
+
+  async addFriendToggler(userId: number, friendId: number) {
+    try {
+      if (userId === friendId) return;
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          friends: {
+            where: { id: friendId },
+            select: { id: true }
+          }
+        },
+      });
+      // console.log("user:", user);
+      if (user.friends.length === 0) {
+        await this.prisma.user.update({
+          where: { id: userId },
+          data: { friends: { connect: { id: friendId } } },
+        });
+        return { friendStatus: 'Is friend' };
+      } else {
+        await this.prisma.user.update({
+          where: { id: userId },
+          data: { friends: { disconnect: { id: friendId } } },
+        });
+        return { friendStatus: 'Is not friend' };
+      }
+    } catch (error) {
+      // console.error('Error adding friend:', error);
+    }
+  }
+
+
+
+
+
 }

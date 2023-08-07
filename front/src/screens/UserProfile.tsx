@@ -1,20 +1,15 @@
-import React, { useEffect, useReducer, useState } from "react";
-import axios, { HttpStatusCode } from "axios";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "../utils/constants";
 import User from "../services/user";
-import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
-import Particle from "../components/Particle";
-import ParticlesBackgroundNew from "../components/ParticlesSlow.memo";
+import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
 import { UserData } from '../services/user';
 import { Link, useNavigate } from "react-router-dom";
-import { useMediaQuery } from "react-responsive";
-import Cookies from 'js-cookie';
 import ToastErrorMessage from "../components/ToastErrorMessage";
 import getProgressBarClass from "../components/ProgressBarClass";
 import DisplayData from "../UserProfile/components/DisplayData";
 import DisplayStats from "../UserProfile/components/DisplayStats";
 import ProfilePicContainer from "../UserProfile/components/ProfilePicContainer";
-import handleLogout from "../hooks/useLogout";
 import LogoutParent from "../hooks/logoutParent";
 
 export const UserProfile: React.FC = () => {

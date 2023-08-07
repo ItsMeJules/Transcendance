@@ -8,35 +8,46 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
-  ConsoleLogger,
   Res,
   Param,
   UseFilters,
   ParseIntPipe,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Multer, multer, diskStorage } from 'multer';
-import { editFileName, imageFileFilter } from './module';
+import { diskStorage } from 'multer';
+import { editFileName } from './module';
 import { Response } from 'express';
-import { filesize } from 'filesize';
-import { use } from 'passport';
-import { NestMiddleware } from '@nestjs/common';
 import { CustomExceptionFilter } from './module/CustomExceptionFilter';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,
+    private prisma: PrismaService) { }
 
   @Get('me')
   getMe(@GetUser() user: User) {
     return user;
+  }
+
+  @Get('me/friends')
+  async getFriends(@GetUser() user: User) {
+    console.log("oke");
+    const userFriends = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      include: { friends: true },
+    });
+    // console.log(userFriends);
+    // if (!user) {
+    //   return res.status(404).json({ message: 'User not found' });
+    // }
+    return userFriends;
   }
 
   @Get('all')
@@ -46,17 +57,49 @@ export class UserController {
 
   @Get('leaderboard')
   async getLeaderBoard() {
-    console.log("OKKKKKKKKKKKKKKKKK");
     const all = await this.userService.getLeaderboard();
     return all;
   }
-  
+
   @Get(':id')
-  async findUserById(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.findOneById(id);
+  async findUserById(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (userId === id)
+      return { redirectTo: 'http://localhost:8000/profile/me' };
+    try {
+      const userMain = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          friends: {
+            where: { id: id },
+            select: { id: true }
+          }
+        },
+      });
+      // console.log("userMain:", userMain);
+      const user: User | null = await this.prisma.user.findUnique({
+        where: { id: id },
+      });
+      // console.log("userToFind:", userToFind);
+      const data: any = {};
+      data.user = { user };
+      data.friendStatus = '';
+      if (userMain.friends.length !== 0) data.friendStatus = 'Is friend';
+      return { data };
+    } catch (err) {
+    }
   }
 
-  
+  @Patch('add-friend/:id')
+  async addFriend(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) friendId: number,
+  ) {
+    return this.userService.addFriendToggler(userId, friendId);
+  }
 
   @Patch()
   editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {
@@ -70,7 +113,6 @@ export class UserController {
         destination: 'public/images/',
         filename: editFileName,
       }),
-      // fileFilter: imageFileFilter
     }),
   )
   @UseFilters(CustomExceptionFilter)

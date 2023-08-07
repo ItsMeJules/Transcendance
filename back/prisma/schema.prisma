@@ -24,13 +24,15 @@ model User {
   profilePicture String?
   hash           String
 
-  gamesPlayed Int? @default(0)
-  gamesWon    Int? @default(0)
-  userPoints  Int? @default(0)
+  gamesPlayed Int?     @default(0)
+  gamesWon    Int?     @default(0)
+  userPoints  Int?     @default(0)
   userLevel   Decimal? @default(0)
 
-  friends         User[] @relation("friends")
-  friendsRelation User[] @relation("friends")
+  // Field for representing friends
+  friends   User[] @relation("UserFriends")
+  // Opposite relation field
+  friendsOf User[] @relation("UserFriends")
 
   Bookmark Bookmark[]
 

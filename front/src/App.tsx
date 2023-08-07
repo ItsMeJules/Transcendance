@@ -5,6 +5,7 @@ import './css/ProgressBar.scss'
 import './css/LoginButtons.css'
 import './css/Signin.scss'
 import './css/Toast.scss'
+import './css/ToastNotif.scss'
 import './css/UserProfile.scss'
 import './LeaderBoard/LeaderBoard'
 import { Home } from './screens/Home';
@@ -20,6 +21,7 @@ import { Test } from './screens/Test';
 import LeaderBoard from './LeaderBoard/LeaderBoard';
 import GenericUserProfile from './UserProfile/GenericUserProfile';
 import { render } from '@testing-library/react';
+import UserFriends from './UserProfile/UserFriends';
 
 function App() {
 
@@ -55,6 +57,9 @@ function App() {
           <Route path="/profile/:id" element={React.createElement(GenericUserProfile)}/>
           <Route path="/play" element={<Play />}/>
           {/* <Route path="/users/all" element={<Leaderboard />} /> */}
+          <Route path={APP_ROUTES.USER_FRIENDS} element={<UserFriends />} />
+          <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
+          <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)}/>
           <Route path="/test" element={<Test />}/>
         </Routes>
       </AppWrapper>

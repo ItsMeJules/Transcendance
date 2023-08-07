@@ -1,8 +1,8 @@
 import React, { FormEvent, useState, useEffect } from 'react';
 import { UserData } from '../../services/user';
-import axios from '../../api/axios';
 import { MDBContainer, MDBCard, MDBCardBody, MDBTypography } from 'mdb-react-ui-kit';
 import { API_ROUTES, APP_ROUTES } from '../../utils';
+import axios from 'axios';
 
 interface EditUserFormValidationProps {
   setErrMsg: (error: string) => void;
@@ -39,7 +39,7 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
       window.location.href = APP_ROUTES.USER_PROFILE;
       // history(APP_ROUTES.USER_PROFILE);
     } catch (err: any) {
-      console.log(err.response.data.message);
+      console.log(err.response?.data.message);
       if (!err?.response) {
         setErrMsg('No Server Response');
       } else if (err.response?.status === 400) {
