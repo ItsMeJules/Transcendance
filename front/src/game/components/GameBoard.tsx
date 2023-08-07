@@ -14,18 +14,11 @@ const GameBoard = () => {
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [paddle1Top, setPaddle1Top] = useState(110);
   const [paddle2Top, setPaddle2Top] = useState(110);
- 
+  const [scores, setScores] = useState<{ player1: number; player2: number; rounds: ("timeout" | "win" | "loss" | null)[] }>({ player1: 0, player2: 0, rounds: [null, null, null] });
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const endGame = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    setIsTimeout(true);
-    setIsGameStarted(false);
-  }, []);
-
-  const resetGame = useCallback(() => {
+  const resetGame = useCallback((result: "player1" | "player2" | "timeout") => {
     setTimer(10);
     setIsTimeout(false);
     setIsGameStarted(false);
@@ -34,7 +27,22 @@ const GameBoard = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
+    setScores(prevScores => {
+      let newRounds = [ ...prevScores.rounds];
+      newRounds[prevScores.player1 + prevScores.player2] = result === "timeout" ? "timeout" : (result === "player1" ? "win" : "loss");
+      return { player1: result === "player1" ? prevScores.player1 + 1 : prevScores.player1, player2: result === "player2" ? prevScores.player2 + 1 : prevScores.player2, rounds: newRounds };
+    });
   }, []);
+
+
+  const endGame = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    setIsTimeout(true);
+    setIsGameStarted(false);
+    resetGame("timeout");
+  }, [resetGame]);
 
   useEffect(() => {
     const handleKeyDown = (event: { code: any; }) => {
@@ -75,6 +83,20 @@ const GameBoard = () => {
     }, 1000);
   };
 
+  const renderCircles = () => {
+    return (
+      <div className="score-board">
+        {scores.rounds.map((round, index) => (
+          <div className="score-circle" key={index}>
+            {round === "win" && <span>✔️</span>}
+            {round === "loss" && <span>❌</span>}
+            {round === "timeout" && <span>T</span>}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="container">
       <div className="game-board">
@@ -87,6 +109,7 @@ const GameBoard = () => {
           <div className="timer">{timer}</div>
         )}
         {!isGameStarted && <button onClick={startGame}>Start</button>}
+        {renderCircles()}
       </div>
 	</div>
   );

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 type BallProps = {
   paddle1Top: number;
   paddle2Top: number;
-  resetGame: () => void;
+  resetGame: (result?: "player1" | "player2" | "timeout") => void;
 };
 
 const Ball = ({ paddle1Top, paddle2Top, resetGame }: BallProps) => {
@@ -69,9 +69,12 @@ const Ball = ({ paddle1Top, paddle2Top, resetGame }: BallProps) => {
       }
 
       // Check if the ball hits the vertical game board boundaries to end the match
-      if (newPosX - ballSize / 2 <= 0 || newPosX + ballSize / 2 >= gameBoardWidth) {
+      if (newPosX - ballSize / 2 <= 0) {
         resetBall();
-        resetGame();
+        resetGame("player2");
+      } else if (newPosX + ballSize / 2 >= gameBoardWidth) {
+        resetBall();
+        resetGame("player1");
       } else if ((speed.x < 0 && newPosX - ballSize / 2 <= paddleWidth && newPosY + ballSize / 2 >= paddle1Top && newPosY - ballSize / 2 <= paddle1Top + paddleHeight) ||
         (speed.x > 0 && newPosX + ballSize / 2 >= gameBoardWidth - paddleWidth && newPosY + ballSize / 2 >= paddle2Top && newPosY - ballSize / 2 <= paddle2Top + paddleHeight)) {
         // Get the new angle and speed based on the paddle hit
