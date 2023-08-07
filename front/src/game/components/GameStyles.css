@@ -60,22 +60,21 @@ body {
 	color: #fff; /* Texte en blanc */
 }
 
-.score-board {
-	display: flex;
-	justify-content: space-around;
-	width: 400px;
-	font-size: 18px;
-	margin-top: 20px;
-	color: #fff; /* Texte en blanc */
+.score-container {
+  position: absolute;
+  width: 95%;
+  top: 5%; /* positionner au milieu du terrain */
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  font-size: 24px;
 }
 
-.score-circle {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5px;
+.player1-score,
+.player2-score {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.5); /* fond semi-transparent */
+  padding: 5px;
+  border-radius: 5px;
 }

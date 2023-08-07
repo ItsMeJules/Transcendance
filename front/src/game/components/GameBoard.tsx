@@ -8,17 +8,46 @@ const GameBoard = () => {
   const paddleWidth = 20;
   const paddleHeight = 80;
   const ballSize = 20;
-  
+
   const [timer, setTimer] = useState(10);
   const [isTimeOut, setIsTimeout] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [paddle1Top, setPaddle1Top] = useState(110);
   const [paddle2Top, setPaddle2Top] = useState(110);
-  const [scores, setScores] = useState<{ player1: number; player2: number; rounds: ("timeout" | "win" | "loss" | null)[] }>({ player1: 0, player2: 0, rounds: [null, null, null] });
+  const [scores, setScores] = useState({ player1: 0, player2: 0 });
+  const [winner, setWinner] = useState<string | null>(null);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const scoresRef = useRef(scores);
+  useEffect(() => {
+    scoresRef.current = scores;
+    console.log("Scores: ", scores);
+  }, [scores]);
 
-  const resetGame = useCallback((result: "player1" | "player2" | "timeout") => {
+  const endGame = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    setIsTimeout(true);
+    setIsGameStarted(false);
+    const finalscores = scoresRef.current;
+    if (finalscores.player1 > finalscores.player2) {
+      setWinner("Winner: Player 1");
+    } else if (finalscores.player1 < finalscores.player2) {
+      setWinner("Winner: Player 2");
+    } else {
+      setWinner("TIE");
+    }
+  }, []);
+
+  const updateScores = (player1: number, player2: number) => {
+    setScores(prevScores => ({
+      player1: prevScores.player1 + player1,
+      player2: prevScores.player2 + player2
+    }));
+  };
+
+  const resetGame = useCallback(() => {
     setTimer(10);
     setIsTimeout(false);
     setIsGameStarted(false);
@@ -27,26 +56,12 @@ const GameBoard = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    setScores(prevScores => {
-      let newRounds = [ ...prevScores.rounds];
-      newRounds[prevScores.player1 + prevScores.player2] = result === "timeout" ? "timeout" : (result === "player1" ? "win" : "loss");
-      return { player1: result === "player1" ? prevScores.player1 + 1 : prevScores.player1, player2: result === "player2" ? prevScores.player2 + 1 : prevScores.player2, rounds: newRounds };
-    });
+    setScores({ player1: 0, player2: 0 });
   }, []);
-
-
-  const endGame = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    setIsTimeout(true);
-    setIsGameStarted(false);
-    resetGame("timeout");
-  }, [resetGame]);
 
   useEffect(() => {
     const handleKeyDown = (event: { code: any; }) => {
-      switch(event.code) {
+      switch (event.code) {
         case "KeyW":
           setPaddle1Top(paddle1Top => Math.max(ballSize * 2, paddle1Top - 10));
           break;
@@ -70,7 +85,7 @@ const GameBoard = () => {
   const startGame = () => {
     resetGame();
     setIsGameStarted(true);
-
+    console.log("Game started");
     intervalRef.current = setInterval(() => {
       setTimer(prevTimer => {
         if (prevTimer === 0) {
@@ -83,35 +98,24 @@ const GameBoard = () => {
     }, 1000);
   };
 
-  const renderCircles = () => {
-    return (
-      <div className="score-board">
-        {scores.rounds.map((round, index) => (
-          <div className="score-circle" key={index}>
-            {round === "win" && <span>✔️</span>}
-            {round === "loss" && <span>❌</span>}
-            {round === "timeout" && <span>T</span>}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div className="container">
       <div className="game-board">
         <Paddle top={paddle1Top} />
         <Paddle top={paddle2Top} />
-        {isGameStarted && <Ball paddle1Top={paddle1Top} paddle2Top={paddle2Top} resetGame={resetGame} />}
+        {isGameStarted && <Ball paddle1Top={paddle1Top} paddle2Top={paddle2Top} resetGame={resetGame} updateScores={updateScores} />}
+        <div className="score-container">
+          <div className="score">{scores.player1}</div>
+          <div className="score">{scores.player2}</div>
+        </div>
         {isTimeOut ? (
-          <div className="time-out">TIME OUT</div>
+          <div className="time-out">TIME OUT<br />{winner}</div>
         ) : (
           <div className="timer">{timer}</div>
         )}
         {!isGameStarted && <button onClick={startGame}>Start</button>}
-        {renderCircles()}
       </div>
-	</div>
+    </div>
   );
 };
 

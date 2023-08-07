@@ -2,7 +2,6 @@ import bg from "../images/bg4.jpg"
 import { Link, useNavigate } from 'react-router-dom';
 import GameBoard from '../game/components/GameBoard';
 import "../game/components/GameStyles.css"
-import { Link } from 'react-router-dom';
 
 const myStyle={
     backgroundImage:
