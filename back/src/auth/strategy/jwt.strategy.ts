@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { PrismaClient } from '@prisma/client';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { User } from '@prisma/client';
+import { TwoFactorException } from '../exceptions/two-factor.exception';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -21,15 +22,30 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: { id: number; email: string }) {
+  async validate(payload: {
+    id: number;
+    isTwoFactorAuthenticationVerified: boolean;
+  }): Promise<User> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: payload.id,
-        email: payload.email,
       },
     });
-    if (user) delete user.hash;
 
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (
+      user.isTwoFactorAuthenticationEnabled &&
+      !payload.isTwoFactorAuthenticationVerified
+    ) {
+      console.log('2FA verification required');
+      throw new TwoFactorException();
+    }
+
+    // console.log('User authenticated');
+    delete user.hash;
     return user;
   }
 }

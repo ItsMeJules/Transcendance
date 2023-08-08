@@ -3,8 +3,8 @@ import { TwoFaService } from './two-fa.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'src/user/user.module';
 import { PassportModule } from '@nestjs/passport';
-import { UserService } from 'src/user/user.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import JwtTwoFactorGuard from '../guard/jwt.two-fa.guard';
+import { JwtTwoFactorStrategy } from '../strategy/jwt.two-fa.strategy';
 
 @Module({
   imports: [
@@ -16,6 +16,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
     PassportModule,
   ],
   exports: [TwoFaService],
-  providers: [TwoFaService],
+  providers: [TwoFaService, JwtTwoFactorGuard, JwtTwoFactorStrategy],
 })
 export class TwoFaModule {}

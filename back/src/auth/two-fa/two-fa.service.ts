@@ -17,6 +17,12 @@ export class TwoFaService {
     twoFactorAuthenticationCode: string,
     user: User,
   ) {
+    console.log(
+      'twoFactorAuthenticationCode :',
+      twoFactorAuthenticationCode,
+      'user.twoFactorAuthenticationSecret :',
+      user.twoFactorAuthenticationSecret,
+    );
     return authenticator.verify({
       token: twoFactorAuthenticationCode,
       secret: user.twoFactorAuthenticationSecret,
@@ -27,8 +33,8 @@ export class TwoFaService {
     const secret = authenticator.generateSecret();
 
     const otpAuthUrl = authenticator.keyuri(
-      user.username,
-      'TranscenCul',
+      user.email,
+      'salut petit correcteur',
       secret,
     );
 
@@ -41,6 +47,9 @@ export class TwoFaService {
   }
 
   public async pipeQrCodeStream(stream: Response, otpAuthUrl: string) {
+    console.log('otpAuthUrl :', otpAuthUrl);
+    console.log('\n :');
+    console.log('stream :', stream);
     return toFileStream(stream, otpAuthUrl);
   }
 }

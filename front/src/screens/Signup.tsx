@@ -45,10 +45,9 @@ export const Signup = () => {
     }
 
     function RequestURIGoogle() {
-        let url = 'http://localhost:3000/auth/google/login';
+        let url = 'http://localhost:3000/auth/google/ ';
         window.location.href = url; // Use window.location.href to trigger the redirect
     }
-
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();

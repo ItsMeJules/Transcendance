@@ -5,7 +5,7 @@ import { Multer, multer } from 'multer';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { URL } from 'url';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
@@ -121,6 +121,19 @@ export class UserService {
       },
       data: {
         isTwoFactorAuthenticationEnabled: true,
+      },
+    });
+    return user;
+  }
+
+  async turnOffTwoFactorAuthentication(userId: number): Promise<User> {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isTwoFactorAuthenticationEnabled: false,
+        twoFactorAuthenticationSecret: null,
       },
     });
     return user;

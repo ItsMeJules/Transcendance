@@ -29,8 +29,8 @@ model User {
   userPoints  Int?
   userLevel   Decimal?
 
-  isTwoFactorAuthenticationEnabled Boolean @default(false)
-  twoFactorAuthenticationSecret   String?
+  isTwoFactorAuthenticationEnabled  Boolean @default(false)
+  twoFactorAuthenticationSecret     String?
 
   friends         User[] @relation("friends")
   friendsRelation User[] @relation("friends")

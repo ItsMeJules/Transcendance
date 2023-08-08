@@ -31,7 +31,8 @@ export class UserController {
 
   @Get('me')
   getMe(@GetUser() user: User) {
-    // console.log('USERRRRRRRRRR:', user);
+    delete user.twoFactorAuthenticationSecret;
+    console.log('USERRRRRRRRRR:', user);
     return user;
   }
 
@@ -59,20 +60,9 @@ export class UserController {
     return this.userService.uploadProfilePic(user, file);
   }
 
-  // @Get('get-profile-picture')
-  // sendProfilePicToFront(@GetUser() user: User, @Req() req: Request) {
-  //     const baseUrl = `${req.protocol}://${req.get('host')}`;
-
-  //     const profilePictureUrl = '/images/selfie.jpg';
-  //     const absoluteUrl = `${baseUrl}${profilePictureUrl}`;
-
-  //     console.log(absoluteUrl);
-  //     return absoluteUrl;
-  // }
-
   @Post('logout')
   async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
     res.clearCookie('access_token');
-    res.json({ message: 'Logout successful' });
+    return { message: 'success' };
   }
 }

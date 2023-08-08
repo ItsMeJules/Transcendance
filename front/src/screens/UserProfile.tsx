@@ -15,21 +15,40 @@ import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import useLogout from "../hooks/useLogout";
 import QRCode from "react-qr-code";
+import { useAxios } from "../api/axios-config";
 
 function QrCode(): React.ReactElement {
   const popupRef = React.createRef<HTMLDivElement>();
 
   const [code, setCode] = useState<string>("");
+  const [image, setImage] = useState<string>("");
 
   const codeGen = async () => {
-    const response = await axios.get(
-      "http://localhost:3000/auth/generatesecret",
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/auth/turn-on",
+        {},
+        {
+          responseType: "arraybuffer",
+          withCredentials: true,
+        }
+      );
+      const blob = new Blob([response.data], { type: "image/png" });
+      setImage(URL.createObjectURL(blob));
+      console.log(response);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
+  const turnOff = async () => {
+    const response = await axios.post(
+      "http://localhost:3000/auth/turn-off",
+      {},
       {
         withCredentials: true,
       }
     );
-    const code = await response.data;
-    setCode(code);
   };
 
   const changeVisibleBlock = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -71,13 +90,23 @@ function QrCode(): React.ReactElement {
       >
         Activate 2FA
       </button>
+      <button
+        id="myBtn"
+        className="myBtn"
+        onClick={() => {
+          turnOff();
+        }}
+      >
+        DeActivate 2FA
+      </button>
       <div id="mypopup" className="popup">
         <div className="popup-content" ref={popupRef}>
           <span className="close" onClick={changeVisibleNone}>
             &times;
           </span>
-          <QRCode style={{ justifyContent: "center" }} value={code} />
-          <p>{code}</p>
+          {/* <QRCode style={{ justifyContent: "center" }} value={code} /> */}
+          <img src={image} alt="QR code" />
+          {/* <p>{code}</p> */}
           <p>Contenu de la fenêtre popup...</p>
         </div>
       </div>
@@ -91,10 +120,11 @@ export const UserProfile: React.FC = () => {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const logout = useLogout();
   const [value, setValue] = useState<number | null>(null);
+  const axiosInstanceError = useAxios();
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get(API_ROUTES.USER_PROFILE, {
+      const response = await axiosInstanceError.get(API_ROUTES.USER_PROFILE, {
         withCredentials: true,
       });
       const userData = response.data;

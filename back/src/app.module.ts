@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { BookmarkModule } from './bookmark/bookmark.module';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
-import { PrismaModule } from './prisma/prisma.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
 import { TwoFaModule } from './auth/two-fa/two-fa.module';
 import { TwoFaService } from './auth/two-fa/two-fa.service';
 

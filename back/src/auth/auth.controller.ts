@@ -19,6 +19,11 @@ import { TwoFaService } from './two-fa/two-fa.service';
 import { GetUser } from './decorator';
 import { User } from '@prisma/client';
 import { Response as ExResponse } from 'express'; // Import Express.js Response
+import { UnauthorizedException } from '@nestjs/common';
+import { TwoFaCodeDto } from './dto/two-fa-auth-code';
+import { JwtService } from '@nestjs/jwt';
+import { NoTwoFaException } from './exceptions/no-two-fa.exception';
+import JwtTwoFactorGuard from './guard/jwt.two-fa.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,17 +31,18 @@ export class AuthController {
     private authService: AuthService,
     private userService: UserService,
     private twoFaService: TwoFaService,
+    private jwtService: JwtService,
   ) {}
 
   @Post('signup')
-  async handleSignup(
+  async signup(
     @Body() dto: AuthDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     const access_token = await this.authService.signup(dto);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 10000,
+      maxAge: 60 * 60 * 24 * 7,
       sameSite: 'lax',
     });
     return { message: 'Signup successful' };
@@ -44,8 +50,17 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('signin')
-  signin(@Body() dto: AuthDto) {
-    return this.authService.signin(dto);
+  async signin(
+    @Body() dto: AuthDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const access_token = await this.authService.signin(dto);
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'lax',
+    });
+    return { message: 'Signin successful' };
   }
 
   @Get('42/login')
@@ -60,11 +75,10 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ) {
-    //@Res? Passthrough?
-    const access_token = await this.authService.login(req.user /*, false*/);
+    const access_token = await this.authService.login(req.user);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 10000,
+      maxAge: 60 * 60 * 24 * 7,
       sameSite: 'lax',
     });
     res.redirect('http://localhost:4000/profile/me');
@@ -72,7 +86,9 @@ export class AuthController {
 
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
-  handleGoogleLogin() {}
+  handleGoogleLogin() {
+    return { msg: 'Google Authentification' };
+  }
 
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
@@ -80,42 +96,91 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const access_token = await this.authService.login(req.user /*, false*/);
+    const access_token = await this.authService.login(req.user);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 10000,
+      maxAge: 60 * 60 * 24 * 7,
       sameSite: 'lax',
     });
     res.redirect('http://localhost:4000/profile/me');
   }
 
-  @Get('test123')
-  @UseGuards(JwtGuard)
-  async test123(@Res() res) {
-    res.json('good');
-  }
+  // // // // // // // // // // 2FA \\ \\ \\ \\ \\ \\ \\ \\ \\ \\
 
-  @Post('generatesecret')
+  @Post('turn-on')
   @UseGuards(JwtGuard)
   async register(
-    @Res() response: ExResponse, // Use Express.js Response type
+    @Res({ passthrough: false }) res: Response, // why passthrough false?
     @GetUser() user: User,
   ): Promise<ArrayBuffer> {
+    await this.userService.turnOnTwoFactorAuthentication(user.id);
+
     const otpAuthUrlOne =
       await this.twoFaService.generateTwoFactorAuthenticationSecret(user);
 
-    return this.twoFaService.pipeQrCodeStream(
-      response,
-      otpAuthUrlOne.otpAuthUrl,
-    );
+    const accessTokenCookie = this.jwtService.sign({
+      id: user.id,
+      isTwoFactorAuthenticationVerified: true,
+    });
+
+    res.cookie('access_token', accessTokenCookie, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'lax',
+    });
+
+    return this.twoFaService.pipeQrCodeStream(res, otpAuthUrlOne.otpAuthUrl);
   }
 
-  @Post('verify')
-  verifyOtpSecret() {}
+  @Post('authenticate')
+  @UseGuards(JwtTwoFactorGuard)
+  async authenticate(
+    @GetUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+    @Body() body: any,
+  ) {
+    const code = body.twoFactorAuthentificationCode;
+    console.log(code);
+    if (!user.isTwoFactorAuthenticationEnabled) {
+      throw new NoTwoFaException();
+    }
+    const isCodeValid = this.twoFaService.isTwoFactorAuthenticationCodeValid(
+      code,
+      user,
+    );
+    if (!isCodeValid) {
+      throw new UnauthorizedException('Wrong authentication code');
+    }
 
-  @Post('validate')
-  validateOtpToken() {}
+    const accessTokenCookie = this.jwtService.sign({
+      id: user.id,
+      isTwoFactorAuthenticationVerified: true,
+    });
 
-  @Post('disable')
-  disableOtpFeature() {}
+    res.cookie('access_token', accessTokenCookie, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'lax',
+    });
+  }
+
+  @Post('turn-off')
+  @UseGuards(JwtGuard)
+  async turnoff(
+    @GetUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.userService.turnOffTwoFactorAuthentication(user.id);
+
+    const accessTokenCookie = this.jwtService.sign({
+      id: user.id,
+      isTwoFactorAuthenticationVerified: false,
+    });
+
+    res.cookie('access_token', accessTokenCookie, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'lax',
+    });
+  }
 }
