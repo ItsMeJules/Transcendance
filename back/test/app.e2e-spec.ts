@@ -1,24 +1,27 @@
-import { Test } from '@nestjs/testing'
-import { AppModule } from "../src/app.module";
-import { PrismaService } from "../src/prisma/prisma.service";
-import { HttpStatus, INestApplication, ParseIntPipe, ValidationPipe } from '@nestjs/common';
-import * as pactum from 'pactum'
+import { Test } from '@nestjs/testing';
+import { AppModule } from '../src/app.module';
+import { PrismaService } from '../../prisma/prisma.service';
+import {
+  HttpStatus,
+  INestApplication,
+  ParseIntPipe,
+  ValidationPipe,
+} from '@nestjs/common';
+import * as pactum from 'pactum';
 import { AuthDto } from 'src/auth/dto';
 import { EditUserDto } from 'src/user/dto';
 import { emitWarning } from 'process';
 import { CreateBookmarkDto, EditBookmarkDto } from 'src/bookmark/dto';
 // import { pactum } from 'pactum';
 
-
 describe('App e2e', () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
   beforeAll(async () => {
-    const moduleRef =
-      await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(
       new ValidationPipe({
@@ -27,52 +30,51 @@ describe('App e2e', () => {
     );
     await app.init();
     await app.listen(3333);
-    pactum.request.setBaseUrl('http://localhost:3333')
+    pactum.request.setBaseUrl('http://localhost:3333');
     prisma = app.get(PrismaService);
     await prisma.cleanDb();
   });
 
-  afterAll(async () => { });
+  afterAll(async () => {});
 
   describe('Auth', () => {
-
     const dto: AuthDto = {
       email: 'c@test.com',
-      password: '123'
+      password: '123',
     };
 
     describe('Signup', () => {
       it('should throw if email empty', () => {
         return pactum
           .spec()
-          .post('/auth/signup',)
+          .post('/auth/signup')
           .withBody({
             password: dto.password,
           })
-          .expectStatus(HttpStatus.BAD_REQUEST)
+          .expectStatus(HttpStatus.BAD_REQUEST);
       });
       it('should throw if password empty', () => {
         return pactum
           .spec()
-          .post('/auth/signup',)
+          .post('/auth/signup')
           .withBody({
             email: dto.email,
           })
-          .expectStatus(HttpStatus.BAD_REQUEST)
+          .expectStatus(HttpStatus.BAD_REQUEST);
       });
       it('should throw if no body is provided', () => {
         return pactum
           .spec()
-          .post('/auth/signup',)
+          .post('/auth/signup')
           .withBody({})
-          .expectStatus(HttpStatus.BAD_REQUEST)
+          .expectStatus(HttpStatus.BAD_REQUEST);
       });
       it('should signup', () => {
         return pactum
           .spec()
-          .post('/auth/signup',)
+          .post('/auth/signup')
           .withBody(dto)
-          .expectStatus(HttpStatus.CREATED)
+          .expectStatus(HttpStatus.CREATED);
         // .inspect()
       });
     });
@@ -81,32 +83,32 @@ describe('App e2e', () => {
       it('should throw if email empty', () => {
         return pactum
           .spec()
-          .post('/auth/signin',)
+          .post('/auth/signin')
           .withBody({
             password: dto.password,
           })
-          .expectStatus(HttpStatus.BAD_REQUEST)
+          .expectStatus(HttpStatus.BAD_REQUEST);
       });
       it('should throw if password empty', () => {
         return pactum
           .spec()
-          .post('/auth/signin',)
+          .post('/auth/signin')
           .withBody({
             email: dto.email,
           })
-          .expectStatus(HttpStatus.BAD_REQUEST)
+          .expectStatus(HttpStatus.BAD_REQUEST);
       });
       it('should throw if no body is provided', () => {
         return pactum
           .spec()
-          .post('/auth/signin',)
+          .post('/auth/signin')
           .withBody({})
-          .expectStatus(HttpStatus.BAD_REQUEST)
+          .expectStatus(HttpStatus.BAD_REQUEST);
       });
       it('should signin', () => {
         return pactum
           .spec()
-          .post('/auth/signin',)
+          .post('/auth/signin')
           .withBody(dto)
           .expectStatus(HttpStatus.OK)
           .stores('userAt', 'accessToken');
@@ -115,29 +117,28 @@ describe('App e2e', () => {
   });
 
   describe('User', () => {
-
     describe('Get me', () => {
       it('should get me page', () => {
         return pactum
           .spec()
-          .get('/users/me',)
+          .get('/users/me')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
           .expectStatus(HttpStatus.OK);
-      })
+      });
     });
 
     describe('Edit user', () => {
       it('should edit the user', () => {
         const dto: EditUserDto = {
-          firstName: "Lol",
-          email: "lol@lol.com"
-        }
+          firstName: 'Lol',
+          email: 'lol@lol.com',
+        };
 
         return pactum
           .spec()
-          .patch('/users',)
+          .patch('/users')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
@@ -145,24 +146,23 @@ describe('App e2e', () => {
           .expectStatus(HttpStatus.OK)
           .expectBodyContains(dto.email)
           .expectBodyContains(dto.firstName);
-      })
+      });
     });
   });
 
   describe('Bookmarks', () => {
-
     describe('Get empty bookmarks', () => {
       it('should get empty bookmarks', () => {
         return pactum
           .spec()
-          .get('/bookmark',)
+          .get('/bookmark')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
           .expectStatus(HttpStatus.OK)
-          .expectBody([])
+          .expectBody([]);
         // .inspect();
-      })
+      });
     });
 
     describe('Create bookmark', () => {
@@ -170,32 +170,32 @@ describe('App e2e', () => {
         const dto: CreateBookmarkDto = {
           title: 'First bookmark',
           link: 'https://www.youtube.com/watch?v=GHTA143_b-s&ab_channel=freeCodeCamp.org',
-        }
+        };
         return pactum
           .spec()
-          .post('/bookmark',)
+          .post('/bookmark')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
           .withBody(dto)
           .expectStatus(HttpStatus.CREATED)
-          .stores('bookmarkId', 'id')
+          .stores('bookmarkId', 'id');
         // .inspect();
-      })
+      });
     });
 
     describe('Get bookmarks', () => {
       it('should get bookmarks', () => {
         return pactum
           .spec()
-          .get('/bookmark',)
+          .get('/bookmark')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
           .expectStatus(HttpStatus.OK)
-          .expectJsonLength(1)
+          .expectJsonLength(1);
         // .inspect();
-      })
+      });
     });
 
     describe('Get bookmark by id', () => {
@@ -208,16 +208,16 @@ describe('App e2e', () => {
             Authorization: 'Bearer $S{userAt}',
           })
           .expectStatus(HttpStatus.OK)
-          .expectBodyContains('$S{bookmarkId}')
-          // .inspect();
-      })
+          .expectBodyContains('$S{bookmarkId}');
+        // .inspect();
+      });
     });
 
     describe('Edit bookmark by id', () => {
       const dto: EditBookmarkDto = {
-        title: "New title",
-        description: "New description",
-        link: "New link"
+        title: 'New title',
+        description: 'New description',
+        link: 'New link',
       };
 
       it('should edit bookmark by id', () => {
@@ -231,9 +231,9 @@ describe('App e2e', () => {
           .withBody(dto)
           .expectStatus(HttpStatus.OK)
           .expectBodyContains(dto.title)
-          .expectBodyContains(dto.description)
+          .expectBodyContains(dto.description);
         // .inspect();
-      })
+      });
     });
 
     describe('Delete bookmark', () => {
@@ -245,9 +245,9 @@ describe('App e2e', () => {
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
-          .expectStatus(HttpStatus.NO_CONTENT)
-          // .inspect();
-      })
+          .expectStatus(HttpStatus.NO_CONTENT);
+        // .inspect();
+      });
 
       it('should get empty bookmarks', () => {
         return pactum
@@ -257,11 +257,9 @@ describe('App e2e', () => {
             Authorization: 'Bearer $S{userAt}',
           })
           .expectStatus(HttpStatus.OK)
-          .expectJsonLength(0)
-          // .inspect();
-      })
+          .expectJsonLength(0);
+        // .inspect();
+      });
     });
-
   });
-
 });

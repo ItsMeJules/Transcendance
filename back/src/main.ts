@@ -5,7 +5,7 @@ import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 import { join } from 'path';
-
+import { TwoFactorAuthenticationFilter } from './auth/exceptions/two-factor.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -16,20 +16,12 @@ async function bootstrap() {
   // Set the public directory to serve static files.
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
+  app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
     }),
   );
-  app.enableCors({
-    origin: [ 'http://localhost:8000'],
-    allowedHeaders: 'Content-Type, Accept, Authorization',
-    methods: 'GET, PATCH, POST, PUT, DELETE, OPTIONS',
-    credentials: true,
-  });
-
-  app.use(cookieParser());
-
   await app.listen(3000);
 }
 bootstrap();

@@ -14,7 +14,7 @@ root.render(
   // Delete StrictMode for production!!
   // <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider >
+      <AuthProvider>
         {/* <AppWrapper> */}
           <App />
         {/* </AppWrapper> */}
