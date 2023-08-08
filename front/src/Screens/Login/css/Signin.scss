@@ -1,0 +1,117 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 1;
+
+    /* to delete */
+    border: 1px solid white;
+
+    .signin-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 10vh;
+    }
+
+    .main-login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        min-width: 400px;
+
+        /* to delete */
+        border: 1px solid white;
+
+        .secondary-login-container {
+            display: flex;
+            position: relative;
+            justify-content: center;
+            height: 500px;
+            width: 400px;
+            z-index: 1;
+
+            /* to delete */
+            border: 1px solid white;
+
+            .form-master-container {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                top: 25px;
+                width: 350px;
+
+                /* to delete */
+                border: 1px solid white;
+
+                .form-text-login {
+                    text-align: left;
+                    width: 100%;
+                    color: white;
+                    z-index: 1;
+                }
+
+                .input-text-login {
+                    display: flex;
+                    color: black;
+                    border-radius: 4px;
+                    padding: 5px 20px;
+                    box-sizing: border-box;
+                    outline: 3px solid white;
+                }
+
+
+            }
+        }
+    }
+}
+
+@mixin font-size($size) {
+    font-size: $size;
+    font-size: calculateRem($size);
+}
+
+@mixin border-radius($radius: .25em) {
+    border-radius: $radius;
+}
+
+
+.cd-error-message {
+    display: inline-block;
+    position: absolute;
+    left: -5px;
+    bottom: -35px;
+    background: red;
+    padding: .8em;
+    z-index: 2;
+    color: #FFF;
+    @include font-size(13px);
+    @include border-radius;
+
+    /* prevent click and touch events */
+    pointer-events: none;
+
+    visibility: hidden;
+    opacity: 0;
+
+    // @include transition(opacity .2s 0, visibility 0 .2s);
+
+    &::after {
+        /* triangle */
+        content: '';
+        position: absolute;
+        left: 22px;
+        bottom: 100%;
+        // @include triangle(16px, red, up);
+    }
+
+    &.is-visible {
+        opacity: 1;
+        visibility: visible;
+
+        // @include transition(opacity .2s 0, visibility 0 0);
+    }
+}

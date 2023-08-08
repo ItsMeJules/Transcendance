@@ -1,18 +1,12 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { AuthDto } from './auth/dto';
 
-@Controller()
+@Controller('/home')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('hello')
-  getHello(): string {
+  @Get('/hello')
+  getHello() {
     return this.appService.getHello();
   }
-
-  @Post('/test')
-  test(@Body() dto: AuthDto) {
-    return this.appService.test(dto);
-}
 }

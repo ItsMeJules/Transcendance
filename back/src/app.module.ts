@@ -6,28 +6,40 @@ import { UserModule } from './user/user.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { BookmarkModule } from './bookmark/bookmark.module';
+// import { BookmarkModule } from './bookmark/bookmark.module';
 import { ConfigModule } from '@nestjs/config';
-import { MulterModule } from '@nestjs/platform-express';
 import { PrismaModule } from './prisma/prisma.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
+import { SocketEvents } from './websocket/websocket.gateway';
+import { SocketService } from './websocket/websocket.service';
+import { SocketModule } from './websocket/websocket.module';
+// import { WebsocketGateway } from './websocket/websocket.gateway';
+import { Express, Request } from 'express';
+import { MulterModule } from '@nestjs/platform-express';
+import { Multer } from 'multer';
 
 @Module({
   imports: [
     JwtModule.register({
-			secret: process.env.jwtSecret,
-		  }),
+      secret: process.env.jwtSecret,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MulterModule.register({
-      dest: './',
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'), // Set the root path to the "public" folder.
     }),
-    AuthModule, 
-    UserModule, 
-    BookmarkModule,
-    PrismaModule],
+    MulterModule.register({
+      dest: 'public/images/',
+    }),
+    AuthModule,
+    UserModule,
+    // BookmarkModule,
+    PrismaModule,
+    SocketModule,
+  ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
 })
-
 export class AppModule {}

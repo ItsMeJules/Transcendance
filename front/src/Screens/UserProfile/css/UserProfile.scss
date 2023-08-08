@@ -1,0 +1,218 @@
+.profile-board-container {
+    padding-top: 3rem;
+    max-width: 500px;
+    min-width: 400px;
+    width: 90%;
+
+    .profile-board-card {
+        display: flex;
+        border-radius: 15px;
+    }
+
+    .profile-board-header-show-profile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top:     6px;
+        margin-right:   6px;
+        margin-left:    8px;
+    }
+    .profil-board-header-edit-profile {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+        margin-top: 6px;
+        margin-right: 6px;
+        
+    }
+
+    .profile-pic-container {
+        display: flex;
+        justify-content: center;
+    
+        .profile-pic-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .profile-pic-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    
+        .empty-profile-pic-circle {
+            width: 120px;
+            height: 120px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+        }
+    }
+
+    .profile-pic-upload-button {
+        display: flex;
+        justify-content: center ;
+        margin-top: 10px;
+    }
+
+    .information-display-main {
+        display: flex;
+        flex-grow: 2;
+    
+        .data-fields-name-main {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            width: 20%;
+            min-width: 140px;
+    
+            @mixin data-fields-name-sub {
+                display: flex;
+                align-items: center;
+                height: 35px;
+                min-width: 100px;
+            }
+    
+            .data-fields-name-sub-first {
+                @include data-fields-name-sub;
+            }
+    
+            .data-fields-name-sub-others {
+                @include data-fields-name-sub;
+                margin-top: 6px;
+            }
+    
+        }
+    
+        .data-values-main {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            margin-top: 6px;
+            min-width: 0px;
+    
+            @mixin data-values-sub {
+                height: 35px;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+    
+            .data-values-sub-first {
+                @include data-values-sub;
+            }
+    
+            .data-values-sub-others {
+                @include data-values-sub;
+                margin-top: 6px;
+            }
+        }
+
+        .data-values-input-main {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            margin-top: 6px;
+            min-width: 0px;
+    
+            @mixin data-values-input-sub {
+                height: 30px;
+                width: 100%;
+                min-width: 0px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+    
+            .data-values-input-sub-first {
+                @include data-values-input-sub;
+            }
+    
+            .data-values-input-sub-second{
+                margin-top: 0px;
+                width: 100%;
+                min-width: 0px;
+            }
+
+            .data-values-input-sub-others {
+                margin-top: 4px;
+                width: 100%;
+                min-width: 0px;
+            }
+        }
+
+        .save-button {
+            display: flex;
+            justify-content: left;
+            margin-top: 5px;
+
+            .save-changes-button {
+                color: white;
+                background-color: #4db650;
+                /* border: 2px solid black; */
+                border-radius: 4px;
+                padding: 7px;
+                transition-duration: 0.4s;
+              }
+              
+              .save-changes-button:hover {
+                background-color: #52d157;
+                /* Green */
+                color: white;
+                box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
+              }
+        }
+    
+    }
+
+    .stats-first-container {
+        display: flex;
+        text-align: center;
+        margin-top: 15px;
+
+        .stats-first-sub-container {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+
+    .stats-second-container {
+        display: flex;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+        .stats-second-sub-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+            width: 100%;
+
+            .test {
+                display: flex;
+                align-items: center;
+                align-content: center;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+

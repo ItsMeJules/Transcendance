@@ -87,22 +87,9 @@
   font-family: dune, sans-serif;
 }
 
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .login-form-container {
   display: flex;
   flex-direction: column;
-}
-
-.login-form-label {
-  border-radius: 4px;
-  padding: 5px 20px;
-  margin: 0px 0;
-  box-sizing: border-box;
 }
 
 .edit-form-label {
@@ -110,12 +97,6 @@
   text-align: left;
   padding: 5px 5px;
   margin: 0px 0px;
-  /* box-sizing: border-box; */
-}
-
-.input-field:focus {
-  /* Your focus styles */
-  outline: 3px solid white;
 }
 
 .signup-button {
@@ -134,21 +115,7 @@
   box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
 }
 
-.save-changes-button {
-  color: white;
-  background-color: #4db650;
-  /* border: 2px solid black; */
-  border-radius: 4px;
-  padding: 7px;
-  transition-duration: 0.4s;
-}
 
-.save-changes-button:hover {
-  background-color: #52d157;
-  /* Green */
-  color: white;
-  box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
-}
 
 .placeholder-black::placeholder {
   color: black;
@@ -186,39 +153,7 @@
   /* Set a higher z-index to position the error message above other elements */
 }
 
-.profile-picture-container {
-  width: 100px;
-  /* Set a fixed width */
-  height: 100px;
-  /* Set a fixed height */
-  border-radius: 50%;
-  /* To make it circular for square images */
-  overflow: hidden;
-  /* To hide any part of the image that exceeds the container's dimensions */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.profile-picture-container img {
-  width: 100%;
-  /* Make the image cover the entire container maintaining aspect ratio */
-  height: 100%;
-  /* Make the image cover the entire container maintaining aspect ratio */
-  object-fit: cover;
-  /* Crop or pad the image as needed to maintain aspect ratio */
-}
-
-.empty-profile-picture-container {
-  width: 100px;
-  height: 100px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-weight: bold;
-}
 
 .border {
   border: 1px solid #ccc;

@@ -1,5 +1,5 @@
 import React, { ReactNode} from "react";
-import ParticlesBackgroundNew from "./components/ParticlesSlow.memo";
+import ParticlesBackgroundNew from "./Components/ParticlesSlow.memo";
 
 interface AppWrapperProps {
     children: ReactNode;
@@ -7,7 +7,8 @@ interface AppWrapperProps {
   
 const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
   return (
-    <div style={{ position: "relative", overflow: "hidden" }}>
+    <div
+    style={{ position: "relative", overflow: "hidden" }}>
       <ParticlesBackgroundNew />
       {children}
     </div>
