@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_ROUTES, APP_ROUTES } from "../../../Utils/constants";
+import { API_ROUTES, APP_ROUTES } from "../../Utils/constants";
 import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
-import { UserData } from "../../../Services/user";
+import { UserData } from "../../Services/user";
 import { useNavigate } from "react-router-dom";
-import ToastErrorMessage from "../../../Components/ToastErrorMessage";
-import LogoutParent from "../../../LogoutHook/logoutParent";
-import ProfilePicContainer from "../../UserProfile/components/ProfilePicContainer";
-import ImageChange from "./ImageChange";
-import EditUserFormValidation from "./EditUserFormValidation";
+import ToastErrorMessage from "../../Components/ToastErrorMessage";
+import LogoutParent from "../../LogoutHook/logoutParent";
+import ProfilePicContainer from "../UserProfile/components/ProfilePicContainer";
+import ImageChange from "./components/ImageChange";
+import EditUserFormValidation from "./components/EditUserFormValidation";
 
 export const UserProfileEdit: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -64,16 +64,10 @@ export const UserProfileEdit: React.FC = () => {
           <div className="profil-board-header-edit-profile">
             <LogoutParent setErrMsg={setErrMsg} />
           </div>
-
           <ProfilePicContainer userData={userData} />
-
           <ImageChange setErrMsg={setErrMsg} fetchUserProfile={fetchUserProfile} />
-
           <div className="fade-line" style={{ marginTop: '20px' }}></div>
-
-
-          <EditUserFormValidation setErrMsg={setErrMsg} userData={userData}/>
-
+          <EditUserFormValidation setErrMsg={setErrMsg} userData={userData} />
           <div className="d-flex justify-content-between text-center mt-5 mb-2">
           </div>
         </MDBCard>

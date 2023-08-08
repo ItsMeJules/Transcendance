@@ -33,6 +33,7 @@ export class SocketEvents {
     client.data = { id: user.id };
     client.join(`user_${client.id}`);
     client.join('general_online');
+    console.log('1 Connection in');
   }
 
   async isFriendOnline(friendId: string): Promise<boolean> {

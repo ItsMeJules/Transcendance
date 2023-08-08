@@ -19,7 +19,7 @@ import { Socket } from "socket.io-client";
 const UserFriends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userDataMain, setUserDataMain] = useState<UserData | null>(null);
-  const [socket, setSocket] = useState<Socket>();
+  const [socket, setSocket] = useState<Socket | null | undefined>(null);
   const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
   const [removeFlag, setRemoveFlag] = useState(false);
@@ -28,6 +28,7 @@ const UserFriends = () => {
   const [notifMsg, setNotifMsg] = useState('');
   const [idToRemove, setIdToRemove] = useState<string | undefined>('none');
   const [friendOnlineStatus, setFriendOnlineStatus] = useState<{ [key: string]: boolean }>({});
+  const [loading, setLoading] = useState(true);
 
 
   const resetErrMsg = () => {
@@ -42,11 +43,44 @@ const UserFriends = () => {
     setRemoveFlag(true); // Reset errMsg to an empty string
   };
 
+  useEffect(() => {
+    setSocket(connectSocket());
+
+    return () => {
+      if (socket) {
+        disconnectSocket();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const fetchOnlineStatuses = async () => {
+      try {
+        socket.emit('fetchOnlineStatuses', (onlineStatuses: { [key: string]: boolean }) => {
+          setFriendOnlineStatus(onlineStatuses);
+          setLoading(false);
+        });
+      } catch (error) {
+        console.error('Error fetching online statuses:', error);
+      }
+    };
+    fetchOnlineStatuses();
+  }, [socket]);
+
+  useEffect(() => {
+    if (!loading) {
+      // Fetch user's friends once online statuses are received
+      fetchFriends(friendOnlineStatus);
+    }
+  }, [loading, friendOnlineStatus]);
+
   const resetIdToRemove = () => {
     setIdToRemove('none');
   };
 
-  const fetchFriends = async () => {
+  const fetchFriends = async (onlineStatuses: { [key: string]: boolean }) => {
     try {
       const response = await axios.get(API_ROUTES.USER_FRIENDS,
         {
@@ -68,15 +102,17 @@ const UserFriends = () => {
     }
   };
 
-  useEffect(() => {
-    fetchFriends();
-    setSocket(connectSocket());
-    getSocket()
-    return () => {
-      socket?.off("connect", () => {})
-      disconnectSocket();
-    }
-  }, []);
+  // useEffect(() => {
+  //   fetchFriends();
+  //   setSocket(connectSocket());
+  //   getSocket()
+  //   return () => {
+  //     socket?.off("connect", () => {})
+  //     disconnectSocket();
+  //   }
+  // }, []);
+
+
 
   useEffect(() => {
     const removeUser = async (id: string | undefined) => {
