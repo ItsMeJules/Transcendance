@@ -8,6 +8,7 @@ import './Components/css/Toast.scss'
 import './Components/css/ToastNotif.scss'
 import './Screens/UserProfile/css/UserProfile.scss'
 import './Screens/LeaderBoard/css/LeaderBoard.scss'
+import './Screens/Friends/css/friends.scss'
 import { Home } from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';
@@ -19,7 +20,7 @@ import { APP_ROUTES } from './Utils/constants';
 import { Test } from './Screens/Test';
 import LeaderBoard from './Screens/LeaderBoard/LeaderBoard';
 import GenericUserProfile from './Screens/UserProfile/GenericUserProfile';
-import UserFriends from './Screens/UserProfile/UserFriends';
+import UserFriends from './Screens/Friends/Friends';
 // import  {connectSocket, disconnectSocket } from './Websocket/Socket.io.';
 
 

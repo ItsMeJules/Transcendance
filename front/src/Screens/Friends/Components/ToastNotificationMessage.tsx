@@ -15,8 +15,6 @@ const ToastNotificationMessage: React.FC<ToastNotificationMessageProps> = ({ not
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
-
-    // Function to show the toast
     const showToast = () => {
       setToastVisible(true);
       const x = toastRef.current;
@@ -25,7 +23,7 @@ const ToastNotificationMessage: React.FC<ToastNotificationMessageProps> = ({ not
         timeoutId = setTimeout(() => {
           x.className = x.className.replace("show", "");
           setToastVisible(false);
-          changeRemoveFlag();
+          resetIdToRemove();
           resetNotifMsg(); // Call the function to reset errMsg in the parent component
         }, 5950);
       }
@@ -41,10 +39,9 @@ const ToastNotificationMessage: React.FC<ToastNotificationMessageProps> = ({ not
   }, [notifMsg, isToastVisible, resetNotifMsg]);
 
   const handleToastClick = () => {
-    // Handle the click on the toast message here
-    // For example, you can reverse the operation or perform any other action
+    // The click here confirms the friend's removal
     // Then reset the notification message to hide the toast
-    resetIdToRemove();
+    changeRemoveFlag();
     resetNotifMsg();
   };
 

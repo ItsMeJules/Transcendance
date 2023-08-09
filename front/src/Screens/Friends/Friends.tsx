@@ -3,10 +3,10 @@ import axios, { } from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../Utils";
 import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
 import User from "../../Services/user";
-import { UserData } from "../../Services/user";
+import { UserData } from '../../Services/user';
 import { Link, useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import ToastNotificationMessage from "../../Components/ToastNotificationMessage";
+import ToastNotificationMessage from "./Components/ToastNotificationMessage";
 import { UserArray } from "../../Services/UserArray";
 import LogoutParent from "../../LogoutHook/logoutParent";
 import { FaHeart } from 'react-icons/fa';
@@ -35,10 +35,6 @@ const UserFriends = () => {
     setErrMsg(''); // Reset errMsg to an empty string
   };
 
-  const resetNotifMsg = () => {
-    setNotifMsg(''); // Reset errMsg to an empty string
-  };
-
   const truRemoveFlag = () => {
     setRemoveFlag(true); // Reset errMsg to an empty string
   };
@@ -46,18 +42,19 @@ const UserFriends = () => {
   useEffect(() => {
     setSocket(connectSocket());
     fetchFriends();
+
+    const fetchFriendsInterval = setInterval(fetchFriends, 10000);
+
     return () => {
       if (socket) {
         disconnectSocket();
+        clearInterval(fetchFriendsInterval);
       }
     };
   }, []);
 
-  const resetIdToRemove = () => {
-    setIdToRemove('none');
-  };
-
   const fetchFriends = async () => {
+    // console.log('fetch friends entered!!!!');
     try {
       const response = await axios.get(API_ROUTES.USER_FRIENDS,
         {
@@ -79,6 +76,14 @@ const UserFriends = () => {
     }
   };
 
+  const resetNotifMsg = () => {
+    setNotifMsg(''); // Reset errMsg to an empty string
+  };
+
+  const resetIdToRemove = () => {
+    setIdToRemove('none');
+  };
+
   useEffect(() => {
     const removeUser = async (id: string | undefined) => {
       const dataToSend: any = {};
@@ -91,7 +96,6 @@ const UserFriends = () => {
             withCredentials: true
           }
         );
-        // Add logic to handle the response here if needed
       } catch (err: any) {
         // Adequate error management
       }
@@ -105,62 +109,70 @@ const UserFriends = () => {
   }, [removeFlag, idToRemove]);
 
   const removeFriend = async (id: string | undefined) => {
-    console.log("idtorem:", idToRemove);
     if (idToRemove === 'none') {
-      console.log("triggered");
       setIdToRemove(id);
-      setNotifMsg('Click here to cancel friend\'s removal');
+      setNotifMsg('Click here to confirm friend\'s removal');
     }
+  }
+
+  const handleProfileClick = (user: User) => {
+    setIdToRemove('none');
+    resetNotifMsg();
+    console.log('Profile clicked');
+    history(APP_ROUTES.GENERIC_USER_PROFILE + user.getId());
   }
 
   return (
     <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
-      <MDBContainer className="leaderboard-container">
-        <MDBCard className="leaderboard-card">
+      <MDBContainer className="friends-container">
+        <MDBCard className="friends-card">
 
-          <div className="leaderboard">
+          <div className="friends">
 
-            <header className="leaderboard-header">
+            <header className="friends-header">
 
               <LogoutParent setErrMsg={setErrMsg} />
 
-              <h1 className="leaderboard__title">
-                <span className="leaderboard__title--top">
+              <h1 className="friends__title">
+                <span className="friends__title--top">
                   Friends
                 </span>
-                <span className="leaderboard__title--bottom">
+                <span className="friends__title--bottom">
                   Pannel
                 </span>
               </h1>
             </header>
           </div>
 
-          <main className="leaderboard__profiles">
+          <main className="friends__profiles">
             {users.map((user) => (
-              <article className="leaderboard__profile" key={user.getId()}>
+              <article className="friends__profile" key={user.getId()}>
                 <img
                   src={user.getProfilePicture()}
                   alt={user.getUsername()}
-                  className="leaderboard__picture"
+                  className="friends__picture"
                 />
-                <Link className="leaderboard__name" title="Show user profile"
-                  style={{ textDecoration: 'none' }}
-                  to={userData?.id === user.getId() ? APP_ROUTES.USER_PROFILE : APP_ROUTES.GENERIC_USER_PROFILE + user.getId()}
-                  key={user.getId()}>
-                  <span className="leaderboard__name">
-                    {user.getUsername()}
-                    {friendOnlineStatus[user.getId()] ? <span>Online</span> : <span>Offline</span>}
-                  </span>
-                </Link>
+                <button className="friends__name" title="Go to user profile"
+                  key={user.getId()}
+                  onClick={() => handleProfileClick(user)}>
+                  {user.getUsername()}
+                </button>
 
-                <span className="leaderboard__value">
-                  <button onClick={() => removeFriend(user.getId())}>
+                <div className="friends__heart">
+
+
+                  <span title={`${user.getIsOnline() ? 'online' : 'offline'}`}
+                    className={`border friends__status-circle ${user.getIsOnline() ? 'online' : 'offline'}`}>
+                    {user.getIsOnline() && <span className="ripple"></span>}
+                  </span>
+
+                  <button className="" onClick={() => removeFriend(user.getId())}>
                     <IconContext.Provider
                       value={{ color: iconColor, size: '30px' }}>
                       <FaHeart />
                     </IconContext.Provider>
                   </button>
-                </span>
+                </div>
 
               </article>
             ))}

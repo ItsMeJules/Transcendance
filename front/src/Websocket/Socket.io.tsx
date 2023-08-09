@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { APP_URL, SOCKET_GENERAL } from '../Utils';
+import User from '../Services/user';
 
 const socketUrl = 'http://localhost:8000/general';
 // const socketUrl = APP_URL + SOCKET_GENERAL;
@@ -9,32 +10,26 @@ let socket: Socket | null = null;
 
 export const connectSocket = () => {
 
-  console.log("inside connect socket");
+  // console.log("inside connect socket");
   if (!socket) {
-    // console.log('Connecting socket for user:', userId);
     socket = io(socketUrl, {
-      // reconnection: true,
-      // reconnectionAttempts: 5,
+      reconnection: true,
+      reconnectionAttempts: 2,
     });
 
     socket.on("general_online", (data: any) => {
       console.log('data received:', data);
     });
 
-    // socket.on("connect", () => {
-    //   if (socket) {
-    //     console.log(socket.id);
-    //     // socket.off("connect");
-    //   }
-    // });
-    // Listen on test
-    // socket.on('user_status_update', (data) => {
-    //   console.log("Status update:", data);
-    // })
-
-    // socket.on('userStatus', ({ userId, status }: { userId: string; status: boolean }) => {
-    //   setFriendOnlineStatus((prevStatus) => ({ ...prevStatus, [userId]: status }));
-    // });
+    const user = localStorage.getItem('userData');
+    if (user) {
+      let userJSON: any;
+      userJSON = JSON.parse(user);
+      socket.on(`user_${userJSON.id}`, (data: any) => {
+        console.log('data received:', data);
+      });
+      console.log('test:', `user_${userJSON.id}`);
+    }
     return socket;
   }
 };
@@ -75,11 +70,10 @@ export const askFriendStatusSocketIO = (friendId: string | null) => {
         });
       }
     });
-  } catch (error)
-    {
-      console.error('Error asking friend online status:', error);
-      throw error;
-    }
-  };
+  } catch (error) {
+    console.error('Error asking friend online status:', error);
+    throw error;
+  }
+};
 
-  export default socket;
+export default socket;

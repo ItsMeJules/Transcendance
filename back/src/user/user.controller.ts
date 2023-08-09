@@ -47,10 +47,12 @@ export class UserController {
       where: { id: user.id },
       include: { friends: true },
     });
+    delete userWithFriends.hash;
 
-    // Set online friends
+    // Set online status for friends
     const onlineUsers = await this.socketEvents.server.in('general_online').fetchSockets();
     userWithFriends.friends.forEach((user) => {
+      delete user.hash;
       for (let i = 0; i < onlineUsers.length; i++) {
         const socket = onlineUsers[i];
         if (user.id === socket.data.id) {
@@ -59,7 +61,6 @@ export class UserController {
         }
       }
     });
-    // console.log('friends final:', userWithFriends.friends);
 
     return userWithFriends;
   }
