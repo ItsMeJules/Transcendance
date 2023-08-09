@@ -39,16 +39,33 @@ export class SocketEvents {
     // if (user.friends)
     // console.log('user:', user.friends);
 
-    const onlineUsers = await this.server.in('general_online').fetchSockets();
-    // Friends
-    user.friends.forEach((friends) => {
-      onlineUsers.forEach((Socket) => {
-        const test = false;
-        if (friends.id === Socket.data.id)
-        console.log('friend id:', Socket.data.id);
-      });
-      console.log('friend id:', friends.id);
-    });
+
+
+
+
+
+    // const onlineUsers = await this.server.in('general_online').fetchSockets();
+    // // Friends
+    // let onlineFriends = [];
+
+    // user.friends.forEach((friends) => {
+    //   for (let i = 0; i < onlineUsers.length; i++) {
+    //     const socket = onlineUsers[i];
+    //     if (friends.id === socket.data.id) {
+    //       console.log('friend id:', friends.id, ' socket id:', socket.data.id, " it s a match and is online!");
+    //       onlineFriends.push(friends.id);
+    //       break;
+    //     }
+    //   }
+    // });
+
+
+
+
+
+
+    // console.log('onlinefriends:', onlineFriends);
+    // this.server.emit('general_online', onlineFriends);
 
   }
 

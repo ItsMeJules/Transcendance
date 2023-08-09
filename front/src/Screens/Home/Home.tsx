@@ -38,10 +38,6 @@ export const Home = () => {
     setPlaySecondVideo(true);
   };
 
-  const handleSocketConnect = () => {
-    // connectSocket("1");
-  };
-
   // const handleVideoEnd = () => {
   //   setShowVideo(false);
   // };
@@ -105,11 +101,6 @@ export const Home = () => {
           ft_transcendance
         </GlowText>
 
-      </div>
-      <div className="flex justify-center mx-auto text-white font-bold" style={{ paddingTop: '300px'}}>
-          <PulseGlowText onClick={handleSocketConnect} className="flex text-xl font-bold" style={{ fontSize: screenSize.width * 0.1 > 200 ? 200 : screenSize.width * 0.1 }}>
-            Socket
-          </PulseGlowText> 
       </div>
 
       <div className="flex justify-center mx-auto text-white font-bold" style={{ paddingTop: '300px'}}>

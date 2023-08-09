@@ -18,6 +18,7 @@ import {
 } from './module';
 import { Response } from 'express';
 import { SocketService } from '../websocket/websocket.service';
+import { SocketEvents } from 'src/websocket/websocket.gateway';
 
 const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
@@ -25,7 +26,8 @@ const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as ne
 export class UserService {
   constructor(private prisma: PrismaService,
     private config: ConfigService,
-    private socketService: SocketService) {}
+    private socketService: SocketService,
+    private socketEvents: SocketEvents) {}
 
   async editUser(userId: number, dto: EditUserDto) {
     if (dto.username && dto.username.length > 100)

@@ -9,6 +9,7 @@ CREATE TABLE "users" (
     "email" TEXT NOT NULL,
     "profilePicture" TEXT,
     "hash" TEXT NOT NULL,
+    "isOnline" BOOLEAN NOT NULL DEFAULT false,
     "gamesPlayed" INTEGER DEFAULT 0,
     "gamesWon" INTEGER DEFAULT 0,
     "userPoints" INTEGER DEFAULT 0,

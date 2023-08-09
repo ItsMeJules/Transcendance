@@ -23,6 +23,7 @@ model User {
   email          String  @unique
   profilePicture String?
   hash           String
+  isOnline       Boolean @default(false)
 
   gamesPlayed Int?     @default(0)
   gamesWon    Int?     @default(0)

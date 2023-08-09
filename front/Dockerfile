@@ -5,7 +5,7 @@ COPY package*.json ./
 # RUN npm install react-scripts@latest -g
 RUN npm i
 # RUN npm ci
-COPY . .
+# COPY . .
 # RUN npm run build
 
 EXPOSE 4000

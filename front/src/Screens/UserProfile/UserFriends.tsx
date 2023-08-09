@@ -45,6 +45,7 @@ const UserFriends = () => {
 
   useEffect(() => {
     setSocket(connectSocket());
+    fetchFriends();
     return () => {
       if (socket) {
         disconnectSocket();
@@ -52,34 +53,11 @@ const UserFriends = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!socket) return;
-
-    const fetchOnlineStatuses = async () => {
-      try {
-        socket.emit('fetchOnlineStatuses', (onlineStatuses: { [key: string]: boolean }) => {
-          setFriendOnlineStatus(onlineStatuses);
-          setLoading(false);
-        });
-      } catch (error) {
-        console.error('Error fetching online statuses:', error);
-      }
-    };
-    fetchOnlineStatuses();
-  }, [socket]);
-
-  useEffect(() => {
-    if (!loading) {
-      // Fetch user's friends once online statuses are received
-      fetchFriends(friendOnlineStatus);
-    }
-  }, [loading, friendOnlineStatus]);
-
   const resetIdToRemove = () => {
     setIdToRemove('none');
   };
 
-  const fetchFriends = async (onlineStatuses: { [key: string]: boolean }) => {
+  const fetchFriends = async () => {
     try {
       const response = await axios.get(API_ROUTES.USER_FRIENDS,
         {
@@ -101,42 +79,30 @@ const UserFriends = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchFriends();
-  //   setSocket(connectSocket());
-  //   getSocket()
-  //   return () => {
-  //     socket?.off("connect", () => {})
-  //     disconnectSocket();
-  //   }
-  // }, []);
-
-
-
-  // useEffect(() => {
-  //   const removeUser = async (id: string | undefined) => {
-  //     const dataToSend: any = {};
-  //     if (id) dataToSend.id = id;
-  //     try {
-  //       const response = await axios.patch(
-  //         API_ROUTES.ADD_FRIEND + id,
-  //         dataToSend,
-  //         {
-  //           withCredentials: true
-  //         }
-  //       );
-  //       // Add logic to handle the response here if needed
-  //     } catch (err: any) {
-  //       // Adequate error management
-  //     }
-  //     setRemoveFlag(false);
-  //     fetchFriends();
-  //     setIdToRemove('none');
-  //   };
-  //   if (removeFlag) {
-  //     removeUser(idToRemove);
-  //   }
-  // }, [removeFlag, idToRemove]);
+  useEffect(() => {
+    const removeUser = async (id: string | undefined) => {
+      const dataToSend: any = {};
+      if (id) dataToSend.id = id;
+      try {
+        const response = await axios.patch(
+          API_ROUTES.ADD_FRIEND + id,
+          dataToSend,
+          {
+            withCredentials: true
+          }
+        );
+        // Add logic to handle the response here if needed
+      } catch (err: any) {
+        // Adequate error management
+      }
+      setRemoveFlag(false);
+      fetchFriends();
+      setIdToRemove('none');
+    };
+    if (removeFlag) {
+      removeUser(idToRemove);
+    }
+  }, [removeFlag, idToRemove]);
 
   const removeFriend = async (id: string | undefined) => {
     console.log("idtorem:", idToRemove);

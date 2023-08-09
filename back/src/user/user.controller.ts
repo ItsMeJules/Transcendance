@@ -24,6 +24,7 @@ import { editFileName } from './module';
 import { Response } from 'express';
 import { CustomExceptionFilter } from './module/CustomExceptionFilter';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SocketEvents } from 'src/websocket/websocket.gateway';
 import { SocketService } from 'src/websocket/websocket.service';
 
 @UseGuards(JwtGuard)
@@ -32,7 +33,8 @@ export class UserController {
   constructor(
     private userService: UserService,
     private prisma: PrismaService,
-    private socketService: SocketService) { }
+    private socketService: SocketService,
+    private socketEvents: SocketEvents) { }
 
   @Get('me')
   getMe(@GetUser() user: User) {
@@ -41,16 +43,25 @@ export class UserController {
 
   @Get('me/friends')
   async getFriends(@GetUser() user: User) {
-    console.log("oke");
-    const userFriends = await this.prisma.user.findUnique({
+    const userWithFriends = await this.prisma.user.findUnique({
       where: { id: user.id },
       include: { friends: true },
     });
-    // console.log('me friends nb connected:', this.socketService.getConnectedUsers().size);
-    // if (!user) {
-    //   return res.status(404).json({ message: 'User not found' });
-    // }
-    return userFriends;
+
+    // Set online friends
+    const onlineUsers = await this.socketEvents.server.in('general_online').fetchSockets();
+    userWithFriends.friends.forEach((user) => {
+      for (let i = 0; i < onlineUsers.length; i++) {
+        const socket = onlineUsers[i];
+        if (user.id === socket.data.id) {
+          user.isOnline = true;
+          break;
+        }
+      }
+    });
+    // console.log('friends final:', userWithFriends.friends);
+
+    return userWithFriends;
   }
 
   @Get('all')

@@ -32,5 +32,6 @@ import { SocketService } from 'src/websocket/websocket.service';
     JwtStrategy,
     SocketService,
   ], // why no guards?
+  exports: [AuthService],
 })
 export class AuthModule {}
