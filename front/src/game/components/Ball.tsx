@@ -5,9 +5,10 @@ type BallProps = {
   paddle2Top: number;
   resetGame: () => void;
   updateScores: (player1: number, player2: number) => void; // Ajoutez cette ligne
+  lastScorer: boolean;
 };
 
-const Ball = ({ paddle1Top, paddle2Top, resetGame, updateScores }: BallProps) => {
+const Ball = ({ paddle1Top, paddle2Top, resetGame, updateScores , lastScorer}: BallProps) => {
   const ballSize = 20;
   const gameBoardWidth = 600;
   const gameBoardHeight = 300;
@@ -53,8 +54,15 @@ const Ball = ({ paddle1Top, paddle2Top, resetGame, updateScores }: BallProps) =>
   };
 
   const resetBall = () => {
-    setPosition({ x: gameBoardWidth / 2, y: gameBoardHeight / 2 });
-    setSpeed({ x: ballSpeed, y: -ballSpeed });
+    const randomY = Math.random() * gameBoardHeight;
+    const isUpperHalf = randomY < gameBoardHeight / 2;
+
+    setPosition({ x: gameBoardWidth / 2, y: randomY });
+
+    const xDirection = lastScorer ? -ballSpeed : ballSpeed;
+    const yDirection = isUpperHalf ? ballSpeed : -ballSpeed;
+
+    setSpeed({ x: xDirection, y: yDirection });
   };
 
   useEffect(() => {

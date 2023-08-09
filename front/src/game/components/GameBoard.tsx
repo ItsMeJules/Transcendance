@@ -16,6 +16,7 @@ const GameBoard = () => {
   const [paddle2Top, setPaddle2Top] = useState(110);
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [winner, setWinner] = useState<string | null>(null);
+  const [lastScorer, setLastScorer] = useState(false)
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const scoresRef = useRef(scores);
@@ -41,6 +42,11 @@ const GameBoard = () => {
   }, []);
 
   const updateScores = (player1: number, player2: number) => {
+    if (player1 > player2) {
+      setLastScorer(true);
+    } else if (player1 < player2) {
+      setLastScorer(false);
+    }
     setScores(prevScores => ({
       player1: prevScores.player1 + player1,
       player2: prevScores.player2 + player2
@@ -59,29 +65,58 @@ const GameBoard = () => {
     setScores({ player1: 0, player2: 0 });
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (event: { code: any; }) => {
-      switch (event.code) {
-        case "KeyW":
-          setPaddle1Top(paddle1Top => Math.max(ballSize * 2, paddle1Top - 10));
-          break;
-        case "KeyS":
-          setPaddle1Top(paddle1Top => Math.min(gameBoardHeight - paddleHeight - (ballSize * 2), paddle1Top + 10));
-          break;
-        case "ArrowUp":
-          setPaddle2Top(paddle2Top => Math.max(ballSize * 2, paddle2Top - 10));
-          break;
-        case "ArrowDown":
-          setPaddle2Top(paddle2Top => Math.min(gameBoardHeight - paddleHeight - (ballSize * 2), paddle2Top + 10));
-          break;
-      }
-    }
+// Utilisez useRef pour suivre l'état des touches
+const keysPressed = useRef({ w: false, s: false, ArrowUp: false, ArrowDown: false });
 
-    window.addEventListener("keydown", handleKeyDown);
+// Gestionnaire d'événement pour enregistrer l'état des touches
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.key === 'w' || event.key === 's' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    keysPressed.current[event.key] = true;
+  }
+};
 
-    // Remove event listener on cleanup
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+const handleKeyUp = (event: KeyboardEvent) => {
+  if (event.key === 'w' || event.key === 's' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    keysPressed.current[event.key] = false;
+  }
+};
+
+// Créez une fonction pour mettre à jour les positions des paddles en fonction des touches enfoncées
+const updatePaddles = () => {
+  if (keysPressed.current.w) {
+    setPaddle1Top(paddle1Top => Math.max(ballSize * 2, paddle1Top - 10));
+  }
+  if (keysPressed.current.s) {
+    setPaddle1Top(paddle1Top => Math.min(gameBoardHeight - paddleHeight - (ballSize * 2), paddle1Top + 10));
+  }
+  if (keysPressed.current.ArrowUp) {
+    setPaddle2Top(paddle2Top => Math.max(ballSize * 2, paddle2Top - 10));
+  }
+  if (keysPressed.current.ArrowDown) {
+    setPaddle2Top(paddle2Top => Math.min(gameBoardHeight - paddleHeight - (ballSize * 2), paddle2Top + 10));
+  }
+};
+
+useEffect(() => {
+  // Ajoutez des écouteurs d'événements pour les touches enfoncées et relâchées
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keyup', handleKeyUp);
+
+  const animatePaddles = () => {
+    updatePaddles();
+    requestAnimationFrame(animatePaddles);
+  };
+
+  // Commencez l'animation
+  requestAnimationFrame(animatePaddles);
+
+  // Supprimez les écouteurs d'événements au nettoyage
+  return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+    window.removeEventListener('keyup', handleKeyUp);
+  };
+}, []);
+
   const startGame = () => {
     resetGame();
     setIsGameStarted(true);
@@ -103,7 +138,14 @@ const GameBoard = () => {
       <div className="game-board">
         <Paddle top={paddle1Top} />
         <Paddle top={paddle2Top} />
-        {isGameStarted && <Ball paddle1Top={paddle1Top} paddle2Top={paddle2Top} resetGame={resetGame} updateScores={updateScores} />}
+        {isGameStarted &&
+        <Ball 
+        paddle1Top={paddle1Top}
+        paddle2Top={paddle2Top}
+        resetGame={resetGame}
+        updateScores={updateScores}
+        lastScorer={lastScorer}
+        />}
         <div className="score-container">
           <div className="score">{scores.player1}</div>
           <div className="score">{scores.player2}</div>
