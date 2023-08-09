@@ -3,17 +3,16 @@ import Paddle from "./Paddle";
 import Ball from "./Ball";
 
 const GameBoard = () => {
-  const gameBoardWidth = 600;
-  const gameBoardHeight = 300;
-  const paddleWidth = 20;
-  const paddleHeight = 80;
-  const ballSize = 20;
+  const gameBoardWidth = window.innerWidth * 0.8;
+  const gameBoardHeight = gameBoardWidth * 0.5;
+  const paddleHeight = (gameBoardHeight * 80) / 300;
+  const ballSize = (gameBoardWidth * 20) / 600;
 
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(60);
   const [isTimeOut, setIsTimeout] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const [paddle1Top, setPaddle1Top] = useState(110);
-  const [paddle2Top, setPaddle2Top] = useState(110);
+  const [paddle1Top, setPaddle1Top] = useState(gameBoardHeight * 110 / 300);
+  const [paddle2Top, setPaddle2Top] = useState(gameBoardHeight * 110 / 300);
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [winner, setWinner] = useState<string | null>(null);
   const [lastScorer, setLastScorer] = useState(false)
@@ -54,11 +53,11 @@ const GameBoard = () => {
   };
 
   const resetGame = useCallback(() => {
-    setTimer(10);
+    setTimer(60);
     setIsTimeout(false);
     setIsGameStarted(false);
-    setPaddle1Top(110);
-    setPaddle2Top(110);
+    setPaddle1Top(gameBoardHeight * 110 / 300);
+    setPaddle2Top(gameBoardHeight * 110 / 300);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -84,16 +83,16 @@ const handleKeyUp = (event: KeyboardEvent) => {
 // Créez une fonction pour mettre à jour les positions des paddles en fonction des touches enfoncées
 const updatePaddles = () => {
   if (keysPressed.current.w) {
-    setPaddle1Top(paddle1Top => Math.max(ballSize * 2, paddle1Top - 10));
+    setPaddle1Top(paddle1Top => Math.max(ballSize * 2, paddle1Top - (gameBoardHeight * 10) / 300));
   }
   if (keysPressed.current.s) {
-    setPaddle1Top(paddle1Top => Math.min(gameBoardHeight - paddleHeight - (ballSize * 2), paddle1Top + 10));
+    setPaddle1Top(paddle1Top => Math.min(gameBoardHeight - paddleHeight, paddle1Top + (gameBoardHeight * 10) / 300));
   }
   if (keysPressed.current.ArrowUp) {
-    setPaddle2Top(paddle2Top => Math.max(ballSize * 2, paddle2Top - 10));
+    setPaddle2Top(paddle2Top => Math.max(ballSize * 2, paddle2Top - (gameBoardHeight * 10) / 300));
   }
   if (keysPressed.current.ArrowDown) {
-    setPaddle2Top(paddle2Top => Math.min(gameBoardHeight - paddleHeight - (ballSize * 2), paddle2Top + 10));
+    setPaddle2Top(paddle2Top => Math.min(gameBoardHeight - paddleHeight, paddle2Top + (gameBoardHeight * 10) / 300));
   }
 };
 
@@ -120,7 +119,7 @@ useEffect(() => {
   const startGame = () => {
     resetGame();
     setIsGameStarted(true);
-    console.log("Game started");
+    console.log("Game started and ball size is: ", ballSize);
     intervalRef.current = setInterval(() => {
       setTimer(prevTimer => {
         if (prevTimer === 0) {
@@ -134,7 +133,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="container">
+    <div className="container" style={{ width: gameBoardWidth, height: gameBoardHeight}}>
       <div className="game-board">
         <Paddle top={paddle1Top} />
         <Paddle top={paddle2Top} />

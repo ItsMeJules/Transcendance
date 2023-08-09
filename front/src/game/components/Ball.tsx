@@ -9,13 +9,13 @@ type BallProps = {
 };
 
 const Ball = ({ paddle1Top, paddle2Top, resetGame, updateScores , lastScorer}: BallProps) => {
-  const ballSize = 20;
-  const gameBoardWidth = 600;
-  const gameBoardHeight = 300;
-  const ballSpeed = 2;
-  const paddleHeight = 80;
-  const paddleWidth = 20;
-  const accelerationFactor = 1.5;
+  const gameBoardWidth = window.innerWidth * 0.8;
+  const gameBoardHeight = gameBoardWidth * 0.5;
+  const ballSize = gameBoardWidth * 20 / 600 ;
+  const ballSpeed = gameBoardWidth * 2 / 600;
+  const paddleHeight = gameBoardHeight * 80 / 300;
+  const paddleWidth = gameBoardWidth * 20 / 600;
+  const accelerationFactor = 1.8;
 
   const [speed, setSpeed] = useState({ x: ballSpeed, y: ballSpeed });
   const [position, setPosition] = useState({ x: gameBoardWidth / 2, y: gameBoardHeight / 2 });
@@ -29,21 +29,6 @@ const Ball = ({ paddle1Top, paddle2Top, resetGame, updateScores , lastScorer}: B
 
     return angle;
   };
-
-  /* or 
-  
-  const calculateAngle = (ballY: number, paddleY: number, paddleHeight: number) => {
-    // Divisez la raquette en 5 segments et calculez le segment qui a été touché
-    const hitPoint = (ballY - (paddleY - paddleHeight / 2)) / paddleHeight;
-    const segments = [-3/2, -1/2, 0, 1/2, 3/2];
-    const hitSegment = segments.find((seg, i) => hitPoint < seg) || segments[segments.length - 1];
-  
-    // Retourne un nouvel angle basé sur le segment touché
-    return hitSegment * (Math.PI / 12); // L'angle est entre -45 et 45 degrés
-  };
-  
-  */
-
 
   const calculateSpeed = (angle: number, speed: number) => {
     // Calculate the new speed in the x and y directions
