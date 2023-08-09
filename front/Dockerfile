@@ -2,7 +2,7 @@ FROM node:lts AS builder
 
 WORKDIR /workspace/front
 COPY package*.json ./
-RUN npm install react-scripts@latest -g
+# RUN npm install react-scripts@latest -g
 RUN npm i
 # RUN npm ci
 COPY . .

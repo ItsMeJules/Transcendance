@@ -45,7 +45,6 @@ const UserFriends = () => {
 
   useEffect(() => {
     setSocket(connectSocket());
-
     return () => {
       if (socket) {
         disconnectSocket();
@@ -114,30 +113,30 @@ const UserFriends = () => {
 
 
 
-  useEffect(() => {
-    const removeUser = async (id: string | undefined) => {
-      const dataToSend: any = {};
-      if (id) dataToSend.id = id;
-      try {
-        const response = await axios.patch(
-          API_ROUTES.ADD_FRIEND + id,
-          dataToSend,
-          {
-            withCredentials: true
-          }
-        );
-        // Add logic to handle the response here if needed
-      } catch (err: any) {
-        // Adequate error management
-      }
-      setRemoveFlag(false);
-      fetchFriends();
-      setIdToRemove('none');
-    };
-    if (removeFlag) {
-      removeUser(idToRemove);
-    }
-  }, [removeFlag, idToRemove]);
+  // useEffect(() => {
+  //   const removeUser = async (id: string | undefined) => {
+  //     const dataToSend: any = {};
+  //     if (id) dataToSend.id = id;
+  //     try {
+  //       const response = await axios.patch(
+  //         API_ROUTES.ADD_FRIEND + id,
+  //         dataToSend,
+  //         {
+  //           withCredentials: true
+  //         }
+  //       );
+  //       // Add logic to handle the response here if needed
+  //     } catch (err: any) {
+  //       // Adequate error management
+  //     }
+  //     setRemoveFlag(false);
+  //     fetchFriends();
+  //     setIdToRemove('none');
+  //   };
+  //   if (removeFlag) {
+  //     removeUser(idToRemove);
+  //   }
+  // }, [removeFlag, idToRemove]);
 
   const removeFriend = async (id: string | undefined) => {
     console.log("idtorem:", idToRemove);

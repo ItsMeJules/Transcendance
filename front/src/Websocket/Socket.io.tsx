@@ -17,7 +17,7 @@ export const connectSocket = () => {
       // reconnectionAttempts: 5,
     });
 
-    socket.on("connectionStatus", (data: any) => {
+    socket.on("general_online", (data: any) => {
       console.log('data received:', data);
     });
 

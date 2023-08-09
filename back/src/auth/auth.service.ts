@@ -82,7 +82,7 @@ export class AuthService {
     return token;
   }
 
-  async validateJwtToken(token: string): Promise<User | null> {
+  async validateJwtToken(token: string): Promise<User | any | null> {
     try {
       const jwtSecret = this.config.get('JWT_SECRET');
       const decodedToken: any = jwt.verify(token, jwtSecret);
