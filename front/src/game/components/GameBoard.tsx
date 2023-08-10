@@ -10,6 +10,7 @@ class GameProperties {
   paddleHeight: number;
   paddleWidth: number;
   accelerationFactor: number;
+  paddleSpeed: number;
 
   constructor() {
     this.gameBoardWidth = window.innerWidth * 0.8;
@@ -18,6 +19,7 @@ class GameProperties {
     this.ballSpeed = this.gameBoardWidth * 2 / 600;
     this.paddleHeight = this.gameBoardHeight * 80 / 300;
     this.paddleWidth = this.gameBoardWidth * 20 / 600;
+    this.paddleSpeed = this.gameBoardHeight * 10 / 300;
     this.accelerationFactor = 1.8;
   }
 
@@ -32,18 +34,16 @@ class GameProperties {
 }
 
 const GameBoard = () => {
-  const gameProperties = new GameProperties();
+  const gamePropertiesRef = useRef(new GameProperties());
+  const gameProperties = gamePropertiesRef.current;
 
   const [gameBoardWidth, setGameBoardWidth] = useState(gameProperties.gameBoardWidth);
   const [gameBoardHeight, setGameBoardHeight] = useState(gameProperties.gameBoardHeight);
-  const paddleHeight = gameProperties.paddleHeight;
-  const ballSize = gameProperties.ballSize;
-
   const [timer, setTimer] = useState(60);
   const [isTimeOut, setIsTimeout] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const [paddle1Top, setPaddle1Top] = useState(gameBoardHeight * 110 / 300);
-  const [paddle2Top, setPaddle2Top] = useState(gameBoardHeight * 110 / 300);
+  const [paddle1Top, setPaddle1Top] = useState(gameProperties.gameBoardHeight * 110 / 300);
+  const [paddle2Top, setPaddle2Top] = useState(gameProperties.gameBoardHeight * 110 / 300);
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [winner, setWinner] = useState<string | null>(null);
   const [lastScorer, setLastScorer] = useState(false)
@@ -52,9 +52,13 @@ const GameBoard = () => {
   const scoresRef = useRef(scores);
 
   const updateDimensions = () => {
+    const oldGameBoardHeight = gameProperties.gameBoardHeight;
+
     gameProperties.updateDimensions();
     setGameBoardWidth(gameProperties.gameBoardWidth);
     setGameBoardHeight(gameProperties.gameBoardHeight);
+    setPaddle1Top(prevPaddle1Top => (prevPaddle1Top / oldGameBoardHeight) * gameProperties.gameBoardHeight);
+    setPaddle2Top(prevPaddle2Top => (prevPaddle2Top / oldGameBoardHeight) * gameProperties.gameBoardHeight);
   };
 
   useEffect(() => {
@@ -126,16 +130,16 @@ const handleKeyUp = (event: KeyboardEvent) => {
 // Créez une fonction pour mettre à jour les positions des paddles en fonction des touches enfoncées
 const updatePaddles = () => {
   if (keysPressed.current.w) {
-    setPaddle1Top(paddle1Top => Math.max(ballSize * 2, paddle1Top - (gameBoardHeight * 10) / 300));
+    setPaddle1Top(paddle1Top => Math.max(gameProperties.ballSize * 2, paddle1Top - gameProperties.paddleSpeed));
   }
   if (keysPressed.current.s) {
-    setPaddle1Top(paddle1Top => Math.min(gameBoardHeight - paddleHeight, paddle1Top + (gameBoardHeight * 10) / 300));
+    setPaddle1Top(paddle1Top => Math.min(gameProperties.gameBoardHeight - gameProperties.paddleHeight - (gameProperties.ballSize * 2), paddle1Top + gameProperties.paddleSpeed));
   }
   if (keysPressed.current.ArrowUp) {
-    setPaddle2Top(paddle2Top => Math.max(ballSize * 2, paddle2Top - (gameBoardHeight * 10) / 300));
+    setPaddle2Top(paddle2Top => Math.max(gameProperties.ballSize * 2, paddle2Top - gameProperties.paddleSpeed));
   }
   if (keysPressed.current.ArrowDown) {
-    setPaddle2Top(paddle2Top => Math.min(gameBoardHeight - paddleHeight, paddle2Top + (gameBoardHeight * 10) / 300));
+    setPaddle2Top(paddle2Top => Math.min(gameProperties.gameBoardHeight - gameProperties.paddleHeight - (gameProperties.ballSize * 2 ), paddle2Top + (gameProperties.paddleSpeed)));
   }
 };
 
@@ -162,7 +166,6 @@ useEffect(() => {
   const startGame = () => {
     resetGame();
     setIsGameStarted(true);
-    console.log("Game started and ball size is: ", ballSize);
     intervalRef.current = setInterval(() => {
       setTimer(prevTimer => {
         if (prevTimer === 0) {
@@ -176,10 +179,10 @@ useEffect(() => {
   };
 
   return (
-    <div className="container" style={{ width: gameBoardWidth, height: gameBoardHeight}}>
-      <div className="game-board">
-        <Paddle top={paddle1Top} />
-        <Paddle top={paddle2Top} />
+    <div className="container" style={{ width: gameProperties.gameBoardWidth, height: gameProperties.gameBoardHeight }}>
+      <div className="game-board" style={{ width: gameProperties.gameBoardWidth, height:gameProperties.gameBoardHeight }}>
+        <Paddle top={paddle1Top} gameProperties={gameProperties}/>
+        <Paddle top={paddle2Top} gameProperties={gameProperties}/>
         {isGameStarted &&
         <Ball
         gameProperties={gameProperties} 
