@@ -2,11 +2,42 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Paddle from "./Paddle";
 import Ball from "./Ball";
 
+class GameProperties {
+  gameBoardWidth: number;
+  gameBoardHeight: number;
+  ballSize: number;
+  ballSpeed: number;
+  paddleHeight: number;
+  paddleWidth: number;
+  accelerationFactor: number;
+
+  constructor() {
+    this.gameBoardWidth = window.innerWidth * 0.8;
+    this.gameBoardHeight = this.gameBoardWidth * 0.5;
+    this.ballSize = this.gameBoardWidth * 20 / 600;
+    this.ballSpeed = this.gameBoardWidth * 2 / 600;
+    this.paddleHeight = this.gameBoardHeight * 80 / 300;
+    this.paddleWidth = this.gameBoardWidth * 20 / 600;
+    this.accelerationFactor = 1.8;
+  }
+
+  updateDimensions() {
+    this.gameBoardWidth = window.innerWidth * 0.8;
+    this.gameBoardHeight = this.gameBoardWidth * 0.5;
+    this.ballSize = this.gameBoardWidth * 20 / 600;
+    this.ballSpeed = this.gameBoardWidth * 2 / 600;
+    this.paddleHeight = this.gameBoardHeight * 80 / 300;
+    this.paddleWidth = this.gameBoardWidth * 20 / 600;
+  }
+}
+
 const GameBoard = () => {
-  const gameBoardWidth = window.innerWidth * 0.8;
-  const gameBoardHeight = gameBoardWidth * 0.5;
-  const paddleHeight = (gameBoardHeight * 80) / 300;
-  const ballSize = (gameBoardWidth * 20) / 600;
+  const gameProperties = new GameProperties();
+
+  const [gameBoardWidth, setGameBoardWidth] = useState(gameProperties.gameBoardWidth);
+  const [gameBoardHeight, setGameBoardHeight] = useState(gameProperties.gameBoardHeight);
+  const paddleHeight = gameProperties.paddleHeight;
+  const ballSize = gameProperties.ballSize;
 
   const [timer, setTimer] = useState(60);
   const [isTimeOut, setIsTimeout] = useState(false);
@@ -19,6 +50,18 @@ const GameBoard = () => {
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const scoresRef = useRef(scores);
+
+  const updateDimensions = () => {
+    gameProperties.updateDimensions();
+    setGameBoardWidth(gameProperties.gameBoardWidth);
+    setGameBoardHeight(gameProperties.gameBoardHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
   useEffect(() => {
     scoresRef.current = scores;
     console.log("Scores: ", scores);
@@ -56,8 +99,8 @@ const GameBoard = () => {
     setTimer(60);
     setIsTimeout(false);
     setIsGameStarted(false);
-    setPaddle1Top(gameBoardHeight * 110 / 300);
-    setPaddle2Top(gameBoardHeight * 110 / 300);
+    setPaddle1Top(gameProperties.gameBoardHeight * 110 / 300);
+    setPaddle2Top(gameProperties.gameBoardHeight * 110 / 300);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -138,7 +181,8 @@ useEffect(() => {
         <Paddle top={paddle1Top} />
         <Paddle top={paddle2Top} />
         {isGameStarted &&
-        <Ball 
+        <Ball
+        gameProperties={gameProperties} 
         paddle1Top={paddle1Top}
         paddle2Top={paddle2Top}
         resetGame={resetGame}
@@ -161,3 +205,4 @@ useEffect(() => {
 };
 
 export default GameBoard;
+export { GameProperties };

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { GameProperties } from './GameBoard';
 
 type BallProps = {
+  gameProperties: GameProperties;
   paddle1Top: number;
   paddle2Top: number;
   resetGame: () => void;
@@ -8,14 +10,8 @@ type BallProps = {
   lastScorer: boolean;
 };
 
-const Ball = ({ paddle1Top, paddle2Top, resetGame, updateScores , lastScorer}: BallProps) => {
-  const gameBoardWidth = window.innerWidth * 0.8;
-  const gameBoardHeight = gameBoardWidth * 0.5;
-  const ballSize = gameBoardWidth * 20 / 600 ;
-  const ballSpeed = gameBoardWidth * 2 / 600;
-  const paddleHeight = gameBoardHeight * 80 / 300;
-  const paddleWidth = gameBoardWidth * 20 / 600;
-  const accelerationFactor = 1.8;
+const Ball = ({ gameProperties, paddle1Top, paddle2Top, resetGame, updateScores , lastScorer}: BallProps) => {
+  const { gameBoardWidth, gameBoardHeight, ballSize, ballSpeed, paddleHeight, paddleWidth, accelerationFactor } = gameProperties;
 
   const [speed, setSpeed] = useState({ x: ballSpeed, y: ballSpeed });
   const [position, setPosition] = useState({ x: gameBoardWidth / 2, y: gameBoardHeight / 2 });
