@@ -7,6 +7,8 @@ class GameProperties {
   gameBoardHeight: number;
   ballSize: number;
   ballSpeed: number;
+  ballPosX: number;
+  ballPosY: number;
   paddleHeight: number;
   paddleWidth: number;
   accelerationFactor: number;
@@ -17,10 +19,12 @@ class GameProperties {
     this.gameBoardHeight = this.gameBoardWidth * 0.5;
     this.ballSize = this.gameBoardWidth * 20 / 600;
     this.ballSpeed = this.gameBoardWidth * 2 / 600;
+    this.ballPosX = this.gameBoardWidth / 2;
+    this.ballPosY = this.gameBoardHeight / 2;
     this.paddleHeight = this.gameBoardHeight * 80 / 300;
     this.paddleWidth = this.gameBoardWidth * 20 / 600;
     this.paddleSpeed = this.gameBoardHeight * 10 / 300;
-    this.accelerationFactor = 1.8;
+    this.accelerationFactor = 1;
   }
 
   updateDimensions() {
@@ -47,6 +51,8 @@ const GameBoard = () => {
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [winner, setWinner] = useState<string | null>(null);
   const [lastScorer, setLastScorer] = useState(false)
+  const [ballPosX, setBallPosX] = useState(gameProperties.gameBoardWidth / 2);
+  const [ballPosY, setBallPosY] = useState(gameProperties.gameBoardHeight / 2);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const scoresRef = useRef(scores);
@@ -59,17 +65,14 @@ const GameBoard = () => {
     setGameBoardHeight(gameProperties.gameBoardHeight);
     setPaddle1Top(prevPaddle1Top => (prevPaddle1Top / oldGameBoardHeight) * gameProperties.gameBoardHeight);
     setPaddle2Top(prevPaddle2Top => (prevPaddle2Top / oldGameBoardHeight) * gameProperties.gameBoardHeight);
+    setBallPosX(prevBallPosX => (prevBallPosX / oldGameBoardHeight) * gameProperties.gameBoardHeight);
+    setBallPosY(prevBallPosY => (prevBallPosY / oldGameBoardHeight) * gameProperties.gameBoardHeight);
   };
 
   useEffect(() => {
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
-
-  useEffect(() => {
-    scoresRef.current = scores;
-    console.log("Scores: ", scores);
-  }, [scores]);
 
   const endGame = useCallback(() => {
     if (intervalRef.current) {

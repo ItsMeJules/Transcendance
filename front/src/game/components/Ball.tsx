@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { GameProperties } from './GameBoard';
 
 type BallProps = {
@@ -11,17 +11,23 @@ type BallProps = {
 };
 
 const Ball = ({ gameProperties, paddle1Top, paddle2Top, resetGame, updateScores , lastScorer}: BallProps) => {
-  const { gameBoardWidth, gameBoardHeight, ballSize, ballSpeed, paddleHeight, paddleWidth, accelerationFactor } = gameProperties;
+  const { gameBoardWidth, gameBoardHeight, ballSize, ballSpeed, paddleHeight, paddleWidth, ballPosX, ballPosY} = gameProperties;
+  let accelerationFactor = gameProperties.accelerationFactor;
 
   const [speed, setSpeed] = useState({ x: ballSpeed, y: ballSpeed });
-  const [position, setPosition] = useState({ x: gameBoardWidth / 2, y: gameBoardHeight / 2 });
+  const [position, setPosition] = useState({ x: ballPosX, y: ballPosY });
+  const MIN_REFLECTION_ANGLE = Math.PI / 3;
 
   const calculateAngle = (hitPoint: number, paddleTop: number, paddleHeight: number) => {
     // Normalize the hit point to a value between -1 and 1
     const normalizedHitPoint = 2 * (hitPoint - paddleTop) / paddleHeight - 1;
 
     // Use a quadratic function to calculate the angle
-    const angle = normalizedHitPoint * normalizedHitPoint * Math.PI / 4;
+    let angle = normalizedHitPoint * normalizedHitPoint * Math.PI / 4;
+
+    if (Math.abs(angle) < MIN_REFLECTION_ANGLE) {
+      angle = angle < 0 ? -MIN_REFLECTION_ANGLE : MIN_REFLECTION_ANGLE;
+    }
 
     return angle;
   };
@@ -35,6 +41,7 @@ const Ball = ({ gameProperties, paddle1Top, paddle2Top, resetGame, updateScores 
   };
 
   const resetBall = () => {
+    accelerationFactor = 1;
     const randomY = Math.random() * gameBoardHeight;
     const isUpperHalf = randomY < gameBoardHeight / 2;
 
@@ -75,9 +82,11 @@ const Ball = ({ gameProperties, paddle1Top, paddle2Top, resetGame, updateScores 
         const reflectionModifier = calculateAngle(newPosY, paddleY, paddleHeight);
         // Calculate the reflection angle by adding the incident angle and the reflection modifier
         const reflectionAngle = incidentAngle + reflectionModifier;
+        const currentSpeedMagnitude = Math.sqrt(speed.x * speed.x + speed.y * speed.y);
         // Calculate the new speed components using the reflection angle
-        const newSpeed = calculateSpeed(reflectionAngle, ballSpeed);
+        const newSpeed = calculateSpeed(reflectionAngle, currentSpeedMagnitude);
         // Reverse the x direction based on the paddle hit
+        accelerationFactor += 0.2;
         setSpeed({
           x: (speed.x < 0 ? Math.abs(newSpeed.x) : -Math.abs(newSpeed.x)) * accelerationFactor,
           y: newSpeed.y * accelerationFactor
