@@ -12,24 +12,29 @@ import {
   Param,
   UseFilters,
   ParseIntPipe,
+  ConsoleLogger,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { editFileName } from './module';
-import { Response } from 'express';
 import { CustomExceptionFilter } from './module/CustomExceptionFilter';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Multer, multer, diskStorage } from 'multer';
+import { MulterModule } from '@nestjs/platform-express';
+import { editFileName, imageFileFilter } from './module';
+import { Response } from 'express';
 
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
-  constructor(private userService: UserService,
-    private prisma: PrismaService) { }
+  constructor(
+    private userService: UserService,
+    private prisma: PrismaService,
+  ) {}
 
   @Get('me')
   getMe(@GetUser() user: User) {
@@ -38,7 +43,7 @@ export class UserController {
 
   @Get('me/friends')
   async getFriends(@GetUser() user: User) {
-    console.log("oke");
+    console.log('oke');
     const userFriends = await this.prisma.user.findUnique({
       where: { id: user.id },
       include: { friends: true },
@@ -75,8 +80,8 @@ export class UserController {
         select: {
           friends: {
             where: { id: id },
-            select: { id: true }
-          }
+            select: { id: true },
+          },
         },
       });
       // console.log("userMain:", userMain);
@@ -89,8 +94,7 @@ export class UserController {
       data.friendStatus = '';
       if (userMain.friends.length !== 0) data.friendStatus = 'Is friend';
       return { data };
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   @Patch('add-friend/:id')

@@ -1,9 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-export class TestDto {
+export class TwoFaCodeDto {
   @IsString()
-  email: string;
-
-  @IsString()
-  password?: string;
+  twoFactorAuthenticationSecret: string;
 }
