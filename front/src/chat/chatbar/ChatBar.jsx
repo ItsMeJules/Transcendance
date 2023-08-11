@@ -1,6 +1,6 @@
 import React from "react";
 
-import UpArrow from "../../../assets/up-arrow.png"
+import UpArrow from "../../assets/up-arrow.png"
 
 import TextInput from "./TextInput";
 

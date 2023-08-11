@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Popup from "./Popup";
 
 export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false);
@@ -10,8 +11,18 @@ export default function ChatMetadata() {
   return (
     <div className="metadata-container">
       <div className="more" onClick={handleMoreClick}>
+
         <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
-          <span></span>
+          {isMoreActive &&
+            <Popup className="more-popup">
+              <p>Créer un channel</p>
+              <p>Envoyer un dm</p>
+              <p>Bloquer/Débloquer un utilisateur</p>
+            </Popup>
+          }
+          
+          <span></span> {/* Useful for the more symbol animation */}
+
         </div>
       </div>
 

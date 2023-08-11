@@ -1,6 +1,6 @@
 import React from "react";
 
-import RightArrow from "../../../assets/arrow-right.png"
+import RightArrow from "../../assets/arrow-right.png"
 
 const TextSend = ({ hasText, handleSend }) => {
   const sendStyle = {
