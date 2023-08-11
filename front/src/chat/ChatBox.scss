@@ -100,7 +100,7 @@
 
             .channel-creation-popup {
               display: flex;
-              flex-direction: row;
+              flex-direction: column;
               justify-content: flex-start;
               
               background: green;
@@ -112,26 +112,31 @@
               width: 100%;
 
               input {
-                height: 10%;
                 width: 80%;
               }
 
               .password-input {
+                width: 100%;
                 background-color: red;
+
+                input {
+                  width: 80%;
+                }
               }
 
               .icons {
                 display: flex;
-                flex-direction: column;
+                flex-direction: row;
                 justify-content: flex-start;
-                align-items: flex-end;
+                align-items: flex-start;
+
+                background-color: salmon;
                 
-                width: 15%;
-                padding-left: 10px;
+                height: 100%;
+                width: 100%;
 
                 img {
-                  max-height: 100%;
-                  max-width: 100%;
+                  max-width: 15%;
                   
                   cursor: pointer;
                   transition: transform 0.3s;

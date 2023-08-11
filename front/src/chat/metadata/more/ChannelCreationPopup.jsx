@@ -11,13 +11,14 @@ export default function ChannelCreationPopup() {
 
   return (
     <Popup className="channel-creation-popup">
-      <input placeholder="Nom du channel" required />
 
       <div className="icons">
         <img src={PublicIcon} alt="Public"></img>
         <img src={PrivateIcon} alt="Private"></img>
         <img src={ProtectedIcon} alt="Protected" onClick={() => setPasswordInput(!passwordInput)}></img>
       </div>
+      
+      <input placeholder="Nom du channel" required />
 
       {passwordInput &&
         <div className="password-input">
