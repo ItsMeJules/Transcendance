@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 import Paddle from "./Paddle";
 import Ball from "./Ball";
 
@@ -37,13 +38,27 @@ class GameProperties {
   }
 }
 
+type Score = {
+  player1: number;
+  player2: number;
+};
+
+const sendScoreToSever = async (score: Score) => {
+  try {
+    const response = await axios.post('http://localhost:3000/scores', score);
+    console.log('Score envoyé au serveur: ', response.data);
+  } catch (error) {
+    console.error('Erreur lors de l\'envoi du score au serveur: ', error);
+  }
+};
+
 const GameBoard = () => {
   const gamePropertiesRef = useRef(new GameProperties());
   const gameProperties = gamePropertiesRef.current;
 
   const [gameBoardWidth, setGameBoardWidth] = useState(gameProperties.gameBoardWidth);
   const [gameBoardHeight, setGameBoardHeight] = useState(gameProperties.gameBoardHeight);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(10);
   const [isTimeOut, setIsTimeout] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [paddle1Top, setPaddle1Top] = useState(gameProperties.gameBoardHeight * 110 / 300);
@@ -88,6 +103,7 @@ const GameBoard = () => {
     } else {
       setWinner("TIE");
     }
+    sendScoreToSever(finalscores);
   }, []);
 
   const updateScores = (player1: number, player2: number) => {
@@ -103,7 +119,7 @@ const GameBoard = () => {
   };
 
   const resetGame = useCallback(() => {
-    setTimer(60);
+    setTimer(10);
     setIsTimeout(false);
     setIsGameStarted(false);
     setPaddle1Top(gameProperties.gameBoardHeight * 110 / 300);
