@@ -3,14 +3,47 @@ import Popup from "./Popup";
 
 export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false);
-  const [mousePosition, setMousePos] = useState({x: 0, y: 0})
+  const [channelPopup, setChannelPopup] = useState(false)
 
   const handleMoreClick = (event) => {
-    const x = event.clientX;
-    const y = event.clientY;
+    if (!isMoreActive == false)
+      setChannelPopup(false)
 
-    setMousePos({x, y})
     setIsMoreActive(!isMoreActive);
+  }
+
+  const channelCreation = () => {
+    setChannelPopup(!channelPopup)
+  }
+
+  const sendDirectMessage = () => {
+
+  }
+
+  const restrictUser = () => {
+
+  }
+
+  const channelList = () => {
+
+  }
+
+  const popupText = () => {
+    return (
+      <div className="popups-container">
+        <Popup className="more-popup" mousePos={null}>
+          <p onClick={channelCreation}>Créer un channel</p>
+          <p onClick={sendDirectMessage}>Envoyer un dm</p>
+          <p onClick={restrictUser}>Bloquer/Débloquer un utilisateur</p>
+          <p onClick={channelList}>Liste des channels</p>
+
+          {channelPopup &&
+            <Popup className="channel-creation-popup" mousePos={null}>
+              <input placeholder="Nom du channel" required/>
+            </Popup>}
+        </Popup>
+      </div>
+    )
   }
 
   return (
@@ -21,13 +54,8 @@ export default function ChatMetadata() {
           <span></span> {/* Useful for the more symbol animation */}
         </div>
 
-        {isMoreActive &&
-            <Popup className="more-popup" mousePos={mousePosition}>
-              <p>Créer un channel</p>
-              <p>Envoyer un dm</p>
-              <p>Bloquer/Débloquer un utilisateur</p>
-            </Popup>
-        }
+        {isMoreActive && popupText()}
+
       </div>
 
       <div className="metadata">

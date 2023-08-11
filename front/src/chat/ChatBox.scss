@@ -83,11 +83,37 @@
           }
         }
 
-        .more-popup-container {
-          position: absolute;
-          background-color: aqua;
+        .popups-container {
+          position: relative;
+
+          .more-popup {
+            position: absolute;
+
+            background-color: aqua;
+            cursor: auto;
+  
+            p {
+              cursor: pointer;
+              border: solid 1px brown;
+            }
+
+            .channel-creation-popup {
+              background:green;
+
+              position: absolute;
+              top: 0px;
+              left: 100%;
+
+              height: 100%;
+              width: 100%;
+
+              input {
+                width: 80%;
+              }
+            }
+          }
         }
-        
+
       }
 
       .metadata {
