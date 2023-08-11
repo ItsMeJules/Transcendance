@@ -3,27 +3,31 @@ import Popup from "./Popup";
 
 export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false);
+  const [mousePosition, setMousePos] = useState({x: 0, y: 0})
 
-  const handleMoreClick = () => {
+  const handleMoreClick = (event) => {
+    const x = event.clientX;
+    const y = event.clientY;
+
+    setMousePos({x, y})
     setIsMoreActive(!isMoreActive);
-  };
+  }
 
   return (
     <div className="metadata-container">
       <div className="more" onClick={handleMoreClick}>
 
         <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
-          {isMoreActive &&
-            <Popup className="more-popup">
+          <span></span> {/* Useful for the more symbol animation */}
+        </div>
+
+        {isMoreActive &&
+            <Popup className="more-popup" mousePos={mousePosition}>
               <p>Créer un channel</p>
               <p>Envoyer un dm</p>
               <p>Bloquer/Débloquer un utilisateur</p>
             </Popup>
-          }
-          
-          <span></span> {/* Useful for the more symbol animation */}
-
-        </div>
+        }
       </div>
 
       <div className="metadata">

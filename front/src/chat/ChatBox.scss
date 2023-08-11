@@ -82,8 +82,13 @@
             transform: rotate(-45deg);
           }
         }
-      }
 
+        .more-popup-container {
+          position: absolute;
+          background-color: aqua;
+        }
+        
+      }
 
       .metadata {
         display: flex;
