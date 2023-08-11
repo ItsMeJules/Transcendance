@@ -85,6 +85,7 @@
 
         .popups-container {
           position: relative;
+          top: 50%;
 
           .more-popup {
             position: absolute;
@@ -101,13 +102,13 @@
               display: flex;
               flex-direction: row;
               justify-content: flex-start;
+              
               background: green;
 
               position: absolute;
-              top: 0px;
+              top: 10%;
               left: 100%;
 
-              height: 50%;
               width: 100%;
 
               input {
@@ -115,17 +116,29 @@
                 width: 80%;
               }
 
+              .password-input {
+                background-color: red;
+              }
+
               .icons {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
                 align-items: flex-end;
+                
                 width: 15%;
                 padding-left: 10px;
 
                 img {
                   max-height: 100%;
                   max-width: 100%;
+                  
+                  cursor: pointer;
+                  transition: transform 0.3s;
+
+                  &:hover {
+                    transform: scale(1.2);
+                  }
                 }
               }
 
