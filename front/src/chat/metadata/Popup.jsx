@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
-export default function Popup( {className, children} ) {
-
+export default function Popup({ className, children }) {
 	return (
 		<div className={className} onClick={(e) => e.stopPropagation()}>
-      {children}
+			{children}
 		</div>
 	)
 }
