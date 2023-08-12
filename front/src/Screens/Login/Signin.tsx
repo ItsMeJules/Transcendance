@@ -48,12 +48,13 @@ export const Signin = () => {
     e.preventDefault();
 
     try {
-      await axios.post(API_ROUTES.SIGN_IN,
+      const response = await axios.post(API_ROUTES.SIGN_IN,
         JSON.stringify({ email: email, password: password }),
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         })
+      localStorage.setItem('userData', JSON.stringify(response.data));
       // User.getInstance().setAccessToken(response.data.accessToken);
       setEmail('');
       setPassword('');

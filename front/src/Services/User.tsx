@@ -1,5 +1,5 @@
 export interface UserData {
-    id: string | null;
+    id:  string | null;
     createdAt: string | null;
     updatedAt: string | null;
     email: string | null;

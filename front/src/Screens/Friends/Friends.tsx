@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import axios, { } from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../Utils";
 import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
-import User from "../../Services/user";
-import { UserData } from '../../Services/user';
 import { Link, useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import ToastNotificationMessage from "./Components/ToastNotificationMessage";
@@ -11,15 +9,17 @@ import { UserArray } from "../../Services/UserArray";
 import LogoutParent from "../../LogoutHook/logoutParent";
 import { FaHeart } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
-import { connectSocket, getSocket, disconnectSocket } from "../../Websocket/Socket.io";
+import { connectSocket, getSocket, disconnectSocket, deregisterSocket } from "../../Websocket/Socket.io";
 import { JsxEmit } from "typescript";
 import socket from '../../Websocket/Socket.io';
 import { Socket } from "socket.io-client";
+import { UserData } from "../../Services/User";
+import User from "../../Services/User";
+import { useWebsocketContext } from "../../Wrappers/Websocket";
 
 const UserFriends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userDataMain, setUserDataMain] = useState<UserData | null>(null);
-  const [socket, setSocket] = useState<Socket | null | undefined>(null);
   const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
   const [removeFlag, setRemoveFlag] = useState(false);
@@ -29,6 +29,7 @@ const UserFriends = () => {
   const [idToRemove, setIdToRemove] = useState<string | undefined>('none');
   const [friendOnlineStatus, setFriendOnlineStatus] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState(true);
+  const socket = useWebsocketContext();
 
 
   const resetErrMsg = () => {
@@ -40,16 +41,12 @@ const UserFriends = () => {
   };
 
   useEffect(() => {
-    setSocket(connectSocket());
     fetchFriends();
 
     const fetchFriendsInterval = setInterval(fetchFriends, 10000);
 
     return () => {
-      if (socket) {
-        disconnectSocket();
-        clearInterval(fetchFriendsInterval);
-      }
+      clearInterval(fetchFriendsInterval);
     };
   }, []);
 
@@ -115,12 +112,12 @@ const UserFriends = () => {
     }
   }
 
-  const handleProfileClick = (user: User) => {
-    setIdToRemove('none');
-    resetNotifMsg();
-    console.log('Profile clicked');
-    history(APP_ROUTES.GENERIC_USER_PROFILE + user.getId());
-  }
+  // const handleProfileClick = (user: User) => {
+  //   setIdToRemove('none');
+  //   resetNotifMsg();
+  //   console.log('Profile clicked');
+  //   history(APP_ROUTES.GENERIC_USER_PROFILE + user.getId());
+  // }
 
   return (
     <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
@@ -154,7 +151,8 @@ const UserFriends = () => {
                 />
                 <button className="friends__name" title="Go to user profile"
                   key={user.getId()}
-                  onClick={() => handleProfileClick(user)}>
+                // onClick={() => handleProfileClick(user)}
+                >
                   {user.getUsername()}
                 </button>
 
@@ -184,10 +182,6 @@ const UserFriends = () => {
       <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div>
   );
-
-  return (
-    <div></div>
-  )
 }
 
 export default UserFriends;

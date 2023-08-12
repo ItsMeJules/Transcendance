@@ -1,6 +1,6 @@
 import React, { } from 'react';
 import { MDBCardText } from 'mdb-react-ui-kit';
-import { UserData } from '../../../Services/user';
+import { UserData } from '../../../Services/User';
 import getProgressBarClass from '../../../Components/ProgressBarClass';
 
 interface DisplayStatsProps {

@@ -9,6 +9,7 @@ import './Components/css/ToastNotif.scss'
 import './Screens/UserProfile/css/UserProfile.scss'
 import './Screens/LeaderBoard/css/LeaderBoard.scss'
 import './Screens/Friends/css/friends.scss'
+import './Screens/JoinGame/css/loading.css'
 import { Home } from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';
@@ -21,6 +22,8 @@ import { Test } from './Screens/Test';
 import LeaderBoard from './Screens/LeaderBoard/LeaderBoard';
 import GenericUserProfile from './Screens/UserProfile/GenericUserProfile';
 import UserFriends from './Screens/Friends/Friends';
+import Websocket from './Wrappers/Websocket';
+
 // import  {connectSocket, disconnectSocket } from './Websocket/Socket.io.';
 
 
@@ -49,12 +52,12 @@ const App: React.FC = () => {
   //     connectSocket(userId, socketUrl);
   //   }
 
-    return (
+  return (
 
 
 
-      <div>
-        {/* <header className='flex justify-between items-center mb-5'>
+    <div>
+      {/* <header className='flex justify-between items-center mb-5'>
         <BsFillBalloonHeartFill style={{color: 'red', fontSize: '50px'}}/>
         <nav>
           <NavLink className='mr-3' style={({ isActive }) => ({fontWeight: isActive ? 'bold' : 'normal'})} to='/'>Accueil</NavLink>
@@ -63,22 +66,23 @@ const App: React.FC = () => {
         </nav>
       </header> */}
 
-
-        <AppWrapper>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path={APP_ROUTES.SIGN_IN} element={<Signin />} />
-            <Route path={APP_ROUTES.SIGN_UP} element={<Signup />} />
-            <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
-            <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
-            <Route path={APP_ROUTES.USER_FRIENDS} element={<UserFriends />} />
-            <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
-            <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
-            <Route path="/test" element={<Test />} />
-          </Routes>
-        </AppWrapper>
-      </div>
-    );
-  }
+        <Websocket>
+          <AppWrapper>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path={APP_ROUTES.SIGN_IN} element={<Signin />} />
+              <Route path={APP_ROUTES.SIGN_UP} element={<Signup />} />
+              <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
+              <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
+              <Route path={APP_ROUTES.USER_FRIENDS} element={<UserFriends />} />
+              <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
+              <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
+              <Route path="/test" element={<Test />} />
+            </Routes>
+          </AppWrapper>
+        </Websocket>
+    </div>
+  );
+}
 
 export default App;

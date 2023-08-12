@@ -47,7 +47,8 @@ export class AuthController {
       maxAge: 60 * 60 * 24 * 10000,
       sameSite: 'lax',
     });
-    return { message: 'Signin successful' };
+    const user = await this.authService.validateJwtToken(access_token);
+    return user;
   }
 
   // add a filter like for image upload to return errors
@@ -95,9 +96,4 @@ export class AuthController {
     res.redirect('/profile/me');
   }
 
-  @Get('test123')
-  @UseGuards(JwtGuard)
-  async test123(@Res() res) {
-    res.json('good');
-  }
 }

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { API_ROUTES, APP_ROUTES, APP_URL } from '../../Utils';
 import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
-import { UserData } from '../../Services/user';
+import { UserData } from '../../Services/User';
 import getProgressBarClass from '../../Components/ProgressBarClass';
 import DisplayData from './components/DisplayData';
 import DisplayStats from './components/DisplayStats';

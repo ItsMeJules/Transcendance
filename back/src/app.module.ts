@@ -18,6 +18,7 @@ import { SocketModule } from './websocket/websocket.module';
 import { Express, Request } from 'express';
 import { MulterModule } from '@nestjs/platform-express';
 import { Multer } from 'multer';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -35,9 +36,9 @@ import { Multer } from 'multer';
     }),
     AuthModule,
     UserModule,
-    // BookmarkModule,
     PrismaModule,
     SocketModule,
+    GameModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],

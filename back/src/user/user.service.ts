@@ -17,17 +17,13 @@ import {
   constructPicturePathNoImage,
 } from './module';
 import { Response } from 'express';
-import { SocketService } from '../websocket/websocket.service';
-import { SocketEvents } from 'src/websocket/websocket.gateway';
 
 const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService,
-    private config: ConfigService,
-    private socketService: SocketService,
-    private socketEvents: SocketEvents) {}
+    private config: ConfigService,) { }
 
   async editUser(userId: number, dto: EditUserDto) {
     if (dto.username && dto.username.length > 100)
@@ -119,7 +115,7 @@ export class UserService {
         // console.log('path to delete:',pathToDelete);
         fs.unlinkSync(pathToDelete);
       }
-    } catch (err: any) {}
+    } catch (err: any) { }
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {

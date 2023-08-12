@@ -2,18 +2,21 @@ import React, { useEffect, useState } from "react";
 import axios, { } from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../Utils";
 import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
-import User from "../../Services/user";
-import { UserData } from "../../Services/user";
+import User from "../../Services/User";
 import { Link, useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import { UserArray } from "../../Services/UserArray";
 import LogoutParent from "../../LogoutHook/logoutParent";
+import { useSelector } from 'react-redux';
+import { isConstructorDeclaration } from "typescript";
+import { UserData } from "../../Services/User";
 
 const LeaderBoard: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
   const history = useNavigate();
+  // const userDataStore = useSelector((state: RootState) => state.user);
 
   const resetErrMsg = () => {
     setErrMsg(''); // Reset errMsg to an empty string
@@ -33,7 +36,11 @@ const LeaderBoard: React.FC = () => {
 
       // let userInstance = User.getInstance();
       // console.log("1 User:", userInstance);
+
+
       let updatedUsers: User[] = [];
+
+
       // console.log('1: ', updatedUsers);
 
       response.data.forEach((userDatat: any) => {
@@ -54,7 +61,7 @@ const LeaderBoard: React.FC = () => {
   };
 
   useEffect(() => {
-
+    // console.log("userdata from store:", userDataStore);
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get(API_ROUTES.USER_PROFILE,

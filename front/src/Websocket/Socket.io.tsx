@@ -1,6 +1,5 @@
 import { io, Socket } from 'socket.io-client';
 import { APP_URL, SOCKET_GENERAL } from '../Utils';
-import User from '../Services/user';
 
 const socketUrl = 'http://localhost:8000/general';
 // const socketUrl = APP_URL + SOCKET_GENERAL;
@@ -52,6 +51,17 @@ export const getSocket = () => {
   return socket;
 };
 
+export const deregisterSocket = (
+  socket: Socket
+): void => {
+  setTimeout(() => {
+    console.log("disconnect triggered");
+    socket.disconnect();
+  }, 5000);
+  socket.off("connect");
+  socket.off("connect_error");
+  socket.off("disconnect");
+};
 
 export const disconnectSocket = () => {
   if (socket) {

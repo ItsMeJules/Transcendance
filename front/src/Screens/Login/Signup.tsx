@@ -37,11 +37,10 @@ export const Signup = () => {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         });
+      localStorage.setItem('userData', JSON.stringify(response.data));
       setEmail('');
       setPassword('');
       setSuccess(true);
-      console.log("id:", response.data.id);
-      // connectSocket(response.data.id);
     } catch (err: any) {
 
       console.log(err.response.data.message);

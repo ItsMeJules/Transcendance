@@ -1,5 +1,6 @@
 // Users.ts
-import User, { UserData } from "./user";
+import User from "./User";
+import { UserData } from "./User";
 
 class Users {
   private static instance: Users;

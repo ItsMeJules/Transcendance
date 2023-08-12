@@ -20,6 +20,7 @@ export class SocketEvents {
   ) {}
 
   async handleConnection(client: Socket) {
+    console.log('> general Connection in');
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -32,26 +33,26 @@ export class SocketEvents {
       return;
     }
     client.data = { id: user.id };
-    client.join(`user_${client.id}`);
+    client.join(`user_${user.id}`);
     client.join('general_online');
 
     this.server.emit('general_online', 'Hi all!');
     this.server.emit(`user_${client.data.id}`, `Hi user number ${client.data.id}`);
-    console.log('test:', `user_${client.data.id}`);
+    // console.log('test:', `user_${client.data.id}`);
   }
 
 
   handleDisconnect(client: Socket) {
-    console.log('3 Connection out');
+    console.log('> general Conection out');
     const socketId = client.handshake.query.userId;
     // console.log("users:", this.connectedUsers);
   }
 
-  // @SubscribeMessage('message') // This decorator listens for messages with the event name 'message'
-  // handleMessage(client: any, payload: any) {
-  //   console.log('Received message:', payload);
-  //   this.server.emit('test', 'Message received by server');
-  // }
+  @SubscribeMessage('message') // This decorator listens for messages with the event name 'message'
+  handleMessage(client: any, payload: any) {
+    console.log('Received message:', payload);
+    this.server.emit('test', 'Message received by server');
+  }
 
   // @SubscribeMessage('askFriendOnlineStatus')
   // async handleAskFriendOnlineStatus(client: Socket, friendId: string): Promise<boolean> {

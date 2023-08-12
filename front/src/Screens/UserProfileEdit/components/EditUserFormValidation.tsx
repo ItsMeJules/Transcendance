@@ -1,6 +1,5 @@
 import React, { FormEvent, useState, useEffect } from 'react';
-import { UserData } from '../../../Services/user';
-import {MDBCardBody, MDBTypography } from 'mdb-react-ui-kit';
+import { UserData } from '../../../Services/User';import {MDBCardBody, MDBTypography } from 'mdb-react-ui-kit';
 import { API_ROUTES, APP_ROUTES } from '../../../Utils';
 import axios from 'axios';
 

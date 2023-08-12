@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../Utils/constants";
 import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
-import { UserData } from "../../Services/user";
+import { UserData } from "../../Services/User";
 import { useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import LogoutParent from "../../LogoutHook/logoutParent";
