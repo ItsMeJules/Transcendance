@@ -16,3 +16,25 @@ model User {
   friends         User[] @relation("friends")
   friendsRelation User[] @relation("friends")
 }
+
+model Message {
+  id          Int    @id @default(autoincrement())
+  text        String
+  created_at  DateTime @default(now())
+  room        Room
+  author      User
+}
+
+model Room {
+  id        Int    @id @default(autoincrement())
+  type      String @default("public") // public, private, protected, direct
+  name      String
+  password  String?
+  
+  muteds User[]
+  admins User[]
+  users  User[]
+  owner  User
+  
+  messages Message[]
+}
