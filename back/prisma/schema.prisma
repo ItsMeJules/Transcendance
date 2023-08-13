@@ -13,28 +13,44 @@ datasource db {
 model User {
   id              Int @id @default(autoincrement())
   username        String @unique
+  mutedRooms      Room[] @relation("muteds")
+  adminRooms      Room[] @relation("admins")
+  rooms           Room[] @relation("users")
+  ownedRooms      Room[] @relation("owner")
+  bannedRooms     Room[] @relation("bannedUsers")
   friends         User[] @relation("friends")
   friendsRelation User[] @relation("friends")
+  messages        Message[] @relation("author")
 }
 
 model Message {
   id          Int    @id @default(autoincrement())
   text        String
   created_at  DateTime @default(now())
-  room        Room
-  author      User
+  roomId      Int 
+  room        Room  @relation("messages", fields: [roomId], references: [id])
+  author      User  @relation("author", fields: [authorId], references: [id])
+  authorId    Int
 }
 
 model Room {
   id        Int    @id @default(autoincrement())
-  type      String @default("public") // public, private, protected, direct
+  type      RoomType @default(PUBLIC)
   name      String
   password  String?
   
-  muteds User[]
-  admins User[]
-  users  User[]
-  owner  User
+  banned User[] @relation("bannedUsers") //add banned time
+  muteds User[] @relation("muteds")
+  admins User[] @relation("admins")
+  users  User[] @relation("users")
+  owner  User @relation("owner", fields: [id], references: [id]) // care au field ici
   
-  messages Message[]
+  messages Message[] @relation("messages")
+}
+
+enum RoomType {
+  PUBLIC
+  PRIVATE
+  PROTECTED
+  DIRECT
 }
