@@ -10,6 +10,7 @@ import './Screens/UserProfile/css/UserProfile.scss'
 import './Screens/LeaderBoard/css/LeaderBoard.scss'
 import './Screens/Friends/css/friends.scss'
 import './Screens/JoinGame/css/loading.css'
+import './Screens/Play/css/play.scss'
 import { Home } from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';
@@ -23,6 +24,7 @@ import LeaderBoard from './Screens/LeaderBoard/LeaderBoard';
 import GenericUserProfile from './Screens/UserProfile/GenericUserProfile';
 import UserFriends from './Screens/Friends/Friends';
 import Websocket from './Wrappers/Websocket';
+import { Play } from './Screens/Play/Play';
 
 // import  {connectSocket, disconnectSocket } from './Websocket/Socket.io.';
 
@@ -78,6 +80,7 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
               <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
               <Route path="/test" element={<Test />} />
+              <Route path="/play" element={<Play />} />
             </Routes>
           </AppWrapper>
         </Websocket>

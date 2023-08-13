@@ -166,7 +166,9 @@ export class UserService {
   }
 
   async findOneById(id: number): Promise<User | null> {
-    const user: User | null = await this.prisma.user.findUnique({
+    if (!id)
+      return null;
+    const user = await this.prisma.user.findUnique({
       where: { id: id },
     });
     return user;

@@ -25,7 +25,7 @@ export const Test2 = () => {
             <header className="flex"
                 style={{ flexDirection: 'column', zIndex: '1' }}>
 
-                <PlayButton gameMode={4} setSocketData={setSocketData}/>
+                {/* <PlayButton gameMode={4} setSocketData={setSocketData}/> */}
 
                 <button className="text-white border"
                     style={{ fontSize: '30px', marginTop: '20px', zIndex: '1' }}

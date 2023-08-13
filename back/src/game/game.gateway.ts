@@ -47,10 +47,11 @@ export class GameEvents {
   }
 
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     console.log('> game Connection out');
-    if (client.data.id)
-      this.gameService.removeFromQueue(client.data.id);
+    const user = await this.userService.findOneById(client.data.id);
+    if (!user) return;
+    this.gameService.removeFromQueue(user.id);
     const socketId = client.handshake.query.userId;
     // console.log("users:", this.connectedUsers);
   }
@@ -64,11 +65,13 @@ export class GameEvents {
     if (!user) return;
     const gameQueue = this.gameService.addToQueue(user, gameDto);
     if (gameQueue != null) {
-      // this.server.emit(`user_${user.id}`, 'You just joined the queue to play!')
-      // console.log('Join:', `user_${user.id}`)
-      this.server.to(`user_${user.id}`).emit(`joinGameQueue`, 'QUEUE JOINED')
+      this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED' });
+      const gameStructure = await this.gameService.gameStart(gameDto, this.server);
+      if (gameStructure) {
+        this.server.to(`user_${gameStructure.player1.id}`).emit(`joinGameQueue`, gameStructure);
+        this.server.to(`user_${gameStructure.player2.id}`).emit(`joinGameQueue`, gameStructure);
+      }
     }
-    this.server.emit('matchmaking', 'Message received by server');
   }
 
   @SubscribeMessage('leaveGameQueue') // This decorator listens for messages with the event name 'message'

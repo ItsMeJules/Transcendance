@@ -35,9 +35,36 @@ model User {
   // Opposite relation field
   friendsOf User[] @relation("UserFriends")
 
-  Bookmark Bookmark[]
+  // Game
+  player1Games Game[] @relation("Player1")
+  player2Games Game[] @relation("Player2")
+  wonGames Game[] @relation("Winner")
+  lostGames Game[] @relation("Loser")
+  
+  // gamesList Game[]
+  Bookmark  Bookmark[]
 
   @@map("users")
+}
+
+model Game {
+  id       Int @id @unique @default(autoincrement())
+  gameMode Int
+
+  player1 User @relation("Player1", fields: [player1Id], references: [id])
+  player1Id Int
+
+  player2 User @relation("Player2", fields: [player2Id], references: [id])
+  player2Id Int
+
+  winner User? @relation("Winner", fields: [winnerId], references: [id])
+  winnerId Int?
+
+  loser User? @relation("Loser", fields: [loserId], references: [id])
+  loserId Int?
+
+  player1Score Int @default(0)
+  player2Score Int @default(0)
 }
 
 model Bookmark {

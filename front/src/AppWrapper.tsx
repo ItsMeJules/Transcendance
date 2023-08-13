@@ -8,7 +8,7 @@ interface AppWrapperProps {
 const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
   return (
     <div
-    style={{ position: "relative", overflow: "hidden" }}>
+    style={{ position: "relative", overflow: "hidden"}}>
       <ParticlesBackgroundNew />
       {children}
     </div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useWebsocketContext } from "../Wrappers/Websocket";
+import { GameData } from "../Services/Game";
 
 interface playButtonProps {
   gameMode: number,
@@ -14,16 +15,16 @@ const PlayButton: React.FC<playButtonProps> = ({ gameMode, setSocketData }) => {
     if (!isInQueue) {
       socket.game?.emit('joinGameQueue', { gameMode: gameMode });
       socket.game?.on('joinGameQueue', (data: any) => {
+        console.log('join game socket data:', data);
         setSocketData(data);
       });
       setIsInQueue(true);
     } else {
       socket.game?.emit('leaveGameQueue');
       setIsInQueue(false);
-      setSocketData('');
+      setSocketData({ status: 'LEAVE'});
     }
   }
-
 
   return (
     < button className="text-white border border-white"

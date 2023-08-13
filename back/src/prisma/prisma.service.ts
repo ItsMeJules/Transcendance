@@ -24,8 +24,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
 
     async getUserById(userId: number): Promise<User | null> {
-        
-        
         return this.user.findUnique({
           where: { id: userId },
           include: { friends: true },

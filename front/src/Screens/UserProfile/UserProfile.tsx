@@ -87,10 +87,10 @@ export const UserProfile: React.FC = () => {
   };
 
   return (
-    <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
+    <div className="vh-100 d-flex" style={{ paddingTop: '75px' }}>
 
-      <MDBContainer className="profile-board-container">
-        <MDBCard className="profile-board-card">
+      <MDBContainer className="profile-board-container ">
+        <MDBCard className="profile-board-card ">
           <div className="profile-board-header-show-profile">
 
             <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT} style={{ padding: '0px' }}>
