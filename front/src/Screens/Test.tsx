@@ -7,50 +7,53 @@ import Game, { GameData } from "../Services/Game";
 import { useNavigate } from "react-router-dom";
 
 export const Test = () => {
-    const [userData, setUserData] = useState<UserData | null>(null);
-    const [socketData, setSocketData] = useState('');
-    const [inQueue, setInQueue] = useState(false);
-    const [profilePicture, setProfilePicture] = useState('');
-    const [errMsg, setErrMsg] = useState('');
-    const history = useNavigate();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [socketData, setSocketData] = useState('');
+  const [inQueue, setInQueue] = useState(false);
+  const [profilePicture, setProfilePicture] = useState('');
+  const [errMsg, setErrMsg] = useState('');
+  const history = useNavigate();
 
-    useEffect(() => {
-        if (socketData) {
-            const dataString = JSON.stringify(socketData);
-            const dataJSON = JSON.parse(dataString);
-            if (dataJSON.status === "JOINED")
-                setInQueue(true);
-            else if (dataJSON.status === "LEAVE")
-                setInQueue(false);
-            else if (dataJSON.status === 'START') {
-                // console.log('game:', dataJSON.game);
-                // console.log('player1:', dataJSON.player1);
-                // console.log('player2:', dataJSON.player2);
-                localStorage.setItem('gameData', JSON.stringify(dataJSON.game));
-                localStorage.setItem('player1', JSON.stringify(dataJSON.player1));
-                localStorage.setItem('player2', JSON.stringify(dataJSON.player2));
-                history('/play');
-            }
-        }
-    }, [socketData]);
+  useEffect(() => {
+    if (socketData) {
+      const dataString = JSON.stringify(socketData);
+      const dataJSON = JSON.parse(dataString);
+      if (dataJSON.status === "JOINED")
+        setInQueue(true);
+      else if (dataJSON.status === "LEAVE")
+        setInQueue(false);
+      else if (dataJSON.status === 'START') {
+        localStorage.setItem('gameData', JSON.stringify(dataJSON.game));
+        localStorage.setItem('player1', JSON.stringify(dataJSON.player1));
+        localStorage.setItem('player2', JSON.stringify(dataJSON.player2));
+        localStorage.setItem('gameChannel', JSON.stringify(dataJSON.gameChannel));
+        setInQueue(false);
+        history('/play');
+      }
+    }
+  }, [socketData]);
 
-    return (
-        <div>
-            <header className="flex"
-                style={{ flexDirection: 'column', zIndex: '1' }}>
+  useEffect(() => {
+    console.log('inQueue', inQueue);
+  }, []);
 
-                <PlayButton gameMode={4} setSocketData={setSocketData} />
+  return (
+    <div>
+      <header className="flex"
+        style={{ flexDirection: 'column', zIndex: '1' }}>
 
-                {inQueue &&
-                    <div className="loading-container">
-                        <div className="loading"></div>
-                        <div id="loading-text"
-                            className="">
-                            Waiting for opponent
-                        </div>
-                    </div>}
+        <PlayButton gameMode={4} setSocketData={setSocketData} />
 
-            </header>
-        </div>
-    )
+        {inQueue &&
+          <div className="loading-container">
+            <div className="loading"></div>
+            <div id="loading-text"
+              className="">
+              Waiting for opponent
+            </div>
+          </div>}
+
+      </header>
+    </div>
+  )
 }

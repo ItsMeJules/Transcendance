@@ -7,7 +7,7 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { GameService } from './game.service';
+import { GameService } from './pong.service';
 import { extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
 import { GameDto } from './dto/game.dto';
@@ -37,15 +37,10 @@ export class GameEvents {
       return;
     }
     client.data = { id: user.id };
-    // console.log('Connect:', `user_${user.id}`)
     client.join(`user_${user.id}`);
     client.join('game_online');
 
-    // this.server.emit('general_online', 'Hi all!');
-    // this.server.emit(`user_${client.data.id}`, `Hi user number ${client.data.id}`);
-    // console.log('test:', `user_${client.data.id}`);
   }
-
 
   async handleDisconnect(client: Socket) {
     console.log('> game Connection out');

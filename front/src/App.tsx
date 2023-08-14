@@ -12,6 +12,7 @@ import './Screens/Friends/css/friends.scss'
 import './Screens/JoinGame/css/loading.css'
 import './Screens/Play/css/play.scss'
 import './css/2faButton.scss'
+import './game/components/GameStyles.css'
 import { Home } from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';
@@ -33,14 +34,6 @@ const App: React.FC = () => {
 
   return (
     <div>
-      {/* <header className='flex justify-between items-center mb-5'>
-        <BsFillBalloonHeartFill style={{color: 'red', fontSize: '50px'}}/>
-        <nav>
-          <NavLink className='mr-3' style={({ isActive }) => ({fontWeight: isActive ? 'bold' : 'normal'})} to='/'>Accueil</NavLink>
-          <NavLink className='mr-3' style={({ isActive }) => ({fontWeight: isActive ? 'bold' : 'normal'})} to='/ressources'>Ressources</NavLink>
-          <NavLink className='mr-3' style={({ isActive }) => ({fontWeight: isActive ? 'bold' : 'normal'})} to='/contact'>Contact</NavLink>
-        </nav>
-      </header> */}
 
       <Websocket>
         <AppWrapper>

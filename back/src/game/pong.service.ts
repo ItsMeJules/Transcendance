@@ -62,23 +62,15 @@ export class GameService {
       });
       const player1 = await this.userService.findOneById(newGame.player1Id);
       const player2 = await this.userService.findOneById(newGame.player2Id);
-      const data = {status: 'START', game: newGame, player1: player1, player2: player2};
-      
-
+      const gameChannel = `game_${newGame.id}`;
+      const data = { status: 'START', gameChannel: gameChannel, game: newGame, player1: player1, player2: player2 };
       return data;
     }
     return null;
   }
 
-  // Remove user from the queue
   removeFromQueue(userId: number): void {
-    // console.log('____After remove from queue____');
-    // console.log('user to remove:', userId);
     this.userQueue.delete(userId);
-    // this.userQueue.forEach((value, key) => {
-    //   console.log(`Qid ${key} and gameMode:${value}`);
-    // });
-    // console.log(`User ${user} removed from queue`);
   }
 
   // Get the queue

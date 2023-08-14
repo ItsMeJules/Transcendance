@@ -45,8 +45,6 @@ model User {
   lostGames Game[] @relation("Loser")
   
   // gamesList Game[]
-  Bookmark  Bookmark[]
-
   @@map("users")
 }
 
@@ -70,17 +68,3 @@ model Game {
   player2Score Int @default(0)
 }
 
-model Bookmark {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  title       String
-  description String?
-  link        String
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("bookmarks")
-}

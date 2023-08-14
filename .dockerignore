@@ -1,10 +1,16 @@
+Dockerfile
+.dockerignore
+.gitignore
+README.md
+
 **/node_modules/
 **/dist
 .git
 npm-debug.log
+.coverage
+.coverage.*
 bdd.env
 **/.env
-<<<<<<< HEAD
 
 node_modules
 **/npm-debug.log
@@ -22,5 +28,8 @@ Dockerfile.prod
 **/.env.dev
 .env.prod
 **/.env.prod
-=======
->>>>>>> iac_new
+.env
+.aws
+node_modules
+**/npm-debug.log
+**/build

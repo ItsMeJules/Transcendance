@@ -1,0 +1,76 @@
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #000; /* Fond noir */
+}
+
+.container {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.game-board {
+	position: relative; /* Ajoute une position absolue pour centrer le game-board */
+	border: 2px solid #fff; /* Bordure blanche */
+	background-color: #000; /* Fond noir */
+	display: flex;
+	align-items: center;
+	justify-content: center; /* Centre les éléments horizontalement */
+}
+
+.paddle {
+	position: absolute;
+	background-color: #fff; /* Raquette blanche */
+	left: 1.67%; /* Raquette de gauche */
+}
+
+.paddle:nth-child(2) {
+	right: 1.67%; /* Raquette de droite */
+	left: auto;
+}
+
+.ball {
+	position: absolute;
+	width: 3.33%;
+	height: 3.33%;
+	background-color: #fff; /* Balle blanche */
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.timer {
+	position: absolute;
+	top: 1.67%; /* Déplace le timer vers le haut */
+	font-size: 2vw;
+	color: #fff; /* Texte en blanc */
+}
+
+.time-out {
+	position: absolute;
+	top: 1.67%; /* Déplace le timer vers le haut */
+	font-size: 2vw;
+	color: #fff; /* Texte en blanc */
+}
+
+.score-container {
+  position: absolute;
+  width: 95%;
+  top: 5%; /* positionner au milieu du terrain */
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  font-size: 2vw;
+}
+
+.player1-score,
+.player2-score {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.5); /* fond semi-transparent */
+  padding: 0 0.5vw;
+  border-radius: 0.5vw;
+}

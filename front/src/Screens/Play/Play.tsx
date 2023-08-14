@@ -4,11 +4,13 @@ import ProfilePicContainer from '../UserProfile/components/ProfilePicContainer';
 import { UserData } from '../../Services/User';
 import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
 import getParseLocalStorage from '../../Utils/getParseLocalStorage';
+import GameBoard from '../../game/components/GameBoard';
 
 export const Play = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
+  const [whichPlayer, setWhichPlayer] = useState('');
 
   useEffect(() => {
     // console.log('user:', localStorage.getItem('userData'));
@@ -21,6 +23,11 @@ export const Play = () => {
     const player2Data = getParseLocalStorage('player2');
     setPlayer1Data(player1Data);
     setPlayer2Data(player2Data);
+    if (player1Data.id === userData.id)
+      setWhichPlayer('player1');
+    else
+      setWhichPlayer('player2');
+
 
     // if (userData.id === player1Data.id)
     //     setOpponentData(player2Data);
@@ -68,7 +75,11 @@ export const Play = () => {
           </div>
         </MDBCard>
 
-        
+        <div className="page-container">
+            <GameBoard whichPlayer={whichPlayer}/>
+            PLAY
+            <Link to='/users/all'>GO TO LEADERBOARD</Link>
+        </div>
 
         
 
