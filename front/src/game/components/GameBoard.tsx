@@ -89,6 +89,10 @@ const GameBoard = () => {
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
+  useEffect(() => {
+    scoresRef.current = scores;
+  }, [scores]);
+
   const endGame = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
