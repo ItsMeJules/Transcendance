@@ -7,8 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import { UserArray } from "../../Services/UserArray";
 import LogoutParent from "../../LogoutHook/logoutParent";
-import { useSelector } from 'react-redux';
-import { isConstructorDeclaration } from "typescript";
 import { UserData } from "../../Services/User";
 
 const LeaderBoard: React.FC = () => {
