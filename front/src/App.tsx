@@ -11,6 +11,7 @@ import './Screens/LeaderBoard/css/LeaderBoard.scss'
 import './Screens/Friends/css/friends.scss'
 import './Screens/JoinGame/css/loading.css'
 import './Screens/Play/css/play.scss'
+import './css/2faButton.scss'
 import { Home } from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';

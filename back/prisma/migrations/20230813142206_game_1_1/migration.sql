@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Game" ALTER COLUMN "player1Score" SET DEFAULT 0,
-ALTER COLUMN "player2Score" SET DEFAULT 0;

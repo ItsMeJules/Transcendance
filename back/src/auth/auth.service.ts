@@ -33,7 +33,7 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  async signup(dto: AuthDtoUp, res: Response) {
+  async signup(dto: AuthDtoUp) {
     const hash = await argon.hash(dto.password);
     if (dto.username.length > 100)
       throw new ForbiddenException('Username too long');

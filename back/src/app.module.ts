@@ -6,11 +6,9 @@ import { UserModule } from './user/user.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
-// import { BookmarkModule } from './bookmark/bookmark.module';
 import { SocketEvents } from './websocket/websocket.gateway';
 import { SocketService } from './websocket/websocket.service';
 import { SocketModule } from './websocket/websocket.module';
-// import { WebsocketGateway } from './websocket/websocket.gateway';
 import { Express, Request } from 'express';
 import { Multer } from 'multer';
 import { GameModule } from './game/game.module';
@@ -21,6 +19,7 @@ import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { TwoFaModule } from './auth/two-fa/two-fa.module';
 import { TwoFaService } from './auth/two-fa/two-fa.service';
+import { WebSocketGateway } from '@nestjs/websockets';
 
 @Module({
   imports: [
@@ -44,6 +43,6 @@ import { TwoFaService } from './auth/two-fa/two-fa.service';
     TwoFaModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, AuthService, WebsocketGateway],
+  providers: [AppService, AuthService],
 })
 export class AppModule {}
