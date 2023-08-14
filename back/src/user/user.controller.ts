@@ -13,19 +13,21 @@ import {
   UseFilters,
   ParseIntPipe,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { editFileName } from './module';
-import { Response } from 'express';
-import { CustomExceptionFilter } from './module/CustomExceptionFilter';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { SocketEvents } from 'src/websocket/websocket.gateway';
 import { SocketService } from 'src/websocket/websocket.service';
+import { CustomExceptionFilter } from './module/CustomExceptionFilter';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Multer, multer, diskStorage } from 'multer';
+import { MulterModule } from '@nestjs/platform-express';
+import { editFileName, imageFileFilter } from './module';
+import { Response } from 'express';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -130,6 +132,7 @@ export class UserController {
       }),
     }),
   )
+  
   // @UseFilters(CustomExceptionFilter)
   async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
     return this.userService.uploadProfilePic(user, file);

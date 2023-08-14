@@ -1,0 +1,97 @@
+#toast {
+    visibility: hidden;
+    max-width: 70px;
+    height: 75px;
+    margin: auto;
+    background-color: white;
+    color: #fff;
+    text-align: center;
+    border-radius: 20px;
+    border-color: black;
+    border-width: 5px;
+
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 30px;
+    font-size: 17px;
+    white-space: nowrap;
+
+    /* Add display: flex to use flexbox properties */
+    display: flex;
+    align-items: center; /* Center items vertically */
+    align-content: center;
+}
+
+#toast #img {
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+    margin-top: 10px;
+    box-sizing: border-box;
+    background-color: transparent;
+    border-color: transparent;
+    /* Remove float, align-content, and justify-content */
+}
+#toast #desc{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    padding: 10px;
+    color: black;
+}
+
+#toast.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, expand 0.5s 0.5s,stay 5s 1s, shrink 0.5s 2s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, expand 0.5s 0.5s,stay 4s 1s, shrink 0.5s 5s, fadeout 0.5s 5.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes expand {
+    from {min-width: 100px} 
+    to {min-width: 400px}
+}
+
+@keyframes expand {
+    from {min-width: 100px}
+    to {min-width: 400px}
+}
+@-webkit-keyframes stay {
+    from {min-width: 400px} 
+    to {min-width: 400px}
+}
+
+@keyframes stay {
+    from {min-width: 400px}
+    to {min-width: 400px}
+}
+@-webkit-keyframes shrink {
+    from {min-width: 400px;} 
+    to {min-width: 50px;}
+}
+
+@keyframes shrink {
+    from {min-width: 350px;} 
+    to {min-width: 50px;}
+}
+
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 60px; opacity: 0;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 60px; opacity: 0;}
+}

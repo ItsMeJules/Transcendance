@@ -25,39 +25,12 @@ import GenericUserProfile from './Screens/UserProfile/GenericUserProfile';
 import UserFriends from './Screens/Friends/Friends';
 import Websocket from './Wrappers/Websocket';
 import { Play } from './Screens/Play/Play';
-
-// import  {connectSocket, disconnectSocket } from './Websocket/Socket.io.';
-
+import { TwoFa } from "./screens/2fa";
+import { render } from "@testing-library/react";
 
 const App: React.FC = () => {
 
-  // const [token, setToken] = useState();
-
-  // if (!token) {
-  //   return <Signin />
-  // }
-
-  // useEffect(() => {
-  //   // const user = localStorage.getItem('')
-  //   console.log('loc path:', location.pathname);
-  //   if (location.pathname !== '/') {
-  //     connectSocket();
-  //   }
-  //   return () => {
-  //     disconnectSocket();
-  //   };
-  // }, [location.pathname]);
-
-  // useEffect(() => {
-  //   // Check if the current location is NOT the home page and then connect the socket
-  //   if (location.pathname !== '/') {
-  //     connectSocket(userId, socketUrl);
-  //   }
-
   return (
-
-
-
     <div>
       {/* <header className='flex justify-between items-center mb-5'>
         <BsFillBalloonHeartFill style={{color: 'red', fontSize: '50px'}}/>
@@ -68,23 +41,26 @@ const App: React.FC = () => {
         </nav>
       </header> */}
 
-        <Websocket>
-          <AppWrapper>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path={APP_ROUTES.SIGN_IN} element={<Signin />} />
-              <Route path={APP_ROUTES.SIGN_UP} element={<Signup />} />
-              <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
-              <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
-              <Route path={APP_ROUTES.USER_FRIENDS} element={<UserFriends />} />
-              <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
-              <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
-              <Route path="/test" element={<Test />} />
-              <Route path="/play" element={<Play />} />
-            </Routes>
-          </AppWrapper>
-        </Websocket>
-    </div>
+      <Websocket>
+        <AppWrapper>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path={APP_ROUTES.SIGN_IN} element={<Signin />} />
+            <Route path={APP_ROUTES.SIGN_UP} element={<Signup />} />
+            <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
+            <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
+            <Route path={APP_ROUTES.USER_FRIENDS} element={<UserFriends />} />
+            <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
+            <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
+            <Route path="/test" element={<Test />} />
+            <Route path="/play" element={<Play />} />
+          </Routes>
+          <Routes>
+            <Route path={APP_ROUTES.LOG_2FA} element={<TwoFa />} />
+          </Routes>
+        </AppWrapper>
+      </Websocket>
+    </div >
   );
 }
 

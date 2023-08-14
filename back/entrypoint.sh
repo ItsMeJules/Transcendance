@@ -22,4 +22,4 @@ npm run start:dev &
 
 npx prisma studio
 
-fg %1
+fg %1 

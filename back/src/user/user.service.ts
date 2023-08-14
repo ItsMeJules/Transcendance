@@ -213,4 +213,46 @@ export class UserService {
       // console.error('Error adding friend:', error);
     }
   }
+
+  // 2fa Implementation
+
+  async setTwoFactorAuthenticationSecret(
+    secret: string,
+    userId: number,
+  ): Promise<User> {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        twoFactorAuthenticationSecret: secret,
+      },
+    });
+    return user;
+  }
+
+  async turnOnTwoFactorAuthentication(userId: number): Promise<User> {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isTwoFactorAuthenticationEnabled: true,
+      },
+    });
+    return user;
+  }
+
+  async turnOffTwoFactorAuthentication(userId: number): Promise<User> {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isTwoFactorAuthenticationEnabled: false,
+        twoFactorAuthenticationSecret: null,
+      },
+    });
+    return user;
+  }
 }

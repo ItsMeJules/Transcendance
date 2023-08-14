@@ -35,6 +35,9 @@ model User {
   // Opposite relation field
   friendsOf User[] @relation("UserFriends")
 
+  isTwoFactorAuthenticationEnabled  Boolean @default(false)
+  twoFactorAuthenticationSecret     String?
+  
   // Game
   player1Games Game[] @relation("Player1")
   player2Games Game[] @relation("Player2")
