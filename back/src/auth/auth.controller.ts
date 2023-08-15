@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
-import { authenticator } from 'otplib';
+// import { authenticator } from 'otplib';
 import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
 import { AuthDtoUp } from './dto/authup.dto';

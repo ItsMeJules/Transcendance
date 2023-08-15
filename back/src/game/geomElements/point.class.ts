@@ -20,6 +20,11 @@ export class Point {
     let from1 = new Point(this.x, this.y);
     let v1 = from1.vectorTo(to1);
     let v2 = from2.vectorTo(to2);
-
+    let centerToCenter = from1.vectorTo(from2);
+    let crossProduct1 = centerToCenter.crossProduct(v2);
+    let crossProduct2 = v1.crossProduct(v2);
+    if (crossProduct2 === 0)
+      return 0;
+    return crossProduct1 / crossProduct2;
   }
 }

@@ -17,6 +17,7 @@ const ParticlesBackgroundNew = React.memo(() => {
     }, []);
     return (
         <Particles
+            style={{ zIndex: 1}}
             init={particlesInit}
             loaded={particlesLoaded}
             options={{

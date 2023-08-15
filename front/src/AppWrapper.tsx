@@ -9,8 +9,8 @@ const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
   return (
     <div
     style={{ position: "relative", overflow: "hidden"}}>
-      <ParticlesBackgroundNew />
-      {children}
+      <div style={{ zIndex: 1, position: 'relative'}}><ParticlesBackgroundNew/></div>
+      <div style={{ zIndex: 2, position: 'relative' }}>{children}</div>
     </div>
   );
 };

@@ -12,4 +12,4 @@ import { UserService } from 'src/user/user.service';
   providers: [GameEvents, GameService, JwtService, AuthService, UserService],
   exports: [GameService, GameEvents], 
 })
-export class GameModule {}
+export class PongModule {}

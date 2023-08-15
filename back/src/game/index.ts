@@ -1,3 +1,6 @@
+import { Point } from "./geomElements/point.class";
+import { Vector } from "./geomElements/vector.class";
+
 export interface Ball {
     point: Point;
     dir: Vector;

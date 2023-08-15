@@ -11,7 +11,7 @@ import { SocketService } from './websocket/websocket.service';
 import { SocketModule } from './websocket/websocket.module';
 import { Express, Request } from 'express';
 import { Multer } from 'multer';
-import { GameModule } from './game/game.module';
+import { PongModule } from './game/pong.module';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { join } from 'path';
@@ -39,7 +39,7 @@ import { WebSocketGateway } from '@nestjs/websockets';
     UserModule,
     PrismaModule,
     SocketModule,
-    GameModule,
+    PongModule,
     TwoFaModule,
   ],
   controllers: [AppController, AuthController],
