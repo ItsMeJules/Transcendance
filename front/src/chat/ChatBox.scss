@@ -54,7 +54,7 @@
             height: 100%;
 
             cursor: pointer;
-            content: '';
+            content: "";
 
             background: black;
             transition: all 250ms ease-in-out;
@@ -102,7 +102,7 @@
               display: flex;
               flex-direction: column;
               justify-content: flex-start;
-              
+
               background: green;
 
               position: absolute;
@@ -131,13 +131,13 @@
                 align-items: flex-start;
 
                 background-color: salmon;
-                
+
                 height: 100%;
                 width: 100%;
 
                 img {
                   max-width: 15%;
-                  
+
                   cursor: pointer;
                   transition: transform 0.3s;
 
@@ -146,11 +146,9 @@
                   }
                 }
               }
-
             }
           }
         }
-
       }
 
       .metadata {
@@ -181,22 +179,22 @@
     }
 
     .messages-container {
-      display: flex;
+      // display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
 
       height: 100%;
-      width: 20vw;
+      width: 800px;
 
       overflow-y: scroll;
-      background-color: #E8EBF5;
+      background-color: #e8ebf5;
 
       .message-self,
       .message-other {
         display: inline-block;
 
-        box-shadow: 8px -8px 10px -7px rgba(0, 0, 0, .4);
+        box-shadow: 8px -8px 10px -7px rgba(0, 0, 0, 0.4);
 
         word-wrap: break-word;
         max-width: 70%;
@@ -221,7 +219,6 @@
         margin-left: 5px;
       }
     }
-
   }
 
   .chatbar-container {
@@ -255,7 +252,7 @@
         width: 90%;
 
         border-radius: 5rem;
-        box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, .8);
+        box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, 0.8);
 
         input {
           flex: 1;
@@ -291,7 +288,6 @@
           }
         }
       }
-
     }
 
     .toggler {

@@ -9,7 +9,7 @@ export default function ChatMetadata() {
 
   const handleMoreClick = (event) => {
     if (!isMoreActive == false)
-      setChannelPopup(false)
+      setChannelPopup(false) 
 
     setIsMoreActive(!isMoreActive);
   }

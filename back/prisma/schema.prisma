@@ -13,24 +13,27 @@ datasource db {
 model User {
   id              Int @id @default(autoincrement())
   username        String @unique
-  mutedRooms      Room[] @relation("muteds")
-  adminRooms      Room[] @relation("admins")
-  rooms           Room[] @relation("users")
-  ownedRooms      Room[] @relation("owner")
+  
+  mutedRooms      Room[] @relation("mutedUsers")
+  adminRooms      Room[] @relation("adminUsers")
+  activeRooms     Room[] @relation("activeUsers")
+  ownedRooms      Room[] @relation("ownerRoom")
   bannedRooms     Room[] @relation("bannedUsers")
+  messages        Message[] @relation("author")
+
   friends         User[] @relation("friends")
   friendsRelation User[] @relation("friends")
-  messages        Message[] @relation("author")
 }
 
 model Message {
   id          Int    @id @default(autoincrement())
   text        String
-  created_at  DateTime @default(now())
+  createdAt  DateTime @default(now())
+  
   roomId      Int 
   room        Room  @relation("messages", fields: [roomId], references: [id])
-  author      User  @relation("author", fields: [authorId], references: [id])
   authorId    Int
+  author      User  @relation("author", fields: [authorId], references: [id])
 }
 
 model Room {
@@ -38,19 +41,21 @@ model Room {
   type      RoomType @default(PUBLIC)
   name      String
   password  String?
-  
-  banned User[] @relation("bannedUsers") //add banned time
-  muteds User[] @relation("muteds")
-  admins User[] @relation("admins")
-  users  User[] @relation("users")
-  owner  User @relation("owner", fields: [id], references: [id]) // care au field ici
-  
+  protected Boolean @default(false) // or password != null
+  createdAt DateTime @default(now())
+
+
+  bans  User[] @relation("bannedUsers") //add banned time
+  mutes  User[] @relation("mutedUsers")
+  admins  User[] @relation("adminUsers")
+  users   User[] @relation("activeUsers")
+  ownerId Int
+  owner   User @relation("ownerRoom", fields: [ownerId], references: [id]) // care au field ici
   messages Message[] @relation("messages")
 }
 
 enum RoomType {
   PUBLIC
   PRIVATE
-  PROTECTED
   DIRECT
 }

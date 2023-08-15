@@ -1,24 +1,24 @@
 import {
-	MessageBody,
-	OnGatewayConnection,
-	OnGatewayDisconnect,
-	SubscribeMessage,
-	WebSocketGateway,
-	WebSocketServer,
-	ConnectedSocket } from "@nestjs/websockets";
+  MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+  ConnectedSocket,
+} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
-	cors: {
-		origin: '*',
-	},
+  cors: {
+    origin: '*',
+  },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer()
+  server: Server;
 
-	@WebSocketServer()
-	server: Server;
-
-	/*			 INFO POUR LE FRONT
+  /*			 INFO POUR LE FRONT
 
 		Un id unique du client
 			- Le channel actuel du client (publics, prives, proteges par mdp)
@@ -31,19 +31,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			- Broadcast les donnees aux bons utilisateurs
 			- Log
 	*/
-	
 
-	handleConnection(client: Socket) {
-		console.log("Client connected: ", client.id)
-	}
+  handleConnection(client: Socket) {
+    console.log('Client connected: ', client.id);
+  }
 
-	handleDisconnect(client: Socket) {
-		console.log("Client disconnected: ", client.id)
-	}
+  handleDisconnect(client: Socket) {
+    console.log('Client disconnected: ', client.id);
+  }
 
-	@SubscribeMessage('message')
-	handleEvent(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-		this.server.emit('message', {data: data, clientId: client.id})
-	}
-
+  @SubscribeMessage('message')
+  handleEvent(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
+    console.log('here');
+    // client.emit('message', { data: data, clientId: client.id });
+    this.server.emit('message', { data: data, clientId: client.id });
+  }
 }
