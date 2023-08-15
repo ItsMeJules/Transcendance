@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Paddle from "./Paddle";
 import Ball from "./Ball";
 import { MdHeight } from 'react-icons/md';
+import { useWebsocketContext } from '../../Wrappers/Websocket';
 
 class GameProperties {
   gameBoardWidth: number;
@@ -60,10 +61,51 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [winner, setWinner] = useState<string | null>(null);
   const [lastScorer, setLastScorer] = useState(false)
+  const [isPlayer1Ready, setIsPlayer1Ready] = useState(false);
+  const [isPlayer2Ready, setIsPlayer2Ready] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+
   const whichPlayerRef = useRef(whichPlayer);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const scoresRef = useRef(scores);
+  const socket = useWebsocketContext();
 
+  const handleReadyClick = () => {
+    if (whichPlayer === 'player1') {
+      setIsPlayer1Ready(true);
+    } else {
+      setIsPlayer2Ready(true);
+    }
+    if (socket) {
+      console.log('Emitting ready');
+      socket.game?.emit('playerReady', { player: whichPlayer});
+      }
+  };
+
+  useEffect(() => {
+    if (socket) {
+      socket.game?.on('startCountdown', () => {
+        setIsPlayer1Ready(true);
+        setIsPlayer2Ready(true);
+        const countdownInterval = setInterval(() => {
+          setCountdown(prevCountdown => {
+            if (prevCountdown === 1) {
+              clearInterval(countdownInterval);
+               startGame();
+            }
+            return prevCountdown - 1;
+          });
+        }, 1000);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.game?.off('startCountdown');
+        }
+      };
+  }, []);
+  
   useEffect(() => {
     whichPlayerRef.current = whichPlayer;
   }, [whichPlayer]);
@@ -218,7 +260,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
         ) : (
           <div className="timer">{timer}</div>
         )}
-        {!isGameStarted && <button onClick={startGame}>Start</button>}
+        {!isGameStarted && 
+        (countdown === 3 ?
+          <button onClick={handleReadyClick}>
+            {whichPlayer === 'player1' ? (isPlayer1Ready ? "Waiting for Player 2" : "Ready?") : (isPlayer2Ready ? "Waiting for Player 1" : "Ready?")}
+          </button>
+          :
+          <div>Game starts in:{countdown}</div>
+        )}
       </div>
     </div>
   );

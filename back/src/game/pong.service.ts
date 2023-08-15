@@ -7,9 +7,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 
 export type UserQueue = Map<number, string>;
+export type OnlineGameMap = Map<number, string>;
 
 @Injectable()
-export class GameService {
+export class PongService {
   constructor(
     private prismaService: PrismaService,
     private userService: UserService) { }

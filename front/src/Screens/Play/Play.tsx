@@ -5,18 +5,16 @@ import { UserData } from '../../Services/User';
 import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
 import getParseLocalStorage from '../../Utils/getParseLocalStorage';
 import GameBoard from '../../game/components/GameBoard';
+import { useWebsocketContext } from '../../Wrappers/Websocket';
 
 export const Play = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
   const [whichPlayer, setWhichPlayer] = useState('');
+  const socket = useWebsocketContext();
 
   useEffect(() => {
-    // console.log('user:', localStorage.getItem('userData'));
-    // console.log('game:', localStorage.getItem('gameData'));
-    // console.log('player1:', localStorage.getItem('player1'));
-    // console.log('player2:', localStorage.getItem('player2'));
     const userData = getParseLocalStorage('userData');
     const gameData = getParseLocalStorage('gameData');
     const player1Data = getParseLocalStorage('player1');
@@ -28,7 +26,7 @@ export const Play = () => {
       setWhichPlayer('player1');
     else
       setWhichPlayer('player2');
-
+    
 
     // if (userData.id === player1Data.id)
     //     setOpponentData(player2Data);
