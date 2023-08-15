@@ -5,6 +5,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserService } from 'src/user/user.service';
+import { GameService } from './game.service';
 
 @Module({
   imports: [],

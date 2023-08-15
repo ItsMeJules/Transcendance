@@ -79,4 +79,24 @@ export class GameEvents {
     // confirm leaving the queue?
   }
 
+  //Psuedo code for the game :
+
+  @SubscribeMessage('playerReady')
+  async handlePlayerReady(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { player: string }
+  ) {
+    this.playersReady[data.player] = true;
+    console.log('playerReady', data.player);
+    // Check if both players are ready
+    if (this.playersReady['player1'] && this.playersReady['player2']) {
+        // Reset readiness for the next round
+        this.playersReady['player1'] = false;
+        this.playersReady['player2'] = false;
+
+        // Notify both players to start the countdown
+        this.server.to('game_ID').emit('startCountdown');
+    }
+  }
+
 }
