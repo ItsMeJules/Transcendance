@@ -25,25 +25,34 @@ model User {
   hash           String
   isOnline       Boolean @default(false)
 
-  gamesPlayed Int?     @default(0)
-  gamesWon    Int?     @default(0)
-  userPoints  Int?     @default(0)
-  userLevel   Decimal? @default(0)
 
   // Field for representing friends
-  friends   User[] @relation("UserFriends")
+  friends   User[] @relation("userFriends")
   // Opposite relation field
-  friendsOf User[] @relation("UserFriends")
+  friendsOf User[] @relation("userFriends")
 
   isTwoFactorAuthenticationEnabled  Boolean @default(false)
   twoFactorAuthenticationSecret     String?
   
   // Game
-  player1Games Game[] @relation("Player1")
-  player2Games Game[] @relation("Player2")
-  wonGames Game[] @relation("Winner")
-  lostGames Game[] @relation("Loser")
+  gamesPlayed Int?     @default(0)
+  gamesWon    Int?     @default(0)
+  userPoints  Int?     @default(0)
+  userLevel   Decimal? @default(0)
   
+  player1Games Game[] @relation("player1")
+  player2Games Game[] @relation("player2")
+  wonGames Game[] @relation("winner")
+  lostGames Game[] @relation("loser")
+  
+  // Chat
+  mutedRooms      Room[] @relation("mutedUsers")
+  adminRooms      Room[] @relation("adminUsers")
+  activeRooms     Room[] @relation("activeUsers")
+  ownedRooms      Room[] @relation("ownerRoom")
+  bannedRooms     Room[] @relation("bannedUsers")
+  messages        Message[] @relation("author")
+
   // gamesList Game[]
   @@map("users")
 }
@@ -52,19 +61,53 @@ model Game {
   id       Int @id @unique @default(autoincrement())
   gameMode Int
 
-  player1 User @relation("Player1", fields: [player1Id], references: [id])
+  player1 User @relation("player1", fields: [player1Id], references: [id])
   player1Id Int
 
-  player2 User @relation("Player2", fields: [player2Id], references: [id])
+  player2 User @relation("player2", fields: [player2Id], references: [id])
   player2Id Int
 
-  winner User? @relation("Winner", fields: [winnerId], references: [id])
+  winner User? @relation("winner", fields: [winnerId], references: [id])
   winnerId Int?
 
-  loser User? @relation("Loser", fields: [loserId], references: [id])
+  loser User? @relation("loser", fields: [loserId], references: [id])
   loserId Int?
 
   player1Score Int @default(0)
   player2Score Int @default(0)
 }
 
+model Message {
+  id          Int    @id @default(autoincrement())
+  text        String
+  createdAt  DateTime @default(now())
+  
+  roomId      Int 
+  room        Room  @relation("messages", fields: [roomId], references: [id])
+  authorId    Int
+  author      User  @relation("author", fields: [authorId], references: [id])
+}
+
+model Room {
+  id        Int    @id @default(autoincrement())
+  type      RoomType @default(PUBLIC)
+  name      String
+  password  String?
+  protected Boolean @default(false) // or password != null
+  createdAt DateTime @default(now())
+
+
+  bans  User[] @relation("bannedUsers") //add banned time
+  mutes  User[] @relation("mutedUsers")
+  admins  User[] @relation("adminUsers")
+  users   User[] @relation("activeUsers")
+  ownerId Int
+  owner   User @relation("ownerRoom", fields: [ownerId], references: [id]) // care au field ici
+  messages Message[] @relation("messages")
+}
+
+enum RoomType {
+  PUBLIC
+  PRIVATE
+  DIRECT
+}
