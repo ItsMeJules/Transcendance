@@ -34,4 +34,5 @@ export const APP_ROUTES = {
   LOG_2FA: "/profile/me/two-fa",
   GENERIC_USER_PROFILE: '/profile/',
   LEADERBOARD: '/leaderboard',
+  PLAY: '/play',
 }

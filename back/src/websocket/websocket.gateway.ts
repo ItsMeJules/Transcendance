@@ -20,7 +20,7 @@ export class SocketEvents {
   ) {}
 
   async handleConnection(client: Socket) {
-    console.log('> general Connection in');
+    // console.log('> general Connection in');
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -41,7 +41,7 @@ export class SocketEvents {
   }
 
   handleDisconnect(client: Socket) {
-    console.log('> general Conection out');
+    // console.log('> general Conection out');
     const socketId = client.handshake.query.userId;
     // console.log("users:", this.connectedUsers);
   }

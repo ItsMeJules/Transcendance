@@ -30,6 +30,7 @@ import { Play } from './Screens/Play/Play';
 import { TwoFa } from "./screens/2fa";
 import { render } from "@testing-library/react";
 import PlayBack from './Screens/Play/PlayBack';
+import { History } from './History';
 
 const App: React.FC = () => {
 
@@ -50,8 +51,6 @@ const App: React.FC = () => {
             <Route path="/test" element={<Test />} />
             <Route path="/play" element={<Play />} />
             <Route path="/playback" element={<PlayBack />} />
-          </Routes>
-          <Routes>
             <Route path={APP_ROUTES.LOG_2FA} element={<TwoFa />} />
           </Routes>
         </AppWrapper>

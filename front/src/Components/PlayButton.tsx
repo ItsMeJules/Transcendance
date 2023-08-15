@@ -13,10 +13,9 @@ const PlayButton: React.FC<playButtonProps> = ({ gameMode, setSocketData }) => {
 
   const handleJoinGameQueue = async (gameMode: number) => {
     if (!isInQueue) {
-      console.log('ok');
       socket.game?.emit('joinGameQueue', { gameMode: gameMode });
       socket.game?.on('joinGameQueue', (data: any) => {
-        console.log('join game socket data:', data);
+        // console.log('join game socket data:', data);
         setSocketData(data);
       });
       setIsInQueue(true);

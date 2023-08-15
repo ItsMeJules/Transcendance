@@ -27,9 +27,7 @@ export const Play = () => {
       setWhichPlayer('player1');
     else
       setWhichPlayer('player2');
-    socket.game?.on('game', (data) => {
-      console.log('socket data:', data);
-    });
+
     // if (userData.id === player1Data.id)
     //     setOpponentData(player2Data);
     // else

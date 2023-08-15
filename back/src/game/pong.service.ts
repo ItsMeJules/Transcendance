@@ -44,10 +44,10 @@ export class PongService {
       this.userQueue.delete(player2Id);
       const gameChannel = `game_${gameData.id}`;
       const gameStructure = new GameStruct(gameData.id, player1Id, player2Id, gameChannel);
+      gameStructure.room = gameChannel;
       this.onlineGames.set(gameData.id, gameStructure);
       const player1 = await this.userService.findOneById(gameData.player1Id);
       const player2 = await this.userService.findOneById(gameData.player2Id);
-      
       const data = { status: 'START', gameChannel: gameChannel, game: gameData, player1: player1, player2: player2 };
       return data;
     }

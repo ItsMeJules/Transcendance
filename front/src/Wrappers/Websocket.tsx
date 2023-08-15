@@ -36,7 +36,7 @@ const closeOpenSockets = (sockets: OpenedSockets): void => {
 };
 
 const OpenSocket = (namespace: string): Socket => {
-  console.log('opening socket for:', namespace);
+  // console.log('opening socket for:', namespace);
   const newSocket = io(namespace, {
     withCredentials: true,
   });
@@ -54,11 +54,9 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
   useEffect((): (() => void) => {
     const storedUserData = localStorage.getItem('userData');
 
-
-    console.log('Here_____________');
     if (storedUserData) {
       userData = JSON.parse(storedUserData);
-      console.log("userstate:", userData);
+      // console.log("userstate:", userData);
       const general =
         socketInstances.general?.connected !== true
           ? OpenSocket("http://localhost:8000/general")

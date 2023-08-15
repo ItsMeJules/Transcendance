@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { connectSocket, disconnectSocket, sendMessage } from "../Websocket/Socket.io";
 import { UserData } from "../Services/User";
 import PlayButton from "../Components/PlayButton";
 import Game, { GameData } from "../Services/Game";
 import { useNavigate } from "react-router-dom";
+import { APP_ROUTES } from "../Utils";
+import { useWebsocketContext } from "../Wrappers/Websocket";
 
 export const Test = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -13,6 +15,8 @@ export const Test = () => {
   const [profilePicture, setProfilePicture] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const history = useNavigate();
+  const socket = useWebsocketContext();
+  // const socketRef = useRef()
 
   useEffect(() => {
     if (socketData) {
@@ -28,14 +32,23 @@ export const Test = () => {
         localStorage.setItem('player2', JSON.stringify(dataJSON.player2));
         localStorage.setItem('gameChannel', JSON.stringify(dataJSON.gameChannel));
         setInQueue(false);
-        history('/play');
+        history(APP_ROUTES.PLAY);
       }
     }
   }, [socketData]);
 
+
   useEffect(() => {
-    console.log('inQueue', inQueue);
-  }, []);
+
+    socket.game?.on('test', (data) => {
+      console.log('TESTTTTTT ', data);
+    });
+  }, [socket.game]);
+
+  const handleTest = () => {
+    console.log('Socket connected:', socket.game && socket.game.connected);
+    socket.game?.emit('test', 'ok');
+  }
 
   return (
     <div>
@@ -52,6 +65,10 @@ export const Test = () => {
               Waiting for opponent
             </div>
           </div>}
+
+        <button className="text-white" onClick={handleTest}>
+          TESTTTTTT
+        </button>
 
       </header>
     </div>
