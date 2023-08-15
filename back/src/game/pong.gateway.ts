@@ -41,7 +41,7 @@ export class GameEvents {
       client.disconnect();
       return;
     }
-    client.data = { id: user.id };
+    client.data = { id: user.id, gameId: '' };
     client.join(`user_${user.id}`);
     client.join('game_online');
     this.idToSocketMap.set(user.id, client);
@@ -76,6 +76,10 @@ export class GameEvents {
         this.server.to(`user_${gameStructure.player2.id}`).emit(`joinGameQueue`, gameStructure);
         player1socket.join(`game_${gameStructure.game.id}`);
         player2socket.join(`game_${gameStructure.game.id}`);
+
+        // Check if gameId is empty?
+        player1socket.data.gameId = gameStructure.game.id;
+        player2socket.data.gameId = gameStructure.game.id;
       }
     }
   }
@@ -101,10 +105,19 @@ export class GameEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { player: string }) {
 
-    console.log('player ready');
+    const playerId = client.data.id;
+    if (!playerId) return;
+    console.log('client.data.gameId:', client.data.gameId);
+    const gameId = client.data.gameId;
+    const gameStruct = this.pongService.getGameStructById(gameId);
+    console.log('GameStruct:', gameStruct);
+    gameStruct.setPlayerReady(playerId);
 
-    // this.playersReady[data.player] = true;
-    // console.log('playerReady', data.player);
+    
+    if (gameStruct.bothPlayersReady()) {
+      gameStruct.tStart = Date.now()
+      this.server.to(gameStruct.room).emit('game', 'PLAY');
+    }
     // // Check if both players are ready
     // if (this.playersReady['player1'] && this.playersReady['player2']) {
     //   // Reset readiness for the next round

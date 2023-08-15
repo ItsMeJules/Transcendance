@@ -64,7 +64,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const [isPlayer1Ready, setIsPlayer1Ready] = useState(false);
   const [isPlayer2Ready, setIsPlayer2Ready] = useState(false);
   const [countdown, setCountdown] = useState(3);
-
+  const [socketData, setSocketData] = useState('');
   const whichPlayerRef = useRef(whichPlayer);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const scoresRef = useRef(scores);
@@ -83,27 +83,37 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   };
 
   useEffect(() => {
-    if (socket) {
-      socket.game?.on('startCountdown', () => {
-        setIsPlayer1Ready(true);
-        setIsPlayer2Ready(true);
-        const countdownInterval = setInterval(() => {
-          setCountdown(prevCountdown => {
-            if (prevCountdown === 1) {
-              clearInterval(countdownInterval);
-               startGame();
-            }
-            return prevCountdown - 1;
-          });
-        }, 1000);
-      });
-    }
+    socket.game?.on('game', (data) => {
+      setSocketData(data);
+      console.log('DATAAAAAAAAAAAAA ',data);
+      console.log(socketData);
+    });
+    // if (socket) {
+    //   socket.game?.on('startCountdown', () => {
+    //     setIsPlayer1Ready(true);
+    //     setIsPlayer2Ready(true);
+    //     const countdownInterval = setInterval(() => {
+    //       setCountdown(prevCountdown => {
+    //         if (prevCountdown === 1) {
+    //           clearInterval(countdownInterval);
+    //            startGame();
+    //         }
+    //         return prevCountdown - 1;
+    //       });
+    //     }, 1000);
+    //   });
+    // }
 
-    return () => {
-      if (socket) {
-        socket.game?.off('startCountdown');
-        }
-      };
+    // return () => {
+    //   if (socket) {
+    //     socket.game?.off('startCountdown');
+    //     }
+    //   };
+  }, []);
+
+  useEffect(() => {
+    if (socketData === 'OK')
+      return;
   }, []);
   
   useEffect(() => {

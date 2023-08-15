@@ -12,6 +12,7 @@ export const Play = () => {
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
   const [whichPlayer, setWhichPlayer] = useState('');
+  const [socketData, setSocketData] = useState('');
   const socket = useWebsocketContext();
 
   useEffect(() => {
@@ -26,8 +27,9 @@ export const Play = () => {
       setWhichPlayer('player1');
     else
       setWhichPlayer('player2');
-    
-
+    socket.game?.on('game', (data) => {
+      console.log('socket data:', data);
+    });
     // if (userData.id === player1Data.id)
     //     setOpponentData(player2Data);
     // else

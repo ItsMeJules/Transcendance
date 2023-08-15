@@ -27,7 +27,6 @@ export class SocketEvents {
       return;
     }
     const user = await this.authService.validateJwtToken(access_token);
-
     if (!user) {
       client.disconnect();
       return;
@@ -40,7 +39,6 @@ export class SocketEvents {
     this.server.emit(`user_${client.data.id}`, `Hi user number ${client.data.id}`);
     // console.log('test:', `user_${client.data.id}`);
   }
-
 
   handleDisconnect(client: Socket) {
     console.log('> general Conection out');
