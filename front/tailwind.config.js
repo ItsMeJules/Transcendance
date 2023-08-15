@@ -6,21 +6,6 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      
-      // padding: '2rem',
-      // maxWidth: {
-      //   default: '800px'
-      // }
-    },
-    videobg: {
-      // touch-action: none
-      // margin: 0,
-      
-      
-      // padding: '2rem',
-      // maxWidth: {
-      //   default: '800px'
-      // }
     },
     fontFamily: {
       dune: ["ADELIA", "sans-serif"],

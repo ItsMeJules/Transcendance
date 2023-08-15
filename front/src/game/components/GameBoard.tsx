@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import Paddle from "./Paddle";
 import Ball from "./Ball";
+import { MdHeight } from 'react-icons/md';
 
 class GameProperties {
   gameBoardWidth: number;
@@ -43,15 +43,6 @@ type Score = {
   player2: number;
 };
 
-const sendScoreToSever = async (score: Score) => {
-  try {
-    const response = await axios.post('http://localhost:3000/scores', score);
-    console.log('Score envoyé au serveur: ', response.data);
-  } catch (error) {
-    console.error('Erreur lors de l\'envoi du score au serveur: ', error);
-  }
-};
-
 interface GameBoardProps {
   whichPlayer: string,
 }
@@ -61,8 +52,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const gamePropertiesRef = useRef(new GameProperties());
   const gameProperties = gamePropertiesRef.current;
 
-  const [gameBoardWidth, setGameBoardWidth] = useState(gameProperties.gameBoardWidth);
-  const [gameBoardHeight, setGameBoardHeight] = useState(gameProperties.gameBoardHeight);
   const [timer, setTimer] = useState(60);
   const [isTimeOut, setIsTimeout] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
@@ -71,8 +60,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [winner, setWinner] = useState<string | null>(null);
   const [lastScorer, setLastScorer] = useState(false)
-  const [ballPosX, setBallPosX] = useState(gameProperties.gameBoardWidth / 2);
-  const [ballPosY, setBallPosY] = useState(gameProperties.gameBoardHeight / 2);
   const whichPlayerRef = useRef(whichPlayer);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const scoresRef = useRef(scores);
@@ -85,12 +72,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
     const oldGameBoardHeight = gameProperties.gameBoardHeight;
 
     gameProperties.updateDimensions();
-    setGameBoardWidth(gameProperties.gameBoardWidth);
-    setGameBoardHeight(gameProperties.gameBoardHeight);
     setPaddle1Top(prevPaddle1Top => (prevPaddle1Top / oldGameBoardHeight) * gameProperties.gameBoardHeight);
     setPaddle2Top(prevPaddle2Top => (prevPaddle2Top / oldGameBoardHeight) * gameProperties.gameBoardHeight);
-    setBallPosX(prevBallPosX => (prevBallPosX / oldGameBoardHeight) * gameProperties.gameBoardHeight);
-    setBallPosY(prevBallPosY => (prevBallPosY / oldGameBoardHeight) * gameProperties.gameBoardHeight);
   };
 
   useEffect(() => {
@@ -116,7 +99,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
     } else {
       setWinner("TIE");
     }
-    sendScoreToSever(finalscores);
   }, []);
 
   const updateScores = (player1: number, player2: number) => {
