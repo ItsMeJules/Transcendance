@@ -17,6 +17,7 @@ import {
   constructPicturePathNoImage,
 } from './module';
 import { Response } from 'express';
+import { hash } from 'argon2';
 
 const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
@@ -171,6 +172,7 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { id: id },
     });
+    delete user.hash;
     return user;
   }
 

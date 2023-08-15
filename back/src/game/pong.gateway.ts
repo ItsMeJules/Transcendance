@@ -17,12 +17,17 @@ import { UserService } from 'src/user/user.service';
 export class GameEvents {
   @WebSocketServer()
   server: Server;
+  idToSocketMap = new Map<number, Socket>();
 
   constructor(
     private readonly gameService: GameService,
     private authService: AuthService,
     private userService: UserService,
   ) { }
+
+  getSocketById(userId: number) {
+    return this.idToSocketMap.get(userId);
+  }
 
   async handleConnection(client: Socket) {
     console.log('> game Connection in');
@@ -39,6 +44,8 @@ export class GameEvents {
     client.data = { id: user.id };
     client.join(`user_${user.id}`);
     client.join('game_online');
+    this.idToSocketMap.set(user.id, client);
+    // console.log('socket:', client);
 
   }
 
@@ -63,8 +70,12 @@ export class GameEvents {
       this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED' });
       const gameStructure = await this.gameService.gameStart(gameDto, this.server);
       if (gameStructure) {
+        const player1socket = this.getSocketById(gameStructure.player1.id);
+        const player2socket = this.getSocketById(gameStructure.player2.id);
         this.server.to(`user_${gameStructure.player1.id}`).emit(`joinGameQueue`, gameStructure);
         this.server.to(`user_${gameStructure.player2.id}`).emit(`joinGameQueue`, gameStructure);
+        player1socket.join(`game_${gameStructure.game.id}`);
+        player2socket.join(`game_${gameStructure.game.id}`);
       }
     }
   }
@@ -77,6 +88,13 @@ export class GameEvents {
     if (!user) return;
     this.gameService.removeFromQueue(user.id);
     // confirm leaving the queue?
+  }
+
+  @SubscribeMessage('game')
+  async handleGame(
+    @ConnectedSocket() client: Socket) {
+
+      
   }
 
 }

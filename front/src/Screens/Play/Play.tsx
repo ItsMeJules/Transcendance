@@ -21,6 +21,7 @@ export const Play = () => {
     const gameData = getParseLocalStorage('gameData');
     const player1Data = getParseLocalStorage('player1');
     const player2Data = getParseLocalStorage('player2');
+    const gameVCannel = getParseLocalStorage('gameChannel');
     setPlayer1Data(player1Data);
     setPlayer2Data(player2Data);
     if (player1Data.id === userData.id)
