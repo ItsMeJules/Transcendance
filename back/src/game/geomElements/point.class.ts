@@ -17,14 +17,10 @@ export class Point {
     if ((this.x === to1.x && this.y === to1.y) ||
       (from2.x === to2.x && from2.y === to2.y))
       return 0;
+    let denominator = ((to2.y - from2.y) * (to1.x - this.x) - (to2.x - from2.x) * (to1.y - this.y))
     let from1 = new Point(this.x, this.y);
     let v1 = from1.vectorTo(to1);
     let v2 = from2.vectorTo(to2);
-    let centerToCenter = from1.vectorTo(from2);
-    let crossProduct1 = centerToCenter.crossProduct(v2);
-    let crossProduct2 = v1.crossProduct(v2);
-    if (crossProduct2 === 0)
-      return 0;
-    return crossProduct1 / crossProduct2;
+
   }
 }

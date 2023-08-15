@@ -1,7 +1,7 @@
-export class Vector {
-    constructor(public x: number, public y: number) {}
+import { Point } from "./point.class";
 
-    crossProduct(otherElement: Vector) {
-        return this.x * otherElement.y - this.y * otherElement.x;
-    }
+export class Vector {
+    constructor(public x: number, y: number) {}
+
+
 }
