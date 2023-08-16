@@ -6,10 +6,20 @@ import MorePopup from "./more/MorePopup";
 export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false);
   const [channelPopup, setChannelPopup] = useState(false)
+  const [directMessagePopup, setDirectMessagePopup] = useState(false)
+  const [restrictUserPopup, setRestrictUserPopup] = useState(false)
+  const [channelListPopup, setChannelListPopup] = useState(false)
+
+  const resetPopups = () => {
+    setChannelPopup(false)
+    setDirectMessagePopup(false)
+    setRestrictUserPopup(false)
+    setChannelListPopup(false)
+  }
 
   const handleMoreClick = (event) => {
     if (!isMoreActive == false)
-      setChannelPopup(false)
+      resetPopups()
 
     setIsMoreActive(!isMoreActive);
   }
@@ -22,7 +32,13 @@ export default function ChatMetadata() {
           <span></span> {/* Useful for the more symbol animation */}
         </div>
 
-        {isMoreActive && <MorePopup channelPopup={channelPopup} setChannelPopup={setChannelPopup}/>}
+        {isMoreActive &&
+          <MorePopup channelPopup={channelPopup} setChannelPopup={setChannelPopup}
+            directMessagePopup={directMessagePopup} setDirectMessagePopup={setDirectMessagePopup}
+            restrictUserPopup={restrictUserPopup} setRestrictUserPopup={setRestrictUserPopup}
+            channelListPopup={channelListPopup} setChannelListPopup={setChannelListPopup}
+            resetPopups={resetPopups}/>
+        }
 
       </div>
 
