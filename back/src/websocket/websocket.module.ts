@@ -9,6 +9,6 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [],
   controllers: [],
   providers: [SocketEvents, SocketService, JwtService, AuthService],
-  exports: [SocketService, SocketEvents], 
+  exports: [SocketService, SocketEvents],
 })
 export class SocketModule {}

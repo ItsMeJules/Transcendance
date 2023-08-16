@@ -1,49 +1,62 @@
 import {
-  MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  SubscribeMessage,
+  OnGatewayInit,
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { extractAccessTokenFromCookie } from 'src/utils';
+import { AuthService } from '../auth/auth.service';
 
-@WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
-})
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer()
-  server: Server;
+@WebSocketGateway({ namespace: 'chat' })
+export class ChatEventsGateway {
+  @WebSocketServer() server: Server;
 
-  /*			 INFO POUR LE FRONT
+  constructor(private authService: AuthService) {}
 
-		Un id unique du client
-			- Le channel actuel du client (publics, prives, proteges par mdp)
-			- Les channels auxquel il a acces
-			- Users bloques
+  async handleConnection(client: Socket): Promise<void> {
+    console.log('> chat Connection in');
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!access_token) {
+      console.log('no access_token');
+      client.disconnect();
+      return;
+    }
+    const user = await this.authService.validateJwtToken(access_token);
 
-				INFO POUR LE BACK
-		Un historique des messages :
-			- bdd-row: | l'heure du msg | (PK) id | (FK) userId | (FK) channel | contenu du msg
-			- Broadcast les donnees aux bons utilisateurs
-			- Log
-	*/
+    if (!user) {
+      console.log('no user');
+      client.disconnect();
+      return;
+    }
+    console.log(client);
+    client.data = { id: user.id };
+    console.log('test:', `user_${client.data.id}`);
 
-  handleConnection(client: Socket) {
-    console.log('Client connected: ', client.id);
+    this.server.emit('chat', 'Hi all!');
+    this.server.emit(
+      `user_${client.data.id}`,
+      `Hi user number ${client.data.id}`,
+    );
   }
 
-  handleDisconnect(client: Socket) {
-    console.log('Client disconnected: ', client.id);
+  handleDisconnect(client: Socket): void {
+    console.log('> chat Conection out');
   }
 
   @SubscribeMessage('message')
-  handleEvent(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-    console.log('here');
-    // client.emit('message', { data: data, clientId: client.id });
-    this.server.emit('message', { data: data, clientId: client.id });
+  handleMessage(@ConnectedSocket() client: Socket, payload): void {
+    console.log('Received message: ', payload);
+    this.server.emit('message', {
+      message: payload.message,
+      clientId: client.data.id,
+    });
   }
+
+  // @SubscribeMessage('askFriendOnlineStatus')
+  // async handleAskFriendOnlineStatus(client: Socket, friendId: string): Promise<boolean> {
+  //   const isOnline = await this.isFriendOnline(friendId);
+  //   return isOnline;
+  // }
 }
