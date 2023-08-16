@@ -11,11 +11,11 @@ type BallProps = {
 };
 
 const Ball = ({ gameProperties, paddle1Top, paddle2Top, resetGame, updateScores , lastScorer}: BallProps) => {
-  const { gameBoardWidth, gameBoardHeight, ballSize, ballSpeed, paddleHeight, paddleWidth, ballPosX, ballPosY} = gameProperties;
-  let accelerationFactor = gameProperties.accelerationFactor;
+  const { gameBoard, ball, paddle} = gameProperties;
+  let accelerationFactor = gameProperties.ball.accelFactor;
 
-  const [speed, setSpeed] = useState({ x: ballSpeed, y: ballSpeed });
-  const [position, setPosition] = useState({ x: ballPosX, y: ballPosY });
+  const [speed, setSpeed] = useState({ x: ball.speed, y: ball.speed });
+  const [position, setPosition] = useState({ x: ball.pos.x, y: ball.pos.y });
   const MIN_REFLECTION_ANGLE = Math.PI / 3;
 
   const calculateAngle = (hitPoint: number, paddleTop: number, paddleHeight: number) => {
@@ -42,44 +42,44 @@ const Ball = ({ gameProperties, paddle1Top, paddle2Top, resetGame, updateScores 
 
   const resetBall = () => {
     accelerationFactor = 1;
-    const randomY = Math.random() * gameBoardHeight;
-    const isUpperHalf = randomY < gameBoardHeight / 2;
+    const randomY = Math.random() * gameBoard.height;
+    const isUpperHalf = randomY < gameBoard.height / 2;
 
-    setPosition({ x: gameBoardWidth / 2, y: randomY });
+    setPosition({ x: gameBoard.width / 2, y: randomY });
 
-    const xDirection = lastScorer ? -ballSpeed : ballSpeed;
-    const yDirection = isUpperHalf ? ballSpeed : -ballSpeed;
+    const xDirection = lastScorer ? -ball.speed : ball.speed;
+    const yDirection = isUpperHalf ? ball.speed : -ball.speed;
 
     setSpeed({ x: xDirection, y: yDirection });
   };
 
   useEffect(() => {
     const updatePosition = () => {
-      let newPosX = position.x + speed.x * ballSpeed;
-      let newPosY = position.y + speed.y * ballSpeed;
+      let newPosX = position.x + speed.x * ball.speed;
+      let newPosY = position.y + speed.y * ball.speed;
 
       // Check for collisions with the horizontal game board boundaries
-      if (newPosY - ballSize / 2 <= 0 || newPosY + ballSize / 2 >= gameBoardHeight) {
+      if (newPosY - ball.size / 2 <= 0 || newPosY + ball.size / 2 >= gameBoard.height) {
         setSpeed(prevSpeed => ({ ...prevSpeed, y: -prevSpeed.y }));
       } else {
         setPosition(prevPosition => ({ ...prevPosition, y: newPosY }));
       }
 
       // Check if the ball hits the vertical game board boundaries to end the match
-      if (newPosX - ballSize / 2 <= 0) {
+      if (newPosX - ball.size / 2 <= 0) {
         updateScores(0, 1);
         resetBall();
-      } else if (newPosX + ballSize / 2 >= gameBoardWidth) {
+      } else if (newPosX + ball.size / 2 >= gameBoard.width) {
         updateScores(1, 0);
         resetBall();
-      } else if ((speed.x < 0 && newPosX - ballSize / 2 <= paddleWidth && newPosY + ballSize / 2 >= paddle1Top && newPosY - ballSize / 2 <= paddle1Top + paddleHeight) ||
-        (speed.x > 0 && newPosX + ballSize / 2 >= gameBoardWidth - paddleWidth && newPosY + ballSize / 2 >= paddle2Top && newPosY - ballSize / 2 <= paddle2Top + paddleHeight)) {
+      } else if ((speed.x < 0 && newPosX - ball.size / 2 <= paddle.width && newPosY + ball.size / 2 >= paddle1Top && newPosY - ball.size / 2 <= paddle1Top + paddle.height) ||
+        (speed.x > 0 && newPosX + ball.size / 2 >= gameBoard.width - paddle.width && newPosY + ball.size / 2 >= paddle2Top && newPosY - ball.size / 2 <= paddle2Top + paddle.height)) {
         // Get the new angle and speed based on the paddle hit
         const incidentAngle = Math.atan2(speed.y, speed.x);
         // Calculate the hit point on the paddle
         const paddleY = speed.x < 0 ? paddle1Top : paddle2Top;
         // Calculate the reflection modifier based on the hit point
-        const reflectionModifier = calculateAngle(newPosY, paddleY, paddleHeight);
+        const reflectionModifier = calculateAngle(newPosY, paddleY, paddle.height);
         // Calculate the reflection angle by adding the incident angle and the reflection modifier
         const reflectionAngle = incidentAngle + reflectionModifier;
         const currentSpeedMagnitude = Math.sqrt(speed.x * speed.x + speed.y * speed.y);
@@ -107,7 +107,7 @@ const Ball = ({ gameProperties, paddle1Top, paddle2Top, resetGame, updateScores 
   return (
     <div
       className="ball"
-      style={{ top: `${position.y}px`, left: `${position.x}px`, width: ballSize, height: ballSize }}
+      style={{ top: `${position.y}px`, left: `${position.x}px`, width: ball.size, height: ball.size }}
     />
   );
 };

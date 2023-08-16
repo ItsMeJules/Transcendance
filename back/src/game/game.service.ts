@@ -34,7 +34,7 @@ class GameProperties {
   
   constructor() {
 	this.GameBoard = new GameBoard();
-	this.Ball = new Ball();
+	// this.Ball = new Ball();
 	this.Paddle = new Paddle();
   this.isPlayer1Ready = false;
   this.isPlayer2Ready = false;

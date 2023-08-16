@@ -3,46 +3,30 @@ import Paddle from "./Paddle";
 import Ball from "./Ball";
 import { MdHeight } from 'react-icons/md';
 import { useWebsocketContext } from '../../Wrappers/Websocket';
+import { useNavigate } from 'react-router-dom';
+import { BallNew, GameBoardNew, Player, PaddleNew } from '../models';
 
 class GameProperties {
-  gameBoardWidth: number;
-  gameBoardHeight: number;
-  ballSize: number;
-  ballSpeed: number;
-  ballPosX: number;
-  ballPosY: number;
-  paddleHeight: number;
-  paddleWidth: number;
-  accelerationFactor: number;
-  paddleSpeed: number;
-
+  public gameBoard: GameBoardNew;
+  public ball: BallNew;
+  public paddle: PaddleNew;
+  public player1: Player;
+  public player2: Player;
+  
   constructor() {
-    this.gameBoardWidth = window.innerWidth * 0.8;
-    this.gameBoardHeight = this.gameBoardWidth * 0.5;
-    this.ballSize = this.gameBoardWidth * 20 / 600;
-    this.ballSpeed = this.gameBoardWidth * 2 / 600;
-    this.ballPosX = this.gameBoardWidth / 2;
-    this.ballPosY = this.gameBoardHeight / 2;
-    this.paddleHeight = this.gameBoardHeight * 80 / 300;
-    this.paddleWidth = this.gameBoardWidth * 20 / 600;
-    this.paddleSpeed = this.gameBoardHeight * 10 / 300;
-    this.accelerationFactor = 1;
+    this.gameBoard = new GameBoardNew(window.innerWidth * 0.8);
+    this.ball = new BallNew(this.gameBoard);
+    this.paddle = new PaddleNew(this.gameBoard);
+    this.player1 = new Player(this.gameBoard);
+    this.player2 = new Player(this.gameBoard);
   }
 
   updateDimensions() {
-    this.gameBoardWidth = window.innerWidth * 0.8;
-    this.gameBoardHeight = this.gameBoardWidth * 0.5;
-    this.ballSize = this.gameBoardWidth * 20 / 600;
-    this.ballSpeed = this.gameBoardWidth * 2 / 600;
-    this.paddleHeight = this.gameBoardHeight * 80 / 300;
-    this.paddleWidth = this.gameBoardWidth * 20 / 600;
+    this.gameBoard.updateDimensions(window.innerWidth * 0.8);
+    this.ball.updateBall(this.gameBoard);
+    this.paddle.updatePaddle(this.gameBoard);
   }
 }
-
-type Score = {
-  player1: number;
-  player2: number;
-};
 
 interface GameBoardProps {
   whichPlayer: string,
@@ -57,13 +41,11 @@ interface SocketData {
 
 const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const gamePropertiesRef = useRef(new GameProperties());
-  const gameProperties = gamePropertiesRef.current;
+  const [gameProperties, setGameProperties] = useState(gamePropertiesRef.current);
 
   const [timer, setTimer] = useState(60);
   const [isTimeOut, setIsTimeout] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const [paddle1Top, setPaddle1Top] = useState(gameProperties.gameBoardHeight * 110 / 300);
-  const [paddle2Top, setPaddle2Top] = useState(gameProperties.gameBoardHeight * 110 / 300);
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [winner, setWinner] = useState<string | null>(null);
   const [lastScorer, setLastScorer] = useState(false)
@@ -76,6 +58,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const scoresRef = useRef(scores);
   const socket = useWebsocketContext();
   const [centralText, setCentralText] = useState('');
+  const history = useNavigate();
 
   const handleReadyClick = () => {
     if (!isPlayerReady) {
@@ -108,6 +91,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
         setCentralText(socketData.countdown);
       } else
         setCentralText('Get ready!');
+    } else if (socketData?.gameStatus === 'timeout') {
+      setCentralText('Timeout - game canceled')
+      setTimeout(() => {
+        history('/test');
+      }, 3 * 1000);
     } else if (socketData?.gameStatus === 'playing')
       setIsGameStarted(true);
     return;
@@ -118,11 +106,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   }, [whichPlayer]);
 
   const updateDimensions = () => {
-    const oldGameBoardHeight = gameProperties.gameBoardHeight;
+    const oldGameBoardHeight = gameProperties.gameBoard.height;
 
     gameProperties.updateDimensions();
-    setPaddle1Top(prevPaddle1Top => (prevPaddle1Top / oldGameBoardHeight) * gameProperties.gameBoardHeight);
-    setPaddle2Top(prevPaddle2Top => (prevPaddle2Top / oldGameBoardHeight) * gameProperties.gameBoardHeight);
+    gameProperties.player1.updatePaddleTop(oldGameBoardHeight, gameProperties.gameBoard.height);
+    gameProperties.player2.updatePaddleTop(oldGameBoardHeight, gameProperties.gameBoard.height);
   };
 
   useEffect(() => {
@@ -166,8 +154,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
     setTimer(60);
     setIsTimeout(false);
     setIsGameStarted(false);
-    setPaddle1Top(gameProperties.gameBoardHeight * 110 / 300);
-    setPaddle2Top(gameProperties.gameBoardHeight * 110 / 300);
+    gameProperties.player1.resetPaddleTop(gameProperties.gameBoard);
+    gameProperties.player2.resetPaddleTop(gameProperties.gameBoard);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -192,22 +180,50 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
 
   // Créez une fonction pour mettre à jour les positions des paddles en fonction des touches enfoncées
   const updatePaddles = () => {
-    const currentWhichPlayer = whichPlayerRef.current;
-    if (currentWhichPlayer === 'player1') {
-      if (keysPressed.current.w || keysPressed.current.ArrowUp) {
-        setPaddle1Top(paddle1Top => Math.max(gameProperties.ballSize * 2, paddle1Top - gameProperties.paddleSpeed));
+    setGameProperties(prevGameProperties => {
+      const currentWhichPlayer = whichPlayerRef.current;
+      const updatedGameProperties = new GameProperties(); // Create a new instance
+  
+      updatedGameProperties.gameBoard = prevGameProperties.gameBoard; // Copy over properties
+      updatedGameProperties.ball = prevGameProperties.ball;
+      updatedGameProperties.paddle = prevGameProperties.paddle;
+      updatedGameProperties.player1 = prevGameProperties.player1;
+      updatedGameProperties.player2 = prevGameProperties.player2;
+  
+      if (currentWhichPlayer === 'player1') {
+        if (keysPressed.current.w || keysPressed.current.ArrowUp) {
+          const newPaddle1Top = Math.max(
+            updatedGameProperties.ball.size * 2,
+            updatedGameProperties.player1.posPaddleTop - updatedGameProperties.paddle.speed
+          );
+          updatedGameProperties.player1.posPaddleTop = newPaddle1Top;
+        }
+        if (keysPressed.current.s || keysPressed.current.ArrowDown) {
+          const newPaddle1Top = Math.min(
+            updatedGameProperties.gameBoard.height - updatedGameProperties.paddle.height - (updatedGameProperties.ball.size * 2),
+            updatedGameProperties.player1.posPaddleTop + updatedGameProperties.paddle.speed
+          );
+          updatedGameProperties.player1.posPaddleTop = newPaddle1Top;
+        }
+      } else if (currentWhichPlayer === 'player2') {
+        if (keysPressed.current.w || keysPressed.current.ArrowUp) {
+          const newPaddle2Top = Math.max(
+            updatedGameProperties.ball.size * 2,
+            updatedGameProperties.player2.posPaddleTop - updatedGameProperties.paddle.speed
+          );
+          updatedGameProperties.player2.posPaddleTop = newPaddle2Top;
+        }
+        if (keysPressed.current.s || keysPressed.current.ArrowDown) {
+          const newPaddle2Top = Math.min(
+            updatedGameProperties.gameBoard.height - updatedGameProperties.paddle.height - (updatedGameProperties.ball.size * 2),
+            updatedGameProperties.player2.posPaddleTop + updatedGameProperties.paddle.speed
+          );
+          updatedGameProperties.player2.posPaddleTop = newPaddle2Top;
+        }
       }
-      if (keysPressed.current.s || keysPressed.current.ArrowDown) {
-        setPaddle1Top(paddle1Top => Math.min(gameProperties.gameBoardHeight - gameProperties.paddleHeight - (gameProperties.ballSize * 2), paddle1Top + gameProperties.paddleSpeed));
-      }
-    } else if (currentWhichPlayer === 'player2') {
-      if (keysPressed.current.w || keysPressed.current.ArrowUp) {
-        setPaddle2Top(paddle2Top => Math.max(gameProperties.ballSize * 2, paddle2Top - gameProperties.paddleSpeed));
-      }
-      if (keysPressed.current.s || keysPressed.current.ArrowDown) {
-        setPaddle2Top(paddle2Top => Math.min(gameProperties.gameBoardHeight - gameProperties.paddleHeight - (gameProperties.ballSize * 2), paddle2Top + gameProperties.paddleSpeed));
-      }
-    }
+  
+      return updatedGameProperties;
+    });
   };
 
   useEffect(() => {
@@ -245,15 +261,15 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   };
 
   return (
-    <div className="container" style={{ width: gameProperties.gameBoardWidth, height: gameProperties.gameBoardHeight }}>
-      <div className="game-board" style={{ width: gameProperties.gameBoardWidth, height: gameProperties.gameBoardHeight }}>
-        <Paddle top={paddle1Top} gameProperties={gameProperties} />
-        <Paddle top={paddle2Top} gameProperties={gameProperties} />
+    <div className="container" style={{ width: gameProperties.gameBoard.width, height: gameProperties.gameBoard.height }}>
+      <div className="game-board" style={{ width: gameProperties.gameBoard.width, height: gameProperties.gameBoard.height }}>
+        <Paddle top={gameProperties.player1.posPaddleTop} gameProperties={gameProperties} />
+        <Paddle top={gameProperties.player2.posPaddleTop} gameProperties={gameProperties} />
         {isGameStarted &&
           <Ball
             gameProperties={gameProperties}
-            paddle1Top={paddle1Top}
-            paddle2Top={paddle2Top}
+            paddle1Top={gameProperties.player1.posPaddleTop}
+            paddle2Top={gameProperties.player2.posPaddleTop}
             resetGame={resetGame}
             updateScores={updateScores}
             lastScorer={lastScorer}
@@ -270,9 +286,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
         {!isGameStarted && !isPlayerReady &&
           <button onClick={handleReadyClick}>
             {centralText}
-            {/* {whichPlayer === 'player1' ?
-              (isPlayer1Ready ? "Waiting for Player 2" : "Ready?") :
-              (isPlayer2Ready ? "Waiting for Player 1" : "Ready?")} */}
           </button>}
         {!isGameStarted && isPlayerReady &&
           <div>

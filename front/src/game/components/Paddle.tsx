@@ -7,11 +7,11 @@ type PaddleProps = {
 }
 
 const Paddle: React.FC<PaddleProps> = ({ top, gameProperties}) => {
-  const { paddleHeight, paddleWidth } = gameProperties;
+  const { paddle } = gameProperties;
   return (
     <div
       className="paddle"
-      style={{ top: `${top}px`, height: gameProperties.paddleHeight, width: gameProperties.paddleWidth }}
+      style={{ top: `${top}px`, height: gameProperties.paddle.height, width: gameProperties.paddle.width }}
     />
   );
 };

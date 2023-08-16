@@ -21,7 +21,7 @@ export class PongService {
   userQueue: UserQueue = new Map<number, string>();
   onlineGames: OnlineGameMap = new Map<number, GameStruct>;
 
-  async gameStart(gameMode: GameDto, server: Server) {
+  async gameCreate(gameMode: GameDto, server: Server) {
     let player1Id: number = 0;
     let player2Id: number = 0;
     const gameModeInt = parseInt(gameMode.gameMode, 10);
@@ -31,7 +31,6 @@ export class PongService {
       else if (!player2Id && value === gameMode.gameMode)
         player2Id = key;
     });
-    // start game
     if (player1Id && player2Id) {
       // add try and catch + error handling
       const gameData = await this.prismaService.game.create({
@@ -101,26 +100,30 @@ export class PongService {
     return this.userQueue;
   }
 
+  async deleteGame(gameId: number) {
+    // Protect prisma delete??
+    await this.prismaService.game.delete({
+      where: {
+        id: gameId,
+      },
+    });
+    this.onlineGames.delete(gameId);
+  }
+
   async getPlayerById(gameId: number, userId: number): Promise<number> {
     let match: number;
     this.onlineGames.forEach((value, key) => {
-      // console.log('game id:', value.id, gameId);
       if (value.id === gameId) {
-        // console.log('match! pl1id - uid:', value.player1.id, userId);
-        // console.log('match! pl2id - uid:', value.player2.id, userId);
         if (value.player1.id === userId) {
-          // console.log('pl1 matche');
           match = 1;
           return match;
         }
         else if (value.player2.id === userId) {
-          // console.log('pl1 matche');
           match = 2
           return match;
         }
       }
     });
-    // match = 0;
     return match;
   }
 }

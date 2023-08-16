@@ -1,22 +1,13 @@
 export class Paddle {
-	// Define paddle properties and calculations here
-	private Width: number;
-	private Height: number;
-	private Speed: number;
-  
-	constructor() {
-	  this.Width = 20;
-	  this.Height = 80;
-	  this.Speed = 10;
-	}
-	
-	getWidth(): number {
-	  return this.Width;
-	}
-	getHeight(): number {
-	  return this.Height;
-	}
-	getSpeed(): number {
-	  return this.Speed;
-	}
+  // Define paddle properties and calculations here
+  public width: number;
+  public height: number;
+  public speed: number;
+
+  constructor() {
+    this.width = 20;
+    this.height = 80;
+    this.speed = 10;
   }
+
+}
