@@ -48,6 +48,13 @@ interface GameBoardProps {
   whichPlayer: string,
 }
 
+interface SocketData {
+  gameStatus: string;
+  playerStatus: string;
+  opponentStatus: string;
+  countdown: string;
+}
+
 const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const gamePropertiesRef = useRef(new GameProperties());
   const gameProperties = gamePropertiesRef.current;
@@ -60,10 +67,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [winner, setWinner] = useState<string | null>(null);
   const [lastScorer, setLastScorer] = useState(false)
-  const [isPlayer1Ready, setIsPlayer1Ready] = useState(false);
-  const [isPlayer2Ready, setIsPlayer2Ready] = useState(false);
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const [isOpponentReady, setIsOpponentReady] = useState(false);
   const [countdown, setCountdown] = useState(4);
-  const [socketData, setSocketData] = useState('');
+  const [socketData, setSocketData] = useState<SocketData>();
   const whichPlayerRef = useRef(whichPlayer);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const scoresRef = useRef(scores);
@@ -71,16 +78,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const [centralText, setCentralText] = useState('');
 
   const handleReadyClick = () => {
-    // console.log('Socket connected:', socket.game && socket.game.connected);
-
-    if (whichPlayer === 'player1' && !isPlayer1Ready) {
-      setIsPlayer1Ready(true);
+    if (!isPlayerReady) {
+      setIsPlayerReady(true);
       if (socket.game)
         socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
-    } else if (whichPlayer === 'player2' && !isPlayer2Ready) {
-      if (socket.game)
-        socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
-      setIsPlayer2Ready(true);
     }
   };
 
@@ -88,28 +89,27 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
     socket.game?.on('prepareToPlay', (data) => {
       setSocketData(data);
-      // console.log('DATA ', data);
+      console.log('DATA ', data);
     });
   }, [socket.game]);
 
   useEffect(() => {
     console.log('socketData:', socketData);
-    if (socketData === 'pending') {
+    if (socketData?.gameStatus === 'pending' || socketData?.playerStatus === 'pending') {
       setCentralText('Ready?');
-    } else if (socketData === 'PLAY') {
-      setIsPlayer1Ready(true);
-      setIsPlayer2Ready(true);
-      // setIsGameStarted(true);
-      const countdownInterval = setInterval(() => {
-        setCountdown(prevCountdown => {
-          if (prevCountdown === 1) {
-            clearInterval(countdownInterval);
-            startGame();
-          }
-          return prevCountdown - 1;
-        });
-      }, 1000);
-    }
+    } else if (socketData?.gameStatus === 'waiting'
+      && socketData.playerStatus === 'ready'
+      && socketData.opponentStatus === 'pending') {
+      setIsPlayerReady(true);
+      setCentralText('Waiting for opponent');
+    } else if (socketData?.gameStatus === 'countdown') {
+      setIsOpponentReady(true);
+      if (socketData.countdown) {
+        setCentralText(socketData.countdown);
+      } else
+        setCentralText('Get ready!');
+    } else if (socketData?.gameStatus === 'playing')
+      setIsGameStarted(true);
     return;
   }, [socketData]);
 
@@ -267,13 +267,17 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
         ) : (
           <div className="timer">{timer}</div>
         )}
-        {!isGameStarted &&
+        {!isGameStarted && !isPlayerReady &&
           <button onClick={handleReadyClick}>
-
+            {centralText}
             {/* {whichPlayer === 'player1' ?
               (isPlayer1Ready ? "Waiting for Player 2" : "Ready?") :
               (isPlayer2Ready ? "Waiting for Player 1" : "Ready?")} */}
           </button>}
+        {!isGameStarted && isPlayerReady &&
+          <div>
+            {centralText}
+          </div>}
       </div>
     </div>
   );

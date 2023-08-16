@@ -6,6 +6,7 @@ import { GameDto } from './dto/game.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
+import { match } from 'assert';
 
 export type UserQueue = Map<number, string>;
 export type OnlineGameMap = Map<number, GameStruct>;
@@ -101,14 +102,25 @@ export class PongService {
   }
 
   async getPlayerById(gameId: number, userId: number): Promise<number> {
+    let match: number;
     this.onlineGames.forEach((value, key) => {
+      // console.log('game id:', value.id, gameId);
       if (value.id === gameId) {
-        if (value.player1.id === userId)
-          return 1;
-        else if (value.player2.id === userId)
-          return 2;
+        // console.log('match! pl1id - uid:', value.player1.id, userId);
+        // console.log('match! pl2id - uid:', value.player2.id, userId);
+        if (value.player1.id === userId) {
+          // console.log('pl1 matche');
+          match = 1;
+          return match;
+        }
+        else if (value.player2.id === userId) {
+          // console.log('pl1 matche');
+          match = 2
+          return match;
+        }
       }
     });
-    return 0;
+    // match = 0;
+    return match;
   }
 }
