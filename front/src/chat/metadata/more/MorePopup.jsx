@@ -1,36 +1,28 @@
 import React from "react";
 
 import Popup from "./Popup"
+import { PopupType } from "../ChatMetadata";
 import ChannelCreationPopup from "./types/ChannelCreationPopup";
 import DirectMessagePopup from "./types/DirectMessagePopup";
 import RestrictUserPopup from "./types/RestrictUserPopup";
 import ChannelListPopup from "./types/ChannelListPopup";
 
-export default function MorePopup(
-  { channelPopup, setChannelPopup,
-    directMessagePopup, setDirectMessagePopup,
-    restrictUserPopup, setRestrictUserPopup,
-    channelListPopup, setChannelListPopup,
-    resetPopups }) {
+export default function MorePopup( {popupType, setPopupActive} ) {
 
   const channelCreation = () => {
-    resetPopups()
-    setChannelPopup(!channelPopup)
+    setPopupActive(PopupType.CHANNEL)
   }
 
   const sendDirectMessage = () => {
-    resetPopups()
-    setDirectMessagePopup(!directMessagePopup)
+    setPopupActive(PopupType.DIRECT_MESSAGE)
   }
 
   const restrictUser = () => {
-    resetPopups()
-    setRestrictUserPopup(!restrictUserPopup)
+    setPopupActive(PopupType.RESTRICT)
   }
 
   const channelList = () => {
-    resetPopups()
-    setChannelListPopup(!channelListPopup)
+    setPopupActive(PopupType.CHANNEL_LIST)
   }
 
   return (
@@ -43,10 +35,10 @@ export default function MorePopup(
           <p onClick={channelList}>Liste des channels</p>
         </div>
 
-        {channelPopup && <ChannelCreationPopup />}
-        {directMessagePopup && <DirectMessagePopup />}
-        {restrictUserPopup && <RestrictUserPopup />}
-        {channelListPopup && <ChannelListPopup />}
+        {popupType == PopupType.CHANNEL && <ChannelCreationPopup />}
+        {popupType == PopupType.DIRECT_MESSAGE && <DirectMessagePopup />}
+        {popupType == PopupType.RESTRICT && <RestrictUserPopup />}
+        {popupType == PopupType.CHANNEL_LIST && <ChannelListPopup />}
       </Popup>
     </div>
   )

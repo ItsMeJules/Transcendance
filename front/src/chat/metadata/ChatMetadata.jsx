@@ -2,24 +2,20 @@ import React, { useState } from "react";
 
 import MorePopup from "./more/MorePopup";
 
+export const PopupType = {
+  CHANNEL: "channel",
+  DIRECT_MESSAGE: "direct message",
+  RESTRICT: "restrict user",
+  CHANNEL_LIST: "channel list"
+}
 
 export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false);
-  const [channelPopup, setChannelPopup] = useState(false)
-  const [directMessagePopup, setDirectMessagePopup] = useState(false)
-  const [restrictUserPopup, setRestrictUserPopup] = useState(false)
-  const [channelListPopup, setChannelListPopup] = useState(false)
-
-  const resetPopups = () => {
-    setChannelPopup(false)
-    setDirectMessagePopup(false)
-    setRestrictUserPopup(false)
-    setChannelListPopup(false)
-  }
+  const [popupType, setPopupActive] = useState(null)
 
   const handleMoreClick = (event) => {
     if (!isMoreActive == false)
-      resetPopups()
+      setPopupActive(null)
 
     setIsMoreActive(!isMoreActive);
   }
@@ -33,11 +29,7 @@ export default function ChatMetadata() {
         </div>
 
         {isMoreActive &&
-          <MorePopup channelPopup={channelPopup} setChannelPopup={setChannelPopup}
-            directMessagePopup={directMessagePopup} setDirectMessagePopup={setDirectMessagePopup}
-            restrictUserPopup={restrictUserPopup} setRestrictUserPopup={setRestrictUserPopup}
-            channelListPopup={channelListPopup} setChannelListPopup={setChannelListPopup}
-            resetPopups={resetPopups}/>
+          <MorePopup popupType={popupType} setPopupActive={setPopupActive}/>
         }
 
       </div>
