@@ -99,4 +99,16 @@ export class PongService {
     // });
     return this.userQueue;
   }
+
+  async getPlayerById(gameId: number, userId: number): Promise<number> {
+    this.onlineGames.forEach((value, key) => {
+      if (value.id === gameId) {
+        if (value.player1.id === userId)
+          return 1;
+        else if (value.player2.id === userId)
+          return 2;
+      }
+    });
+    return 0;
+  }
 }

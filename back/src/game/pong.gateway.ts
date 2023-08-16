@@ -12,6 +12,8 @@ import { extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
 import { GameDto } from './dto/game.dto';
 import { UserService } from 'src/user/user.service';
+import { GameStruct } from './game.class';
+import { Player } from './models/player.model';
 
 @WebSocketGateway({ namespace: 'game' })
 export class GameEvents {
@@ -140,53 +142,91 @@ export class GameEvents {
     this.server.emit('test', 'Lol');
   }
 
-  @SubscribeMessage('playerReady')
+  @SubscribeMessage('prepareToPlay')
   async handlePlayerReady(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { player: string, ready: boolean }) {
+    @MessageBody() data: { player: string, action: string }) {
 
-    console.log('client data:', client.data);
-    const playerId = client.data.id;
-    if (!playerId) return; // check user via token too?
-
-
-    console.log('client.data.gameId:', client.data.gameId);
+    if (!client.data.id) return; // check user via token too?
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!access_token) {
+      client.disconnect();
+      return;
+    }
+    const user = await this.authService.validateJwtToken(access_token);
+    if (!user) {
+      client.disconnect();
+      return;
+    }
     const gameId = client.data.gameId;
+    if (!gameId) return;
     const gameStruct = this.pongService.getGameStructById(gameId);
 
-    console.log('sent data:', data);
-    if (data.ready === false) {
-      this.server.to(gameStruct.room).emit('game', 'Lol');
+
+
+    // console.log('- data:', data);
+    if (data.action === 'status') {
+      this.server.to(`user_${user.id}`).emit('prepareToPlay',
+        { gameStatus: gameStruct.status });
       return;
     }
 
-    const sockets = await this.server.in(`game_${gameStruct.id}`).fetchSockets();
+    let player: Player;
+    let opponent: Player;
+    const playerNum = await this.pongService.getPlayerById(gameStruct.id, user.id);
+    if (playerNum === 1) {
+      player = gameStruct.player1;
+      opponent = gameStruct.player2;
+    } else if (playerNum === 2) {
+      player = gameStruct.player1;
+      opponent = gameStruct.player2;
+    } else
+      return;
 
-    // console.log(`game_${gameStruct.id}`);
-    // const room = this.server.sockets.adapter.rooms.get(`game_${gameStruct.id}`);
-    // console.log('roooooooom sockets:', sockets);
-
-    sockets.forEach((Socket) => {
-      console.log('IN room user:', Socket.data);
-    });
-
-    // console.log('GameStruct:', gameStruct);
-    gameStruct.setPlayerReady(playerId);
-
-    this.server.to(gameStruct.room).emit('game', 'Lol');
-    console.log('both players r:', gameStruct.bothPlayersReady());
-    if (gameStruct.bothPlayersReady()) {
-      gameStruct.tStart = Date.now()
-      this.server.to(gameStruct.room).emit('game', 'PLAY');
+    if (data.action === 'playPressed' && opponent.status === 'pending') {
+      gameStruct.setPlayerReady(user.id);
+      this.server.to(`user_${user.id}`).emit('prepareToPlay',
+        { gameStatus: 'waiting' });
+    } else if (data.action === 'playPressed' && opponent.status === 'ready') {
+      console.log('GO PLAYYYYYYYYY');
     }
-    // // Check if both players are ready
-    // if (this.playersReady['player1'] && this.playersReady['player2']) {
-    //   // Reset readiness for the next round
-    //   this.playersReady['player1'] = false;
-    //   this.playersReady['player2'] = false;
 
-    //   // Notify both players to start the countdown
-    //   this.server.to('game_ID').emit('startCountdown');
+    // const sockets = await this.server.in(`game_${gameStruct.id}`).fetchSockets();
+
+    //         // console.log(`game_${gameStruct.id}`);
+    //         // const room = this.server.sockets.adapter.rooms.get(`game_${gameStruct.id}`);
+    //         // console.log('roooooooom sockets:', sockets);
+
+    // sockets.forEach((Socket) => {
+    //   console.log('IN room user:', Socket.data);
+    // });
+
+
+
+
+
+
+
+
+
+
+    //         // console.log('GameStruct:', gameStruct);
+    // gameStruct.setPlayerReady(playerId);
+
+    // this.server.to(gameStruct.room).emit('game', 'Lol');
+    // console.log('both players r:', gameStruct.bothPlayersReady());
+    // if (gameStruct.bothPlayersReady()) {
+    //   gameStruct.tStart = Date.now()
+    //   this.server.to(gameStruct.room).emit('game', 'PLAY');
+    // }
+    //         // // Check if both players are ready
+    //         // if (this.playersReady['player1'] && this.playersReady['player2']) {
+    //         //   // Reset readiness for the next round
+    //         //   this.playersReady['player1'] = false;
+    //         //   this.playersReady['player2'] = false;
+
+    //         //   // Notify both players to start the countdown
+    //         //   this.server.to('game_ID').emit('startCountdown');
 
 
   }

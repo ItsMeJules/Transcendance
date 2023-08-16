@@ -68,6 +68,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const scoresRef = useRef(scores);
   const socket = useWebsocketContext();
+  const [centralText, setCentralText] = useState('');
 
   const handleReadyClick = () => {
     // console.log('Socket connected:', socket.game && socket.game.connected);
@@ -75,28 +76,27 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
     if (whichPlayer === 'player1' && !isPlayer1Ready) {
       setIsPlayer1Ready(true);
       if (socket.game)
-        socket.game?.emit('playerReady', { player: whichPlayer });
+        socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
     } else if (whichPlayer === 'player2' && !isPlayer2Ready) {
       if (socket.game)
-        socket.game?.emit('playerReady', { player: whichPlayer });
+        socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
       setIsPlayer2Ready(true);
     }
   };
 
-
-
   useEffect(() => {
-    // console.log('Socket connected:', socket.game && socket.game.connected);
-    socket.game?.emit('playerReady', { player: whichPlayer, ready: false });
-    socket.game?.on('game', (data) => {
+    socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
+    socket.game?.on('prepareToPlay', (data) => {
       setSocketData(data);
-      console.log('DATAAAAAAAAAAAAA ', data);
+      // console.log('DATA ', data);
     });
   }, [socket.game]);
 
   useEffect(() => {
     console.log('socketData:', socketData);
-    if (socketData === 'PLAY') {
+    if (socketData === 'pending') {
+      setCentralText('Ready?');
+    } else if (socketData === 'PLAY') {
       setIsPlayer1Ready(true);
       setIsPlayer2Ready(true);
       // setIsGameStarted(true);
@@ -268,15 +268,12 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
           <div className="timer">{timer}</div>
         )}
         {!isGameStarted &&
-          (countdown === 4 ?
-            <button onClick={handleReadyClick}>
-              {whichPlayer === 'player1' ?
-                (isPlayer1Ready ? "Waiting for Player 2" : "Ready?") :
-                (isPlayer2Ready ? "Waiting for Player 1" : "Ready?")}
-            </button>
-            :
-            <div>Game starts in:{countdown}</div>
-          )}
+          <button onClick={handleReadyClick}>
+
+            {/* {whichPlayer === 'player1' ?
+              (isPlayer1Ready ? "Waiting for Player 2" : "Ready?") :
+              (isPlayer2Ready ? "Waiting for Player 1" : "Ready?")} */}
+          </button>}
       </div>
     </div>
   );
