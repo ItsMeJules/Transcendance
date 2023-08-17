@@ -4,7 +4,7 @@
   justify-content: flex-end;
   align-items: flex-start;
 
-  background-color: red;
+  background-color: black;
 
   height: 100vh;
   width: 100vw;
@@ -23,7 +23,7 @@
       align-items: center;
 
       height: 5vh;
-      width: 100%;
+      width: 20vw;
 
       background-color: blue;
 
@@ -36,7 +36,7 @@
         height: 100%;
         width: 13%;
 
-        background-color: green;
+        background-color: white;
 
         cursor: pointer;
 
@@ -54,7 +54,7 @@
             height: 100%;
 
             cursor: pointer;
-            content: "";
+            content: '';
 
             background: black;
             transition: all 250ms ease-in-out;
@@ -89,13 +89,37 @@
 
           .more-popup {
             position: absolute;
+            height: 20vh;
+            width: 10vw;
 
-            background-color: aqua;
-            cursor: auto;
+            .contents {
+              text-align: center;
 
-            p {
-              cursor: pointer;
-              border: solid 1px brown;
+              p {
+                display: flex;
+                justify-content: center;
+                align-content: center;
+                flex-direction: column;
+
+                height: 4vh;
+                width: 9vw;
+
+                background-color: white;
+                border: 1px solid gray;
+
+                margin: 2px;
+                cursor: pointer;
+
+                border-radius: 5px;
+                font-size: 12px;
+
+                transition: transform 0.3s;
+
+                &:hover {
+                  transform: scale(1.05);
+                }
+              }
+
             }
 
             .channel-creation-popup {
@@ -103,16 +127,60 @@
               flex-direction: column;
               justify-content: flex-start;
 
-              background: green;
+              background: white;
+              border-radius: 5px;
+              border: 1px solid gray;
 
               position: absolute;
               top: 10%;
               left: 100%;
 
-              width: 100%;
+              height: 15vh;
+              width: 10vw;
 
-              input {
-                width: 80%;
+              .icons {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-end;
+                align-items: center;
+
+                border-bottom: 3px solid black;
+                border-radius: 5px 5px 0px 0px;
+                background: #A9A9A9;
+
+                height: 26%;
+                width: 100%;
+
+                .selected {
+                  font-size: 10px;
+                }
+
+                img {
+                  max-width: 15%;
+                  padding: 2px;
+                  margin: 1px 1px 1px 1px;
+                  border: 1px solid black;
+                  background-color: gray;
+                  cursor: pointer;
+                  border-radius: 2px;
+                  transition: transform 0.3s;
+
+                  &:hover {
+                    transform: scale(1.2);
+                  }
+                }
+
+                .public {}
+
+                .private {}
+
+                .protected {}
+              }
+
+              .channel-name {
+                input {
+                  width: 80%;
+                }
               }
 
               .password-input {
@@ -124,31 +192,77 @@
                 }
               }
 
-              .icons {
-                display: flex;
-                flex-direction: row;
-                justify-content: flex-start;
-                align-items: flex-start;
-
-                background-color: salmon;
-
-                height: 100%;
+              .validate {
+                background-color: brown;
                 width: 100%;
+                text-align: center;
 
-                img {
-                  max-width: 15%;
-
+                p {
+                  margin: 0px;
                   cursor: pointer;
                   transition: transform 0.3s;
 
                   &:hover {
-                    transform: scale(1.2);
+                    transform: scale(1.05);
                   }
                 }
               }
             }
+
+            .dm-popup {
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+
+              background: green;
+
+              position: absolute;
+              top: 30%;
+              left: 100%;
+
+              width: 100%;
+              max-height: 80%;
+
+              overflow-y: scroll;
+            }
+
+            .restrict-popup {
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+
+              background: green;
+
+              position: absolute;
+              top: 50%;
+              left: 100%;
+
+              width: 100%;
+              max-height: 80%;
+
+              overflow-y: scroll;
+            }
+
+            .channel-list-popup {
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+
+              background: green;
+
+              position: absolute;
+              top: 80%;
+              left: 100%;
+
+              width: 100%;
+              max-height: 80%;
+
+              overflow-y: scroll;
+            }
+
           }
         }
+
       }
 
       .metadata {
@@ -179,22 +293,22 @@
     }
 
     .messages-container {
-      // display: flex;
+      display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
 
       height: 100%;
-      width: 800px;
+      width: 20vw;
 
       overflow-y: scroll;
-      background-color: #e8ebf5;
+      background-color: #E8EBF5;
 
       .message-self,
       .message-other {
         display: inline-block;
 
-        box-shadow: 8px -8px 10px -7px rgba(0, 0, 0, 0.4);
+        box-shadow: 8px -8px 10px -7px rgba(0, 0, 0, .4);
 
         word-wrap: break-word;
         max-width: 70%;
@@ -219,6 +333,7 @@
         margin-left: 5px;
       }
     }
+
   }
 
   .chatbar-container {
@@ -252,7 +367,7 @@
         width: 90%;
 
         border-radius: 5rem;
-        box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, 0.8);
+        box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, .8);
 
         input {
           flex: 1;
@@ -288,6 +403,7 @@
           }
         }
       }
+
     }
 
     .toggler {
