@@ -10,19 +10,19 @@ import ChannelListPopup from "./types/ChannelListPopup";
 export default function MorePopup( {popupType, setPopupActive} ) {
 
   const channelCreation = () => {
-    setPopupActive(popupType == PopupType.CHANNEL ? null : PopupType.CHANNEL)
+    setPopupActive(popupType === PopupType.CHANNEL ? null : PopupType.CHANNEL)
   }
 
   const sendDirectMessage = () => {
-    setPopupActive(popupType == PopupType.DIRECT_MESSAGE ? null : PopupType.DIRECT_MESSAGE)
+    setPopupActive(popupType === PopupType.DIRECT_MESSAGE ? null : PopupType.DIRECT_MESSAGE)
   }
 
   const restrictUser = () => {
-    setPopupActive(popupType == PopupType.RESTRICT ? null : PopupType.RESTRICT)
+    setPopupActive(popupType === PopupType.RESTRICT ? null : PopupType.RESTRICT)
   }
 
   const channelList = () => {
-    setPopupActive(popupType == PopupType.CHANNEL_LIST ? null : PopupType.CHANNEL_LIST)
+    setPopupActive(popupType === PopupType.CHANNEL_LIST ? null : PopupType.CHANNEL_LIST)
   }
 
   return (

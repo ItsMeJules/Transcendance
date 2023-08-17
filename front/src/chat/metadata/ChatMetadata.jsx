@@ -14,7 +14,7 @@ export default function ChatMetadata() {
   const [popupType, setPopupActive] = useState(null)
 
   const handleMoreClick = (event) => {
-    if (!isMoreActive == false)
+    if (!isMoreActive === false)
       setPopupActive(null)
 
     setIsMoreActive(!isMoreActive);
