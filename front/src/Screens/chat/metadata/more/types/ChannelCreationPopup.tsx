@@ -2,14 +2,14 @@ import React, { useState } from "react";
 
 import Popup from "../Popup"
 
-import PublicIcon from "../../../../assets/globe.png"
-import PrivateIcon from "../../../../assets/private.png"
-import ProtectedIcon from "../../../../assets/padlock.png"
+import PublicIcon from "../../../../../assets/globe.png"
+import PrivateIcon from "../../../../../assets/private.png"
+import ProtectedIcon from "../../../../../assets/padlock.png"
 
 const ChannelType = {
-  PUBLIC: "Public",
-  PRIVATE: "Privé",
-  PROTECTED: "Protégé"
+  PUBLIC: {type: "Public", description: "Créé un channel accessible par tout le monde."},
+  PRIVATE: {type: "Privé", description: "Créé un channel ou seul les personnes invitées peuvent rejoindre."},
+  PROTECTED: {type: "Protégé", description: "Créé un channel protégé par un mot de passe."}
 }
 
 export default function ChannelCreationPopup() {
@@ -32,10 +32,15 @@ export default function ChannelCreationPopup() {
     <Popup className="channel-creation-popup">
 
       <div className="icons">
-        <div className="selected">Type:<br />{channelType}</div>
-        <img className="public" src={PublicIcon} alt="Public" onClick={() => setChannelType(ChannelType.PUBLIC)}></img>
-        <img className="private" src={PrivateIcon} alt="Private" onClick={() => setChannelType(ChannelType.PRIVATE)}></img>
-        <img className="protected" src={ProtectedIcon} alt="Protected" onClick={() => setChannelType(ChannelType.PROTECTED)}></img>
+        <div className="selected-text">
+          <p className="type">Type: {channelType.type}</p>
+          <p className="description">{channelType.description}</p>
+        </div>
+        <div className="images">
+          <img className="public" src={PublicIcon} alt="Public" onClick={() => setChannelType(ChannelType.PUBLIC)}></img>
+          <img className="private" src={PrivateIcon} alt="Private" onClick={() => setChannelType(ChannelType.PRIVATE)}></img>
+          <img className="protected" src={ProtectedIcon} alt="Protected" onClick={() => setChannelType(ChannelType.PROTECTED)}></img>
+        </div>
       </div>
 
       <div className="channel-name">

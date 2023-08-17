@@ -23,8 +23,11 @@ export default function ChatMetadata() {
   return (
     <div className="metadata-container">
       <div className="more" onClick={handleMoreClick}>
-        <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
-          <span></span> {/* Useful for the more symbol animation */}
+        
+        <div className="more-symbol-container">
+          <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
+            <span></span> {/* Useful for the more symbol animation */}
+          </div>
         </div>
 
         {isMoreActive && <MorePopup popupType={popupType} setPopupActive={setPopupActive} />}
