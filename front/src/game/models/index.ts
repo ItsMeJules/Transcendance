@@ -16,25 +16,19 @@ export class GameBoardNew {
     this.height = this.width * 0.5;
   }
 
-  updateWidth(width: number) {
-    if (width > this.maxWidth)
+  updateWidth(newWidth: number) {
+    if (newWidth > this.maxWidth)
       return this.width = this.maxWidth;
-    else if (width < this.minWidth)
+    else if (newWidth < this.minWidth)
       return this.width = this.minWidth;
     else
-      return this.width = width;
+      return this.width = newWidth;
   }
 
-  updateDimensions(width: number) {
-    if (width > this.maxWidth)
-      this.width = this.maxWidth;
-    else if (width < this.minWidth)
-      this.width = this.minWidth;
-    else
-      this.width = width;
+  updateDimensions(newWidth: number) {
+    this.updateWidth(newWidth)
     this.height = this.width * 0.5;
   }
-
 }
 
 export class BallNew {
