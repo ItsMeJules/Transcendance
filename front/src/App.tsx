@@ -50,7 +50,7 @@ const App: React.FC = () => {
             <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
             <Route path="/test" element={<Test />} />
             <Route path="/play" element={<Play />} />
-            <Route path="/playback" element={<PlayBack />} />
+            {/* <Route path="/playback" element={<PlayBack />} /> */}
             <Route path={APP_ROUTES.LOG_2FA} element={<TwoFa />} />
           </Routes>
         </AppWrapper>

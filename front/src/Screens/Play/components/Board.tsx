@@ -1,14 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { GameBoardNew } from '../../../game/models'; // Import your GameBoardNew logic
 
-interface GameBoardProps {
-  children: React.ReactNode;
+interface BoardCanvasProps {
   board: GameBoardNew;
+  canvasRef: React.RefObject<HTMLCanvasElement>;
 }
 
-const GameBoard: React.FC<GameBoardProps> = ({ board, children }) => {
-  // Calculate GameBoard properties
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+const BoardCanvas: React.FC<BoardCanvasProps> = ({ board, canvasRef }) => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -21,17 +19,18 @@ const GameBoard: React.FC<GameBoardProps> = ({ board, children }) => {
       if (ctx && canvas) {
         canvas.width = board.width;
         canvas.height = board.height;
-        // Example background fill
+
+        // Background
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Draw the playing field borders
+        // Field borders
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 4;
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-        // Draw the center line
-        ctx.setLineDash([5, 10]);
+        // Center line
+        ctx.setLineDash([3, 10]);
         ctx.beginPath();
         ctx.moveTo(canvas.width / 2, 0);
         ctx.lineTo(canvas.width / 2, canvas.height);
@@ -45,14 +44,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ board, children }) => {
       window.removeEventListener('resize', handleResize);
     };
 
-  }, [board.width, board.height]);
+  }, [board]);
 
   return (
     <div className="game-board">
       <canvas ref={canvasRef} width={board.width} height={board.height}></canvas>
-      {children}
     </div>
   );
 };
 
-export default GameBoard;
+export default BoardCanvas;

@@ -6,12 +6,13 @@ import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
 import getParseLocalStorage from '../../Utils/getParseLocalStorage';
 import GameBoard from '../../game/components/GameBoard';
 import { useWebsocketContext } from '../../Wrappers/Websocket';
+import PlayBack from './PlayBack';
 
 export const Play = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
-  const [whichPlayer, setWhichPlayer] = useState('');
+  const [whichPlayer, setWhichPlayer] = useState(0);
   const [socketData, setSocketData] = useState('');
   const socket = useWebsocketContext();
 
@@ -24,9 +25,9 @@ export const Play = () => {
     setPlayer1Data(player1Data);
     setPlayer2Data(player2Data);
     if (player1Data.id === userData.id)
-      setWhichPlayer('player1');
+      setWhichPlayer(1);
     else
-      setWhichPlayer('player2');
+      setWhichPlayer(2);
 
     // if (userData.id === player1Data.id)
     //     setOpponentData(player2Data);
@@ -43,7 +44,7 @@ export const Play = () => {
 
   return (
     <div className="vh-100 d-flex" style={{ paddingTop: '75px', justifyContent: 'center' }}>
-        <MDBCard className="profile-game-card">
+        {/* <MDBCard className="profile-game-card">
           <div className="profile-info">
             
             {player1Data?.profilePicture ? (
@@ -72,12 +73,12 @@ export const Play = () => {
               <div>empty</div>
             )}
           </div>
-        </MDBCard>
+        </MDBCard> */}
 
         <div className="page-container">
-            <GameBoard whichPlayer={whichPlayer}/>
+              <PlayBack whichPlayer={whichPlayer}/>
+            {/* <GameBoard whichPlayer={whichPlayer}/> */}
             PLAY
-            <Link to='/users/all'>GO TO LEADERBOARD</Link>
         </div>
 
         

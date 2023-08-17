@@ -128,6 +128,8 @@ export class GameEvents {
 
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !client.data.gameId || !access_token) {
+      if (!client.data.gameId && client.data.id)
+        this.server.to(`user_${client.data.id}`).emit('prepareToPlay', { gameStatus: 'canceled' });
       client.disconnect();
       return;
     }

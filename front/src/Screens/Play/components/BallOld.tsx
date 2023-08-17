@@ -10,7 +10,7 @@ export class Vector {
     public y: number) { }
 }
 
-export class Ball {
+export class BallOld {
   constructor(
     public center: Point,
     public dir: Vector,

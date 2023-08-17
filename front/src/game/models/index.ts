@@ -10,6 +10,7 @@ export class GameBoardNew {
   private minWidth = 350;
   public width: number;
   public height: number;
+  public factor = 1;
 
   constructor(width: number) {
     this.width = this.updateWidth(width);
@@ -29,8 +30,9 @@ export class GameBoardNew {
     const oldWidth = this.width;
     this.updateWidth(newWidth)
     this.height = this.width * 0.5;
+    this.factor = this.width / oldWidth;
     // console.log('old:', oldWidth, ' new:', newWidth);
-    return this.width / oldWidth;
+    return this.factor;
   }
 }
 
@@ -68,9 +70,12 @@ export class BallNew {
 
 export class Player {
   public status = 'pending';
-  public pad: PaddleNew
+  public this = false;
+  public num: number;
+  public pad: PaddleNew;
 
-  constructor(gameBoard: GameBoardNew) {
+  constructor(gameBoard: GameBoardNew, number: number) {
+    this.num = number;
     this.pad = new PaddleNew(gameBoard);
   }
 }
