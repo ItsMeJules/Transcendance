@@ -10,8 +10,8 @@ export enum PopupType {
 }
 
 export default function ChatMetadata() {
-  const [isMoreActive, setIsMoreActive] = useState(false);
-  const [popupType, setPopupActive] = useState<PopupType | null>(null);
+  const [isMoreActive, setIsMoreActive] = useState(true);
+  const [popupType, setPopupActive] = useState<PopupType | null>(PopupType.CHANNEL);
 
   const handleMoreClick = (event: MouseEvent<HTMLDivElement>) => {
     if (!isMoreActive)

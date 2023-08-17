@@ -30,7 +30,6 @@ export default function ChannelCreationPopup() {
 
   return (
     <Popup className="channel-creation-popup">
-
       <div className="icons">
         <div className="selected-text">
           <p className="type">Type: {channelType.type}</p>

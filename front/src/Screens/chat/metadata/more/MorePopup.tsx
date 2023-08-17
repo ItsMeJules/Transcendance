@@ -30,7 +30,6 @@ export default function MorePopup({ popupType, setPopupActive }: MorePopupProps)
   };
 
   return (
-    <div className="popups-container">
       <Popup className="more-popup">
         <div className="contents">
           <p onClick={channelCreation}>Créer un channel</p>
@@ -44,6 +43,5 @@ export default function MorePopup({ popupType, setPopupActive }: MorePopupProps)
         {popupType === PopupType.RESTRICT && <RestrictUserPopup />}
         {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup />}
       </Popup>
-    </div>
   );
 }

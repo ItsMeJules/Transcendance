@@ -33,6 +33,8 @@
         justify-content: center;
         align-items: center;
 
+        position: relative;
+
         height: 100%;
         width: 13%;
 
@@ -41,21 +43,19 @@
         .more-symbol-container {
           height: 100%;
           width: 100%;
-          
+
           cursor: pointer;
 
           .more-symbol {
             height: 100%;
             width: 100%;
 
-            span,
-            span:before,
-            span:after {
+            span {
               display: block;
               position: relative;
-              
+
               width: 50%;
-              height: 2px;
+              height: 4%;
 
               top: 50%;
               left: 25%;
@@ -67,19 +67,35 @@
             }
 
             span:before {
+              display: block;
+              position: relative;
+
               width: 100%;
               height: 100%;
 
               top: -5px;
               left: 0px;
+
+              content: ' ';
+
+              background: black;
+              transition: all 250ms ease-in-out;
             }
 
             span:after {
+              display: block;
+              position: relative;
+
               width: 100%;
               height: 100%;
-              
+
               top: 3px;
               left: 0px;
+
+              content: ' ';
+
+              background: black;
+              transition: all 250ms ease-in-out;
             }
 
             &.active span {
@@ -98,221 +114,220 @@
           }
         }
 
-        .popups-container {
-          position: relative;
-          top: 50%;
+        .more-popup {
+          position: absolute;
+          top: 100%;
+          left: 0%;
 
-          .more-popup {
+          height: max-content;
+          width: max-content;
+
+          .contents {
+            text-align: center;
+
+            p {
+              display: flex;
+              justify-content: center;
+              align-content: center;
+              flex-direction: column;
+
+              height: 4vh;
+              width: 9vw;
+
+              background-color: white;
+              border: 1px solid gray;
+
+              margin: 2px;
+              cursor: pointer;
+
+              border-radius: 5px;
+              font-size: 12px;
+
+              transition: transform 0.3s;
+
+              &:hover {
+                transform: scale(1.05);
+              }
+            }
+          }
+
+          .channel-creation-popup {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
             position: absolute;
-            height: 20vh;
+            top: 0%;
+            left: 100%;
+
+            margin-top: 2px;
+
+            background: white;
+            border-radius: 5px;
+            border: 1px solid gray;
+
+            height: 15vh;
             width: 10vw;
 
-            .contents {
+            .icons {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
+
+              border-bottom: 3px solid black;
+              border-radius: 5px 5px 0px 0px;
+              background: #A9A9A9;
+
+              height: 25%;
+              width: 100%;
+
+              .selected-text {
+                width: 55%;
+
+                .type {
+                  margin: 0px 0px 1px 0px;
+                  font-size: 10px;
+                }
+
+                .description {
+                  font-size: 8px;
+                  word-wrap: break-word;
+                  line-height: 5px;
+                  margin: 0px;
+                }
+              }
+
+              .images {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-end;
+                align-items: center;
+
+                height: 100%;
+                width: 45%;
+
+                img {
+                  background-color: gray;
+
+                  height: 75%;
+                  width: 100%;
+
+                  padding: 2px;
+                  margin: 1px 1px 1px 1px;
+
+                  border: 1px solid black;
+                  border-radius: 2px;
+
+                  cursor: pointer;
+                  transition: transform 0.3s;
+
+                  &:hover {
+                    transform: scale(1.2);
+                  }
+                }
+              }
+
+              .public {}
+
+              .private {}
+
+              .protected {}
+            }
+
+            .channel-name {
+              background-color: brown;
+              height: 25%;
+
+              input {
+                height: 100%;
+                width: 100%;
+              }
+            }
+
+            .password-input {
+              background-color: red;
+
+              height: 25%;
+
+              input {
+                height: 100%;
+                width: 100%;
+              }
+            }
+
+            .validate {
+              background-color: brown;
+
+              height: 25%;
+              width: 100%;
+
               text-align: center;
 
               p {
-                display: flex;
-                justify-content: center;
-                align-content: center;
-                flex-direction: column;
-
-                height: 4vh;
-                width: 9vw;
-
-                background-color: white;
-                border: 1px solid gray;
-
-                margin: 2px;
+                margin: 0px;
                 cursor: pointer;
-
-                border-radius: 5px;
-                font-size: 12px;
-
                 transition: transform 0.3s;
 
                 &:hover {
                   transform: scale(1.05);
                 }
               }
-
-            }
-
-            .channel-creation-popup {
-              display: flex;
-              flex-direction: column;
-              justify-content: flex-start;
-
-              background: white;
-              border-radius: 5px;
-              border: 1px solid gray;
-
-              position: absolute;
-              top: 10%;
-              left: 100%;
-
-              height: 15vh;
-              width: 10vw;
-
-              .icons {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-
-                border-bottom: 3px solid black;
-                border-radius: 5px 5px 0px 0px;
-                background: #A9A9A9;
-
-                height: 25%;
-                width: 100%;
-
-                .selected-text {
-                  width: 55%;
-
-                  .type {
-                    margin: 0px 0px 1px 0px;
-                    font-size: 10px;
-                  }
-
-                  .description {
-                    font-size: 8px;
-                    word-wrap: break-word;
-                    line-height: 5px;
-                    margin: 0px;
-                  }
-                }
-
-                .images {
-                  display: flex;
-                  flex-direction: row;
-                  justify-content: flex-end;
-                  align-items: center;
-
-                  height: 100%;
-                  width: 45%;
-
-                  img {
-                    background-color: gray;
-
-                    height: 75%;
-                    width: 100%;
-
-                    padding: 2px;
-                    margin: 1px 1px 1px 1px;
-
-                    border: 1px solid black;
-                    border-radius: 2px;
-
-                    cursor: pointer;
-                    transition: transform 0.3s;
-
-                    &:hover {
-                      transform: scale(1.2);
-                    }
-                  }
-                }
-
-                .public {}
-
-                .private {}
-
-                .protected {}
-              }
-
-              .channel-name {
-                background-color: brown;
-                height: 25%;
-
-                input {
-                  height: 100%;
-                  width: 100%;
-                }
-              }
-
-              .password-input {
-                background-color: red;
-
-                height: 25%;
-
-                input {
-                  height: 100%;
-                  width: 100%;
-                }
-              }
-
-              .validate {
-                background-color: brown;
-
-                height: 25%;
-                width: 100%;
-
-                text-align: center;
-
-                p {
-                  margin: 0px;
-                  cursor: pointer;
-                  transition: transform 0.3s;
-
-                  &:hover {
-                    transform: scale(1.05);
-                  }
-                }
-              }
-
-            }
-
-            .dm-popup {
-              display: flex;
-              flex-direction: column;
-              justify-content: flex-start;
-
-              background: green;
-
-              position: absolute;
-              top: 30%;
-              left: 100%;
-
-              width: 100%;
-              max-height: 80%;
-
-              overflow-y: scroll;
-            }
-
-            .restrict-popup {
-              display: flex;
-              flex-direction: column;
-              justify-content: flex-start;
-
-              background: green;
-
-              position: absolute;
-              top: 50%;
-              left: 100%;
-
-              width: 100%;
-              max-height: 80%;
-
-              overflow-y: scroll;
-            }
-
-            .channel-list-popup {
-              display: flex;
-              flex-direction: column;
-              justify-content: flex-start;
-
-              background: green;
-
-              position: absolute;
-              top: 80%;
-              left: 100%;
-
-              width: 100%;
-              max-height: 80%;
-
-              overflow-y: scroll;
             }
 
           }
+
+          .dm-popup {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            background: green;
+
+            position: absolute;
+            top: 30%;
+            left: 100%;
+
+            width: 100%;
+            max-height: 80%;
+
+            overflow-y: scroll;
+          }
+
+          .restrict-popup {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            background: green;
+
+            position: absolute;
+            top: 50%;
+            left: 100%;
+
+            width: 100%;
+            max-height: 80%;
+
+            overflow-y: scroll;
+          }
+
+          .channel-list-popup {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            background: green;
+
+            position: absolute;
+            top: 80%;
+            left: 100%;
+
+            width: 100%;
+            max-height: 80%;
+
+            overflow-y: scroll;
+          }
+
         }
 
       }
