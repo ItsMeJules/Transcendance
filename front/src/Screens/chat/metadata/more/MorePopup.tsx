@@ -1,41 +1,48 @@
 import React from "react";
+
 import Popup from "./Popup";
-import ChannelCreationPopup from "./ChannelCreationPopup";
+import { PopupType } from "../ChatMetadata";
+import ChannelCreationPopup from "./types/ChannelCreationPopup";
+import DirectMessagePopup from "./types/DirectMessagePopup";
+import RestrictUserPopup from "./types/RestrictUserPopup";
+import ChannelListPopup from "./types/ChannelListPopup";
 
 interface MorePopupProps {
-  channelPopup: boolean;
-  setChannelPopup: (value: boolean) => void;
+  popupType: PopupType | null;
+  setPopupActive: React.Dispatch<React.SetStateAction<PopupType | null>>;
 }
 
-export default function MorePopup({
-  channelPopup,
-  setChannelPopup,
-}: MorePopupProps) {
+export default function MorePopup({ popupType, setPopupActive }: MorePopupProps) {
   const channelCreation = () => {
-    setChannelPopup(!channelPopup);
+    setPopupActive(popupType === PopupType.CHANNEL ? null : PopupType.CHANNEL);
   };
 
   const sendDirectMessage = () => {
-    // Code to send a direct message
+    setPopupActive(popupType === PopupType.DIRECT_MESSAGE ? null : PopupType.DIRECT_MESSAGE);
   };
 
   const restrictUser = () => {
-    // Code to restrict or unrestrict a user
+    setPopupActive(popupType === PopupType.RESTRICT ? null : PopupType.RESTRICT);
   };
 
   const channelList = () => {
-    // Code to list the channels
+    setPopupActive(popupType === PopupType.CHANNEL_LIST ? null : PopupType.CHANNEL_LIST);
   };
 
   return (
     <div className="popups-container">
       <Popup className="more-popup">
-        <p onClick={channelCreation}>Créer un channel</p>
-        <p onClick={sendDirectMessage}>Envoyer un dm</p>
-        <p onClick={restrictUser}>Bloquer/Débloquer un utilisateur</p>
-        <p onClick={channelList}>Liste des channels</p>
+        <div className="contents">
+          <p onClick={channelCreation}>Créer un channel</p>
+          <p onClick={sendDirectMessage}>Envoyer un dm</p>
+          <p onClick={restrictUser}>Bloquer/Débloquer un utilisateur</p>
+          <p onClick={channelList}>Liste des channels</p>
+        </div>
 
-        {channelPopup && <ChannelCreationPopup />}
+        {popupType === PopupType.CHANNEL && <ChannelCreationPopup />}
+        {popupType === PopupType.DIRECT_MESSAGE && <DirectMessagePopup />}
+        {popupType === PopupType.RESTRICT && <RestrictUserPopup />}
+        {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup />}
       </Popup>
     </div>
   );
