@@ -1,7 +1,7 @@
 import React from "react";
 
 interface Message {
-  clientId: string;
+  message: string;
   self: boolean;
 }
 
@@ -17,7 +17,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ messagesReceived }) => {
           className={"message-" + (message.self ? "self" : "other")}
           key={index}
         >
-          {message.self}
+          {message.message}
         </div>
       ))}
     </>

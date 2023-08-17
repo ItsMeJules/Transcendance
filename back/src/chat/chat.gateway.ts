@@ -3,6 +3,7 @@ import {
   WebSocketServer,
   SubscribeMessage,
   OnGatewayInit,
+  MessageBody,
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
@@ -16,7 +17,7 @@ export class ChatEventsGateway {
   constructor(private authService: AuthService) {}
 
   async handleConnection(client: Socket): Promise<void> {
-    console.log('> chat Connection in');
+    console.log('> chat connection in');
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       console.log('no access_token');
@@ -30,11 +31,13 @@ export class ChatEventsGateway {
       client.disconnect();
       return;
     }
-    console.log(client);
     client.data = { id: user.id };
     console.log('test:', `user_${client.data.id}`);
 
-    this.server.emit('chat', 'Hi all!');
+    this.server.emit('message', {
+      message: 'Hi everyone!!',
+      clientId: 0,
+    });
     this.server.emit(
       `user_${client.data.id}`,
       `Hi user number ${client.data.id}`,
@@ -42,21 +45,20 @@ export class ChatEventsGateway {
   }
 
   handleDisconnect(client: Socket): void {
-    console.log('> chat Conection out');
+    console.log('> chat deConection ');
+    client.off('message', () => console.log('chat!!!!'));
   }
 
   @SubscribeMessage('message')
-  handleMessage(@ConnectedSocket() client: Socket, payload): void {
+  handleMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: string,
+  ): void {
+    // console.log('Received message: lol', client.data);
     console.log('Received message: ', payload);
     this.server.emit('message', {
-      message: payload.message,
-      clientId: client.data.id,
+      message: payload,
+      clientId: client.id,
     });
   }
-
-  // @SubscribeMessage('askFriendOnlineStatus')
-  // async handleAskFriendOnlineStatus(client: Socket, friendId: string): Promise<boolean> {
-  //   const isOnline = await this.isFriendOnline(friendId);
-  //   return isOnline;
-  // }
 }

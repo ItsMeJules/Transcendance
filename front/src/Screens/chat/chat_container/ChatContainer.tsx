@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 
 interface Message {
-  clientId: string;
+  message: string;
   self: boolean;
 }
 
