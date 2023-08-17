@@ -26,8 +26,11 @@ export class GameBoardNew {
   }
 
   updateDimensions(newWidth: number) {
+    const oldWidth = this.width;
     this.updateWidth(newWidth)
     this.height = this.width * 0.5;
+    // console.log('old:', oldWidth, ' new:', newWidth);
+    return this.width / oldWidth;
   }
 }
 
@@ -36,6 +39,7 @@ export class BallNew {
   public size: number;
   public speed: number;
   public pos: Point;
+  public tip: Point;
   public accelFactor: number;
   public dir: Vector;
 
@@ -43,6 +47,7 @@ export class BallNew {
     this.size = gameBoard.width * 20 / 600;
     this.speed = gameBoard.width * 2 / 600;
     this.pos = new Point(gameBoard.width * 0.5, gameBoard.height * 0.5);
+    this.tip = new Point(this.pos.x - this.size * 0.5, this.pos.y - this.size * 0.5);
     this.accelFactor = 0.2;
     const randomAngle = Math.random() * (Math.PI / 3) - Math.PI / 6;
     const randomX = Math.random() < 0.5 ? -1 : 1;
@@ -52,46 +57,47 @@ export class BallNew {
       Math.sin(randomAngle) * randomY);
   }
 
-  updateBall(gameBoard: GameBoardNew) {
-    this.size = gameBoard.width * 20 / 600;
-    this.speed = gameBoard.width * 2 / 600;
+  updateBall(factor: number) {
+    this.pos.x = this.pos.x * factor;
+    this.pos.y = this.pos.y * factor;
+    this.tip.x = this.tip.x * factor;
+    this.tip.y = this.tip.y * factor;
+    this.size = this.size * factor;
   }
 }
 
 export class Player {
-  // public id: number;
   public status = 'pending';
-  public posPaddleTop: number;
+  public pad: PaddleNew
 
   constructor(gameBoard: GameBoardNew) {
-    this.posPaddleTop = gameBoard.height * 110 / 300;
-  }
-
-  updatePaddleTop(oldGameBoardHeight: number, newGameBoardHeight: number) {
-    this.posPaddleTop = (this.posPaddleTop / oldGameBoardHeight) * newGameBoardHeight;
-  }
-
-  resetPaddleTop(gameBoard: GameBoardNew) {
-    this.posPaddleTop = gameBoard.height * 110 / 300;
+    this.pad = new PaddleNew(gameBoard);
   }
 }
 
 export class PaddleNew {
-  // Define paddle properties and calculations here
   public width: number;
   public height: number;
   public speed: number;
+  public pos: number;
+  // public tip: Point;
 
   constructor(gameBoard: GameBoardNew) {
-    this.width = gameBoard.width * 20 / 600;
+    this.width = gameBoard.width * 15 / 600;
     this.height = gameBoard.height * 80 / 300;
     this.speed = gameBoard.height * 10 / 300;
+    this.pos = gameBoard.height * 0.5 - this.height * 0.5;
   }
 
-  updatePaddle(gameBoard: GameBoardNew) {
-    this.width = gameBoard.height * 20 / 600;
-    this.height = gameBoard.width * 20 / 600;
-    this.speed = gameBoard.height * 10 / 300;
+  updatePaddle(factor: number) {
+    this.width *= factor;
+    this.height *= factor;
+    this.speed *= factor;
+    this.pos *= factor;
+  }
+
+  resetPaddleTop(gameBoard: GameBoardNew) {
+    this.pos = gameBoard.height * 0.5;
   }
 }
 

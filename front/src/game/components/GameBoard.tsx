@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import Paddle from "./Paddle";
+// import Paddle from "./Paddle";
 import Ball from "./Ball";
 import { MdHeight } from 'react-icons/md';
 import { useWebsocketContext } from '../../Wrappers/Websocket';
@@ -9,22 +9,22 @@ import { BallNew, GameBoardNew, Player, PaddleNew } from '../models';
 class GameProperties {
   public gameBoard: GameBoardNew;
   public ball: BallNew;
-  public paddle: PaddleNew;
-  public player1: Player;
-  public player2: Player;
+  // public paddle: PaddleNew;
+  // public player1: Player;
+  // public player2: Player;
   
   constructor() {
     this.gameBoard = new GameBoardNew(window.innerWidth * 0.8);
     this.ball = new BallNew(this.gameBoard);
-    this.paddle = new PaddleNew(this.gameBoard);
-    this.player1 = new Player(this.gameBoard);
-    this.player2 = new Player(this.gameBoard);
+    // this.paddle = new PaddleNew(this.gameBoard);
+    // this.player1 = new Player(this.gameBoard);
+    // this.player2 = new Player(this.gameBoard);
   }
 
   updateDimensions() {
     this.gameBoard.updateDimensions(window.innerWidth * 0.8);
-    this.ball.updateBall(this.gameBoard);
-    this.paddle.updatePaddle(this.gameBoard);
+    // this.ball.updateBall(this.gameBoard);
+    // this.paddle.updatePaddle(this.gameBoard);
   }
 }
 
@@ -109,8 +109,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
     const oldGameBoardHeight = gameProperties.gameBoard.height;
 
     gameProperties.updateDimensions();
-    gameProperties.player1.updatePaddleTop(oldGameBoardHeight, gameProperties.gameBoard.height);
-    gameProperties.player2.updatePaddleTop(oldGameBoardHeight, gameProperties.gameBoard.height);
+    // gameProperties.player1.updatePaddleTop(oldGameBoardHeight, gameProperties.gameBoard.height);
+    // gameProperties.player2.updatePaddleTop(oldGameBoardHeight, gameProperties.gameBoard.height);
   };
 
   useEffect(() => {
@@ -154,8 +154,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
     setTimer(60);
     setIsTimeout(false);
     setIsGameStarted(false);
-    gameProperties.player1.resetPaddleTop(gameProperties.gameBoard);
-    gameProperties.player2.resetPaddleTop(gameProperties.gameBoard);
+    // gameProperties.player1.resetPaddleTop(gameProperties.gameBoard);
+    // gameProperties.player2.resetPaddleTop(gameProperties.gameBoard);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -186,39 +186,39 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   
       updatedGameProperties.gameBoard = prevGameProperties.gameBoard; // Copy over properties
       updatedGameProperties.ball = prevGameProperties.ball;
-      updatedGameProperties.paddle = prevGameProperties.paddle;
-      updatedGameProperties.player1 = prevGameProperties.player1;
-      updatedGameProperties.player2 = prevGameProperties.player2;
+      // updatedGameProperties.paddle = prevGameProperties.paddle;
+      // updatedGameProperties.player1 = prevGameProperties.player1;
+      // updatedGameProperties.player2 = prevGameProperties.player2;
   
       if (currentWhichPlayer === 'player1') {
         if (keysPressed.current.w || keysPressed.current.ArrowUp) {
           const newPaddle1Top = Math.max(
             updatedGameProperties.ball.size * 2,
-            updatedGameProperties.player1.posPaddleTop - updatedGameProperties.paddle.speed
+            // updatedGameProperties.player1.posPaddleTop - updatedGameProperties.paddle.speed
           );
-          updatedGameProperties.player1.posPaddleTop = newPaddle1Top;
+          // updatedGameProperties.player1.posPaddleTop = newPaddle1Top;
         }
         if (keysPressed.current.s || keysPressed.current.ArrowDown) {
           const newPaddle1Top = Math.min(
-            updatedGameProperties.gameBoard.height - updatedGameProperties.paddle.height - (updatedGameProperties.ball.size * 2),
-            updatedGameProperties.player1.posPaddleTop + updatedGameProperties.paddle.speed
+            // updatedGameProperties.gameBoard.height - updatedGameProperties.paddle.height - (updatedGameProperties.ball.size * 2),
+            // updatedGameProperties.player1.posPaddleTop + updatedGameProperties.paddle.speed
           );
-          updatedGameProperties.player1.posPaddleTop = newPaddle1Top;
+          // updatedGameProperties.player1.posPaddleTop = newPaddle1Top;
         }
       } else if (currentWhichPlayer === 'player2') {
         if (keysPressed.current.w || keysPressed.current.ArrowUp) {
           const newPaddle2Top = Math.max(
             updatedGameProperties.ball.size * 2,
-            updatedGameProperties.player2.posPaddleTop - updatedGameProperties.paddle.speed
+            // updatedGameProperties.player2.posPaddleTop - updatedGameProperties.paddle.speed
           );
-          updatedGameProperties.player2.posPaddleTop = newPaddle2Top;
+          // updatedGameProperties.player2.posPaddleTop = newPaddle2Top;
         }
         if (keysPressed.current.s || keysPressed.current.ArrowDown) {
           const newPaddle2Top = Math.min(
-            updatedGameProperties.gameBoard.height - updatedGameProperties.paddle.height - (updatedGameProperties.ball.size * 2),
-            updatedGameProperties.player2.posPaddleTop + updatedGameProperties.paddle.speed
+            // updatedGameProperties.gameBoard.height - updatedGameProperties.paddle.height - (updatedGameProperties.ball.size * 2),
+            // updatedGameProperties.player2.posPaddleTop + updatedGameProperties.paddle.speed
           );
-          updatedGameProperties.player2.posPaddleTop = newPaddle2Top;
+          // updatedGameProperties.player2.posPaddleTop = newPaddle2Top;
         }
       }
   
@@ -263,9 +263,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   return (
     <div className="container" style={{ width: gameProperties.gameBoard.width, height: gameProperties.gameBoard.height }}>
       <div className="game-board" style={{ width: gameProperties.gameBoard.width, height: gameProperties.gameBoard.height }}>
-        <Paddle top={gameProperties.player1.posPaddleTop} gameProperties={gameProperties} />
-        <Paddle top={gameProperties.player2.posPaddleTop} gameProperties={gameProperties} />
-        {isGameStarted &&
+        {/* <Paddle top={gameProperties.player1.posPaddleTop} gameProperties={gameProperties} />
+        <Paddle top={gameProperties.player2.posPaddleTop} gameProperties={gameProperties} /> */}
+        {/* {isGameStarted &&
           <Ball
             gameProperties={gameProperties}
             paddle1Top={gameProperties.player1.posPaddleTop}
@@ -273,7 +273,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
             resetGame={resetGame}
             updateScores={updateScores}
             lastScorer={lastScorer}
-          />}
+          />} */}
         <div className="score-container">
           <div className="score">{scores.player1}</div>
           <div className="score">{scores.player2}</div>
