@@ -23,7 +23,6 @@ export default function ChannelCreationPopup() {
     if (channelType === ChannelType.PROTECTED && !channelPassword.trim())
       return;
 
-    console.log(channelName, channelPassword)
     setChannelName("")
     setChannelPassword("")
   }
