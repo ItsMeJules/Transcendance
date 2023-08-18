@@ -7,9 +7,9 @@ import { SocketEvents } from 'src/websocket/websocket.gateway';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-	imports: [SocketModule],
-	controllers: [UserController],
-	providers: [UserService],
-	exports : [UserService],
+  imports: [SocketModule],
+  controllers: [UserController],
+  providers: [UserService],
+  exports: [UserService],
 })
-export class UserModule { }
+export class UserModule {}

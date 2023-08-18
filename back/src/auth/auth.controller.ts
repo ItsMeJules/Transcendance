@@ -43,7 +43,7 @@ export class AuthController {
     const access_token = await this.authService.signup(dto);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
     const user = await this.authService.validateJwtToken(access_token);
@@ -60,7 +60,7 @@ export class AuthController {
     const access_token = await this.authService.signin(dto);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
     const user = await this.authService.validateJwtToken(access_token);
@@ -87,7 +87,7 @@ export class AuthController {
     const access_token = await this.authService.login(req.user);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 15000,
       sameSite: 'lax',
     });
     res.redirect('/profile/me');
@@ -106,7 +106,7 @@ export class AuthController {
     const access_token = await this.authService.login(req.user);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
     res.redirect('/profile/me');
@@ -132,7 +132,7 @@ export class AuthController {
 
     res.cookie('access_token', accessTokenCookie, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
 
@@ -166,7 +166,7 @@ export class AuthController {
 
     res.cookie('access_token', accessTokenCookie, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
   }
@@ -186,7 +186,7 @@ export class AuthController {
 
     res.cookie('access_token', accessTokenCookie, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
   }

@@ -9,21 +9,21 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PayloadDto } from './dto/payload.dto';
 import { AuthDtoUp } from './dto/authup.dto';
 import { Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly jwtService: JwtService,
     private prisma: PrismaService,
-    private jwtService: JwtService,
     private config: ConfigService,
-  ) { }
+  ) {}
 
   async login(user: any): Promise<any> {
     const payload: PayloadDto = {

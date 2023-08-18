@@ -66,7 +66,7 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
       userData = JSON.parse(storedUserData);
       console.log("userstate:", userData);
       const general =
-        socketInstances.general?.connected !== true 
+        socketInstances.general?.connected !== true
           ? OpenSocket("http://localhost:8000/general")
           : socketInstances.general;
       const chat =

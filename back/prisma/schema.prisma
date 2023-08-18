@@ -80,30 +80,31 @@ model Game {
 model Message {
   id          Int    @id @default(autoincrement())
   text        String
-  createdAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
   
-  roomId      Int 
+  clientId    String
+  roomId      Int
   room        Room  @relation("messages", fields: [roomId], references: [id])
   authorId    Int
   author      User  @relation("author", fields: [authorId], references: [id])
 }
 
 model Room {
-  id        Int    @id @default(autoincrement())
-  type      RoomType @default(PUBLIC)
-  name      String
-  password  String?
-  protected Boolean @default(false) // or password != null
-  createdAt DateTime @default(now())
+  id          Int    @id @default(autoincrement())
+  type        RoomType @default(PUBLIC)
+  name        String
+  password    String?
+  protected   Boolean @default(false) // or password != null
+  createdAt   DateTime @default(now())
 
 
-  bans  User[] @relation("bannedUsers") //add banned time
-  mutes  User[] @relation("mutedUsers")
-  admins  User[] @relation("adminUsers")
-  users   User[] @relation("activeUsers")
-  ownerId Int
-  owner   User @relation("ownerRoom", fields: [ownerId], references: [id]) // care au field ici
-  messages Message[] @relation("messages")
+  bans        User[] @relation("bannedUsers") //add banned time
+  mutes       User[] @relation("mutedUsers")
+  admins      User[] @relation("adminUsers")
+  users       User[] @relation("activeUsers")
+  ownerId     Int?
+  owner       User? @relation("ownerRoom", fields: [ownerId], references: [id]) // care au field ici
+  messages    Message[] @relation("messages")
 }
 
 enum RoomType {

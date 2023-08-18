@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
-
+import { eventNames } from "process";
 import "./ChatBox.scss";
-
 import ChatBar from "./chatbar/ChatBar";
 import ChatContainer from "./chat_container/ChatContainer";
 import ChatMetadata from "./metadata/ChatMetadata";
@@ -20,30 +19,45 @@ export const ChatBox = () => {
   const socket = useWebsocketContext();
 
   const onNewMessage = (payload: any) => {
-    console.log(
-      "new message: ",
-      payload,
-      "socketrefId : ",
-      socketRef.current?.id,
-      "payload.clientId : ",
-      payload.clientId
-    );
-    let message: Message = payload;
-    message.self = payload.clientId === socketRef.current?.id;
+    //////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
+    const userDataString = localStorage.getItem("userData");
+    let userId;
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      userId = userData.id;
+    }
+    const message: Message = {
+      message: payload.text,
+      self: payload.authorId === userId,
+    };
     setMessages((messages) => [...messages, message]);
   };
 
   useEffect(() => {
     socketRef.current = socket.chat;
-
     const handleReconnect = () => {
-      console.log("Reconnected to server. Resetting event listeners.");
+      //////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
+      const userDataString = localStorage.getItem("userData");
+      let userData = null;
+      if (userDataString) {
+        userData = JSON.parse(userDataString);
+      }
+      const userId = userData.id;
+      const eventNameSocket = "load_general_chat_" + userId;
       socketRef.current?.off("message");
       socketRef.current?.on("message", onNewMessage);
+      socketRef.current?.on(eventNameSocket, (payload: any) => {
+        payload.forEach((msg: any) => {
+          onNewMessage({
+            message: msg.text,
+            authorId: msg.authorId,
+            clientId: msg.clientId,
+            ...msg,
+          });
+        });
+      });
     };
-
     socketRef.current?.on("connect", handleReconnect);
-
     return () => {
       if (socketRef.current) {
         socketRef.current.off("message", onNewMessage);
@@ -56,7 +70,6 @@ export const ChatBox = () => {
   const sendData = (data: string) => {
     if (socketRef.current) {
       socketRef.current.emit("message", data);
-      console.log("emitting the data: ", data);
     }
   };
 
