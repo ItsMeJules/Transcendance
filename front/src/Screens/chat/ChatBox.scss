@@ -210,8 +210,8 @@
                 img {
                   background-color: gray;
 
-                  height: 60%;
-                  width: 30%;
+                  height: auto;
+                  width: 80%;
 
                   padding: 2px;
                   margin: 1px 1px 1px 1px;
@@ -276,10 +276,13 @@
             }
 
             .validate {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+
               height: 20%;
               width: 100%;
-
-              text-align: center;
 
               p {
                 margin: 0px;
