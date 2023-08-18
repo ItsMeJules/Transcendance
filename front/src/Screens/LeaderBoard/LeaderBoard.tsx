@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios, { } from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../Utils";
-import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
 import User from "../../Services/User";
 import { Link, useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import { UserArray } from "../../Services/UserArray";
-import LogoutParent from "../../LogoutHook/logoutParent";
 import { UserData } from "../../Services/User";
+import LeaderBoardHeader from "./components/LeaderBoardHeader";
+import UserProfilesList from "./components/UserProfileList";
+import LeaderBoardContainer from "./components/LeaderBoardContainer"
 
 const LeaderBoard: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -90,54 +91,16 @@ const LeaderBoard: React.FC = () => {
   }, [history]);
 
   return (
-    <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
-      <MDBContainer className="leaderboard-container">
-        <MDBCard className="leaderboard-card">
-
-          <div className="leaderboard">
-
-            <header className="leaderboard-header">
-
-              <LogoutParent setErrMsg={setErrMsg} />
-
-              <h1 className="leaderboard__title">
-                <span className="leaderboard__title--top">
-                  Transcendance
-                </span>
-                <span className="leaderboard__title--bottom">
-                  Leaderboard
-                </span>
-              </h1>
-            </header>
-          </div>
-
-          <main className="leaderboard__profiles">
-            {users.map((user) => (
-
-              <Link title="Show user profile"
-                style={{ textDecoration: 'none' }}
-                to={userData?.id === user.getId() ? APP_ROUTES.USER_PROFILE  : APP_ROUTES.GENERIC_USER_PROFILE + user.getId()}
-                key={user.getId()}>
-                <article className="leaderboard__profile" key={user.getId()}>
-                  <img
-                    src={user.getProfilePicture()}
-                    alt={user.getUsername()}
-                    className="leaderboard__picture"
-                  />
-                  <span className="leaderboard__name">{user.getUsername()}</span>
-                  <span className="leaderboard__value">{user.getUserPoints()}</span>
-                </article>
-              </Link>
-
-            ))}
-          </main>
-
-        </MDBCard>
-      </MDBContainer>
+    <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px' }}>
+      
+      <LeaderBoardContainer>
+        <LeaderBoardHeader setErrMsg={setErrMsg} />
+        <UserProfilesList users={users} currentUserId={userData?.id} />
+      </LeaderBoardContainer>
+      
       <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div>
   );
-
 }
 
 export default LeaderBoard;
