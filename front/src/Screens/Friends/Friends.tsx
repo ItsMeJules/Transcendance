@@ -16,6 +16,9 @@ import { Socket } from "socket.io-client";
 import { UserData } from "../../Services/User";
 import User from "../../Services/User";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
+import FriendsHeader from "./Components/FriendsHeader";
+import UserProfileList from "./Components/UserProfileList";
+import FriendsContainer from "./Components/FriendsContainer";
 
 const UserFriends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -118,6 +121,20 @@ const UserFriends = () => {
   //   console.log('Profile clicked');
   //   history(APP_ROUTES.GENERIC_USER_PROFILE + user.getId());
   // }
+
+//  return (
+//    <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
+//      
+//      <FriendsContainer>
+//        <FriendsHeader setErrMsg={setErrMsg} />
+//        <UserProfileList users={users} onRemoveClick={removeFriend} />
+//      </FriendsContainer>
+//
+//      <ToastNotificationMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
+//      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
+//    </div>
+//  );
+//}
 
   return (
     <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
