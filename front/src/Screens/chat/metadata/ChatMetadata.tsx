@@ -1,6 +1,7 @@
 import React, { useState, MouseEvent } from "react";
 
 import MorePopup from "./more/MorePopup";
+import ChannelManager from "./channel_manager/ChannelManager";
 
 export enum PopupType {
   CHANNEL = "channel",
@@ -23,7 +24,7 @@ export default function ChatMetadata() {
   return (
     <div className="metadata-container">
       <div className="more" onClick={handleMoreClick}>
-        
+
         <div className="more-symbol-container">
           <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
             <span></span> {/* Useful for the more symbol animation */}
@@ -33,10 +34,11 @@ export default function ChatMetadata() {
         {isMoreActive && <MorePopup popupType={popupType} setPopupActive={setPopupActive} />}
       </div>
 
-      <div className="metadata">
-        <div className="chat-info"></div>
-        <div className="chat-icon"></div>
+      <div className="channel-manager">
+        <ChannelManager/>
       </div>
+
+      <div className="channel-icon"></div>
     </div>
   );
 }

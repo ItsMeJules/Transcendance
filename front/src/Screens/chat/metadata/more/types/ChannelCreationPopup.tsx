@@ -6,12 +6,7 @@ import PublicIcon from "../../../../../assets/globe.png"
 import PrivateIcon from "../../../../../assets/private.png"
 import ProtectedIcon from "../../../../../assets/padlock.png"
 import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
-
-const ChannelType = {
-  PUBLIC: {type: "Public", id: "Public", description: "Créé un channel accessible par tout le monde."},
-  PRIVATE: {type: "Privé", id: "Private", description: "Créé un channel ou seul les personnes invitées peuvent rejoindre."},
-  PROTECTED: {type: "Protégé", id: "Protected", description: "Créé un channel protégé par un mot de passe."}
-}
+import { ChannelType, ChannelTypeDescription } from "../../../../../Services/Channel";
 
 export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC)
@@ -33,7 +28,7 @@ export default function ChannelCreationPopup() {
     if (userDataString)
       user = JSON.parse(userDataString);
 
-    const channelData = {type: channelType.id, name: channelName, password: channelPassword};
+    const channelData = {type: channelType, name: channelName, password: channelPassword};
 
     socket.chat?.emit("channel_manager", {userId: user.id, channelData})
     setChannelName("")
@@ -44,8 +39,8 @@ export default function ChannelCreationPopup() {
     <Popup className="channel-creation-popup">
       <div className="icons">
         <div className="selected-text">
-          <p className="type">Type: {channelType.type}</p>
-          <p className="description">{channelType.description}</p>
+          <p className="type">Type: {ChannelTypeDescription[channelType].name}</p>
+          <p className="description">{ChannelTypeDescription[channelType].desc}</p>
         </div>
         <div className="images">
           <img className="public" src={PublicIcon} alt="Public" onClick={() => setChannelType(ChannelType.PUBLIC)}></img>
