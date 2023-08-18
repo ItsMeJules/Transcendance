@@ -5,17 +5,19 @@ import Popup from "../Popup"
 import PublicIcon from "../../../../../assets/globe.png"
 import PrivateIcon from "../../../../../assets/private.png"
 import ProtectedIcon from "../../../../../assets/padlock.png"
+import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
 
 const ChannelType = {
-  PUBLIC: {type: "Public", description: "Créé un channel accessible par tout le monde."},
-  PRIVATE: {type: "Privé", description: "Créé un channel ou seul les personnes invitées peuvent rejoindre."},
-  PROTECTED: {type: "Protégé", description: "Créé un channel protégé par un mot de passe."}
+  PUBLIC: {type: "Public", id: "Public", description: "Créé un channel accessible par tout le monde."},
+  PRIVATE: {type: "Privé", id: "Private", description: "Créé un channel ou seul les personnes invitées peuvent rejoindre."},
+  PROTECTED: {type: "Protégé", id: "Protected", description: "Créé un channel protégé par un mot de passe."}
 }
 
 export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC)
   const [channelName, setChannelName] = useState("")
   const [channelPassword, setChannelPassword] = useState("")
+  const socket = useWebsocketContext();
 
   const createChannel = () => {
     if (!channelName.trim())
@@ -23,6 +25,17 @@ export default function ChannelCreationPopup() {
     if (channelType === ChannelType.PROTECTED && !channelPassword.trim())
       return;
 
+
+    // Temporary fix by Antoine
+    const userDataString = localStorage.getItem("userData");
+
+    let user = null;
+    if (userDataString)
+      user = JSON.parse(userDataString);
+
+    const channelData = {type: channelType.id, name: channelName, password: channelPassword};
+
+    socket.chat?.emit("channel_manager", {userId: user.id, channelData})
     setChannelName("")
     setChannelPassword("")
   }

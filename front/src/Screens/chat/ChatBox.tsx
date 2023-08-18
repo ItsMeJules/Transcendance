@@ -37,6 +37,8 @@ export const ChatBox = () => {
 
   useEffect(() => {
     socketRef.current = socket.chat;
+    console.log("rerun")
+    
     const handleReconnect = () => {
       //////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
       const userDataString = localStorage.getItem("userData");
@@ -59,7 +61,7 @@ export const ChatBox = () => {
         });
       });
     };
-    
+
     socketRef.current?.on("connect", handleReconnect);
 
     socketRef.current?.on("connection", (payload: any) => {
