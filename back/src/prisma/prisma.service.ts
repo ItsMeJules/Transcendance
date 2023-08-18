@@ -24,6 +24,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       generalChat = await this.room.create({
         data: {
           name: 'general',
+          //rajouter tous les users sur la creation de chaque chat generals!
         },
       });
     }

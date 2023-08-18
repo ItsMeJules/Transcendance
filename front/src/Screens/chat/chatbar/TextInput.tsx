@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent } from "react";
+import React, { useState, KeyboardEvent, useEffect } from "react";
 
 import TextSend from "./TextSend";
 
@@ -22,6 +22,7 @@ const TextInput: React.FunctionComponent<TextInputProps> = ({ sendData }) => {
   return (
     <div className="text-input">
       <input
+        autoFocus
         placeholder="Ecrivez un message..."
         onChange={(e) => setValue(e.target.value)}
         value={value}
