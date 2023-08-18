@@ -12,6 +12,7 @@ export const API_ROUTES = {
   UPLOAD_PROFILE_PIC: `${API_URL}/users/upload-profile-picture`,
   ADD_FRIEND: `${API_URL}/users/add-friend/`,
   GET_LEADERBOARD: `${API_URL}/users/leaderboard`,
+  GET_ALL_USERS: `${API_URL}/users/all`,
   ACTIVATE_2FA: `${API_URL}/auth/turn-on`,
   DEACTIVATE_2FA: `${API_URL}/auth/turn-off`,
   AUTHENTICATE_2FA: `${API_URL}/auth/authenticate`,

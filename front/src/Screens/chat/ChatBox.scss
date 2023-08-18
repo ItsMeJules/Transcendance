@@ -159,7 +159,6 @@
             position: absolute;
             top: 0%;
             left: 100%;
-
             margin-top: 2px;
 
             background: #A9A9A9;
@@ -302,16 +301,62 @@
             flex-direction: column;
             justify-content: flex-start;
 
-            background: green;
-
             position: absolute;
-            top: 30%;
+            top: 25%;
             left: 100%;
 
-            width: 100%;
-            max-height: 80%;
+            height: max-content;
+            width: 10vw;
 
             overflow-y: scroll;
+
+            background-color: white;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+
+            .users-list {
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+
+              overflow-x: hidden;
+
+              box-shadow: 7px 10px 10px -6px rgba(0,0,0,0.72);
+              z-index: 10;
+
+              .user-container {
+                border-bottom: 1px solid lightgray;
+
+                cursor: pointer;
+
+                .user {
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: flex-start;
+                  align-items: center;
+
+                  transition: transform 0.3s;
+  
+                  &:hover {
+                    transform: scale(1.05);
+                  }
+
+                  .profile-picture {
+                    width: 30%;
+                    height: auto;
+                    margin: 5px 0px 5px 5px;
+                    
+                    border-radius: 50%;
+                  }
+  
+                  .username {
+                    margin: 0px 0px 0px 10px;
+                  }
+                }
+
+              }
+
+            }
           }
 
           .restrict-popup {

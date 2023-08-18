@@ -26,10 +26,12 @@ export const ChatBox = () => {
       const userData = JSON.parse(userDataString);
       userId = userData.id;
     }
+
     const message: Message = {
       message: payload.text,
       self: payload.authorId === userId,
     };
+    
     setMessages((messages) => [...messages, message]);
   };
 
@@ -57,11 +59,18 @@ export const ChatBox = () => {
         });
       });
     };
+    
     socketRef.current?.on("connect", handleReconnect);
+
+    socketRef.current?.on("connection", (payload: any) => {
+      console.log("user " + (payload.connected ? "connected" : "disconnected") + ": ", payload)
+    })
+
     return () => {
       if (socketRef.current) {
         socketRef.current.off("message", onNewMessage);
         socketRef.current.off("connect", handleReconnect);
+        socketRef.current.off("connection")
         socketRef.current.disconnect();
       }
     };
