@@ -43,8 +43,9 @@ export class PongService {
       this.userQueue.delete(player1Id);
       this.userQueue.delete(player2Id);
       const gameChannel = `game_${gameData.id}`;
+      console.log('gamedata id::::', gameData.id);
       const gameStructure = new GameStruct(gameData.id, player1Id, player2Id, gameChannel);
-      gameStructure.room = gameChannel;
+      gameStructure.prop.room = gameChannel;
       this.onlineGames.set(gameData.id, gameStructure);
       const player1 = await this.userService.findOneById(gameData.player1Id);
       const player2 = await this.userService.findOneById(gameData.player2Id);
@@ -113,12 +114,12 @@ export class PongService {
   async getPlayerById(gameId: number, userId: number): Promise<number> {
     let match: number;
     this.onlineGames.forEach((value, key) => {
-      if (value.id === gameId) {
-        if (value.player1.id === userId) {
+      if (value.prop.id === gameId) {
+        if (value.pl1.id === userId) {
           match = 1;
           return match;
         }
-        else if (value.player2.id === userId) {
+        else if (value.pl2.id === userId) {
           match = 2
           return match;
         }

@@ -13,6 +13,7 @@ import './Screens/JoinGame/css/loading.css'
 import './Screens/Play/css/play.scss'
 import './css/2faButton.scss'
 import './game/components/GameStyles.css'
+import './Screens/Play/css/playback.scss'
 import { Home } from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';
@@ -49,7 +50,7 @@ const App: React.FC = () => {
             <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
             <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
             <Route path="/test" element={<Test />} />
-            <Route path="/play" element={<Play />} />
+            <Route path="/play" element={<PlayBack />} />
             {/* <Route path="/playback" element={<PlayBack />} /> */}
             <Route path={APP_ROUTES.LOG_2FA} element={<TwoFa />} />
           </Routes>

@@ -1,12 +1,13 @@
+import { Board } from "./board.model";
 import { Paddle } from "./paddle.model";
 
 export class Player {
     public id: number;
     public status = 'pending';
-    public paddle: Paddle;
+    public pad: Paddle;
 
-    constructor(id:number) {
+    constructor(id:number, board: Board) {
         this.id = id
-        this.paddle = new Paddle();
+        this.pad = new Paddle(board);
     }
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { BallNew, GameBoardNew, Player } from '../../../game/models'; // Import your GameBoardNew logic
+import { Board } from '../models/Board';
+import { Player } from '../models/Player';
 
 interface PaddleCanvasProps {
-  board: GameBoardNew;
+  board: Board;
   player: Player;
   canvasRef: React.RefObject<HTMLCanvasElement>;
 }
@@ -16,14 +17,14 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ board, player, canvasRef })
     const ctx = canvas.getContext('2d');
 
     const handleResize = () => {
-      player.pad.updatePaddle(board.factor);
+      player.pad.refactorPaddle(board.factor);
 
       if (ctx) {
         ctx.fillStyle = 'white';
         if (player.num === 1)
           ctx.fillRect(0, player.pad.pos, player.pad.width, player.pad.height); // Left paddle
         else if (player.num === 2)
-          ctx.fillRect(canvas.width - player.pad.width, player.pad.pos, player.pad.width, player.pad.height); // Right paddle
+          ctx.fillRect(board.width - player.pad.width, player.pad.pos, player.pad.width, player.pad.height); // Right paddle
       }
     };
 

@@ -4,9 +4,9 @@ import ProfilePicContainer from '../UserProfile/components/ProfilePicContainer';
 import { UserData } from '../../Services/User';
 import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
 import getParseLocalStorage from '../../Utils/getParseLocalStorage';
-import GameBoard from '../../game/components/GameBoard';
 import { useWebsocketContext } from '../../Wrappers/Websocket';
 import PlayBack from './PlayBack';
+import './css/play.scss'
 
 export const Play = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -43,7 +43,7 @@ export const Play = () => {
 
 
   return (
-    <div className="vh-100 d-flex" style={{ paddingTop: '75px', justifyContent: 'center' }}>
+    <div className="play-main-container">
         {/* <MDBCard className="profile-game-card">
           <div className="profile-info">
             
@@ -75,11 +75,9 @@ export const Play = () => {
           </div>
         </MDBCard> */}
 
-        <div className="page-container">
-              <PlayBack whichPlayer={whichPlayer}/>
-            {/* <GameBoard whichPlayer={whichPlayer}/> */}
-            PLAY
-        </div>
+        {/* <div className="page-container text-white"> */}
+              {/* <PlayBack whichPlayer={whichPlayer}/> */}
+        {/* </div> */}
 
         
 

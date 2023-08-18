@@ -51,13 +51,13 @@ export class GameEvents {
     };
     if (this.pongService.onlineGames) {
       this.pongService.onlineGames.forEach((value, key) => {
-        console.log('uid:', user.id, ' pl1id:', value.player1.id, ' pl2id:', value.player2.id)
-        if (user.id === value.player1.id || user.id === value.player2.id) {
-          console.log('OKKKKKKKKK value room:', value.room);
-          client.data.gameId = value.id;
-          client.data.room = value.room;
-          client.join(value.room);
-          console.log('on connection joined room:', `${value.room}`);
+        console.log('uid:', user.id, ' pl1id:', value.pl1.id, ' pl2id:', value.pl2.id)
+        if (user.id === value.pl1.id || user.id === value.pl2.id) {
+          console.log('OKKKKKKKKK value room:', value.prop.room);
+          client.data.gameId = value.prop.id;
+          client.data.room = value.prop.room;
+          client.join(value.prop.room);
+          console.log('on connection joined room:', `${value.prop.room}`);
         }
       });
     }
@@ -141,13 +141,13 @@ export class GameEvents {
     }
     let player: Player;
     let opponent: Player;
-    const playerNum = await this.pongService.getPlayerById(gameStruct.id, user.id);
+    const playerNum = await this.pongService.getPlayerById(gameStruct.prop.id, user.id);
     if (playerNum === 1) {
-      player = gameStruct.player1;
-      opponent = gameStruct.player2;
+      player = gameStruct.pl1;
+      opponent = gameStruct.pl2;
     } else if (playerNum === 2) {
-      player = gameStruct.player2;
-      opponent = gameStruct.player1;
+      player = gameStruct.pl2;
+      opponent = gameStruct.pl1;
     } else
       return;
 
@@ -155,29 +155,29 @@ export class GameEvents {
     if (data.action === 'status') {
       this.server.to(`user_${user.id}`).emit('prepareToPlay',
         {
-          gameStatus: gameStruct.status,
+          gameStatus: gameStruct.prop.status,
           playerStatus: player.status,
           opponentStatus: opponent.status,
-          countdown: gameStruct.countdown,
+          countdown: gameStruct.prop.countdown,
         });
       return;
     }
     // Wait for opponent
     else if (data.action === 'playPressed' && opponent.status === 'pending') {
       player.status = 'ready';
-      gameStruct.status = 'waiting';
+      gameStruct.prop.status = 'waiting';
       this.server.to(`user_${user.id}`).emit('prepareToPlay',
         {
-          gameStatus: gameStruct.status,
+          gameStatus: gameStruct.prop.status,
           playerStatus: player.status,
           opponentStatus: opponent.status
         });
       const timeoutInSeconds = 10;
       setTimeout(() => {
         if (opponent.status === 'pending') {
-          gameStruct.status = 'timeout';
-          this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: gameStruct.status });
-          this.pongService.deleteGame(gameStruct.id);
+          gameStruct.prop.status = 'timeout';
+          this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status });
+          this.pongService.deleteGame(gameStruct.prop.id);
         }
       }, timeoutInSeconds * 1000);
       this.pongService
@@ -185,35 +185,40 @@ export class GameEvents {
     // Both ready launch game 
     else if (data.action === 'playPressed' && opponent.status === 'ready') {
       player.status = 'ready';
-      gameStruct.status = 'countdown';
+      gameStruct.prop.status = 'countdown';
 
-      this.server.to(gameStruct.room).emit('prepareToPlay',
+      this.server.to(gameStruct.prop.room).emit('prepareToPlay',
         {
-          gameStatus: gameStruct.status,
+          gameStatus: gameStruct.prop.status,
           playerStatus: player.status,
           opponentStatus: opponent.status
         });
       // Countdown activity
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      gameStruct.countdown = 3;
-      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.countdown });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      gameStruct.countdown = 2;
-      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.countdown });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      gameStruct.countdown = 1;
-      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.countdown });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      gameStruct.countdown = 0;
-      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: 'GO!' });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      gameStruct.status = 'playing';
-      gameStruct.player1.status = 'playing';
-      gameStruct.player2.status = 'playing';
-      gameStruct.tStart = Date.now();
-      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'playing', gameState: gameStruct.getState(), time: Date.now() });
-    }
-    // const sockets = await this.server.in(gameStruct.room).fetchSockets();
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      // gameStruct.prop.countdown = 3;
+      // this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.prop.countdown });
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      // gameStruct.prop.countdown = 2;
+      // this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.prop.countdown });
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      // gameStruct.prop.countdown = 1;
+      // this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.prop.countdown });
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      // gameStruct.prop.countdown = 0;
+      // this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: 'GO!' });
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      gameStruct.prop.status = 'playing';
+      gameStruct.pl1.status = 'playing';
+      gameStruct.pl2.status = 'playing';
+      gameStruct.prop.tStart = Date.now();
+      const gameState = gameStruct.getState();
+      // console.log('game state:', gameState);
+      this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status});
+      this.server.to(gameStruct.prop.room).emit('gameChannel',
+        { gameStatus: gameStruct.prop.status, gameState: gameStruct.getState(), time: Date.now() });
+      }
+    // const sockets = await this.server.in(gameStruct.prop.room).fetchSockets();
     // sockets.forEach((Socket) => {
     //   console.log('IN room user:', Socket.data);
     // });

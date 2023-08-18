@@ -1,8 +1,8 @@
 import { Server, Socket } from 'socket.io';
-import { GameDto } from './dto/game.dto';
-import { GameBoard } from './models/gameboard.model';
-import { Ball } from './models/ball.model';
-import { Paddle } from './models/paddle.model';
+import { GameDto } from '../dto/game.dto';
+import { Board } from '../models/board.model';
+import { Ball } from '../models/ball.model';
+import { Paddle } from '../models/paddle.model';
 
 
 
@@ -28,14 +28,14 @@ class GameProperties {
   // Define game properties and calculations here
   public isPlayer1Ready: boolean;
   public isPlayer2Ready: boolean;
-  public GameBoard: GameBoard;
-  public Ball: Ball;
-  public Paddle: Paddle;
+  public board: Board;
+  public ball: Ball;
+  public paddle: Paddle;
   
   constructor() {
-	this.GameBoard = new GameBoard();
-	// this.Ball = new Ball();
-	this.Paddle = new Paddle();
+	this.board = new Board();
+	this.ball = new Ball(this.board);
+	this.paddle = new Paddle(this.board);
   this.isPlayer1Ready = false;
   this.isPlayer2Ready = false;
   }

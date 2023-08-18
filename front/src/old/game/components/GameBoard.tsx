@@ -2,27 +2,27 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 // import Paddle from "./Paddle";
 import Ball from "./Ball";
 import { MdHeight } from 'react-icons/md';
-import { useWebsocketContext } from '../../Wrappers/Websocket';
+import { useWebsocketContext } from '../../../Wrappers/Websocket';
 import { useNavigate } from 'react-router-dom';
-import { BallNew, GameBoardNew, Player, PaddleNew } from '../models';
+// import { BallNew, GameBoardNew, Player, PaddleNew } from '../../Screens/Play/models/point';
 
 class GameProperties {
-  public gameBoard: GameBoardNew;
-  public ball: BallNew;
+  // public gameBoard: GameBoardNew;
+  // public ball: BallNew;
   // public paddle: PaddleNew;
   // public player1: Player;
   // public player2: Player;
   
   constructor() {
-    this.gameBoard = new GameBoardNew(window.innerWidth * 0.8);
-    this.ball = new BallNew(this.gameBoard);
+    // this.gameBoard = new GameBoardNew(window.innerWidth * 0.8);
+    // this.ball = new BallNew(this.gameBoard);
     // this.paddle = new PaddleNew(this.gameBoard);
     // this.player1 = new Player(this.gameBoard);
     // this.player2 = new Player(this.gameBoard);
   }
 
   updateDimensions() {
-    this.gameBoard.updateDimensions(window.innerWidth * 0.8);
+    // this.gameBoard.updateDimensions(window.innerWidth * 0.8);
     // this.ball.updateBall(this.gameBoard);
     // this.paddle.updatePaddle(this.gameBoard);
   }
@@ -96,8 +96,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
       setTimeout(() => {
         history('/test');
       }, 3 * 1000);
-    } else if (socketData?.gameStatus === 'playing')
+    } else if (socketData?.gameStatus === 'playing') {
       setIsGameStarted(true);
+    }
     return;
   }, [socketData]);
 
@@ -106,7 +107,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
   }, [whichPlayer]);
 
   const updateDimensions = () => {
-    const oldGameBoardHeight = gameProperties.gameBoard.height;
+    // const oldGameBoardHeight = gameProperties.gameBoard.height;
 
     gameProperties.updateDimensions();
     // gameProperties.player1.updatePaddleTop(oldGameBoardHeight, gameProperties.gameBoard.height);
@@ -184,8 +185,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
       const currentWhichPlayer = whichPlayerRef.current;
       const updatedGameProperties = new GameProperties(); // Create a new instance
   
-      updatedGameProperties.gameBoard = prevGameProperties.gameBoard; // Copy over properties
-      updatedGameProperties.ball = prevGameProperties.ball;
+      // updatedGameProperties.gameBoard = prevGameProperties.gameBoard; // Copy over properties
+      // updatedGameProperties.ball = prevGameProperties.ball;
       // updatedGameProperties.paddle = prevGameProperties.paddle;
       // updatedGameProperties.player1 = prevGameProperties.player1;
       // updatedGameProperties.player2 = prevGameProperties.player2;
@@ -193,7 +194,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
       if (currentWhichPlayer === 'player1') {
         if (keysPressed.current.w || keysPressed.current.ArrowUp) {
           const newPaddle1Top = Math.max(
-            updatedGameProperties.ball.size * 2,
+            // updatedGameProperties.ball.size * 2,
             // updatedGameProperties.player1.posPaddleTop - updatedGameProperties.paddle.speed
           );
           // updatedGameProperties.player1.posPaddleTop = newPaddle1Top;
@@ -208,7 +209,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
       } else if (currentWhichPlayer === 'player2') {
         if (keysPressed.current.w || keysPressed.current.ArrowUp) {
           const newPaddle2Top = Math.max(
-            updatedGameProperties.ball.size * 2,
+            // updatedGameProperties.ball.size * 2,
             // updatedGameProperties.player2.posPaddleTop - updatedGameProperties.paddle.speed
           );
           // updatedGameProperties.player2.posPaddleTop = newPaddle2Top;
@@ -260,40 +261,40 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
     }, 1000);
   };
 
-  return (
-    <div className="container" style={{ width: gameProperties.gameBoard.width, height: gameProperties.gameBoard.height }}>
-      <div className="game-board" style={{ width: gameProperties.gameBoard.width, height: gameProperties.gameBoard.height }}>
-        {/* <Paddle top={gameProperties.player1.posPaddleTop} gameProperties={gameProperties} />
-        <Paddle top={gameProperties.player2.posPaddleTop} gameProperties={gameProperties} /> */}
-        {/* {isGameStarted &&
-          <Ball
-            gameProperties={gameProperties}
-            paddle1Top={gameProperties.player1.posPaddleTop}
-            paddle2Top={gameProperties.player2.posPaddleTop}
-            resetGame={resetGame}
-            updateScores={updateScores}
-            lastScorer={lastScorer}
-          />} */}
-        <div className="score-container">
-          <div className="score">{scores.player1}</div>
-          <div className="score">{scores.player2}</div>
-        </div>
-        {isTimeOut ? (
-          <div className="time-out">TIME OUT<br />{winner}</div>
-        ) : (
-          <div className="timer">{timer}</div>
-        )}
-        {!isGameStarted && !isPlayerReady &&
-          <button onClick={handleReadyClick}>
-            {centralText}
-          </button>}
-        {!isGameStarted && isPlayerReady &&
-          <div>
-            {centralText}
-          </div>}
-      </div>
-    </div>
-  );
+  return null; 
+    // <div className="container" style={{ width: gameProperties.gameBoard.width, height: gameProperties.gameBoard.height }}>
+    //   <div className="game-board" style={{ width: gameProperties.gameBoard.width, height: gameProperties.gameBoard.height }}>
+    //     {/* <Paddle top={gameProperties.player1.posPaddleTop} gameProperties={gameProperties} />
+    //     <Paddle top={gameProperties.player2.posPaddleTop} gameProperties={gameProperties} /> */}
+    //     {/* {isGameStarted &&
+    //       <Ball
+    //         gameProperties={gameProperties}
+    //         paddle1Top={gameProperties.player1.posPaddleTop}
+    //         paddle2Top={gameProperties.player2.posPaddleTop}
+    //         resetGame={resetGame}
+    //         updateScores={updateScores}
+    //         lastScorer={lastScorer}
+    //       />} */}
+    //     <div className="score-container">
+    //       <div className="score">{scores.player1}</div>
+    //       <div className="score">{scores.player2}</div>
+    //     </div>
+    //     {isTimeOut ? (
+    //       <div className="time-out">TIME OUT<br />{winner}</div>
+    //     ) : (
+    //       <div className="timer">{timer}</div>
+    //     )}
+    //     {!isGameStarted && !isPlayerReady &&
+    //       <button onClick={handleReadyClick}>
+    //         {centralText}
+    //       </button>}
+    //     {!isGameStarted && isPlayerReady &&
+    //       <div>
+    //         {centralText}
+    //       </div>}
+    //   </div>
+    // </div>
+  
 };
 
 export default GameBoard;
