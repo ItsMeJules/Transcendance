@@ -335,7 +335,7 @@
                   align-items: center;
 
                   transition: transform 0.3s;
-  
+
                   &:hover {
                     transform: scale(1.05);
                   }
@@ -344,12 +344,12 @@
                     width: 30%;
                     height: auto;
                     margin: 5px 0px 5px 5px;
-                    
+
                     border-radius: 50%;
-                    box-shadow: 7px 10px 10px -6px rgba(0,0,0,0.72);
+                    box-shadow: 7px 10px 10px -6px rgba(0, 0, 0, 0.72);
 
                   }
-  
+
                   .username {
                     margin: 0px 0px 0px 10px;
                   }
@@ -401,7 +401,7 @@
                   align-items: center;
 
                   transition: transform 0.3s;
-  
+
                   &:hover {
                     transform: scale(1.05);
                   }
@@ -410,12 +410,12 @@
                     width: 30%;
                     height: auto;
                     margin: 5px 0px 5px 5px;
-                    
+
                     border-radius: 50%;
-                    box-shadow: 7px 10px 10px -6px rgba(0,0,0,0.72);
+                    box-shadow: 7px 10px 10px -6px rgba(0, 0, 0, 0.72);
 
                   }
-  
+
                   .username {
                     margin: 0px 0px 0px 10px;
                   }
@@ -447,30 +447,18 @@
 
       }
 
-      .metadata {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        align-items: center;
-
+      .channel-manager {
         height: 100%;
-        width: 90%;
+        width: 100%;
 
-        background-color: blueviolet;
+        background-color: lime;
+      }
 
-        .chat-info {
-          height: 100%;
-          width: 100%;
+      .channel-icon {
+        height: 100%;
+        width: 17%;
 
-          background-color: lime;
-        }
-
-        .chat-icon {
-          height: 100%;
-          width: 17%;
-
-          background-color: deeppink;
-        }
+        background-color: deeppink;
       }
     }
 

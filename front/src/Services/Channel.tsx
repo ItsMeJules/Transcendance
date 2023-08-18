@@ -12,10 +12,30 @@ export const ChannelTypeDescription = {
   PROTECTED: {name: "Protégé", desc: "Crée un canal protégé par un mot de passe."}
 }
 
+export interface PunishmentData {
+  user: User;
+  channelFrom: string;
+}
+
+export interface MuteData extends PunishmentData {
+  expireAt: number;
+}
+
+export interface BanData extends PunishmentData {}
+
 export interface ChannelData {
   type: ChannelType;
+  password: string | null;
   users: User[] | null;
   owner: User;
-  admin: User;
-  password: string | null;
+  admins: User[]
+  punishments: PunishmentData[]
+}
+
+export class Channel {
+  channelData: ChannelData | null = null;
+
+  constructor(channelData: ChannelData) {
+    this.channelData = channelData;
+  }
 }

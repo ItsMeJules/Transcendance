@@ -14,7 +14,7 @@ export const fetchAllUsers = async (axiosInstance: AxiosInstance): Promise<User[
 
   console.log("treating response data...")
   const frontUsers: User[] = response.data.map((data: UserData) => {
-    const frontUser: User = new User();
+    const frontUser: User = new User(); 
 
     frontUser.setUserFromResponseData(data);
     
