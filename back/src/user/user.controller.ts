@@ -147,11 +147,7 @@ export class UserController {
   }
 
   @Get('me/2fa-state')
-  async getTwoFactorAuthenticationState(
-    @GetUser() user: User,
-  ): Promise<boolean> {
-    console.log('user:', user.isTwoFactorAuthenticationEnabled);
-    // return this.userService.getTwoFactorAuthenticationState(user.);
+  getTwoFactorAuthenticationState(@GetUser() user: User): boolean {
     return user.isTwoFactorAuthenticationEnabled;
   }
 }
