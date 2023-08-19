@@ -1,9 +1,11 @@
 import { useRef, useState, useEffect, FormEvent } from "react";
-import { keyframes } from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAxios } from "../../api/axios-config";
-import { GlowTextSignin } from "../../Utils";
 import { API_ROUTES } from "../../Utils/constants";
+import TwoFaContainer from './2fa_components/2faContainer';
+import AuthenticationHeader from './2fa_components/AuthentificationHeader';
+import ErrorMessage from './2fa_components/ErrorMessage';
+import AuthentificationForm from './2fa_components/AuthentificationForm';
 
 export const TwoFa = () => {
   const errRef = useRef<HTMLParagraphElement>(null);
@@ -75,96 +77,11 @@ export const TwoFa = () => {
     }
   };
 
-  return (
-    <div
-      className="login-container flex justify-center border border-white"
-      style={{ zIndex: "1" }}
-    >
-      <GlowTextSignin
-        className="font-dune items-center border border-white justify-center text-bold text-white"
-        style={{ fontSize: "2rem", paddingTop: "50px", zIndex: "1" }}
-      >
-        2 Factor Authentication
-      </GlowTextSignin>
-
-      <p
-        ref={errRef}
-        className={errMsg ? "errmsg text-white" : "offscreen"}
-        aria-live="assertive"
-      >
-        {errMsg}
-      </p>
-
-      <div
-        className="flex items-center justify-center flex border border-white w-full"
-        style={{ top: "50px", position: "relative", zIndex: "1" }}
-      >
-        <div
-          className="flex justify-center border border-red"
-          style={{
-            height: "500px",
-            width: 400,
-            position: "relative",
-            zIndex: "1",
-          }}
-        >
-          <div
-            className="flex"
-            style={{
-              flexDirection: "column",
-              top: "25px",
-              height: "300px",
-              width: 350,
-              position: "relative",
-            }}
-          >
-            <div
-              className="flex border border-white"
-              style={{ height: "250px", width: 350, marginBottom: "10px" }}
-            >
-              <form
-                onSubmit={handleSubmit}
-                action="POST"
-                className="login-form-container w-full h-full"
-              >
-                <label
-                  htmlFor="email"
-                  className="left-aligned-text w-full text-white"
-                  style={{ zIndex: "1" }}
-                >
-                  Enter the PIN from your authenticator app
-                </label>
-
-                <input
-                  ref={codeRef}
-                  type="text"
-                  placeholder="Code"
-                  id="codepin"
-                  maxLength={6}
-                  value={code}
-                  className="input-field login-form-label flex text-black"
-                  style={{ marginTop: "10px" }}
-                  onChange={(e) => setCode(e.target.value)}
-                  required
-                />
-
-                <div
-                  className="flex justify-center items-center"
-                  style={{ marginTop: "10px" }}
-                >
-                  <button
-                    type="submit"
-                    className="flex signup-button w-full justify-center"
-                    style={{ marginTop: "10px" }}
-                  >
-                    Send
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    return (
+    <TwoFaContainer>
+      <AuthenticationHeader />
+      <ErrorMessage errMsg={errMsg} />
+      <AuthentificationForm code={code} setCode={setCode} handleSubmit={handleSubmit} />
+    </TwoFaContainer>
   );
 };
