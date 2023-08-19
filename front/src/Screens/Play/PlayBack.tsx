@@ -48,6 +48,7 @@ const PlayBack = () => {
   const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameState, setGameState] = useState<GameSocket>();
   const [centralText, setCentralText] = useState('');
+  const [giveUp, setGiveUp] = useState(false);
   const history = useNavigate();
 
   const handleReadyClick = () => {
@@ -55,6 +56,14 @@ const PlayBack = () => {
       setIsPlayerReady(true);
       if (socket.game)
         socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
+    }
+  };
+
+  const handleQuitGame = () => {
+    if (!giveUp)
+      setGiveUp(true);
+    else if (giveUp && socket.game) {
+      socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'giveUp' });
     }
   };
 
@@ -78,17 +87,17 @@ const PlayBack = () => {
       setSocketPrepare(data);
       // console.log('DATA PREPARE', data);
     });
-    socket.game?.on('gameChannel', (data) => {
-      console.log('DATA game', data.gameState);
-      
-      console.log('ball before:', game.ball);
+    socket.game?.on('refreshGame', (data) => {
+      // console.log('DATA game', data.gameState);
+
+      // console.log('pos b4:', game.ball.pos);
       // setGameState(data.gameState);
-      
+
       // console.log('gamestate ball:', gameState?.gameState.ball);
       // if (data.gameState.ball) {
-        game.ball.updateBall(game.board, data.gameState.ball);
+      game.ball.updateBall(game.board, data.gameState.ball);
       // }
-      console.log('ball after:', game.ball);
+      // console.log('ball after:', game.ball.pos);
       // console.log('DATA game', data);
     });
   }, [socket.game]);
@@ -124,7 +133,7 @@ const PlayBack = () => {
         history('/test');
       }, 3 * 1000);
     } else if (socketPrepare?.gameStatus === 'playing') {
-      socket.game?.off('prepareToPlay');
+      socket.game?.off('prepareToPlay'); // dont off and use for status?
       game.isStarted = true;
       setGame({ ...game, isStarted: true });
     }
@@ -159,17 +168,21 @@ const PlayBack = () => {
             </div>}
         </div>
 
-        <div className="pong-game-canvas">
+        <div className="pong-game-canvas" style={{ height: `${game.board.height + 80}px` }}>
           <canvas ref={boardCanvasRef as React.RefObject<HTMLCanvasElement>} id="boardCanvas" width={game.board.width} height={game.board.height} className="canvas-container-board" />
           <canvas ref={ballCanvasRef as React.RefObject<HTMLCanvasElement>} id="ballCanvas" width={game.board.width} height={game.board.height} className="canvas-container-ball" />
           {/* <canvas ref={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" /> */}
           {/* <canvas ref={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" /> */}
         </div>
         <BoardCanvas game={game} canvasRef={boardCanvasRef as React.RefObject<HTMLCanvasElement>} />
-        <BallCanvas game={game} ball={game.ball} canvasRef={ballCanvasRef as React.RefObject<HTMLCanvasElement>} />
+        <BallCanvas whichPlayer={whichPlayer} game={game} ball={game.ball} canvasRef={ballCanvasRef as React.RefObject<HTMLCanvasElement>} />
         {/* <PaddleCanvas board={game.board} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} />
         <PaddleCanvas board={game.board} player={game.pl2} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} /> */}
       </div>
+
+      <button className="text-white" onClick={handleQuitGame} style={{ zIndex: '10' }}>
+        {giveUp? 'Confirm by clicking again' : 'Give up?'}
+      </button >
     </div >
   );
 

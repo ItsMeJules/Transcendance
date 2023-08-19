@@ -51,6 +51,7 @@ model User {
 model Game {
   id       Int @id @unique @default(autoincrement())
   gameMode Int
+  dateGame     DateTime @default(now())
 
   player1 User @relation("Player1", fields: [player1Id], references: [id])
   player1Id Int

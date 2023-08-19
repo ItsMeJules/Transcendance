@@ -8,6 +8,7 @@ import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
 import { match } from 'assert';
 import { PongEvents } from './pong.gateway';
+import { Player } from './models/player.model';
 
 export type UserQueue = Map<number, string>;
 export type OnlineGameMap = Map<number, GameStruct>;
@@ -46,7 +47,7 @@ export class PongService {
       this.userQueue.delete(player2Id);
       const gameChannel = `game_${gameData.id}`;
       // console.log('gamedata id::::', gameData.id);
-      return { gameId: gameData.id, player1Id: player1Id, player2Id: player2Id, gameChannel:gameChannel };
+      return { gameId: gameData.id, player1Id: player1Id, player2Id: player2Id, gameChannel: gameChannel };
 
       // const gameStructure = new GameStruct(gameData.id, player1Id, player2Id, gameChannel);
       // gameStructure.prop.room = gameChannel;
@@ -60,73 +61,6 @@ export class PongService {
     }
     return null;
   }
-
-
-  // private startRegularUpdates() {
-  //   if (!this.updateIntervalId) {
-  //     this.updateIntervalId = setInterval(() => {
-  //       this.sendRegularUpdate();
-  //     }, this.updateInterval);
-  //   }
-  // }
-
-  // private sendRegularUpdate() {
-  //   this.onlineGames.forEach((value, key) => {
-      
-  //   });
-    //   if (this.ball && this.prop) {
-    //       // Construct the update data as needed
-    //       const updateData = {
-    //           gameStatus: this.prop.status,
-    //           gameState: this.getState(),
-    //           time: Date.now(),
-    //       };
-
-    //       // Emit the update to the game room
-    //       this.server.to().emit('refreshGame', updateDat);
-    //       this.server.to(gameStruct.prop.room).emit('gameChannel',
-    //         { gameStatus: gameStruct.prop.status, gameState: gameStruct.getState(), time: Date.now() });
-    //       }
-    //   }
-  // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   removeFromQueue(userId: number): void {
     this.userQueue.delete(userId);
@@ -162,7 +96,7 @@ export class PongService {
     return this.userQueue;
   }
 
-  async deleteGame(gameId: number) {
+  async deleteGamePrisma(gameId: number) {
     // Protect prisma delete??
     await this.prismaService.game.delete({
       where: {
@@ -187,5 +121,69 @@ export class PongService {
       }
     });
     return match;
+  }
+
+  async endGame(gameStruct: GameStruct, winner: Player, loser: Player) {
+    try {
+      const game = await this.prismaService.game.findUnique({ where: { id: gameStruct.prop.id } });
+      if (!game) {
+        console.log('Game not found'); // set error accordingly
+        return;
+      }
+
+      await this.prismaService.game.update({
+        where: { id: gameStruct.prop.id },
+        data: {
+          winner: { connect: { id: winner.id } },
+          loser: { connect: { id: loser.id } },
+          player1Score: game.player1Id === winner.id ? winner.score : loser.score,
+          player2Score: game.player2Id === winner.id ? winner.score : loser.score,
+        },
+      });
+      const winnerPrisma = await this.prismaService.user.findUnique({ where: { id: winner.id } });
+      const loserPrisma = await this.prismaService.user.findUnique({ where: { id: loser.id } });
+      // Protect if not found
+      this.onlineGames.delete(gameStruct.prop.id);
+      this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
+      console.log('Game updated successfully');
+    } catch (error) {
+      console.error('Error updating game:', error);
+    }
+  }
+
+  async updatePlayersAfterGame(winner: User, loser: User) {
+    const winnerLevel = Math.round(winner.userLevel.toNumber());
+    const loserLevel = Math.round(loser.userLevel.toNumber());
+
+    // Ladder logic
+    const points = Math.round(Math.sqrt(((11 - winnerLevel) * (1 + loserLevel) + 1)));
+    
+    let winnerPoints = winner.userPoints + points;
+    let loserPoints = loser.userPoints - points < 0 ? 0 : loser.userPoints - points;
+
+    const winnerNewLevel = winnerLevel >= 10 ? winnerLevel : winnerLevel +  winnerPoints * 0.01;
+    const loserNewLevel = loserLevel >= 10 ? loserLevel : loserLevel +  loserPoints * 0.0025;
+
+    const updateWinnerData = {
+      gamesPlayed: winner.gamesPlayed + 1,
+      gamesWon: winner.gamesWon + 1,
+      userPoints: winnerPoints,
+      userLevel: winnerNewLevel,
+    };
+
+    const updateLoserData = {
+      gamesPlayed: loser.gamesPlayed + 1,
+      userPoints:loserPoints,
+      userLevel: loserNewLevel,
+    };
+
+    try {
+      await this.prismaService.user.update({
+        where: { id: winner.id },
+        data: updateWinnerData,
+    });
+    } catch (error) {
+      console.error('Error updating game:', error);
+    }
   }
 }

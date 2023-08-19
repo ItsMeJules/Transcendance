@@ -5,6 +5,7 @@ export class Player {
     public id: number;
     public status = 'pending';
     public pad: Paddle;
+    public score = 0;
 
     constructor(id:number, board: Board) {
         this.id = id

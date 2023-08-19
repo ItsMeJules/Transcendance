@@ -3,8 +3,8 @@ import { Point } from './point.model';
 import { Board } from './board.model';
 
 export class Ball {
-  // Define ball properties and calculations here
   public size: number;
+  public halfSize: number;
   public speed: number;
   public pos: Point;
   public accelFactor: number;
@@ -12,7 +12,8 @@ export class Ball {
 
   constructor(gameBoard: Board) {
     this.size = 20;
-    this.speed = 10;
+    this.halfSize = this.size * 0.5;
+    this.speed = 20;
     this.pos = new Point(gameBoard.width * 0.5, gameBoard.height * 0.5);
     // this.pos = new Point(700, 20);
     this.accelFactor = 0.2;
@@ -22,6 +23,7 @@ export class Ball {
     // this.dir = new Vector(
     //   Math.cos(randomAngle) * randomX,
     //   Math.sin(randomAngle) * randomY);
-    this.dir = new Vector(1, 0);
+    this.dir = new Vector(0.707, 0.707);
   }
+
 }

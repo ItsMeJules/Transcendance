@@ -97,11 +97,11 @@ export class PongEvents {
       const player1 = await this.userService.findOneById(game.pl1.id);
       const player2 = await this.userService.findOneById(game.pl2.id);
       const data = { status: 'START', gameChannel: game.prop.room, game: gameData, player1: player1, player2: player2 };
-      
+
       const player1socket = this.getSocketById(game.pl1.id);
       const player2socket = this.getSocketById(game.pl2.id);
-      console.log('data:', data);
-      console.log('user room:', `user_${game.pl1.id}`);
+      // console.log('data:', data);
+      // console.log('user room:', `user_${game.pl1.id}`);
       this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
       this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
       player1socket.join(`game_${game.prop.id}`);
@@ -159,7 +159,7 @@ export class PongEvents {
     } else
       return;
 
-    console.log('data action:', data.action, ' opponent status:', opponent.status);
+    // console.log('data action:', data.action, ' opponent status:', opponent.status);
     // Status
     if (data.action === 'status') {
       this.server.to(`user_${user.id}`).emit('prepareToPlay',
@@ -186,7 +186,7 @@ export class PongEvents {
         if (opponent.status === 'pending') {
           gameStruct.prop.status = 'timeout';
           this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status });
-          this.pongService.deleteGame(gameStruct.prop.id);
+          this.pongService.deleteGamePrisma(gameStruct.prop.id);
         }
       }, timeoutInSeconds * 1000);
       this.pongService
@@ -224,14 +224,31 @@ export class PongEvents {
       const gameState = gameStruct.getState();
       // console.log('game state:', gameState);
       this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status });
-      this.server.to(gameStruct.prop.room).emit('gameChannel',
+      this.server.to(gameStruct.prop.room).emit('refreshGame',
         { gameStatus: gameStruct.prop.status, gameState: gameStruct.getState(), time: Date.now() });
+      gameStruct.startGameLoop();
     }
-    gameStruct.startGameLoop();
+    // Give up game
+    else if (data.action === 'giveUp') {
+      console.log('player:', data.player, ' gave up');
+      this.pongService.endGame(gameStruct, opponent, player);
+      
+    }
+
+
+
+
+
+
+
+  }
+}
+
+
+
+
+
     // const sockets = await this.server.in(gameStruct.prop.room).fetchSockets();
     // sockets.forEach((Socket) => {
     //   console.log('IN room user:', Socket.data);
     // });
-  }
-
-}

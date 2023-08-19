@@ -10,14 +10,13 @@
         margin-top: 200px;
         
         width: 85%;
-        height: 600px;
+        // height: 600px;
     }
 
     .pong-game-canvas {
         position: relative;
         display: flex;
         top: 50;
-        height: 400px;
         left: 50%;
         transform: translateX(-50%);
         align-items: center;
