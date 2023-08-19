@@ -46,7 +46,9 @@ model User {
   lostGames Game[] @relation("loser")
   
   // Chat
-  mutedRooms      Room[] @relation("mutedUsers")
+  blockedUsers      User[] @relation("blockedUsers")
+  blockedByUser     User[] @relation("blockedUsers")
+  mutedRooms      Room[] @relation("mutedUsersInRoom")  
   adminRooms      Room[] @relation("adminUsers")
   activeRooms     Room[] @relation("activeUsers")
   ownedRooms      Room[] @relation("ownerRoom")
@@ -92,13 +94,15 @@ model Message {
 model Room {
   id          Int    @id @default(autoincrement())
   type        RoomType @default(PUBLIC)
-  name        String
+  name        String   @unique
   password    String?
   protected   Boolean @default(false) // or password != null
   createdAt   DateTime @default(now())
 
   bans        User[] @relation("bannedUsers") //add banned time
-  mutes       User[] @relation("mutedUsers")
+  muteUntil   Int[]
+  mutes       User[] @relation("mutedUsersInRoom")
+
   admins      User[] @relation("adminUsers")
   // pending invite ??
   users       User[] @relation("activeUsers")

@@ -57,6 +57,7 @@ CREATE TABLE "Room" (
     "password" TEXT,
     "protected" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "muteUntil" INTEGER[],
     "ownerId" INTEGER,
 
     CONSTRAINT "Room_pkey" PRIMARY KEY ("id")
@@ -69,13 +70,19 @@ CREATE TABLE "_userFriends" (
 );
 
 -- CreateTable
+CREATE TABLE "_blockedUsers" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "_bannedUsers" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
 
 -- CreateTable
-CREATE TABLE "_mutedUsers" (
+CREATE TABLE "_mutedUsersInRoom" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
@@ -105,10 +112,19 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "Game_id_key" ON "Game"("id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Room_name_key" ON "Room"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_userFriends_AB_unique" ON "_userFriends"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_userFriends_B_index" ON "_userFriends"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_blockedUsers_AB_unique" ON "_blockedUsers"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_blockedUsers_B_index" ON "_blockedUsers"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_bannedUsers_AB_unique" ON "_bannedUsers"("A", "B");
@@ -117,10 +133,10 @@ CREATE UNIQUE INDEX "_bannedUsers_AB_unique" ON "_bannedUsers"("A", "B");
 CREATE INDEX "_bannedUsers_B_index" ON "_bannedUsers"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_mutedUsers_AB_unique" ON "_mutedUsers"("A", "B");
+CREATE UNIQUE INDEX "_mutedUsersInRoom_AB_unique" ON "_mutedUsersInRoom"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_mutedUsers_B_index" ON "_mutedUsers"("B");
+CREATE INDEX "_mutedUsersInRoom_B_index" ON "_mutedUsersInRoom"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_adminUsers_AB_unique" ON "_adminUsers"("A", "B");
@@ -162,16 +178,22 @@ ALTER TABLE "_userFriends" ADD CONSTRAINT "_userFriends_A_fkey" FOREIGN KEY ("A"
 ALTER TABLE "_userFriends" ADD CONSTRAINT "_userFriends_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "_blockedUsers" ADD CONSTRAINT "_blockedUsers_A_fkey" FOREIGN KEY ("A") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_blockedUsers" ADD CONSTRAINT "_blockedUsers_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "_bannedUsers" ADD CONSTRAINT "_bannedUsers_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_bannedUsers" ADD CONSTRAINT "_bannedUsers_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_mutedUsers" ADD CONSTRAINT "_mutedUsers_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_mutedUsersInRoom" ADD CONSTRAINT "_mutedUsersInRoom_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_mutedUsers" ADD CONSTRAINT "_mutedUsers_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_mutedUsersInRoom" ADD CONSTRAINT "_mutedUsersInRoom_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_adminUsers" ADD CONSTRAINT "_adminUsers_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -36,14 +36,14 @@ export const ChatBox = () => {
   useEffect(() => {
     socketRef.current = socket.chat;
     const handleReconnect = () => {
-      //////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
+      ////////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
       const userDataString = localStorage.getItem("userData");
       let userData = null;
       if (userDataString) {
         userData = JSON.parse(userDataString);
       }
       const userId = userData.id;
-      const eventNameSocket = "load_general_chat_" + userId;
+      const eventNameSocket = "load_general_chat_" + socketRef.current?.id;
       socketRef.current?.off("message");
       socketRef.current?.on("message", onNewMessage);
       socketRef.current?.on(eventNameSocket, (payload: any) => {

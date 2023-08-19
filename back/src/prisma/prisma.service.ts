@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaClient } from '@prisma/client';
-import { User, Room } from '@prisma/client';
+import { PrismaClient, User, Room, Message } from '@prisma/client';
+import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -43,12 +43,114 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     });
   }
 
-  async addMessageRoom(roomId: number, userId: number): Promise<void> {}
+  async returnCompleteRoom(roomName: string): Promise<CompleteRoom> {
+    const room = await this.room.findUnique({
+      where: { name: roomName },
+      include: {
+        users: true,
+        bans: true,
+        admins: true,
+        mutes: true,
+        messages: true,
+      },
+    });
+    if (!room) {
+      throw new Error('no room');
+    }
+    return room;
+  }
 
-  // cleanDb() {
-  //     return this.$transaction([
-  //         // this.bookmark.deleteMany(),
-  //         this.user.deleteMany(),
-  //     ]);
-  // }
+  async returnCompleteUser(userId: number): Promise<CompleteUser> {
+    const user = await this.user.findUnique({
+      where: { id: userId },
+      include: {
+        friends: true,
+        friendsOf: true,
+        player1Games: true,
+        player2Games: true,
+        wonGames: true,
+        lostGames: true,
+        mutedRooms: true,
+        adminRooms: true,
+        activeRooms: true,
+        ownedRooms: true,
+        bannedRooms: true,
+        messages: true,
+        blockedUsers: true,
+        blockedByUser: true,
+      },
+    });
+    if (!user) {
+      throw new Error('no user');
+    }
+    return user;
+  }
+
+  async allBannedUsersFromRoom(roomName: string): Promise<User[]> {
+    try {
+      const room = await this.returnRoom(roomName);
+      if (!room) {
+        throw new Error('no room named' + roomName);
+      }
+      if (room.bans) {
+        return room.bans;
+      } else {
+        throw new Error('no bans');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async allMutedUsersFromRoom(roomName: string): Promise<User[]> {
+    try {
+      const room = await this.returnRoom(roomName);
+      if (!room) {
+        throw new Error('no room named' + roomName);
+      }
+      if (room.mutes) {
+        return room.mutes;
+      } else {
+        throw new Error('no muted users');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async allAdminsFromRoom(roomName: string): Promise<User[]> {
+    try {
+      const room = await this.returnRoom(roomName);
+      if (!room) {
+        throw new Error('no room named' + roomName);
+      }
+      return room.admins;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async allMessagesFromRoom(roomName: string): Promise<Message[]> {
+    try {
+      const room = await this.returnRoom(roomName);
+      if (!room) {
+        throw new Error('no room named' + roomName);
+      }
+      return room.messages;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async allBlockedUsersFromUser(userId: number): Promise<User[]> {
+    try {
+      const user = await this.returnCompleteUser(userId);
+      if (!user.blockedUsers) {
+        throw new Error('no users blocked by ' + user.username);
+      }
+      return user.blockedUsers;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

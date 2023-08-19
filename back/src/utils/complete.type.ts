@@ -21,8 +21,8 @@ export type CompleteUser = User & {
   ownedRooms: Room[];
   bannedRooms: Room[];
   messages: Message[];
-  mutedUsers: User[];
-  mutedByUser: User[];
+  blockedUsers: User[];
+  blockedByUser: User[];
 };
 
 export type MoreCompleteRoom = Room & {
