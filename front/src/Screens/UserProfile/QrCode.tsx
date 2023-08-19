@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { API_ROUTES } from "../../Utils/constants";
-import Popup from './components/Popup';
+import Popup from "./components/Popup";
 import { useAxios } from "../../api/axios-config";
-import axios from 'axios'
+import axios from "axios";
 
 const QrCode: React.FC = () => {
   const popupRef = React.createRef<HTMLDivElement>();
   const axiosInstanceError = useAxios();
   const [image, setImage] = useState<string>("");
-  const [is2FAActive, setIs2FAActive] = useState<boolean>(false);
+  const [is2FAActive, setIs2FAActive] = useState<boolean | null>(null);
 
   const codeGen = async () => {
     try {
@@ -70,11 +70,33 @@ const QrCode: React.FC = () => {
     };
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstanceError.get(API_ROUTES.STATE_2FA);
+        setIs2FAActive(response.data);
+        console.log(
+          "response.data.isTwoFactorAuthenticationEnabled",
+          response.data
+        );
+      } catch (error) {
+        console.log("Error: ", error);
+      }
+    };
+
+    fetchData();
+  }, []); // axiosInstanceError for warning but learn how to add dependances?
+
+  if (is2FAActive === null) {
+    // Logique a implementer dans les dossiers parents?
+    return <div>Loading...</div>;
+  }
+
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <button
         id="myBtn"
-        className={`myBtn ${is2FAActive ? 'deactivate' : ''}`}
+        className={`myBtn ${is2FAActive ? "deactivate" : ""}`}
         onClick={(event) => {
           if (is2FAActive) {
             turnOff();
@@ -84,13 +106,12 @@ const QrCode: React.FC = () => {
           }
         }}
       >
-        {is2FAActive ? 'DeActivate 2FA' : 'Activate 2FA'}
+        {is2FAActive ? "DeActivate 2FA" : "Activate 2FA"}
       </button>
 
       <Popup ref={popupRef} image={image} onClose={changeVisibleNone} />
     </div>
   );
-}
-
+};
 
 export default QrCode;

@@ -1,4 +1,4 @@
-export const API_URL = '/api'
+export const API_URL = "/api";
 
 export const API_ROUTES = {
   SIGN_UP: `${API_URL}/auth/signup`,
@@ -15,24 +15,25 @@ export const API_ROUTES = {
   ACTIVATE_2FA: `${API_URL}/auth/turn-on`,
   DEACTIVATE_2FA: `${API_URL}/auth/turn-off`,
   AUTHENTICATE_2FA: `${API_URL}/auth/authenticate`,
-}
+  STATE_2FA: `${API_URL}/users/me/2fa-state`,
+};
 
-export const APP_URL = 'http://localhost:8000'
+export const APP_URL = "http://localhost:8000";
 
-export const SOCKET_GENERAL = '/general'
-export const SOCKET_GAME = '/game'
-export const SOCKET_CHAT = '/chat'
+export const SOCKET_GENERAL = "/general";
+export const SOCKET_GAME = "/game";
+export const SOCKET_CHAT = "/chat";
 
 export const APP_ROUTES = {
-  HOME: '/',
-  SIGN_IN: '/login',
-  SIGN_UP: '/signup',
-  LOG_OUT: '/logout',
-  USER_PROFILE: '/profile/me',
-  USER_PROFILE_EDIT: '/profile/me/edit',
-  USER_FRIENDS: '/profile/me/friends',
+  HOME: "/",
+  SIGN_IN: "/login",
+  SIGN_UP: "/signup",
+  LOG_OUT: "/logout",
+  USER_PROFILE: "/profile/me",
+  USER_PROFILE_EDIT: "/profile/me/edit",
+  USER_FRIENDS: "/profile/me/friends",
   LOG_2FA: "/profile/me/two-fa",
-  GENERIC_USER_PROFILE: '/profile/',
-  LEADERBOARD: '/leaderboard',
-  PLAY: '/play',
-}
+  GENERIC_USER_PROFILE: "/profile/",
+  LEADERBOARD: "/leaderboard",
+  PLAY: "/play",
+};

@@ -4,7 +4,6 @@ import {
   Get,
   Patch,
   Req,
-  UseGuards,
   Post,
   UseInterceptors,
   UploadedFile,
@@ -28,6 +27,7 @@ import { Multer, multer, diskStorage } from 'multer';
 import { MulterModule } from '@nestjs/platform-express';
 import { editFileName, imageFileFilter } from './module';
 import { Response } from 'express';
+import { UseGuards } from '@nestjs/common';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -36,7 +36,8 @@ export class UserController {
     private userService: UserService,
     private prisma: PrismaService,
     private socketService: SocketService,
-    private socketEvents: SocketEvents) { }
+    private socketEvents: SocketEvents,
+  ) {}
 
   @Get('me')
   getMe(@GetUser() user: User) {
@@ -52,7 +53,9 @@ export class UserController {
     delete userWithFriends.hash;
 
     // Set online status for friends
-    const onlineUsers = await this.socketEvents.server.in('general_online').fetchSockets();
+    const onlineUsers = await this.socketEvents.server
+      .in('general_online')
+      .fetchSockets();
     userWithFriends.friends.forEach((user) => {
       delete user.hash;
       for (let i = 0; i < onlineUsers.length; i++) {
@@ -92,8 +95,8 @@ export class UserController {
         select: {
           friends: {
             where: { id: id },
-            select: { id: true }
-          }
+            select: { id: true },
+          },
         },
       });
       // console.log("userMain:", userMain);
@@ -106,8 +109,7 @@ export class UserController {
       data.friendStatus = '';
       if (userMain.friends.length !== 0) data.friendStatus = 'Is friend';
       return { data };
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   @Patch('add-friend/:id')
@@ -132,7 +134,7 @@ export class UserController {
       }),
     }),
   )
-  
+
   // @UseFilters(CustomExceptionFilter)
   async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
     return this.userService.uploadProfilePic(user, file);
@@ -142,5 +144,14 @@ export class UserController {
   async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
     res.clearCookie('access_token');
     res.json({ message: 'Logout successful' });
+  }
+
+  @Get('me/2fa-state')
+  async getTwoFactorAuthenticationState(
+    @GetUser() user: User,
+  ): Promise<boolean> {
+    console.log('user:', user.isTwoFactorAuthenticationEnabled);
+    // return this.userService.getTwoFactorAuthenticationState(user.);
+    return user.isTwoFactorAuthenticationEnabled;
   }
 }
