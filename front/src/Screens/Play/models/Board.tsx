@@ -8,10 +8,12 @@ export class Board {
   public width: number;
   public height: number;
   public factor = 1;
+  public scaleFactor = 1;
 
   constructor(width: number) {
     this.width = this.updateWidth(width);
     this.height = this.width * 0.5;
+    this.scaleFactor = this.width / this.gridWidth;
   }
 
   updateWidth(newWidth: number) {
@@ -28,6 +30,7 @@ export class Board {
     this.updateWidth(newWidth)
     this.height = this.width * 0.5;
     this.factor = this.width / oldWidth;
+    this.scaleFactor = this.width / this.gridWidth;
     return this.factor;
   }
 }

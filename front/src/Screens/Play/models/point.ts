@@ -10,7 +10,7 @@ export class Point {
   }
 
   updatePoint(board: Board, newPoint: Point) {
-    this.x = newPoint.x * board.width / board.gridWidth;
-    this.y = newPoint.y * board.height / board.gridHeight ;
+    this.x = newPoint.x * board.scaleFactor;
+    this.y = newPoint.y * board.scaleFactor;
   }
 }

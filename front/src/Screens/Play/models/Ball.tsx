@@ -11,10 +11,10 @@ export class Ball {
     public dir: Vector;
   
     constructor(board: Board) {
-      this.size = board.width * 20 / board.gridWidth;
+      this.size = 0;
       this.speed = 0;
-      this.pos = new Point(board.width * 0.5, board.height * 0.5);
-      this.tip = new Point(this.pos.x - this.size * 0.5, this.pos.y - this.size * 0.5);
+      this.pos = new Point(0, 0);
+      this.tip = new Point(0, 0);
       this.accelFactor = 0.2;
       this.dir = new Vector(0, 0);
     }
@@ -31,7 +31,8 @@ export class Ball {
     updateBall(board: Board, ball: Ball) {
       this.pos.updatePoint(board, ball.pos);
       this.dir = ball.dir;
-      this.speed = ball.speed;
+      this.size = ball.size * board.scaleFactor;
+      this.speed = ball.speed * board.scaleFactor;
       this.tip.x = this.pos.x - this.size * 0.5;
       this.tip.y = this.pos.y - this.size * 0.5;
     }

@@ -48,13 +48,6 @@ const PlayBack = () => {
   const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameState, setGameState] = useState<GameSocket>();
   const [centralText, setCentralText] = useState('');
-
-  // const [ballProperties, setBallProperties] = useState({
-  //   pos: new Point(0, 0), // Initial values
-  //   dir: new Vector(0, 0),
-  //   // ...other ball properties you want to track
-  // });
-
   const history = useNavigate();
 
   const handleReadyClick = () => {
@@ -86,15 +79,17 @@ const PlayBack = () => {
       // console.log('DATA PREPARE', data);
     });
     socket.game?.on('gameChannel', (data) => {
-      // setBallProperties({
-      //   pos: new Point(data.ballX, data.ballY),
-      //   dir: new Vector(data.ballDirX, data.ballDirY),
-      //   // ...update other properties accordingly
-      // });
-      setGameState(data);
-      console.log('gamestate ball:', gameState?.gameState.ball);
-      // game.ball.updateBall(game.board, gameState)
-      console.log('DATA game', data);
+      console.log('DATA game', data.gameState);
+      
+      console.log('ball before:', game.ball);
+      // setGameState(data.gameState);
+      
+      // console.log('gamestate ball:', gameState?.gameState.ball);
+      // if (data.gameState.ball) {
+        game.ball.updateBall(game.board, data.gameState.ball);
+      // }
+      console.log('ball after:', game.ball);
+      // console.log('DATA game', data);
     });
   }, [socket.game]);
 

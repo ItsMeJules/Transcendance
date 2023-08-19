@@ -7,19 +7,21 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
 import { match } from 'assert';
+import { PongEvents } from './pong.gateway';
 
 export type UserQueue = Map<number, string>;
 export type OnlineGameMap = Map<number, GameStruct>;
 
 @Injectable()
 export class PongService {
+  private connectedSockets: Map<number, Socket> = new Map();
+  private maxQueuesize = 1000;
+  public userQueue: UserQueue = new Map<number, string>();
+  public onlineGames: OnlineGameMap = new Map<number, GameStruct>;
+
   constructor(
     private prismaService: PrismaService,
     private userService: UserService) { }
-  private connectedSockets: Map<number, Socket> = new Map();
-  private maxQueuesize = 1000;
-  userQueue: UserQueue = new Map<number, string>();
-  onlineGames: OnlineGameMap = new Map<number, GameStruct>;
 
   async gameCreate(gameMode: GameDto, server: Server) {
     let player1Id: number = 0;
@@ -43,17 +45,88 @@ export class PongService {
       this.userQueue.delete(player1Id);
       this.userQueue.delete(player2Id);
       const gameChannel = `game_${gameData.id}`;
-      console.log('gamedata id::::', gameData.id);
-      const gameStructure = new GameStruct(gameData.id, player1Id, player2Id, gameChannel);
-      gameStructure.prop.room = gameChannel;
-      this.onlineGames.set(gameData.id, gameStructure);
-      const player1 = await this.userService.findOneById(gameData.player1Id);
-      const player2 = await this.userService.findOneById(gameData.player2Id);
-      const data = { status: 'START', gameChannel: gameChannel, game: gameData, player1: player1, player2: player2 };
-      return data;
+      // console.log('gamedata id::::', gameData.id);
+      return { gameId: gameData.id, player1Id: player1Id, player2Id: player2Id, gameChannel:gameChannel };
+
+      // const gameStructure = new GameStruct(gameData.id, player1Id, player2Id, gameChannel);
+      // gameStructure.prop.room = gameChannel;
+      // this.onlineGames.set(gameData.id, gameStructure);
+      // const player1 = await this.userService.findOneById(gameData.player1Id);
+      // const player2 = await this.userService.findOneById(gameData.player2Id);
+      // const data = { status: 'START', gameChannel: gameChannel, game: gameData, player1: player1, player2: player2 };
+      // return data;
+
+
     }
     return null;
   }
+
+
+  // private startRegularUpdates() {
+  //   if (!this.updateIntervalId) {
+  //     this.updateIntervalId = setInterval(() => {
+  //       this.sendRegularUpdate();
+  //     }, this.updateInterval);
+  //   }
+  // }
+
+  // private sendRegularUpdate() {
+  //   this.onlineGames.forEach((value, key) => {
+      
+  //   });
+    //   if (this.ball && this.prop) {
+    //       // Construct the update data as needed
+    //       const updateData = {
+    //           gameStatus: this.prop.status,
+    //           gameState: this.getState(),
+    //           time: Date.now(),
+    //       };
+
+    //       // Emit the update to the game room
+    //       this.server.to().emit('refreshGame', updateDat);
+    //       this.server.to(gameStruct.prop.room).emit('gameChannel',
+    //         { gameStatus: gameStruct.prop.status, gameState: gameStruct.getState(), time: Date.now() });
+    //       }
+    //   }
+  // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   removeFromQueue(userId: number): void {
     this.userQueue.delete(userId);
@@ -71,9 +144,8 @@ export class PongService {
   getUsersInQueueForGameMode(gameMode: string): number {
     let count = 0;
     for (const mode of this.userQueue.values()) {
-      if (mode === gameMode) {
+      if (mode === gameMode)
         count++;
-      }
     }
     return count;
   }
@@ -83,21 +155,10 @@ export class PongService {
     return (this.userQueue.size >= this.maxQueuesize);
   }
 
-  // Add user to the queue
   addToQueue(user: User, gameMode: GameDto): UserQueue {
-    // console.log(`User ${user.id} added to queue for game mode ${gameMode.gameMode}`);
     if (this.queueIsFull())
       return null;
-    // console.log('______QUEU BEFORE ADD______');
-    // this.userQueue.forEach((value, key) => {
-    //   console.log(`Qid ${key} and gameMode:${value}`);
-    // });
     this.userQueue.set(user.id, gameMode.gameMode);
-
-    // console.log('______QUEU AFTER ADD______');
-    // this.userQueue.forEach((value, key) => {
-    //   console.log(`Qid ${key} and gameMode:${value}`);
-    // });
     return this.userQueue;
   }
 

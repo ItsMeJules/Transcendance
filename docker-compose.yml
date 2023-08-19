@@ -9,6 +9,7 @@ services:
       - ./front/.env
     volumes:
       - ./front:/workspace/front
+      - ./front/node_modules:/workspace/front/node_modules
     networks:
       - app
     depends_on:

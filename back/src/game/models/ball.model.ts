@@ -19,8 +19,9 @@ export class Ball {
     const randomAngle = Math.random() * (Math.PI / 3) - Math.PI / 6;
     const randomX = Math.random() < 0.5 ? -1 : 1;
     const randomY = Math.random() < 0.5 ? -1 : 1;
-    this.dir = new Vector(
-      Math.cos(randomAngle) * randomX,
-      Math.sin(randomAngle) * randomY);
+    // this.dir = new Vector(
+    //   Math.cos(randomAngle) * randomX,
+    //   Math.sin(randomAngle) * randomY);
+    this.dir = new Vector(1, 0);
   }
 }

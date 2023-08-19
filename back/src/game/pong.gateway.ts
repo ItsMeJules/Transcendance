@@ -16,13 +16,13 @@ import { GameStruct } from './game.class';
 import { Player } from './models/player.model';
 
 @WebSocketGateway({ namespace: 'game' })
-export class GameEvents {
+export class PongEvents {
   @WebSocketServer()
   server: Server;
   idToSocketMap = new Map<number, Socket>();
 
   constructor(
-    private readonly pongService: PongService,
+    public pongService: PongService,
     private authService: AuthService,
     private userService: UserService,
   ) { }
@@ -32,7 +32,7 @@ export class GameEvents {
   }
 
   async handleConnection(client: Socket) {
-    console.log('IN client data:', client.data);
+    // console.log('IN client data:', client.data);
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -51,20 +51,20 @@ export class GameEvents {
     };
     if (this.pongService.onlineGames) {
       this.pongService.onlineGames.forEach((value, key) => {
-        console.log('uid:', user.id, ' pl1id:', value.pl1.id, ' pl2id:', value.pl2.id)
+        // console.log('uid:', user.id, ' pl1id:', value.pl1.id, ' pl2id:', value.pl2.id)
         if (user.id === value.pl1.id || user.id === value.pl2.id) {
-          console.log('OKKKKKKKKK value room:', value.prop.room);
+          // console.log('OKKKKKKKKK value room:', value.prop.room);
           client.data.gameId = value.prop.id;
           client.data.room = value.prop.room;
           client.join(value.prop.room);
-          console.log('on connection joined room:', `${value.prop.room}`);
+          // console.log('on connection joined room:', `${value.prop.room}`);
         }
       });
     }
     client.join(`user_${user.id}`);
     client.join('game_online');
     this.idToSocketMap.set(user.id, client);
-    console.log('OUT client data:', client.data);
+    // console.log('OUT client data:', client.data);
     // console.log('id to socket map:', this.idToSocketMap);
 
   }
@@ -89,23 +89,31 @@ export class GameEvents {
     const gameQueue = this.pongService.addToQueue(user, gameDto);
     if (gameQueue != null) {
       this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED' });
-      const gameStructure = await this.pongService.gameCreate(gameDto, this.server);
-      if (gameStructure) {
-        const player1socket = this.getSocketById(gameStructure.player1.id);
-        const player2socket = this.getSocketById(gameStructure.player2.id);
-        this.server.to(`user_${gameStructure.player1.id}`).emit(`joinGameQueue`, gameStructure);
-        this.server.to(`user_${gameStructure.player2.id}`).emit(`joinGameQueue`, gameStructure);
-        player1socket.join(`game_${gameStructure.game.id}`);
-        player2socket.join(`game_${gameStructure.game.id}`);
-        player1socket.data.room = `game_${gameStructure.game.id}`;
-        player2socket.data.room = `game_${gameStructure.game.id}`;
-        player1socket.data.gameId = gameStructure.game.id;
-        player2socket.data.gameId = gameStructure.game.id;
-      }
+      const gameData = await this.pongService.gameCreate(gameDto, this.server);
+      if (!gameData) return;
+      const game = new GameStruct(gameData.gameId, gameData.player1Id, gameData.player2Id, gameData.gameChannel, this);
+      if (!gameData) return; // correct error handling
+      this.pongService.onlineGames.set(game.prop.id, game);
+      const player1 = await this.userService.findOneById(game.pl1.id);
+      const player2 = await this.userService.findOneById(game.pl2.id);
+      const data = { status: 'START', gameChannel: game.prop.room, game: gameData, player1: player1, player2: player2 };
+      
+      const player1socket = this.getSocketById(game.pl1.id);
+      const player2socket = this.getSocketById(game.pl2.id);
+      console.log('data:', data);
+      console.log('user room:', `user_${game.pl1.id}`);
+      this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
+      this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
+      player1socket.join(`game_${game.prop.id}`);
+      player2socket.join(`game_${game.prop.id}`);
+      player1socket.data.room = `game_${game.prop.id}`;
+      player2socket.data.room = `game_${game.prop.id}`;
+      player1socket.data.gameId = game.prop.id;
+      player2socket.data.gameId = game.prop.id;
     }
   }
 
-  @SubscribeMessage('leaveGameQueue') // This decorator listens for messages with the event name 'message'
+  @SubscribeMessage('leaveGameQueue')
   async leaveQueue(
     @ConnectedSocket() client: Socket) {
     console.log('Leave queue');
@@ -151,6 +159,7 @@ export class GameEvents {
     } else
       return;
 
+    console.log('data action:', data.action, ' opponent status:', opponent.status);
     // Status
     if (data.action === 'status') {
       this.server.to(`user_${user.id}`).emit('prepareToPlay',
@@ -182,7 +191,7 @@ export class GameEvents {
       }, timeoutInSeconds * 1000);
       this.pongService
     }
-    // Both ready launch game 
+    // Both ready launch game
     else if (data.action === 'playPressed' && opponent.status === 'ready') {
       player.status = 'ready';
       gameStruct.prop.status = 'countdown';
@@ -207,17 +216,18 @@ export class GameEvents {
       // gameStruct.prop.countdown = 0;
       // this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: 'GO!' });
       // await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+
       gameStruct.prop.status = 'playing';
       gameStruct.pl1.status = 'playing';
       gameStruct.pl2.status = 'playing';
       gameStruct.prop.tStart = Date.now();
       const gameState = gameStruct.getState();
       // console.log('game state:', gameState);
-      this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status});
+      this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status });
       this.server.to(gameStruct.prop.room).emit('gameChannel',
         { gameStatus: gameStruct.prop.status, gameState: gameStruct.getState(), time: Date.now() });
-      }
+    }
+    gameStruct.startGameLoop();
     // const sockets = await this.server.in(gameStruct.prop.room).fetchSockets();
     // sockets.forEach((Socket) => {
     //   console.log('IN room user:', Socket.data);

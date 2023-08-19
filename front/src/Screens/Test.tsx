@@ -22,6 +22,7 @@ export const Test = () => {
     if (socketData) {
       const dataString = JSON.stringify(socketData);
       const dataJSON = JSON.parse(dataString);
+      console.log('Received:', dataJSON);
       if (dataJSON.status === "JOINED")
         setInQueue(true);
       else if (dataJSON.status === "LEAVE")
@@ -38,18 +39,6 @@ export const Test = () => {
   }, [socketData]);
 
 
-  useEffect(() => {
-
-    socket.game?.on('test', (data) => {
-      console.log('TESTTTTTT ', data);
-    });
-  }, [socket.game]);
-
-  const handleTest = () => {
-    console.log('Socket connected:', socket.game && socket.game.connected);
-    socket.game?.emit('test', 'ok');
-  }
-
   return (
     <div>
       <header className="flex"
@@ -65,10 +54,6 @@ export const Test = () => {
               Waiting for opponent
             </div>
           </div>}
-
-        <button className="text-white" onClick={handleTest}>
-          TESTTTTTT
-        </button>
 
       </header>
     </div>
