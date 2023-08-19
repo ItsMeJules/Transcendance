@@ -47,6 +47,24 @@
     background-color: #45a049; /* Change background color on hover */
 }
 
+.deactivate {
+    background-color: #da243c;
+    border: none;
+    color: white; /* Text color */
+    padding: 15px 32px; /* Padding around text */
+    text-align: center; /* Center the text */
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer; /* Change cursor when hovering over button */
+    border-radius: 12px; /* Rounded corners */
+    transition-duration: 0.4s; /* Transition effect duration */
+}
+
+.deactivate:hover {
+    background-color: #c71c32;
+}
 /* Le bouton close */
 .close {
     color: #aaa;
