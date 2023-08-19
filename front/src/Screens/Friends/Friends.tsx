@@ -1,18 +1,10 @@
 import { useEffect, useState } from "react";
 import axios, { } from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../Utils";
-import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
 import { Link, useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import ToastNotificationMessage from "./Components/ToastNotificationMessage";
 import { UserArray } from "../../Services/UserArray";
-import LogoutParent from "../../LogoutHook/logoutParent";
-import { FaHeart } from 'react-icons/fa';
-import { IconContext } from 'react-icons';
-import { connectSocket, getSocket, disconnectSocket, deregisterSocket } from "../../Websocket/Socket.io";
-import { JsxEmit } from "typescript";
-import socket from '../../Websocket/Socket.io';
-import { Socket } from "socket.io-client";
 import { UserData } from "../../Services/User";
 import User from "../../Services/User";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
@@ -115,86 +107,21 @@ const UserFriends = () => {
     }
   }
 
-  // const handleProfileClick = (user: User) => {
-  //   setIdToRemove('none');
-  //   resetNotifMsg();
-  //   console.log('Profile clicked');
-  //   history(APP_ROUTES.GENERIC_USER_PROFILE + user.getId());
-  // }
-
-//  return (
-//    <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
-//      
-//      <FriendsContainer>
-//        <FriendsHeader setErrMsg={setErrMsg} />
-//        <UserProfileList users={users} onRemoveClick={removeFriend} />
-//      </FriendsContainer>
-//
-//      <ToastNotificationMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
-//      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
-//    </div>
-//  );
-//}
+  const handleProfileClick = (user: User) => {
+    setIdToRemove('none');
+    resetNotifMsg();
+    console.log('Profile clicked');
+    history(APP_ROUTES.GENERIC_USER_PROFILE + user.getId());
+  }
 
   return (
     <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
-      <MDBContainer className="friends-container">
-        <MDBCard className="friends-card">
+      
+      <FriendsContainer>
+        <FriendsHeader setErrMsg={setErrMsg} />
+        <UserProfileList users={users} onRemoveClick={removeFriend} onProfileClick={handleProfileClick}/>
+      </FriendsContainer>
 
-          <div className="friends">
-
-            <header className="friends-header">
-
-              <LogoutParent setErrMsg={setErrMsg} />
-
-              <h1 className="friends__title">
-                <span className="friends__title--top">
-                  Friends
-                </span>
-                <span className="friends__title--bottom">
-                  Pannel
-                </span>
-              </h1>
-            </header>
-          </div>
-
-          <main className="friends__profiles">
-            {users.map((user) => (
-              <article className="friends__profile" key={user.getId()}>
-                <img
-                  src={user.getProfilePicture()}
-                  alt={user.getUsername()}
-                  className="friends__picture"
-                />
-                <button className="friends__name" title="Go to user profile"
-                  key={user.getId()}
-                // onClick={() => handleProfileClick(user)}
-                >
-                  {user.getUsername()}
-                </button>
-
-                <div className="friends__heart">
-
-
-                  <span title={`${user.getIsOnline() ? 'online' : 'offline'}`}
-                    className={`border friends__status-circle ${user.getIsOnline() ? 'online' : 'offline'}`}>
-                    {user.getIsOnline() && <span className="ripple"></span>}
-                  </span>
-
-                  <button className="" onClick={() => removeFriend(user.getId())}>
-                    <IconContext.Provider
-                      value={{ color: iconColor, size: '30px' }}>
-                      <FaHeart />
-                    </IconContext.Provider>
-                  </button>
-                </div>
-
-              </article>
-            ))}
-          </main>
-
-        </MDBCard>
-      </MDBContainer>
       <ToastNotificationMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
       <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div>

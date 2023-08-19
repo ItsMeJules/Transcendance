@@ -6,9 +6,10 @@ import User from "../../../Services/User";
 interface UserProfileProps {
   user: User;
   onRemoveClick: (id: string | undefined) => void;
+  onProfileClick: (user: User) => void;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({ user, onRemoveClick }) => {
+const UserProfile: React.FC<UserProfileProps> = ({ user, onRemoveClick, onProfileClick }) => {
   return (
     <article className="friends__profile" key={user.getId()}>
       <img
@@ -16,7 +17,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onRemoveClick }) => {
         alt={user.getUsername()}
         className="friends__picture"
       />
-      <button className="friends__name" title="Go to user profile" key={user.getId()}>
+      <button className="friends__name" title="Go to user profile" key={user.getId()} onClick={() => onProfileClick(user)} >
         {user.getUsername()}
       </button>
 
