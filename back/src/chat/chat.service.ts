@@ -1,31 +1,17 @@
-import {
-  WebSocketGateway,
-  WebSocketServer,
-  SubscribeMessage,
-  OnGatewayInit,
-  MessageBody,
-  ConnectedSocket,
-} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { AuthService } from '../auth/auth.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Room, Message, User } from '@prisma/client';
+import { Room, Message } from '@prisma/client';
 import { SendMsgRoomDto, JoinRoomDto, CreateRoomDto } from './dto';
-import { CompleteRoom } from 'src/utils/complete.type';
+import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
 @Injectable()
 export class ChatService {
-  constructor(
-    private prismaService: PrismaService,
-    private authService: AuthService,
-  ) {}
-
-  // async fetchMessages(client: any, server: Server): Promise<Message> {}
+  constructor(private prismaService: PrismaService) {}
 
   async sendMessageToRoom(
     messageDto: SendMsgRoomDto,
-    client: any,
+    client: Socket,
     server: Server,
     roomName: string,
   ): Promise<void> {
@@ -53,7 +39,7 @@ export class ChatService {
 
   async sendMessage(
     payload: string,
-    client: any,
+    client: Socket,
     server: Server,
   ): Promise<void> {
     try {
@@ -91,7 +77,40 @@ export class ChatService {
     return generalChat;
   }
 
-  async createRoom(createRoomDto: CreateRoomDto, client: any): Promise<Room> {
+  async modifyPassword(roomName: string, client: Socket): Promise<string> {
+    // encode pw later
+    try {
+      const currentRoom = await this.prismaService.returnCompleteRoom(roomName);
+      const password: string = client.data.password;
+      if (currentRoom.ownerId !== client.data.id)
+        throw new Error('No permission');
+      if (currentRoom.password === password) throw new Error('same password');
+      if (password === '') {
+        await this.prismaService.room.update({
+          where: { name: currentRoom.name },
+          data: {
+            password: null,
+          },
+        });
+      } else {
+        await this.prismaService.room.update({
+          where: { name: currentRoom.name },
+          data: {
+            password: password,
+          },
+        });
+      }
+      return password;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async createRoom(
+    createRoomDto: CreateRoomDto,
+    client: Socket,
+  ): Promise<Room> {
+    // encode pw later
     let room = await this.prismaService.room.findUnique({
       where: { name: createRoomDto.name },
     });
@@ -121,6 +140,7 @@ export class ChatService {
   }
 
   async joinRoom(joinRoomDto: JoinRoomDto, client: Socket): Promise<Room> {
+    // encode pw later
     const room = await this.prismaService.room.findUnique({
       where: { name: joinRoomDto.name },
     });
@@ -145,7 +165,7 @@ export class ChatService {
     return room;
   }
 
-  async disconnectRoom(roomName: string, client: Socket) {
+  async disconnectRoom(roomName: string, client: Socket): Promise<void> {
     try {
       const room = await this.prismaService.returnCompleteRoom(roomName);
       await this.prismaService.room.update({
@@ -163,33 +183,84 @@ export class ChatService {
     }
   }
 
-  privilegeUpperCheck(
+  hierarchyCheck(
     room: CompleteRoom,
-    emitter: User,
-    target: User,
+    actingUser: CompleteUser,
+    target: CompleteUser,
   ): boolean {
     if (target.id === room.ownerId) return false;
-    if (!room.admins.some((admin) => admin.id === emitter.id))
-      // Learn more some()
-      return true;
+    if (actingUser.id === room.ownerId) return true;
+    if (
+      room.admins.some((admin) => admin.id === actingUser.id) &&
+      room.admins.some((admin) => admin.id === target.id)
+    )
+      return false;
+    if (room.admins.some((admin) => admin.id === actingUser.id)) return true;
     return false;
   }
 
-  async banUser(roomName: string, client: Socket): Promise<void> {
-    const idBanning = client.data.id;
-    const idToBan = client.data.id; // Add real idToBan
+  async promoteToAdminToggle(roomName: string, client: Socket): Promise<void> {
     try {
-      const roomNow = await this.prismaService.returnCompleteRoom(roomName);
-      if (!roomNow) {
+      const actingUser = await this.prismaService.returnCompleteUser(
+        client.data.id,
+      );
+      const targetUser = await this.prismaService.returnCompleteUser(
+        client.data.id, // add targetUserId
+      );
+      const room = await this.prismaService.returnCompleteRoom(roomName);
+      if (this.hierarchyCheck(room, actingUser, targetUser))
+        throw new Error("You don't have permission");
+      if (room.admins.some((admin) => admin.id === targetUser.id)) {
+        await this.prismaService.room.update({
+          where: {
+            name: roomName,
+          },
+          data: {
+            admins: {
+              disconnect: {
+                id: targetUser.id,
+              },
+            },
+          },
+        });
+      } else {
+        await this.prismaService.room.update({
+          where: {
+            name: roomName,
+          },
+          data: {
+            admins: {
+              connect: {
+                id: targetUser.id,
+              },
+            },
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async banUser(roomName: string, client: Socket): Promise<void> {
+    try {
+      const actingUser = await this.prismaService.returnCompleteUser(
+        client.data.id,
+      );
+      const targetUser = await this.prismaService.returnCompleteUser(
+        client.data.id, // add targetUserId
+      );
+      const room = await this.prismaService.returnCompleteRoom(roomName);
+      if (!room) {
         throw new Error('no room');
       }
-      if (this.privilegeUpperCheck(roomNow, idBanning, idToBan)) {
+      if (this.hierarchyCheck(room, actingUser, targetUser)) {
         await this.prismaService.room.update({
-          where: { id: roomNow.id },
+          where: { id: room.id },
           data: {
             users: {
               disconnect: {
-                id: idToBan,
+                id: targetUser.id,
               },
             },
           },
@@ -262,5 +333,33 @@ export class ChatService {
     }
   }
 
-  async promoteToAdmin(roo);
+  async kickUserRoom(roomName: string, client: Socket): Promise<boolean> {
+    try {
+      const actingUser = await this.prismaService.returnCompleteUser(
+        client.data.id,
+      );
+      const targetUser = await this.prismaService.returnCompleteUser(
+        client.data.id, // add targetUserId !!
+      ); //
+      const room = await this.prismaService.returnCompleteRoom(roomName);
+      if (!room) {
+        throw new Error('no room');
+      }
+      if (this.hierarchyCheck(room, actingUser, targetUser)) {
+        await this.prismaService.room.update({
+          where: { id: room.id },
+          data: {
+            users: {
+              disconnect: {
+                id: targetUser.id,
+              },
+            },
+          },
+        });
+        return true;
+      } else throw new Error("You don't have permission");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

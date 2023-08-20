@@ -88,7 +88,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   async allBannedUsersFromRoom(roomName: string): Promise<User[]> {
     try {
-      const room = await this.returnRoom(roomName);
+      const room = await this.returnCompleteRoom(roomName);
       if (!room) {
         throw new Error('no room named' + roomName);
       }
@@ -104,7 +104,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   async allMutedUsersFromRoom(roomName: string): Promise<User[]> {
     try {
-      const room = await this.returnRoom(roomName);
+      const room = await this.returnCompleteRoom(roomName);
       if (!room) {
         throw new Error('no room named' + roomName);
       }
@@ -120,7 +120,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   async allAdminsFromRoom(roomName: string): Promise<User[]> {
     try {
-      const room = await this.returnRoom(roomName);
+      const room = await this.returnCompleteRoom(roomName);
       if (!room) {
         throw new Error('no room named' + roomName);
       }
@@ -132,7 +132,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   async allMessagesFromRoom(roomName: string): Promise<Message[]> {
     try {
-      const room = await this.returnRoom(roomName);
+      const room = await this.returnCompleteRoom(roomName);
       if (!room) {
         throw new Error('no room named' + roomName);
       }
@@ -149,6 +149,18 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         throw new Error('no users blocked by ' + user.username);
       }
       return user.blockedUsers;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async allRoomsFromUser(userId: number): Promise<Room[]> {
+    try {
+      const user = await this.returnCompleteUser(userId);
+      if (!user.activeRooms) {
+        throw new Error('no users blocked by ' + user.username);
+      }
+      return user.activeRooms;
     } catch (error) {
       console.log(error);
     }
