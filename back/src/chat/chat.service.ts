@@ -146,9 +146,8 @@ export class ChatService {
     client: Socket,
     userJoining: number,
   ): Promise<Room> {
-    // encode pw later
+    // encode pw later + pay attention to behavior
     try {
-      const userJ
       const room = await this.prismaService.room.findUnique({
         where: { name: joinRoomDto.name },
       });
@@ -165,7 +164,7 @@ export class ChatService {
         data: {
           users: {
             connect: {
-              id: client.data.id,
+              id: userJoining,
             },
           },
         },
@@ -460,7 +459,7 @@ export class ChatService {
       } else if (room.bans.some((banned) => banned.id === targetUser.id))
         throw new Error('user is banned from the room');
       else {
-        this.joinRoom(
+        await this.joinRoom(room, client, target); // + add message and everything?
       }
     } catch (error) {
       console.log(error);

@@ -87,9 +87,4 @@ export class ChatEventsGateway {
   ): Promise<void> {
     return;
   }
-  private actionHandlers = {
-    create_channel: this.chatService.createRoom,
-    ban: this.chatService.banUser,
-    // ... other handlers
-  };
 }

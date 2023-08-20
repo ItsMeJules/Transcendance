@@ -86,7 +86,8 @@ export const ActionChatHandlers = {
     chatService: ChatService,
     joinRoomDto: ChatDtos.JoinRoomDto,
     client: Socket,
-  ): Promise<Room> => chatService.joinRoom(joinRoomDto, client),
+    userJoining: number,
+  ): Promise<Room> => chatService.joinRoom(joinRoomDto, client, userJoining),
   leaveRoom: async (
     chatService: ChatService,
     roomName: string,
