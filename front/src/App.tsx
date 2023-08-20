@@ -19,7 +19,7 @@ import { Signup } from './Screens/Login/Signup';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import AppWrapper from './AppWrapper';
 import { UserProfile } from './Screens/UserProfile/UserProfile';
-import { UserProfileEdit } from './Screens/UserProfileEdit/UserProfileEdit';
+import { UserProfileEdit } from './Screens/UserProfile/UserProfileEdit';
 import { APP_ROUTES } from './Utils/constants';
 import { Test } from './Screens/Test';
 import LeaderBoard from './Screens/LeaderBoard/LeaderBoard';

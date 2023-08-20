@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../Utils/constants";
-import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
 import { Link, useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import getProgressBarClass from "../../Components/ProgressBarClass";
-import DisplayData from "./components/DisplayData";
-import DisplayStats from "./components/DisplayStats";
-import ProfilePicContainer from "./components/ProfilePicContainer";
-import LogoutParent from "../../LogoutHook/logoutParent";
-import { Socket } from "socket.io-client";
-import { connectSocket, disconnectSocket, deregisterSocket } from "../../Websocket/Socket.io";
 import User from "../../Services/User";
 import { UserData } from "../../Services/User";
-import QRCode from "react-qr-code";
 import { useAxios } from "../../api/axios-config";
-import QrCode from "./QrCode"
-
+import ProfileCard from "./components/ProfileCard";
+import UserProfileContainer from "./components/UserProfileContainer";
 
 export const UserProfile: React.FC = () => {
   const [userDataHere, setUserDataHere] = useState<UserData | null>(null);
@@ -24,7 +15,6 @@ export const UserProfile: React.FC = () => {
   const [level, setLevel] = useState(0);
   const progressBarClass = getProgressBarClass(level);
   const history = useNavigate();
-  const [socket, setSocket] = useState<Socket | null | undefined>(null);
   const axiosInstanceError = useAxios();
 
   const resetErrMsg = () => {
@@ -73,36 +63,9 @@ export const UserProfile: React.FC = () => {
   };
 
   return (
-    <div className="vh-100 d-flex" style={{ paddingTop: '75px' }}>
-
-      <MDBContainer className="profile-board-container ">
-        <MDBCard className="profile-board-card ">
-          <div className="profile-board-header-show-profile">
-
-            <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT} style={{ padding: '0px' }}>
-              <MDBCardImage src='/images/edit_profile.png' fluid style={{ width: '30px' }} />
-            </Link>
-
-            <LogoutParent setErrMsg={setErrMsg} />
-          </div>
-
-          <ProfilePicContainer userData={userDataHere} />
-
-          <div className="fade-line" style={{ marginTop: '20px' }}></div>
-
-          <DisplayData userData={userDataHere} />
-
-          <div className="fade-line" style={{ marginTop: '-10px' }}></div>
-
-          <DisplayStats userData={userDataHere} />
-          <QrCode></QrCode>
-
-        </MDBCard>
-      </MDBContainer>
-
+    <UserProfileContainer>
+      <ProfileCard userData={userDataHere} setErrMsg={setErrMsg}/>
       <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
-
-    </div>
+    </UserProfileContainer>
   );
-
 }

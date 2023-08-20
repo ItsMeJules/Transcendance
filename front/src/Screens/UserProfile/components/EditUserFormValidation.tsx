@@ -100,8 +100,8 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
             className={`data-values-input-sub-others border edit-form-label`}
             onChange={(e) => setLastName(e.target.value)} maxLength={100} />
 
-          <div className="save-button">
-            <button type="submit" className="save-changes-button" style={{ marginTop: '10px' }}>
+          <div className="myBtn">
+            <button type="submit" className="save-changes-button">
               Save changes
             </button>
           </div>

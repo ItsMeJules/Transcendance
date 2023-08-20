@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaHeart } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import User from "../../../Services/User";
 

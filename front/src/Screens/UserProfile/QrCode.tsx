@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { API_ROUTES } from "../../Utils/constants";
 import Popup from "./components/Popup";
 import { useAxios } from "../../api/axios-config";
-import axios from "axios";
 
 const QrCode: React.FC = () => {
   const popupRef = React.createRef<HTMLDivElement>();

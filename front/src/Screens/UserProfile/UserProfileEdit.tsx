@@ -5,10 +5,12 @@ import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
 import { UserData } from "../../Services/User";
 import { useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import LogoutParent from "../../LogoutHook/logoutParent";
-import ProfilePicContainer from "../UserProfile/components/ProfilePicContainer";
+import ProfileHeader from './components/ProfileHeader';
+import ProfilePicContainer from "./components/ProfilePicContainer";
 import ImageChange from "./components/ImageChange";
 import EditUserFormValidation from "./components/EditUserFormValidation";
+import UserProfileContainer from "./components/UserProfileContainer";
+import ProfileCard from "./components/ProfileCard";
 
 export const UserProfileEdit: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -57,24 +59,9 @@ export const UserProfileEdit: React.FC = () => {
   }, []);
 
   return (
-    <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
-      <MDBContainer className="profile-board-container">
-        <MDBCard className="profile-board-card">
-
-          <div className="profil-board-header-edit-profile">
-            <LogoutParent setErrMsg={setErrMsg} />
-          </div>
-          <ProfilePicContainer userData={userData} />
-          <ImageChange setErrMsg={setErrMsg} fetchUserProfile={fetchUserProfile} />
-          <div className="fade-line" style={{ marginTop: '20px' }}></div>
-          <EditUserFormValidation setErrMsg={setErrMsg} userData={userData} />
-          <div className="d-flex justify-content-between text-center mt-5 mb-2">
-          </div>
-        </MDBCard>
-      </MDBContainer>
-
+    <UserProfileContainer>
+      <ProfileCard userData={userData} setErrMsg={setErrMsg} type="edit" fetchUserProfile={fetchUserProfile} />
       <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
-
-    </div>
-  );
+    </UserProfileContainer>
+      );
 }

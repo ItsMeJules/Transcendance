@@ -1,6 +1,7 @@
 import React from "react";
 import handleLogout from "./useLogout";
-import { MDBCardImage } from "mdb-react-ui-kit";
+import { FaArrowRightFromBracket } from 'react-icons/fa6'
+import { IconContext } from 'react-icons';
 
 interface LogoutParentProps {
   setErrMsg: (error: string) => void; // Callback function to set errMsg in UserProfile component
@@ -20,7 +21,9 @@ const LogoutParent: React.FC<LogoutParentProps> = ({ setErrMsg }) => {
   return (
     <div>
       <button title="Log out" onClick={onLogout}>
-        <MDBCardImage src='/images/logout.png' fluid style={{ width: '34px' }} />
+        <IconContext.Provider value={{ color: 'black', size: '30px' }}>
+          <FaArrowRightFromBracket />
+        </IconContext.Provider>
         {error && <div>Error: {error}</div>}
       </button>
     </div>
