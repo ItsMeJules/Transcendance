@@ -233,6 +233,8 @@ export class PongEvents {
       console.log('player:', data.player, ' gave up');
       this.pongService.endGame(gameStruct, opponent, player);
       
+    } else if (data.action === 'refreshInMotion') {
+      gameStruct.refreshInMotion();
     }
 
 

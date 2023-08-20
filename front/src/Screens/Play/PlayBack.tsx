@@ -136,6 +136,7 @@ const PlayBack = () => {
       socket.game?.off('prepareToPlay'); // dont off and use for status?
       game.isStarted = true;
       setGame({ ...game, isStarted: true });
+      socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'refreshInMotion' });
     }
     return;
   }, [socketPrepare]);

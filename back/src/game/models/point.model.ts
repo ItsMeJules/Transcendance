@@ -17,11 +17,19 @@ export class Point {
     if (side === 'low')
       return Math.sqrt(
         Math.pow((this.x - ball.pos.x), 2) +
-        Math.pow((this.y - (ball.pos.y + ball.size / 2)), 2));
+        Math.pow((this.y - (ball.pos.y + ball.size * 0.5)), 2));
     else if (side === 'up') {
       return Math.sqrt(
         Math.pow((this.x - ball.pos.x), 2) +
-        Math.pow((this.y - (ball.pos.y - ball.size / 2)), 2));
+        Math.pow((this.y - (ball.pos.y - ball.size * 0.5)), 2));
+    } else if (side === 'left') {
+      return Math.sqrt(
+        Math.pow((this.x - (ball.pos.x - ball.size * 0.5)), 2) +
+        Math.pow((this.y - ball.pos.y), 2));
+    } else if (side === 'right') {
+      return Math.sqrt(
+        Math.pow((this.x - (ball.pos.x + ball.size * 0.5)), 2) +
+        Math.pow((this.y - ball.pos.y), 2));
     }
   }
 }
