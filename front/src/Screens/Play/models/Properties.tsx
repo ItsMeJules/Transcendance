@@ -17,4 +17,10 @@ export class GameProperties {
       this.pl1 = new Player(this.board, 1);
       this.pl2 = new Player(this.board, 2);
     }
+
+    // updateGame(incomingGame: GameProperties) {
+    //   this.ball.updateBall(this.board, incomingGame.ball);
+    //   this.pl1.updatePlayer(incomingGame.pl1);
+    //   this.pl2.updatePlayer(incomingGame.pl2);
+    // }
   }

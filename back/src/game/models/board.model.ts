@@ -1,4 +1,6 @@
 import { Ball } from "./ball.model";
+import { Paddle } from "./paddle.model";
+import { Point } from "./point.model";
 
 export class CollisionPointsBall {
   public a = 0;
@@ -24,26 +26,54 @@ export class CollisionPointsSides {
   public b = 0;
   public c = 0;
 
+  constructor(A: Point, B: Point) {
+    this.a = B.y - A.y;
+    this.b = A.x - B.x;
+    this.c = this.a * A.x + this.b * A.y;
+  }
 }
 
 export class Board {
-  // Change here if needed
+  // Change here !!!!!
   public width = 600;
   public height = 300;
 
-  public upWall: CollisionPointsSides = new CollisionPointsSides();
-  public lowWall: CollisionPointsSides = new CollisionPointsSides();
-  public leftWall: CollisionPointsSides = new CollisionPointsSides();
-  public rightWall: CollisionPointsSides = new CollisionPointsSides();
+  public pUpLeft = new Point(0, 0);
+  public pUpRight = new Point(this.width, 0);
+  public pLowLeft = new Point(0, this.height);
+  public pLowRight = new Point(this.width, this.height);
 
-  constructor() {
-    this.upWall.b = -this.width;
-    this.lowWall.b = -this.width;
-    this.lowWall.c = -this.width * this.height;
-    this.leftWall.a = this.height;
-    this.rightWall.a = this.height;
-    this.rightWall.c = this.rightWall.a * this.width;
+  public pUpLeftPaddle = new Point(0, 0);
+  public pLowLeftPaddle = new Point(0, 0);
+
+  public pUpRightPaddle = new Point(0, 0);
+  public pLowRightPaddle = new Point(0, 0);
+
+  public upWall: CollisionPointsSides = new CollisionPointsSides(this.pUpLeft, this.pUpRight);
+  public lowWall: CollisionPointsSides = new CollisionPointsSides(this.pLowLeft, this.pLowRight);
+  public leftWall: CollisionPointsSides = new CollisionPointsSides(this.pUpLeft, this.pLowLeft);
+  public rightWall: CollisionPointsSides = new CollisionPointsSides(this.pUpRight, this.pLowRight);
+
+  public leftWallPaddleCol: CollisionPointsSides;
+  public rightWallPaddleCol: CollisionPointsSides;
+
+  constructor() { }
+
+  updatePointsAndCollisionParameters(pad: Paddle) {
+    // this.pUpLeftPaddle = new Point(0, 0);
+    // this.pUpRightPaddle = new Point(this.width, 0);
+    // this.pLowLeftPaddle = new Point(pad.width, this.width);
+    // this.pLowLeftPaddle = new Point(this.width - pad.width, this.height);
+
+    this.pUpLeftPaddle = new Point(pad.width, 0);
+    this.pUpRightPaddle = new Point(this.width - pad.width, 0);
+    this.pLowLeftPaddle = new Point(pad.width, this.height);
+    this.pLowRightPaddle = new Point(this.width - pad.width, this.height);
+
+    this.leftWallPaddleCol = new CollisionPointsSides(this.pUpLeftPaddle, this.pLowLeftPaddle);
+    this.rightWallPaddleCol = new CollisionPointsSides(this.pUpRightPaddle, this.pLowRightPaddle);
   }
+
 }
 
 

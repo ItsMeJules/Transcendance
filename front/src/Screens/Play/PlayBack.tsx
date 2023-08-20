@@ -85,17 +85,26 @@ const PlayBack = () => {
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
     socket.game?.on('prepareToPlay', (data) => {
       setSocketPrepare(data);
-      // console.log('DATA PREPARE', data);
+      console.log('DATA PREPARE', data);
     });
-    socket.game?.on('refreshGame', (data) => {
-      // console.log('DATA game', data.gameState);
+    socket.game?.on('refreshGame', (data: GameSocket) => {
+      console.log('DATA game', data.gameState);
 
       // console.log('pos b4:', game.ball.pos);
       // setGameState(data.gameState);
 
       // console.log('gamestate ball:', gameState?.gameState.ball);
       // if (data.gameState.ball) {
-      game.ball.updateBall(game.board, data.gameState.ball);
+      // setGame({ ...game });
+
+      // game.
+      // game.updateGame(data.gameState);
+      setGameState(data);
+      
+      // game.ball.updateBall(game.board, data.gameState.ball);
+      // game.pl1.updatePlayer(data.gameState.pl1);
+      // game.pl2.updatePlayer(data.gameState.pl2);
+
       // }
       // console.log('ball after:', game.ball.pos);
       // console.log('DATA game', data);
@@ -103,15 +112,23 @@ const PlayBack = () => {
   }, [socket.game]);
 
   useEffect(() => {
-    console.log('gamestate ball:', gameState?.gameState.ball);
+    console.log('gamestate:', gameState);
+    if (gameState?.gameStatus === 'giveUp') {
+      console.log('gameState at giveup:', game);
+      // setCentralText('Timeout - game canceled')
+      // setTimeout(() => {
+      //   history('/test');
+      // }, 3 * 1000);
+    }
     if (gameState) {
       game.ball.updateBall(game.board, gameState.gameState.ball);
       console.log('refreshed ball:', game.ball);
-    }
+    } 
   }, [gameState]);
 
   useEffect(() => {
     // console.log('socketData:', socketPrepare);
+
     if (socketPrepare?.gameStatus === 'pending' || socketPrepare?.playerStatus === 'pending') {
       setCentralText('Ready?');
     } else if (socketPrepare?.gameStatus === 'waiting'
@@ -125,7 +142,7 @@ const PlayBack = () => {
         setCentralText(socketPrepare.countdown);
       } else
         setCentralText('Get ready!');
-    } else if (socketPrepare?.gameStatus === 'canceled') {
+    } else if (socketPrepare?.gameStatus === 'noGame') {
       history('/test');
     } else if (socketPrepare?.gameStatus === 'timeout') {
       setCentralText('Timeout - game canceled')
@@ -182,7 +199,7 @@ const PlayBack = () => {
       </div>
 
       <button className="text-white" onClick={handleQuitGame} style={{ zIndex: '10' }}>
-        {giveUp? 'Confirm by clicking again' : 'Give up?'}
+        {giveUp ? 'Confirm by clicking again' : 'Give up?'}
       </button >
     </div >
   );

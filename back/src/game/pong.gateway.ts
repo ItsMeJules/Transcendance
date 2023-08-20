@@ -137,7 +137,7 @@ export class PongEvents {
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !client.data.gameId || !access_token) {
       if (!client.data.gameId && client.data.id)
-        this.server.to(`user_${client.data.id}`).emit('prepareToPlay', { gameStatus: 'canceled' });
+        this.server.to(`user_${client.data.id}`).emit('prepareToPlay', { gameStatus: 'noGame' });
       client.disconnect();
       return;
     }
@@ -195,7 +195,6 @@ export class PongEvents {
     else if (data.action === 'playPressed' && opponent.status === 'ready') {
       player.status = 'ready';
       gameStruct.prop.status = 'countdown';
-
       this.server.to(gameStruct.prop.room).emit('prepareToPlay',
         {
           gameStatus: gameStruct.prop.status,
@@ -231,9 +230,15 @@ export class PongEvents {
     // Give up game
     else if (data.action === 'giveUp') {
       console.log('player:', data.player, ' gave up');
+      gameStruct.prop.status = 'giveUp';
+      player.status = 'givenUp';
+      const roomToGiveUp = gameStruct.prop.room;
       this.pongService.endGame(gameStruct, opponent, player);
-      
-    } else if (data.action === 'refreshInMotion') {
+      this.server.to(roomToGiveUp).emit('refreshGame',
+        { gameStatus: gameStruct.prop.status, gameStruct: gameStruct.getState(), time: Date.now() });
+    }
+    // Refresh in motion
+    else if (data.action === 'refreshInMotion') {
       gameStruct.refreshInMotion();
     }
 

@@ -21,12 +21,10 @@ export class GameStruct {
   public pl1: Player;
   public pl2: Player;
 
-  public paddle: Paddle;
-
   public prevFrameTime = 0;
   public first = true;
   public collisionType = '';
-  public prints = 7 * 4;
+  public prints = 12 * 4;
 
   private readonly updateInterval: number = 100; // Adjust as needed
   private updateIntervalId: NodeJS.Timeout | null = null;
@@ -41,6 +39,7 @@ export class GameStruct {
     this.ball = new Ball(this.board);
     this.pl1 = new Player(pl1Id, this.board);
     this.pl2 = new Player(pl2Id, this.board);
+    this.board.updatePointsAndCollisionParameters(this.pl1.pad);
     this.frameDuration = 1000 / this.frameRate;
   }
 
@@ -63,17 +62,17 @@ export class GameStruct {
     else if (side === 'up')
       sideColPts = this.board.upWall;
     else if (side === 'left')
-      sideColPts = this.board.leftWall;
+      sideColPts = this.board.leftWallPaddleCol;
     else if (side === 'right')
-      sideColPts = this.board.rightWall;
+      sideColPts = this.board.rightWallPaddleCol;
     const determinant = ballColPts.a * sideColPts.b - sideColPts.a * ballColPts.b;
 
-    if (this.prints > 0) {
-      console.log('side:', side);
-      console.log('ball a:', ballColPts.a, ' b:', ballColPts.b, ' c:', ballColPts.c);
-      console.log('ball a:', sideColPts.a, ' b:', sideColPts.b, ' c:', sideColPts.c);
-      this.prints -= 1;
-    }
+    // if (this.prints > 0) {
+    //   console.log('side:', side);
+    //   console.log('ball a:', ballColPts.a, ' b:', ballColPts.b, ' c:', ballColPts.c);
+    //   console.log('ball a:', sideColPts.a, ' b:', sideColPts.b, ' c:', sideColPts.c);
+    //   this.prints -= 1;
+    // }
 
     if (determinant === 0) {
       return new Point(100000, 100000);
@@ -83,11 +82,11 @@ export class GameStruct {
       var y = (ballColPts.a * sideColPts.c - sideColPts.a * ballColPts.c) / determinant;
     }
 
-    if (this.prints > 0) {
-      console.log('x:', x, ' y:', y);
-      console.log(' ');
-      this.prints -= 1;
-    }
+    // if (this.prints > 0) {
+    //   console.log('x:', x, ' y:', y);
+    //   console.log(' ');
+    //   this.prints -= 1;
+    // }
 
     return (new Point(x, y));
   }
@@ -103,11 +102,11 @@ export class GameStruct {
     let distLeft = leftPt.distanceToPointBallSide(this.ball, 'left');
     let distRight = rightPt.distanceToPointBallSide(this.ball, 'right');
 
-    if (this.prints > 0) {
-      console.log('dlow:', distLow, ' dup:', distUp, ' dleft:', distLeft, ' dright:', distRight);
-      console.log(' ');
-      this.prints -= 1;
-    }
+    // if (this.prints > 0) {
+    //   console.log('dlow:', distLow, ' dup:', distUp, ' dleft:', distLeft, ' dright:', distRight);
+    //   console.log(' ');
+    //   this.prints -= 1;
+    // }
 
     let distV: number;
     let collisionV = '';
@@ -141,7 +140,7 @@ export class GameStruct {
         collisionH = 'right';
       } else {
         distH = distLeft;
-        collisionV = 'left';
+        collisionH = 'left';
       }
     }
 
@@ -156,33 +155,34 @@ export class GameStruct {
 
   private updateGame(distanceToPass) {
 
-    if (this.prints > 0) {
-      console.log('ball before:', this.ball);
-      console.log(' ');
-      this.prints -= 1;
-    }
+    // if (this.prints > 0) {
+    //   console.log('ball before:', this.ball);
+    //   console.log(' ');
+    //   this.prints -= 1;
+    // }
 
     this.updateBallPosition(distanceToPass);
     this.handleCollision();
     this.sendUpdate();
 
-    if (this.prints > 0) {
-      console.log('ball mid:', this.ball);
-      console.log(' ');
-      this.prints -= 1;
-    }
+    // if (this.prints > 0) {
+    //   console.log('ball mid:', this.ball);
+    //   console.log(' ');
+    //   this.prints -= 1;
+    // }
 
     const distanceToPoint = this.getMinDistCollision();
     const timeToCollision = distanceToPoint / this.ball.speed * 1000;
     distanceToPass = distanceToPoint;
 
-    if (this.prints > 0) {
-      console.log('ball after:', this.ball);
-      console.log('distance:', distanceToPoint);
-      console.log('direction:', this.collisionType);
-      console.log(' ');
-      this.prints -= 1;
-    }
+    // if (this.prints > 0) {
+    //   console.log('ball after:', this.ball);
+    //   console.log('distance:', distanceToPoint);
+    //   console.log('direction:', this.collisionType);
+    //   console.log('----------------------------------------');
+    //   console.log('----------------------------------------');
+    //   this.prints -= 1;
+    // }
 
     clearTimeout(this.gameLoopInterval!);
     this.gameLoopInterval = setTimeout(() => {
@@ -204,6 +204,7 @@ export class GameStruct {
     } else if (this.collisionType === 'up') {
       this.ball.dir.y = -this.ball.dir.y;
     } else if (this.collisionType === 'left') {
+      // scorePoint();
       this.ball.dir.x = -this.ball.dir.x;
     } else if (this.collisionType === 'right') {
       this.ball.dir.x = -this.ball.dir.x;

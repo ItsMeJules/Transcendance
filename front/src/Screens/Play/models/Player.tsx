@@ -11,4 +11,9 @@ export class Player {
       this.num = number;
       this.pad = new Paddle(board);
     }
+
+    updatePlayer(incomingPlayer : Player) {
+      this.status = incomingPlayer.status;
+      this.pad.updatePad(incomingPlayer.pad);
+    }
   }

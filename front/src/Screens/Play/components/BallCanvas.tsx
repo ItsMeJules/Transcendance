@@ -43,7 +43,7 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, ball, canvasRef, whichPla
         }
 
 
-        console.log('posx:', ball.pos.x, ' posy:', ball.pos.y);
+        // console.log('posx:', ball.pos.x, ' posy:', ball.pos.y);
         ctx.fillStyle = 'white';
         ctx.fillRect(ball.tip.x, ball.tip.y, ball.size, ball.size);
         ctx.setLineDash([]);

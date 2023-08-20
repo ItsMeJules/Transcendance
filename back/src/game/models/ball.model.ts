@@ -1,6 +1,7 @@
 import { Vector } from './vector.model';
 import { Point } from './point.model';
 import { Board } from './board.model';
+import { Player } from './player.model';
 
 export class Ball {
   public size: number;
@@ -11,25 +12,24 @@ export class Ball {
   public dir: Vector;
   public tRefresh = Date.now();
 
-  constructor(gameBoard: Board) {
+  constructor(board: Board) {
     this.size = 20;
     this.halfSize = this.size * 0.5;
-    this.speed = 100;
-    this.pos = new Point(gameBoard.width * 0.5, gameBoard.height * 0.5);
-    // this.pos = new Point(700, 20);
+    this.speed = 200;
+    this.pos = new Point(board.width * 0.5, board.height * 0.5);
     this.accelFactor = 0.2;
-    const randomAngle = Math.random() * (Math.PI / 3) - Math.PI / 6;
+    const maxAngle = Math.atan((board.height - this.size) / board.width); /// add -paddle.width to board.width
+    const randomAngle = Math.random() * maxAngle * 2 - maxAngle;
     const randomX = Math.random() < 0.5 ? -1 : 1;
     const randomY = Math.random() < 0.5 ? -1 : 1;
-    // this.dir = new Vector(
-    //   Math.cos(randomAngle) * randomX,
-    //   Math.sin(randomAngle) * randomY);
-    // this.dir = new Vector(0.707, 0.707);
-    this.dir = new Vector(1, 0);
+    this.dir = new Vector(
+      Math.cos(randomAngle) * randomX,
+      Math.sin(randomAngle) * randomY);
+    // this.dir = new Vector(1, 0);
   }
 
-  clone(gameBoard: Board): Ball {
-    const clonedBall = new Ball(gameBoard);
+  clone(board: Board): Ball { 
+    const clonedBall = new Ball(board);
 
     clonedBall.size = this.size;
     clonedBall.halfSize = this.halfSize;
@@ -41,6 +41,8 @@ export class Ball {
     return clonedBall;
   }
 
+  randomService(board: Board, whichPlayerToServe: string) {
 
+  }
 
 }

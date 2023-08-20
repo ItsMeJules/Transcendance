@@ -23,4 +23,9 @@ export class Paddle {
   resetPaddleTop(gameBoard: Board) {
     this.pos = gameBoard.height * 0.5 - this.height * 0.5;
   }
+
+  updatePad(incomingPad: Paddle) {
+    this.pos = incomingPad.pos;
+    this.speed = incomingPad.speed;
+  }
 }
