@@ -31,7 +31,7 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, ball, canvasRef, whichPla
       // console.log('velx:', ball.dir.x * ball.speed, ' posy:', ball.dir.y * ball.speed);
       if (ctx) {
         // console.log('speed:', ball.speed, ' dirx:', ball.dir.x, ' diry:', ball.dir.y);
-        ctx.clearRect(ball.tip.x - 50, ball.tip.y - 50, ball.size + 100, ball.size + 100);
+        ctx.clearRect(0, 0, game.board.width, game.board.height);
 
         
         ////////////////////////////////////////////////////////////

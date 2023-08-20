@@ -125,7 +125,7 @@ export class GameStruct {
         collisionV = 'up';
       }
     }
-      
+
     let distH: number;
     let collisionH = '';
     if (this.collisionType === 'left') {
@@ -204,12 +204,25 @@ export class GameStruct {
     } else if (this.collisionType === 'up') {
       this.ball.dir.y = -this.ball.dir.y;
     } else if (this.collisionType === 'left') {
-      // scorePoint();
-      this.ball.dir.x = -this.ball.dir.x;
+      this.scorePoint();
     } else if (this.collisionType === 'right') {
-      this.ball.dir.x = -this.ball.dir.x;
+      this.scorePoint();
     }
     // this.collisionType = '';
+  }
+
+  scorePoint() {
+    if (this.collisionType === 'left') {
+      this.pl2.score += 1;
+      this.ball.pos = new Point(this.board.width * 0.5, this.board.height * 0.5);
+      this.ball.tRefresh = Date.now();
+      this.ball.randomService(this.board, 2);
+    } else if (this.collisionType === 'right') {
+      this.pl1.score += 1;
+      this.ball.pos = new Point(this.board.width * 0.5, this.board.height * 0.5);
+      this.ball.tRefresh = Date.now();
+      this.ball.randomService(this.board, 1);
+    }
   }
 
   refreshInMotion() {

@@ -25,7 +25,7 @@ export class Ball {
     this.dir = new Vector(
       Math.cos(randomAngle) * randomX,
       Math.sin(randomAngle) * randomY);
-    // this.dir = new Vector(1, 0);
+    this.dir = new Vector(-1, 0);
   }
 
   clone(board: Board): Ball { 
@@ -41,8 +41,15 @@ export class Ball {
     return clonedBall;
   }
 
-  randomService(board: Board, whichPlayerToServe: string) {
-
+  randomService(board: Board, whichPlayerToServe: number) {
+    const maxAngle = Math.atan((board.height - this.size) / board.width);
+    const randomAngle = Math.random() * maxAngle * 2 - maxAngle;
+    const dirX = whichPlayerToServe === 1 ? -1 : 1; 
+    const randomY = Math.random() < 0.5 ? -1 : 1;
+    this.dir = new Vector(
+      Math.cos(randomAngle) * dirX,
+      Math.sin(randomAngle) * randomY);
   }
+
 
 }
