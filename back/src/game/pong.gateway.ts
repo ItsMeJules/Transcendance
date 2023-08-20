@@ -220,11 +220,10 @@ export class PongEvents {
       gameStruct.pl1.status = 'playing';
       gameStruct.pl2.status = 'playing';
       gameStruct.prop.tStart = Date.now();
-      const gameState = gameStruct.getState();
-      // console.log('game state:', gameState);
+      const gameParams = gameStruct.getState();
       this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status });
       this.server.to(gameStruct.prop.room).emit('refreshGame',
-        { gameStatus: gameStruct.prop.status, gameState: gameStruct.getState(), time: Date.now() });
+        { gameStatus: gameStruct.prop.status, gameParams: gameStruct.getState(), time: Date.now() });
       gameStruct.startGameLoop();
     }
     // Give up game
@@ -235,7 +234,7 @@ export class PongEvents {
       const roomToGiveUp = gameStruct.prop.room;
       this.pongService.endGame(gameStruct, opponent, player);
       this.server.to(roomToGiveUp).emit('refreshGame',
-        { gameStatus: gameStruct.prop.status, gameStruct: gameStruct.getState(), time: Date.now() });
+        { gameStatus: gameStruct.prop.status, gameParams: gameStruct.getState(), time: Date.now() });
     }
     // Refresh in motion
     else if (data.action === 'refreshInMotion') {

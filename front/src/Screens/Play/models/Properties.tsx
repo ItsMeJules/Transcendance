@@ -3,7 +3,7 @@ import { Board } from "./Board";
 import { Player } from "./Player";
 
 export class GameProperties {
-    public isStarted = false;
+    public isPlaying = false;
     public tNow = Date.now();
     public tPrev = Date.now();
     public board: Board;
@@ -18,9 +18,4 @@ export class GameProperties {
       this.pl2 = new Player(this.board, 2);
     }
 
-    // updateGame(incomingGame: GameProperties) {
-    //   this.ball.updateBall(this.board, incomingGame.ball);
-    //   this.pl1.updatePlayer(incomingGame.pl1);
-    //   this.pl2.updatePlayer(incomingGame.pl2);
-    // }
   }

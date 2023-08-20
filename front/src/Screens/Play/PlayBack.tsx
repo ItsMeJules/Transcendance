@@ -19,14 +19,14 @@ interface PlayBackProps {
   whichPlayer: number,
 }
 
-interface GameState {
+interface GameParams {
   pl1: Player;
   pl2: Player;
   ball: Ball;
 }
 
 interface GameSocket {
-  gameState: GameState;
+  gameParams: GameParams;
   gameStatus: string;
   playerStatus: string;
   opponentStatus: string;
@@ -34,7 +34,6 @@ interface GameSocket {
 }
 
 const PlayBack = () => {
-  const [game, setGame] = useState(new GameProperties());
   const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
@@ -45,8 +44,11 @@ const PlayBack = () => {
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isOpponentReady, setIsOpponentReady] = useState(false);
+
   const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameState, setGameState] = useState<GameSocket>();
+  const [game, setGame] = useState(new GameProperties());
+
   const [centralText, setCentralText] = useState('');
   const [giveUp, setGiveUp] = useState(false);
   const history = useNavigate();
@@ -88,47 +90,31 @@ const PlayBack = () => {
       console.log('DATA PREPARE', data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
-      console.log('DATA game', data.gameState);
-
-      // console.log('pos b4:', game.ball.pos);
-      // setGameState(data.gameState);
-
-      // console.log('gamestate ball:', gameState?.gameState.ball);
-      // if (data.gameState.ball) {
-      // setGame({ ...game });
-
-      // game.
-      // game.updateGame(data.gameState);
+      console.log('DATA game', data);
       setGameState(data);
-      
-      // game.ball.updateBall(game.board, data.gameState.ball);
-      // game.pl1.updatePlayer(data.gameState.pl1);
-      // game.pl2.updatePlayer(data.gameState.pl2);
-
-      // }
-      // console.log('ball after:', game.ball.pos);
-      // console.log('DATA game', data);
     });
   }, [socket.game]);
 
   useEffect(() => {
     console.log('gamestate:', gameState);
     if (gameState?.gameStatus === 'giveUp') {
-      console.log('gameState at giveup:', game);
-      // setCentralText('Timeout - game canceled')
-      // setTimeout(() => {
-      //   history('/test');
-      // }, 3 * 1000);
-    }
-    if (gameState) {
-      game.ball.updateBall(game.board, gameState.gameState.ball);
+      game.isPlaying = false;
+      console.log('gameState in giveup:');
+      if (gameState.gameParams.pl1.status === 'givenUp') {
+        whichPlayer === 1 ? setCentralText('You gave up!') :
+          setCentralText('Your oponent gave up!');
+      } else if (gameState.gameParams.pl2.status === 'givenUp') {
+        whichPlayer === 2 ? setCentralText('You gave up!') :
+        setCentralText('Your oponent gave up!');
+      }
+    } else if (gameState) {
+      game.ball.updateBall(game.board, gameState.gameParams.ball);
       console.log('refreshed ball:', game.ball);
-    } 
+    }
   }, [gameState]);
 
   useEffect(() => {
     // console.log('socketData:', socketPrepare);
-
     if (socketPrepare?.gameStatus === 'pending' || socketPrepare?.playerStatus === 'pending') {
       setCentralText('Ready?');
     } else if (socketPrepare?.gameStatus === 'waiting'
@@ -151,8 +137,8 @@ const PlayBack = () => {
       }, 3 * 1000);
     } else if (socketPrepare?.gameStatus === 'playing') {
       socket.game?.off('prepareToPlay'); // dont off and use for status?
-      game.isStarted = true;
-      setGame({ ...game, isStarted: true });
+      game.isPlaying = true;
+      setGame({ ...game, isPlaying: true });
       socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'refreshInMotion' });
     }
     return;
@@ -176,11 +162,11 @@ const PlayBack = () => {
       <div className="pong-sub-container text-white border">
 
         <div style={{ height: '30px', marginBottom: '10px', marginTop: '0px' }}>
-          {!game.isStarted && !isPlayerReady &&
+          {!game.isPlaying && !isPlayerReady &&
             <button className="text-white" onClick={handleReadyClick} >
               {centralText}
             </button>}
-          {!game.isStarted && isPlayerReady &&
+          {!game.isPlaying && isPlayerReady &&
             <div className="text-white">
               {centralText}
             </div>}

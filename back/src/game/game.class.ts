@@ -8,7 +8,7 @@ import { GameProperties } from './models/properties.model';
 import { PongEvents } from './pong.gateway';
 import { copyFileSync } from 'fs';
 
-export interface GameState {
+export interface GameParams {
   pl1: Player;
   pl2: Player;
   ball: Ball;
@@ -217,10 +217,10 @@ export class GameStruct {
     let tInterval = Date.now() - this.ball.tRefresh;
     tmpBall.pos.x += tmpBall.speed * tmpBall.dir.x * (tInterval / 1000);
     tmpBall.pos.y += tmpBall.speed * tmpBall.dir.y * (tInterval / 1000);
-    let tmpGameState: GameState = this.getState();
-    tmpGameState.ball = tmpBall;
+    let tmpGameParams: GameParams = this.getState();
+    tmpGameParams.ball = tmpBall;
     this.pongEvents.server.to(this.prop.room).emit('refreshGame',
-      { gameStatus: this.prop.status, gameState: tmpGameState, time: Date.now() });
+      { gameStatus: this.prop.status, gameParams: tmpGameParams, time: Date.now() });
   }
 
 
@@ -236,14 +236,14 @@ export class GameStruct {
     this.pongEvents.pongService.onlineGames.forEach((value, key) => {
       if (value.prop.status === 'playing')
         this.pongEvents.server.to(value.prop.room).emit('refreshGame',
-          { gameStatus: value.prop.status, gameState: value.getState(), time: Date.now() });
+          { gameStatus: value.prop.status, gameParams: value.getState(), time: Date.now() });
     });
   }
 
   private sendUpdate() {
     if (this.prop.status === 'playing')
       this.pongEvents.server.to(this.prop.room).emit('refreshGame',
-        { gameStatus: this.prop.status, gameState: this.getState(), time: Date.now() });
+        { gameStatus: this.prop.status, gameParams: this.getState(), time: Date.now() });
   }
 
   setPlayerReady(id: number) {
@@ -260,8 +260,8 @@ export class GameStruct {
     return false;
   }
 
-  getState(): GameState {
-    const state: GameState = {
+  getState(): GameParams {
+    const state: GameParams = {
       pl1: this.pl1,
       pl2: this.pl2,
       ball: this.ball,

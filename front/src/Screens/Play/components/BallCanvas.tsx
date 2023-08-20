@@ -21,7 +21,7 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, ball, canvasRef, whichPla
     let previousTimestamp = 0;
 
     const animateBall = (timestamp: number) => {
-      if (!game.isStarted) return;
+      if (!game.isPlaying) return;
       if (!previousTimestamp) {
         previousTimestamp = timestamp;
       }
@@ -73,7 +73,7 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, ball, canvasRef, whichPla
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [canvasRef, ball, game.board.factor, game.isStarted]);
+  }, [canvasRef, ball, game.board.factor, game.isPlaying]);
 
   return null;
 };
