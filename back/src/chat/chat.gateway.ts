@@ -16,6 +16,11 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateRoomDto } from './dto';
 import { subscribe } from 'diagnostics_channel';
+import { PayloadDto } from 'src/auth/dto/payload.dto';
+import {
+  ActionChatHandlers,
+  ActionRoomHandlers,
+} from './handlers/handlers.map';
 
 // @UseGuards(JwtGuard) // add jwt guard for chat auth
 @WebSocketGateway({ namespace: 'chat' })
@@ -63,28 +68,25 @@ export class ChatEventsGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: string,
   ): Promise<void> {
-    // const access_token = extractAccessTokenFromCookie(clientno);
-    // const user = await this.authService.validateJwtToken(access_token);
     console.log('client :', client);
     console.log('Received message: ', payload);
     console.log('userid ?: ', client.data, client.data.id, client.id);
     await this.chatService.sendMessage(payload, client, this.server);
   }
 
-  @SubscribeMessage('create_channel')
-  async createChannelWS(
+  @SubscribeMessage('chat-action')
+  async chatAction(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: CreateRoomDto,
+    @MessageBody() payload: any,
   ): Promise<void> {
-    console.log('creating the room named ', payload);
-    await this.chatService.createRoom(payload, client);
+    ActionChatHandlers[payload.action];
   }
 
-  @SubscribeMessage('delete_channel')
-  async deleteChannel(
+  @SubscribeMessage('room-action')
+  async roomAction(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: CreateRoomDto,
+    @MessageBody() payload: any,
   ): Promise<void> {
-    return;
+    ActionRoomHandlers[payload.action];
   }
 }
