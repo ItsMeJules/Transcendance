@@ -8,8 +8,10 @@ const QrCode: React.FC = () => {
   const axiosInstanceError = useAxios();
   const [image, setImage] = useState<string>("");
   const [is2FAActive, setIs2FAActive] = useState<boolean | null>(null);
+  const [isLoadingQRCode, setLoadingQRCode] = useState<boolean>(false);
 
   const codeGen = async () => {
+    setLoadingQRCode(true);
     try {
       const response = await axiosInstanceError.post(
         API_ROUTES.ACTIVATE_2FA,
@@ -22,7 +24,9 @@ const QrCode: React.FC = () => {
       const blob = new Blob([response.data], { type: "image/png" });
       setImage(URL.createObjectURL(blob));
       setIs2FAActive(true);
+      setLoadingQRCode(false);
     } catch (error) {
+      setLoadingQRCode(false);
       console.log("Error:", error);
     }
   };
@@ -86,11 +90,6 @@ const QrCode: React.FC = () => {
     fetchData();
   }, []); // axiosInstanceError for warning but learn how to add dependances?
 
-  if (is2FAActive === null) {
-    // Logique a implementer dans les dossiers parents?
-    return <div>Loading...</div>;
-  }
-
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <button
@@ -105,10 +104,10 @@ const QrCode: React.FC = () => {
           }
         }}
       >
-        {is2FAActive ? "DeActivate 2FA" : "Activate 2FA"}
+        {is2FAActive ? "Deactivate 2FA" : "Activate 2FA"}
       </button>
 
-      <Popup ref={popupRef} image={image} onClose={changeVisibleNone} />
+     <Popup ref={popupRef} isLoading={isLoadingQRCode} image={image} onClose={changeVisibleNone} /> 
     </div>
   );
 };
