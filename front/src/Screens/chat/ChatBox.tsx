@@ -37,7 +37,6 @@ export const ChatBox = () => {
 
   useEffect(() => {
     socketRef.current = socket.chat;
-    console.log("rerun")
     
     const handleReconnect = () => {
       //////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
@@ -80,6 +79,7 @@ export const ChatBox = () => {
 
   const sendData = (data: string) => {
     if (socketRef.current) {
+      console.log("sending data: ", data);
       socketRef.current.emit("message", data);
     }
   };
@@ -95,11 +95,7 @@ export const ChatBox = () => {
         <ChatContainer messagesReceived={messages} />
       </div>
 
-      <ChatBar
-        chatToggled={chatToggled}
-        setChatToggled={setChatToggled}
-        sendData={sendData}
-      />
+      <ChatBar chatToggled={chatToggled} setChatToggled={setChatToggled} sendData={sendData} />
     </div>
   );
 };
