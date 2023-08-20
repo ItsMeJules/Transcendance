@@ -2,6 +2,7 @@ import React, { useState, MouseEvent } from "react";
 
 import MorePopup from "./more/MorePopup";
 import ChannelManager from "./channel_manager/ChannelManager";
+import { Channel, ChannelData, ChannelType } from "../../../Services/Channel";
 
 export enum PopupType {
   CHANNEL = "channel",
@@ -13,6 +14,15 @@ export enum PopupType {
 export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false);
   const [popupType, setPopupActive] = useState<PopupType | null>(null);
+  const activeChannel: Channel = new Channel({
+    type: ChannelType.PUBLIC,
+    name: "Public",
+    password: null,
+    users: [],
+    owner: null,
+    admins: [],
+    punishments: []
+  })
 
   const handleMoreClick = (event: MouseEvent<HTMLDivElement>) => {
     if (!isMoreActive) setPopupActive(null);
@@ -35,7 +45,7 @@ export default function ChatMetadata() {
       </div>
 
       <div className="channel-manager">
-        <ChannelManager/>
+        <ChannelManager channel={activeChannel}/>
       </div>
 
       <div className="channel-icon"></div>

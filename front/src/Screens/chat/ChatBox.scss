@@ -23,7 +23,7 @@
       align-items: center;
 
       height: 5vh;
-      width: 800px;
+      width: 20vw;
 
       background-color: blue;
 
@@ -60,7 +60,7 @@
               top: 50%;
               left: 25%;
 
-              content: " ";
+              content: ' ';
 
               background: black;
               transition: all 250ms ease-in-out;
@@ -76,7 +76,7 @@
               top: -5px;
               left: 0px;
 
-              content: " ";
+              content: ' ';
 
               background: black;
               transition: all 250ms ease-in-out;
@@ -92,7 +92,7 @@
               top: 3px;
               left: 0px;
 
-              content: " ";
+              content: ' ';
 
               background: black;
               transition: all 250ms ease-in-out;
@@ -161,7 +161,7 @@
             left: 102%;
             margin-top: 2px;
 
-            background: #a9a9a9;
+            background: #A9A9A9;
             border-radius: 5px;
             border: 1px solid gray;
 
@@ -176,7 +176,7 @@
 
               border-bottom: 2px solid black;
               border-radius: 5px 5px 0px 0px;
-              background: #a9a9a9;
+              background: #A9A9A9;
 
               height: 40%;
               width: 100%;
@@ -227,14 +227,11 @@
                 }
               }
 
-              .public {
-              }
+              .public {}
 
-              .private {
-              }
+              .private {}
 
-              .protected {
-              }
+              .protected {}
             }
 
             .channel-name {
@@ -296,6 +293,7 @@
                 }
               }
             }
+
           }
 
           .dm-popup {
@@ -444,12 +442,23 @@
 
             overflow-y: scroll;
           }
+
         }
+
       }
 
       .channel-manager {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+
         height: 100%;
         width: 100%;
+
+        .manage {
+          width: 8%;
+          height: auto;
+        }
 
         background-color: lime;
       }
@@ -469,16 +478,16 @@
       align-items: flex-start;
 
       height: 100%;
-      width: 800px;
+      width: 20vw;
 
       overflow-y: scroll;
-      background-color: #e8ebf5;
+      background-color: #E8EBF5;
 
       .message-self,
       .message-other {
         display: inline-block;
 
-        box-shadow: 8px -8px 10px -7px rgba(0, 0, 0, 0.4);
+        box-shadow: 8px -8px 10px -7px rgba(0, 0, 0, .4);
 
         word-wrap: break-word;
         max-width: 70%;
@@ -503,6 +512,7 @@
         margin-left: 5px;
       }
     }
+
   }
 
   .chatbar-container {
@@ -512,7 +522,7 @@
     align-items: flex-start;
 
     height: 5vh;
-    width: 800px;
+    width: 20vw;
 
     background-color: white;
     z-index: 1;
@@ -536,7 +546,7 @@
         width: 90%;
 
         border-radius: 5rem;
-        box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, 0.8);
+        box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, .8);
 
         input {
           flex: 1;
@@ -572,6 +582,7 @@
           }
         }
       }
+
     }
 
     .toggler {

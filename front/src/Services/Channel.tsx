@@ -25,10 +25,11 @@ export interface BanData extends PunishmentData {}
 
 export interface ChannelData {
   type: ChannelType;
+  name: string;
   password: string | null;
   users: User[] | null;
-  owner: User;
-  admins: User[]
+  owner: User | null;
+  admins: User[] | null;
   punishments: PunishmentData[]
 }
 

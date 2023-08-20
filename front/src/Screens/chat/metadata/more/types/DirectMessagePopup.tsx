@@ -5,7 +5,7 @@ import { AxiosInstance } from "axios";
 import Popup from "../Popup"
 import User from "../../../../../Services/User";
 import { useAxios } from "../../../../../api/axios-config";
-import UsersList, { fetchAllUsers } from "./UsersList";
+import UsersList, { fetchAllUsers } from "../../UsersList";
 
 export default function DirectMessagePopup() {
   const axiosInstance: AxiosInstance = useAxios() // Can't be used inside a callback function, why?

@@ -1,8 +1,8 @@
 import React from "react";
 import { AxiosInstance, AxiosResponse } from "axios";
 
-import User, { UserData } from "../../../../../Services/User";
-import { API_ROUTES } from "../../../../../Utils";
+import User, { UserData } from "../../../Services/User";
+import { API_ROUTES } from "../../../Utils";
 
 interface UserListProps {
   users: User[];
