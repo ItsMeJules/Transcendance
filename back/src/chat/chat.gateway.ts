@@ -14,6 +14,8 @@ import { JwtGuard } from 'src/auth/guard';
 import { ChatService } from './chat.service';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateRoomDto } from './dto';
+import { subscribe } from 'diagnostics_channel';
 
 // @UseGuards(JwtGuard) // add jwt guard for chat auth
 @WebSocketGateway({ namespace: 'chat' })
@@ -43,18 +45,9 @@ export class ChatEventsGateway {
     }
     client.data = { id: user.id };
 
-    const messages = await this.prismaService.message.findMany({
-      where: {
-        roomId: 1,
-      },
-      orderBy: {
-        createdAt: 'asc',
-      },
-    });
-    const messagesWithClientId = messages.map((message) => ({
-      ...message,
-      clientId: user.id,
-    }));
+    console.log('bfore');
+    const messagesWithClientId =
+      await this.chatService.fetchMessagesOnRoomForUser('general', client);
     console.log('messages :', messagesWithClientId);
     this.server.emit('load_general_chat_' + user.id, messagesWithClientId);
     console.log('load_general_chat_' + user.id, messagesWithClientId);
@@ -75,6 +68,28 @@ export class ChatEventsGateway {
     console.log('client :', client);
     console.log('Received message: ', payload);
     console.log('userid ?: ', client.data, client.data.id, client.id);
-    this.chatService.sendMessage(payload, client, this.server);
+    await this.chatService.sendMessage(payload, client, this.server);
   }
+
+  @SubscribeMessage('create_channel')
+  async createChannelWS(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: CreateRoomDto,
+  ): Promise<void> {
+    console.log('creating the room named ', payload);
+    await this.chatService.createRoom(payload, client);
+  }
+
+  @SubscribeMessage('delete_channel')
+  async deleteChannel(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: CreateRoomDto,
+  ): Promise<void> {
+    return;
+  }
+  private actionHandlers = {
+    create_channel: this.chatService.createRoom,
+    ban: this.chatService.banUser,
+    // ... other handlers
+  };
 }

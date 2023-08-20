@@ -158,7 +158,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     try {
       const user = await this.returnCompleteUser(userId);
       if (!user.activeRooms) {
-        throw new Error('no users blocked by ' + user.username);
+        throw new Error('no rooms for this user');
       }
       return user.activeRooms;
     } catch (error) {

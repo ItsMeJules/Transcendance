@@ -77,40 +77,13 @@ export class ChatService {
     return generalChat;
   }
 
-  async modifyPassword(roomName: string, client: Socket): Promise<string> {
-    // encode pw later
-    try {
-      const currentRoom = await this.prismaService.returnCompleteRoom(roomName);
-      const password: string = client.data.password;
-      if (currentRoom.ownerId !== client.data.id)
-        throw new Error('No permission');
-      if (currentRoom.password === password) throw new Error('same password');
-      if (password === '') {
-        await this.prismaService.room.update({
-          where: { name: currentRoom.name },
-          data: {
-            password: null,
-          },
-        });
-      } else {
-        await this.prismaService.room.update({
-          where: { name: currentRoom.name },
-          data: {
-            password: password,
-          },
-        });
-      }
-      return password;
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // Invitations
 
   async createRoom(
     createRoomDto: CreateRoomDto,
     client: Socket,
   ): Promise<Room> {
-    // encode pw later
+    // encode pw later add functions
     let room = await this.prismaService.room.findUnique({
       where: { name: createRoomDto.name },
     });
@@ -139,33 +112,71 @@ export class ChatService {
     return room;
   }
 
-  async joinRoom(joinRoomDto: JoinRoomDto, client: Socket): Promise<Room> {
-    // encode pw later
-    const room = await this.prismaService.room.findUnique({
-      where: { name: joinRoomDto.name },
-    });
-    if (!room) {
-      throw new Error('no room');
+  async fetchMessagesOnRoomForUser(
+    roomName: string,
+    client: Socket,
+  ): Promise<Message[]> {
+    try {
+      const messages = await this.prismaService.allMessagesFromRoom(roomName);
+      const usersBanned = await this.prismaService.allBlockedUsersFromUser(
+        client.data.id,
+      );
+      const messagesWithClientId = messages.map((currentMessage) => {
+        const isAuthorBanned = usersBanned.some(
+          (bannedUser) => bannedUser.id === currentMessage.authorId,
+        );
+
+        if (isAuthorBanned) {
+          return {
+            ...currentMessage,
+            text: 'blocked message',
+          };
+        }
+        console.log('debug');
+        return currentMessage;
+      });
+      return messagesWithClientId;
+    } catch (error) {
+      console.log(error);
     }
-    if (room.password) {
-      if (room.password !== joinRoomDto.password) {
-        throw new Error('wrong password');
-      }
-    }
-    await this.prismaService.room.update({
-      where: { id: room.id },
-      data: {
-        users: {
-          connect: {
-            id: client.data.id,
-          },
-        },
-      },
-    });
-    return room;
   }
 
-  async disconnectRoom(roomName: string, client: Socket): Promise<void> {
+  async joinRoom(
+    joinRoomDto: JoinRoomDto,
+    client: Socket,
+    userJoining: number,
+  ): Promise<Room> {
+    // encode pw later
+    try {
+      const userJ
+      const room = await this.prismaService.room.findUnique({
+        where: { name: joinRoomDto.name },
+      });
+      if (!room) {
+        throw new Error('no room');
+      }
+      if (room.password) {
+        if (room.password !== joinRoomDto.password) {
+          throw new Error('wrong password');
+        }
+      }
+      await this.prismaService.room.update({
+        where: { id: room.id },
+        data: {
+          users: {
+            connect: {
+              id: client.data.id,
+            },
+          },
+        },
+      });
+      return room;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async leaveRoom(roomName: string, client: Socket): Promise<void> {
     try {
       const room = await this.prismaService.returnCompleteRoom(roomName);
       await this.prismaService.room.update({
@@ -182,6 +193,8 @@ export class ChatService {
       console.log(error);
     }
   }
+
+  ///////////////////////////// ROOM FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
   hierarchyCheck(
     room: CompleteRoom,
@@ -242,7 +255,7 @@ export class ChatService {
     }
   }
 
-  async banUser(roomName: string, client: Socket): Promise<void> {
+  async banUserToggle(roomName: string, client: Socket): Promise<void> {
     try {
       const actingUser = await this.prismaService.returnCompleteUser(
         client.data.id,
@@ -255,16 +268,84 @@ export class ChatService {
         throw new Error('no room');
       }
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
-        await this.prismaService.room.update({
-          where: { id: room.id },
-          data: {
-            users: {
-              disconnect: {
-                id: targetUser.id,
+        if (room.bans.some((banned) => banned.id === targetUser.id)) {
+          await this.prismaService.room.update({
+            where: { id: room.id },
+            data: {
+              users: {
+                disconnect: {
+                  id: targetUser.id,
+                },
+              },
+              bans: {
+                connect: {
+                  id: targetUser.id,
+                },
               },
             },
-          },
-        });
+          });
+        } else {
+          await this.prismaService.room.update({
+            where: { id: room.id },
+            data: {
+              users: {
+                connect: {
+                  id: targetUser.id,
+                },
+              },
+              bans: {
+                disconnect: {
+                  id: targetUser.id,
+                },
+              },
+            },
+          });
+        }
+      } else throw new Error("You don't have permission");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async muteUserFromRoomToggle(
+    roomName: string,
+    client: Socket,
+  ): Promise<void> {
+    try {
+      const actingUser = await this.prismaService.returnCompleteUser(
+        client.data.id,
+      );
+      const targetUser = await this.prismaService.returnCompleteUser(
+        client.data.id, // add targetUserId !!
+      );
+      const room = await this.prismaService.returnCompleteRoom(roomName);
+      if (!room) {
+        throw new Error('no room');
+      }
+      if (this.hierarchyCheck(room, actingUser, targetUser)) {
+        if (room.mutes.some((muted) => muted.id === targetUser.id)) {
+          await this.prismaService.room.update({
+            where: { id: room.id },
+            data: {
+              mutes: {
+                disconnect: {
+                  id: targetUser.id,
+                },
+              },
+            },
+          });
+        } else {
+          await this.prismaService.room.update({
+            where: { id: room.id },
+            data: {
+              mutes: {
+                disconnect: {
+                  id: targetUser.id,
+                },
+              },
+            },
+          });
+        }
       } else throw new Error("You don't have permission");
     } catch (error) {
       console.log(error);
@@ -304,43 +385,14 @@ export class ChatService {
     }
   }
 
-  async fetchMessagesOnRoomForUser(
-    roomName: string,
-    client: Socket,
-  ): Promise<Message[]> {
-    try {
-      const messages = await this.prismaService.allMessagesFromRoom(roomName);
-      const usersBanned = await this.prismaService.allBlockedUsersFromUser(
-        client.data.id,
-      );
-      const messagesWithClientId = messages.map((currentMessage) => {
-        const isAuthorBanned = usersBanned.some(
-          (bannedUser) => bannedUser.id === currentMessage.authorId,
-        );
-
-        if (isAuthorBanned) {
-          return {
-            ...currentMessage,
-            text: 'blocked message',
-          };
-        }
-
-        return currentMessage;
-      });
-      return messagesWithClientId;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   async kickUserRoom(roomName: string, client: Socket): Promise<boolean> {
     try {
       const actingUser = await this.prismaService.returnCompleteUser(
         client.data.id,
       );
       const targetUser = await this.prismaService.returnCompleteUser(
-        client.data.id, // add targetUserId !!
-      ); //
+        client.data.id, // add targetUserId
+      );
       const room = await this.prismaService.returnCompleteRoom(roomName);
       if (!room) {
         throw new Error('no room');
@@ -358,6 +410,58 @@ export class ChatService {
         });
         return true;
       } else throw new Error("You don't have permission");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async modifyPassword(roomName: string, client: Socket): Promise<string> {
+    // encode pw later
+    try {
+      const currentRoom = await this.prismaService.returnCompleteRoom(roomName);
+      const password: string = client.data.password;
+      if (currentRoom.ownerId !== client.data.id)
+        throw new Error('No permission');
+      if (currentRoom.password === password) throw new Error('same password');
+      if (password === '') {
+        await this.prismaService.room.update({
+          where: { name: currentRoom.name },
+          data: {
+            password: null,
+          },
+        });
+      } else {
+        await this.prismaService.room.update({
+          where: { name: currentRoom.name },
+          data: {
+            password: password,
+          },
+        });
+      }
+      return password;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async inviteUser(
+    roomName: string,
+    client: Socket,
+    target: number,
+  ): Promise<void> {
+    try {
+      const room = await this.prismaService.returnCompleteRoom(roomName);
+      const actingUser = await this.prismaService.returnCompleteUser(
+        client.data.id,
+      );
+      const targetUser = await this.prismaService.returnCompleteUser(target); // careful target!
+      if (room.users.some((active) => active.id === targetUser.id)) {
+        throw new Error('user already in room');
+      } else if (room.bans.some((banned) => banned.id === targetUser.id))
+        throw new Error('user is banned from the room');
+      else {
+        this.joinRoom(
+      }
     } catch (error) {
       console.log(error);
     }

@@ -26,24 +26,28 @@ export const ChatBox = () => {
       const userData = JSON.parse(userDataString);
       userId = userData.id;
     }
+
     const message: Message = {
       message: payload.text,
       self: payload.authorId === userId,
     };
+
     setMessages((messages) => [...messages, message]);
   };
 
   useEffect(() => {
     socketRef.current = socket.chat;
+    console.log("rerun");
+
     const handleReconnect = () => {
-      ////////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
+      //////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
       const userDataString = localStorage.getItem("userData");
       let userData = null;
       if (userDataString) {
         userData = JSON.parse(userDataString);
       }
       const userId = userData.id;
-      const eventNameSocket = "load_general_chat_" + socketRef.current?.id;
+      const eventNameSocket = "load_general_chat_" + userId;
       socketRef.current?.off("message");
       socketRef.current?.on("message", onNewMessage);
       socketRef.current?.on(eventNameSocket, (payload: any) => {
@@ -57,6 +61,7 @@ export const ChatBox = () => {
         });
       });
     };
+
     socketRef.current?.on("connect", handleReconnect);
     return () => {
       if (socketRef.current) {
@@ -69,6 +74,7 @@ export const ChatBox = () => {
 
   const sendData = (data: string) => {
     if (socketRef.current) {
+      console.log("sending data: ", data);
       socketRef.current.emit("message", data);
     }
   };
@@ -84,11 +90,7 @@ export const ChatBox = () => {
         <ChatContainer messagesReceived={messages} />
       </div>
 
-      <ChatBar
-        chatToggled={chatToggled}
-        setChatToggled={setChatToggled}
-        sendData={sendData}
-      />
+      <ChatBar chatToggled={chatToggled} setChatToggled={setChatToggled} sendData={sendData} />
     </div>
   );
 };
