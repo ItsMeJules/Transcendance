@@ -12,15 +12,15 @@ export class Ball {
   public accelFactor: number;
   public dir: Vector;
   public tRefresh = Date.now();
-  
-  public maxPaddleBounceAngle = initGameConfig.ball.maxPaddleBounceAngle;
+
+  private readonly maxPaddleBounceAngle = initGameConfig.ball.maxPaddleBounceAngle;
 
   constructor(board: Board, initType: string) {
-    if (initType === 'standard')
+    if (initType === 'standard') 
       this.standardInitializer(board);
     this.standardInitializer(board);
     //
-    // this.dir = new Vector(0.7, 0.4);
+    // this.dir = new Vector(1, 0);
   }
 
   standardInitializer(board: Board) {
@@ -33,10 +33,12 @@ export class Ball {
     this.randomService(board, toRandomPlayer);
     //
     // this.dir = new Vector(0.7, 0.4);
-    const angle = Math.PI / 6.5;
-    this.dir = new Vector(
-      -Math.cos(angle),
-      Math.sin(angle));
+    // const angle = Math.PI / 12;
+    // this.dir = new Vector(
+    //   -Math.cos(angle),
+    //   Math.sin(angle));
+
+    // this.dir = new Vector(1, 0);
   }
 
   clone(board: Board, initType: string): Ball {
@@ -53,17 +55,20 @@ export class Ball {
 
   randomService(board: Board, whichPlayerToServe: number) {
     const maxAngle = Math.atan((board.height - this.size) / board.width);
+    console.log('maxangle:', maxAngle);
     const randomAngle = Math.random() * maxAngle * 2 - maxAngle;
+    console.log('random angle degree:', randomAngle * 180 / Math.PI);
     const dirX = whichPlayerToServe === 1 ? 1 : -1;
     const randomY = Math.random() < 0.5 ? -1 : 1;
     this.dir = new Vector(
       Math.cos(randomAngle) * dirX,
       Math.sin(randomAngle) * randomY);
 
-    const angle = Math.PI / 6.5;
-    this.dir = new Vector(
-      Math.cos(angle),
-      Math.sin(angle));
+    console.log('new dir:', this.dir);
+    // const angle = Math.PI / 12;
+    // this.dir = new Vector(
+    //   -Math.cos(angle),
+    //   Math.sin(angle));
   }
 
   updateDirectionBounce(collisionPercentage: number, side: string) {

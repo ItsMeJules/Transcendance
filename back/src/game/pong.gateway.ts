@@ -229,6 +229,7 @@ export class PongEvents {
     // Give up game
     else if (data.action === 'giveUp') {
       console.log('player:', data.player, ' gave up');
+      gameStruct.stopGameLoop();
       gameStruct.prop.status = 'giveUp';
       player.status = 'givenUp';
       const roomToGiveUp = gameStruct.prop.room;
