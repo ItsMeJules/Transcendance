@@ -6,11 +6,12 @@ export class Paddle {
   public speed: number;
   public pos: number;
 
-  constructor(gameBoard: Board) {
-    this.width = gameBoard.width * 15 / 600;
-    this.height = gameBoard.height * 80 / 300;
-    this.speed = gameBoard.height * 10 / 300;
-    this.pos = gameBoard.height * 0.5 - this.height * 0.5;
+  constructor(board: Board) {
+    this.width = board.width * 15 / board.gridWidth;
+    this.height = board.height * 80 / board.gridHeight;
+    this.speed = board.height * 10 / board.gridHeight;
+    // this.pos = board.height * 0.5 - this.height * 0.5;
+    this.pos = 0;
   }
 
   refactorPaddle(factor: number) {
@@ -20,12 +21,14 @@ export class Paddle {
     this.pos = this.pos * factor;
   }
 
-  resetPaddleTop(gameBoard: Board) {
-    this.pos = gameBoard.height * 0.5 - this.height * 0.5;
+  resetPaddleTop(board: Board) {
+    this.pos = board.height * 0.5 - this.height * 0.5;
   }
 
-  updatePad(incomingPad: Paddle) {
-    this.pos = incomingPad.pos;
-    this.speed = incomingPad.speed;
+  updatePad(board: Board, incomingPad: Paddle) {
+    this.width = incomingPad.width * board.scaleFactor;
+    this.height = incomingPad.height * board.scaleFactor;
+    this.speed = incomingPad.speed * board.scaleFactor;
+    this.pos = incomingPad.pos * board.scaleFactor;
   }
 }

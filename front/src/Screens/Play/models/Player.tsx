@@ -12,8 +12,8 @@ export class Player {
       this.pad = new Paddle(board);
     }
 
-    updatePlayer(incomingPlayer : Player) {
+    updatePlayer(board: Board, incomingPlayer : Player) {
       this.status = incomingPlayer.status;
-      this.pad.updatePad(incomingPlayer.pad);
+      this.pad.updatePad(board, incomingPlayer.pad);
     }
   }

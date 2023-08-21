@@ -109,7 +109,8 @@ const PlayBack = () => {
       }
     } else if (gameState) {
       game.ball.updateBall(game.board, gameState.gameParams.ball);
-      console.log('refreshed ball:', game.ball);
+      game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
+      console.log('refreshed pl1:', game.pl1);
     }
   }, [gameState]);
 
@@ -175,13 +176,13 @@ const PlayBack = () => {
         <div className="pong-game-canvas" style={{ height: `${game.board.height + 80}px` }}>
           <canvas ref={boardCanvasRef as React.RefObject<HTMLCanvasElement>} id="boardCanvas" width={game.board.width} height={game.board.height} className="canvas-container-board" />
           <canvas ref={ballCanvasRef as React.RefObject<HTMLCanvasElement>} id="ballCanvas" width={game.board.width} height={game.board.height} className="canvas-container-ball" />
-          {/* <canvas ref={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" /> */}
+          <canvas ref={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" />
           {/* <canvas ref={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" /> */}
         </div>
         <BoardCanvas game={game} canvasRef={boardCanvasRef as React.RefObject<HTMLCanvasElement>} />
         <BallCanvas whichPlayer={whichPlayer} game={game} ball={game.ball} canvasRef={ballCanvasRef as React.RefObject<HTMLCanvasElement>} />
-        {/* <PaddleCanvas board={game.board} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} />
-        <PaddleCanvas board={game.board} player={game.pl2} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} /> */}
+        <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} />
+        {/* <PaddleCanvas board={game.board} player={game.pl2} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} /> */}
       </div>
 
       <button className="text-white" onClick={handleQuitGame} style={{ zIndex: '10' }}>

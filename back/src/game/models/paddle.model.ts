@@ -1,6 +1,5 @@
 import { Board } from "./board.model";
 export class Paddle {
-  // Define paddle properties and calculations here
   public width: number;
   public height: number;
   public speed: number;
