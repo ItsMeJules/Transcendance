@@ -50,8 +50,7 @@ export const Home = () => {
 
   const handleTimeUpdate = () => {
     // if (playSecondVideo && video2Ref.current && video2Ref.current.currentTime >= video2Ref.current.duration) {
-      history('/login');
-    // }
+      history('/login', { state: { key: Date.now() } });    // }
   };
 
   const getCurrentDimension = () => {
@@ -77,38 +76,44 @@ export const Home = () => {
   // const video2Classes = `video video2 ${playSecondVideo ? 'fade-in' : 'fade-out'}`;
   // const div2Classes = `background-video ${showVideo ? 'show' : 'hide'}`;
 
-  return (
-    <div>
+return (
+  <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
 
+    {/* Wrap Particle in a div to control its z-index */}
+    <div style={{ zIndex: 0, position: 'absolute', width: '100%', height: '100%' }}>
       <Particle />
+    </div>
 
-      <div style={{ position: 'relative', zIndex: '2' }}>
+    <div style={{ position: 'absolute', top: '0', left: '0', zIndex: 1, width: '100%', height: '100%' }}>
       {playSecondVideo && (
         <video ref={video2Ref}
-        id="videoTransition"
-        className="video2Classes absolute top-0 left-0 w-full h-full bg-video"
-        src="hyperspace.mp4"
-        autoPlay
-        muted
-        // onEnded={handleVideoEnd}
-        onTimeUpdate={handleTimeUpdate}></video>
+          id="videoTransition"
+          className="video2Classes absolute top-0 left-0 w-full h-full bg-video"
+          src="hyperspace.mp4"
+          autoPlay
+          muted
+          onTimeUpdate={handleTimeUpdate}
+        ></video>
       )}
-      </div>
+    </div>
 
-      <div className='flex justify-center mx-auto items-center text-white max-w-700 w-full sm:w-250' style={{ height: '150px', position: 'relative', zIndex: '3' }}>
+    <div className="flex flex-col h-screen items-center" style={{ zIndex: 2 }}>
 
+      <div className="text-white font-bold mt-10">
         <GlowText className="flex font-bold" style={{ fontSize: screenSize.width * 0.05 > 75 ? 75 : screenSize.width * 0.05 }}>
           ft_transcendance
         </GlowText>
-
       </div>
 
-      <div className="flex justify-center mx-auto text-white font-bold" style={{ paddingTop: '300px'}}>
-          <PulseGlowText onClick={handleButtonClick} className="flex text-xl font-bold" style={{ fontSize: screenSize.width * 0.1 > 200 ? 200 : screenSize.width * 0.1 }}>
-            Play
-          </PulseGlowText> 
+      <div className="text-white font-bold" style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', zIndex: 1000 }}>
+        <PulseGlowText onClick={handleButtonClick} className="flex text-xl font-bold" style={{ fontSize: screenSize.width * 0.1 > 200 ? 200 : screenSize.width * 0.1 }}>
+          Play
+        </PulseGlowText>
       </div>
 
-    </div >
-  )
+    </div>
+  </div>
+);
+
+  
 }

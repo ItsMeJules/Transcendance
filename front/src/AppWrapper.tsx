@@ -1,16 +1,18 @@
-import React, { ReactNode} from "react";
+import React, { ReactNode } from "react";
 import ParticlesBackgroundNew from "./Components/ParticlesSlow.memo";
+import { useLocation} from 'react-router-dom';
 
 interface AppWrapperProps {
-    children: ReactNode;
-  }
-  
+  children: ReactNode;
+}
+
 const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
+  const location = useLocation();
+
   return (
-    <div
-    style={{ position: "relative", overflow: "hidden"}}>
-      <div style={{ zIndex: 1, position: 'relative'}}><ParticlesBackgroundNew/></div>
-      <div style={{ zIndex: 2, position: 'relative' }}>{children}</div>
+    <div style={{ position: "relative" }}>
+      <ParticlesBackgroundNew key={location.state?.key} style={{ position: "absolute", top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} />
+      <div style={{ position: 'relative', zIndex: 2 }}>{children}</div>
     </div>
   );
 };

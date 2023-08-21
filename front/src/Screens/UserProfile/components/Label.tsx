@@ -2,14 +2,15 @@ import React from 'react';
 import { MDBTypography } from 'mdb-react-ui-kit';
 
 interface LabelProps {
-  text: string;
-  className?: string;
+  className: string;
+  tag: 'h5' | 'h6'; // You can add more tags if needed
+  children: React.ReactNode;
 }
 
-const Label: React.FC<LabelProps> = ({ text, className, }) => {
+const Label: React.FC<LabelProps> = ({ className, tag, children }) => {
   return (
-    <MDBTypography className={className} tag='h5'>
-      {text}
+    <MDBTypography className={className} tag={tag}>
+      {children}
     </MDBTypography>
   );
 };

@@ -1,9 +1,14 @@
 import React from 'react';
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
-import { useCallback } from "react";
+import { useCallback, useEffect} from "react";
 
-const ParticlesBackgroundNew = React.memo(() => {
+const ParticlesBackgroundNew = ({ style }) => {
+
+  useEffect(() => {
+    console.log("ParticlesBackgroundNew rendered");
+ }, []);
+
     const particlesInit = useCallback(async engine => {
         // console.log(engine);
         // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
@@ -213,6 +218,6 @@ const ParticlesBackgroundNew = React.memo(() => {
 
         />
     )
-});
+};
 
-export default ParticlesBackgroundNew;
+export default React.memo(ParticlesBackgroundNew);

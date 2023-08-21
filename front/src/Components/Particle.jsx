@@ -1,6 +1,7 @@
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import { useCallback, useEffect } from "react";
+import React from "react";
 
 function Particle() {
     const particlesInit = useCallback(async engine => {
@@ -260,4 +261,4 @@ function Particle() {
 
 
 
-export default Particle;
+export default React.memo(Particle);
