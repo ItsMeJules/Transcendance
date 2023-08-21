@@ -7,7 +7,7 @@ type UserProfileContainerProps = {
 
 const UserProfileContainer: React.FC<UserProfileContainerProps> = ({ children }) => {
     return (
-        <div className="vh-100 d-flex" style={{ paddingTop: '75px' }}>
+        <div className="vh-100">
             <MDBContainer className="profile-board-container">
                 {children}
             </MDBContainer>

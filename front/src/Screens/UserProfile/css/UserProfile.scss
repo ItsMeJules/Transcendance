@@ -3,10 +3,13 @@
     max-width: 500px;
     min-width: 400px;
     width: 90%;
+    display: flex;
+    padding-top: 75px;
 
     .profile-board-card {
         display: flex;
         border-radius: 15px;
+        min-width: 400px;
     }
 
     .profile-board-header-show-profile {
