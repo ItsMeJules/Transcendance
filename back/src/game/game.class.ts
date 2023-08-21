@@ -1,12 +1,10 @@
-import { Board, CollisionPointsBall, CollisionPointsSides } from './models/board.model';
+import { Board } from './models/board.model';
 import { Ball } from './models/ball.model';
-import { Paddle } from './models/paddle.model';
-import { Vector } from './models/vector.model';
 import { Point } from './models/point.model';
 import { Player } from './models/player.model';
 import { GameProperties } from './models/properties.model';
 import { PongEvents } from './pong.gateway';
-import { copyFileSync } from 'fs';
+import { CollisionPointsBall, CollisionPointsSides } from './models/collisionPoints.model';
 
 export interface GameParams {
   pl1: Player;
@@ -36,7 +34,7 @@ export class GameStruct {
     private pongEvents: PongEvents) {
     this.prop = new GameProperties(id, room);
     this.board = new Board();
-    this.ball = new Ball(this.board);
+    this.ball = new Ball(this.board, 'standard');
     this.pl1 = new Player(pl1Id, this.board);
     this.pl2 = new Player(pl2Id, this.board);
     this.board.updatePointsAndCollisionParameters(this.pl1.pad);
@@ -153,7 +151,7 @@ export class GameStruct {
     }
   }
 
-  private updateGame(distanceToPass) {
+  private async updateGame(distanceToPass) {
 
     // if (this.prints > 0) {
     //   console.log('ball before:', this.ball);
@@ -162,7 +160,7 @@ export class GameStruct {
     // }
 
     this.updateBallPosition(distanceToPass);
-    this.handleCollision();
+    await this.handleCollision();
     this.sendUpdate();
 
     // if (this.prints > 0) {
@@ -198,21 +196,48 @@ export class GameStruct {
     this.ball.tRefresh = Date.now();
   }
 
-  private handleCollision() {
+  private async handleCollision() {
+    let collisionPercentage: number;
     if (this.collisionType === 'low') {
       this.ball.dir.y = -this.ball.dir.y;
     } else if (this.collisionType === 'up') {
       this.ball.dir.y = -this.ball.dir.y;
     } else if (this.collisionType === 'left') {
-      if (this.checkPaddleCollision())
-        this.ball.dir.x = -this.ball.dir.x;
-      else
+      if (this.checkPaddleCollision()) {
+        collisionPercentage = this.getCollisionPercentage();
+        this.ball.updateDirectionBounce(collisionPercentage, this.collisionType);
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 300));
         this.scorePoint();
+      }
+      // ne pas modifier la direction laisse la balle continuer dehors du field!!
+      // a utiliser ?
     } else if (this.collisionType === 'right') {
-      if (this.checkPaddleCollision())
-        this.ball.dir.x = -this.ball.dir.x;
-      else
+      if (this.checkPaddleCollision()) {
+        collisionPercentage = this.getCollisionPercentage();
+        this.ball.updateDirectionBounce(collisionPercentage, this.collisionType);
+        // console.log('Col%:', collisionPercentage);
+        // this.ball.dir.x = -this.ball.dir.x;
+      }
+      else {
+        await new Promise((resolve) => setTimeout(resolve, 300));
         this.scorePoint();
+      }
+        
+    }
+  }
+
+  getCollisionPercentage() {
+    let padCenterPos: number;
+    let padFullSize: number;
+    if (this.collisionType === 'left') {
+      padCenterPos = this.pl1.pad.pos + this.pl1.pad.height * 0.5;
+      padFullSize = (this.pl1.pad.height + this.ball.size) * 0.5;
+      return ((this.ball.pos.y - padCenterPos) / padFullSize);
+    } else if (this.collisionType === 'right') {
+      padCenterPos = this.pl2.pad.pos + this.pl2.pad.height * 0.5;
+      padFullSize = (this.pl2.pad.height + this.ball.size) * 0.5;
+      return ((this.ball.pos.y - padCenterPos) / padFullSize);
     }
   }
 
@@ -250,7 +275,7 @@ export class GameStruct {
   }
 
   refreshInMotion() {
-    let tmpBall = this.ball.clone(this.board);
+    let tmpBall = this.ball.clone(this.board, 'standard');
     let tInterval = Date.now() - this.ball.tRefresh;
     tmpBall.pos.x += tmpBall.speed * tmpBall.dir.x * (tInterval / 1000);
     tmpBall.pos.y += tmpBall.speed * tmpBall.dir.y * (tInterval / 1000);

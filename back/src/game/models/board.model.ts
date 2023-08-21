@@ -1,42 +1,11 @@
-import { Ball } from "./ball.model";
 import { Paddle } from "./paddle.model";
 import { Point } from "./point.model";
-
-export class CollisionPointsBall {
-  public a = 0;
-  public b = 0;
-  public c = 0;
-
-  constructor(ball: Ball, side: string) {
-    this.a = ball.dir.y;
-    this.b = -ball.dir.x;
-    if (ball && side === 'low')
-      this.c = ball.dir.y * ball.pos.x - ball.dir.x * (ball.pos.y + ball.size * 0.5);
-    else if (ball && side === 'up')
-      this.c = ball.dir.y * ball.pos.x - ball.dir.x * (ball.pos.y - ball.size * 0.5);
-    else if (ball && side === 'left')
-      this.c = ball.dir.y * (ball.pos.x - ball.size * 0.5) - ball.dir.x * ball.pos.y;
-    else if (ball && side === 'right')
-      this.c = ball.dir.y * (ball.pos.x + ball.size * 0.5) - ball.dir.x * ball.pos.y;
-  }
-}
-
-export class CollisionPointsSides {
-  public a = 0;
-  public b = 0;
-  public c = 0;
-
-  constructor(A: Point, B: Point) {
-    this.a = B.y - A.y;
-    this.b = A.x - B.x;
-    this.c = this.a * A.x + this.b * A.y;
-  }
-}
+import { initGameConfig } from "../init/game.properties";
+import { CollisionPointsSides } from "./collisionPoints.model";
 
 export class Board {
-  // Change here !!!!!
-  public width = 600;
-  public height = 300;
+  public width = initGameConfig.board.width;
+  public height = initGameConfig.board.height;
 
   public pUpLeft = new Point(0, 0);
   public pUpRight = new Point(this.width, 0);
@@ -60,11 +29,6 @@ export class Board {
   constructor() { }
 
   updatePointsAndCollisionParameters(pad: Paddle) {
-    // this.pUpLeftPaddle = new Point(0, 0);
-    // this.pUpRightPaddle = new Point(this.width, 0);
-    // this.pLowLeftPaddle = new Point(pad.width, this.width);
-    // this.pLowLeftPaddle = new Point(this.width - pad.width, this.height);
-
     this.pUpLeftPaddle = new Point(pad.width, 0);
     this.pUpRightPaddle = new Point(this.width - pad.width, 0);
     this.pLowLeftPaddle = new Point(pad.width, this.height);
@@ -77,6 +41,11 @@ export class Board {
 }
 
 
+
+    // this.pUpLeftPaddle = new Point(0, 0);
+    // this.pUpRightPaddle = new Point(this.width, 0);
+    // this.pLowLeftPaddle = new Point(pad.width, this.width);
+    // this.pLowLeftPaddle = new Point(this.width - pad.width, this.height);
 
 // 0, 0              width, 0
 

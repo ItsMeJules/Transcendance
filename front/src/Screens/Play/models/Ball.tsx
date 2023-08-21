@@ -15,7 +15,7 @@ export class Ball {
       this.speed = 0;
       this.pos = new Point(0, 0);
       this.tip = new Point(0, 0);
-      this.accelFactor = 0.2;
+      this.accelFactor = 0;
       this.dir = new Vector(0, 0);
     }
   
