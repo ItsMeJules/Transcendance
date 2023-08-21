@@ -204,11 +204,35 @@ export class GameStruct {
     } else if (this.collisionType === 'up') {
       this.ball.dir.y = -this.ball.dir.y;
     } else if (this.collisionType === 'left') {
-      this.scorePoint();
+      if (this.checkPaddleCollision())
+        this.ball.dir.x = -this.ball.dir.x;
+      else
+        this.scorePoint();
     } else if (this.collisionType === 'right') {
-      this.scorePoint();
+      if (this.checkPaddleCollision())
+        this.ball.dir.x = -this.ball.dir.x;
+      else
+        this.scorePoint();
     }
-    // this.collisionType = '';
+  }
+
+  checkPaddleCollision() {
+    let pBallUp = this.collisionType === 'left' ?
+      new Point(this.ball.pos.x - this.ball.halfSize, this.ball.pos.y - this.ball.halfSize)
+      : new Point(this.ball.pos.x + this.ball.halfSize, this.ball.pos.y - this.ball.halfSize);
+    let pBallLow = this.collisionType === 'left' ?
+      new Point(this.ball.pos.x - this.ball.halfSize, this.ball.pos.y + this.ball.halfSize)
+      : new Point(this.ball.pos.x + this.ball.halfSize, this.ball.pos.y + this.ball.halfSize);
+    if (this.collisionType === 'left') {
+      if ((pBallUp.y > this.pl1.pad.pos && pBallUp.y < this.pl1.pad.pos + this.pl1.pad.height)
+        || (pBallLow.y > this.pl1.pad.pos && pBallUp.y < this.pl1.pad.pos + this.pl1.pad.height))
+        return true;
+    } else if (this.collisionType === 'right') {
+      if ((pBallUp.y > this.pl2.pad.pos && pBallUp.y < this.pl2.pad.pos + this.pl2.pad.height)
+        || (pBallLow.y > this.pl2.pad.pos && pBallUp.y < this.pl2.pad.pos + this.pl2.pad.height))
+        return true;
+    }
+    return false;
   }
 
   scorePoint() {

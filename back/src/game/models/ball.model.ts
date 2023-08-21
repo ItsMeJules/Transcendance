@@ -25,7 +25,7 @@ export class Ball {
     this.dir = new Vector(
       Math.cos(randomAngle) * randomX,
       Math.sin(randomAngle) * randomY);
-    this.dir = new Vector(-1, 0);
+    // this.dir = new Vector(-1, 0);
   }
 
   clone(board: Board): Ball { 

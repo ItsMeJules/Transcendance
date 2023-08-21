@@ -7,9 +7,10 @@ interface PaddleCanvasProps {
   game: GameProperties;
   player: Player;
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  whichPlayer: number;
 }
 
-const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef }) => {
+const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, whichPlayer }) => {
 
   useEffect(() => {
 
@@ -26,28 +27,15 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef }) 
       }
       const deltaTime = (timestamp - previousTimestamp) / 1000;
       previousTimestamp = timestamp;
-      // console.log('posx:', ball.pos.x, ' posy:', ball.pos.y);
-      // console.log('velx:', ball.dir.x * ball.speed, ' posy:', ball.dir.y * ball.speed);
       if (ctx) {
-        // console.log('speed:', ball.speed, ' dirx:', ball.dir.x, ' diry:', ball.dir.y);
         ctx.clearRect(0, 0, game.board.width, game.board.height);
-  
-        
-        ////////////////////////////////////////////////////////////
-        if (whichPlayer === 1) {
-          ball.pos.x = ball.pos.x + ball.dir.x * ball.speed * deltaTime;
-          ball.pos.y = ball.pos.y + ball.dir.y * ball.speed * deltaTime;
-          ball.tip.x = ball.pos.x - ball.size * 0.5;
-          ball.tip.y = ball.pos.y - ball.size * 0.5;
-        }
-  
-  
-        // console.log('posx:', ball.pos.x, ' posy:', ball.pos.y);
+        let posX = player.num === 1 ? 0 : game.board.width - player.pad.width;
+        // console.log('posx:', player.pad.pos, ' posy:', ball.pos.y);
         ctx.fillStyle = 'white';
-        ctx.fillRect(ball.tip.x, ball.tip.y, ball.size, ball.size);
+        ctx.fillRect(posX, player.pad.pos, player.pad.width, player.pad.height);
         ctx.setLineDash([]);
       }
-  
+
       requestAnimationFrame(animatePaddle1);
     };
 
