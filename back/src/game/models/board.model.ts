@@ -29,10 +29,10 @@ export class Board {
   constructor() { }
 
   updatePointsAndCollisionParameters(pad: Paddle) {
-    this.pUpLeftPaddle = new Point(pad.width, 0);
-    this.pUpRightPaddle = new Point(this.width - pad.width, 0);
-    this.pLowLeftPaddle = new Point(pad.width, this.height);
-    this.pLowRightPaddle = new Point(this.width - pad.width, this.height);
+    this.pUpLeftPaddle = new Point(pad.wallGap + pad.width, 0);
+    this.pUpRightPaddle = new Point(this.width - pad.width - pad.wallGap, 0);
+    this.pLowLeftPaddle = new Point(pad.wallGap + pad.width, this.height);
+    this.pLowRightPaddle = new Point(this.width - pad.width - pad.wallGap, this.height);
 
     this.leftWallPaddleCol = new CollisionPointsSides(this.pUpLeftPaddle, this.pLowLeftPaddle);
     this.rightWallPaddleCol = new CollisionPointsSides(this.pUpRightPaddle, this.pLowRightPaddle);

@@ -111,7 +111,7 @@ const PlayBack = () => {
       game.ball.updateBall(game.board, gameState.gameParams.ball);
       game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
       game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
-      console.log('refreshed pl1:', game.pl1);
+      console.log('refreshed ball:', game.ball);
     }
   }, [gameState]);
 

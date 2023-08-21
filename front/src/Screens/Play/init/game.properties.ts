@@ -22,4 +22,12 @@ export const initGameConfig = {
     maxPaddleBounceAngle: Math.PI * 0.33, // 60 degrees
   },
 
+  // Paddle
+  pad: {
+    width: 15,
+    height: 60,
+    wallGap: 150,
+    speed: 10,
+  },
+
 };

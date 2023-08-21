@@ -9,7 +9,7 @@ export class Player {
   
     constructor(board: Board, number: number) {
       this.num = number;
-      this.pad = new Paddle(board);
+      this.pad = new Paddle(board, 'standard', number);
     }
 
     updatePlayer(board: Board, incomingPlayer : Player) {

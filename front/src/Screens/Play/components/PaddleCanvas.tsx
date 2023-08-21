@@ -29,10 +29,10 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       previousTimestamp = timestamp;
       if (ctx) {
         ctx.clearRect(0, 0, game.board.width, game.board.height);
-        let posX = player.num === 1 ? 0 : game.board.width - player.pad.width;
+        // let posX = player.num === 1 ? 0 : game.board.width - player.pad.width;
         // console.log('posx:', player.pad.pos, ' posy:', ball.pos.y);
         ctx.fillStyle = 'white';
-        ctx.fillRect(posX, player.pad.pos, player.pad.width, player.pad.height);
+        ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height);
         ctx.setLineDash([]);
       }
 
@@ -49,9 +49,9 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       if (ctx) {
         ctx.fillStyle = 'white';
         if (player.num === 1)
-          ctx.fillRect(0, player.pad.pos, player.pad.width, player.pad.height); // Left paddle
+          ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height); // Left paddle
         else if (player.num === 2)
-          ctx.fillRect(game.board.width - player.pad.width, player.pad.pos, player.pad.width, player.pad.height); // Right paddle
+          ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height); // Right paddle
       }
     };
 
