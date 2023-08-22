@@ -1,6 +1,7 @@
 import { Message, Room, User, Game } from '@prisma/client';
 
 export type CompleteRoom = Room & {
+  usersOnRoom: User[];
   users: User[];
   bans: User[];
   admins: User[];

@@ -19,6 +19,7 @@ CREATE TABLE "users" (
     "gamesWon" INTEGER DEFAULT 0,
     "userPoints" INTEGER DEFAULT 0,
     "userLevel" DECIMAL(65,30) DEFAULT 0,
+    "currentRoom" TEXT NOT NULL DEFAULT 'general',
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -27,12 +28,12 @@ CREATE TABLE "users" (
 CREATE TABLE "Game" (
     "id" SERIAL NOT NULL,
     "gameMode" INTEGER NOT NULL,
+    "player1Score" INTEGER NOT NULL DEFAULT 0,
+    "player2Score" INTEGER NOT NULL DEFAULT 0,
     "player1Id" INTEGER NOT NULL,
     "player2Id" INTEGER NOT NULL,
     "winnerId" INTEGER,
     "loserId" INTEGER,
-    "player1Score" INTEGER NOT NULL DEFAULT 0,
-    "player2Score" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "Game_pkey" PRIMARY KEY ("id")
 );
@@ -149,6 +150,9 @@ CREATE UNIQUE INDEX "_activeUsers_AB_unique" ON "_activeUsers"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_activeUsers_B_index" ON "_activeUsers"("B");
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_currentRoom_fkey" FOREIGN KEY ("currentRoom") REFERENCES "Room"("name") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Game" ADD CONSTRAINT "Game_player1Id_fkey" FOREIGN KEY ("player1Id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

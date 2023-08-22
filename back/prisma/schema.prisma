@@ -12,42 +12,38 @@ datasource db {
 }
 
 model User {
-  id Int @id @unique @default(autoincrement())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  username       String? @unique
-  firstName      String?
-  lastName       String?
-  email          String  @unique
-  profilePicture String?
-  hash           String
-  isOnline       Boolean @default(false)
-
-
-  // Field for representing friends
-  friends   User[] @relation("userFriends")
-  // Opposite relation field
-  friendsOf User[] @relation("userFriends")
-
+  id                              Int @id @unique @default(autoincrement())
+  createdAt                       DateTime @default(now())
+  updatedAt                       DateTime @updatedAt
+  username                          String? @unique
+  firstName                         String?
+  lastName                          String?
+  email                             String  @unique
+  profilePicture                    String?
+  hash                              String
+  isOnline                          Boolean @default(false)
   isTwoFactorAuthenticationEnabled  Boolean @default(false)
   twoFactorAuthenticationSecret     String?
-  
-  // Game
+
+  friends   User[] @relation("userFriends")
+  friendsOf User[] @relation("userFriends")
+
   gamesPlayed Int?     @default(0)
   gamesWon    Int?     @default(0)
   userPoints  Int?     @default(0)
   userLevel   Decimal? @default(0)
   
-  player1Games Game[] @relation("player1")
-  player2Games Game[] @relation("player2")
-  wonGames Game[] @relation("winner")
-  lostGames Game[] @relation("loser")
+  //game
+  player1Games  Game[] @relation("player1")
+  player2Games  Game[] @relation("player2")
+  wonGames      Game[] @relation("winner")
+  lostGames     Game[] @relation("loser")
   
   // Chat
-  blockedUsers      User[] @relation("blockedUsers")
-  blockedByUser     User[] @relation("blockedUsers")
+  currentRoom     String @default("general")
+  userOnRoom      Room? @relation("userOnRoom", fields: [currentRoom], references: [name])
+  blockedUsers    User[] @relation("blockedUsers")
+  blockedByUser   User[] @relation("blockedUsers")
   mutedRooms      Room[] @relation("mutedUsersInRoom")  
   adminRooms      Room[] @relation("adminUsers")
   activeRooms     Room[] @relation("activeUsers")
@@ -55,36 +51,31 @@ model User {
   bannedRooms     Room[] @relation("bannedUsers")
   messages        Message[] @relation("author")
 
-  // gamesList Game[]
   @@map("users")
 }
 
 model Game {
   id       Int @id @unique @default(autoincrement())
   gameMode Int
+  player1Score Int @default(0)
+  player2Score Int @default(0)
 
   player1 User @relation("player1", fields: [player1Id], references: [id])
   player1Id Int
-
   player2 User @relation("player2", fields: [player2Id], references: [id])
   player2Id Int
-
   winner User? @relation("winner", fields: [winnerId], references: [id])
   winnerId Int?
-
   loser User? @relation("loser", fields: [loserId], references: [id])
   loserId Int?
-
-  player1Score Int @default(0)
-  player2Score Int @default(0)
 }
 
 model Message {
   id          Int    @id @default(autoincrement())
   text        String
   createdAt   DateTime @default(now())
-  
   clientId    String // check again
+  
   roomId      Int
   room        Room  @relation("messages", fields: [roomId], references: [id])
   authorId    Int
@@ -99,12 +90,11 @@ model Room {
   protected   Boolean @default(false) // or password != null
   createdAt   DateTime @default(now())
 
+  usersOnRoom User[] @relation("userOnRoom")
   bans        User[] @relation("bannedUsers") //add banned time
   muteUntil   Int[]
   mutes       User[] @relation("mutedUsersInRoom")
-
   admins      User[] @relation("adminUsers")
-  // pending invite ??
   users       User[] @relation("activeUsers")
   ownerId     Int?
   owner       User? @relation("ownerRoom", fields: [ownerId], references: [id]) // care au field ici
@@ -116,10 +106,3 @@ enum RoomType {
   PRIVATE
   DIRECT
 }
-
-// TABLE PERSONNESDANSROOMBANNIS{
-//   roomId Int
-//   personneId Int
-//   room 
-//   @@id( [personneId, roomId] )
-// }
