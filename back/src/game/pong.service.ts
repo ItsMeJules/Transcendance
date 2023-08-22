@@ -67,12 +67,14 @@ export class PongService {
   }
 
   // Get the queue
-  getQueue(): UserQueue {
+  getQueue(): UserQueue { 
     return this.userQueue;
   }
 
   getGameStructById(gameId: number) {
-    return this.onlineGames.get(gameId);
+    let test = this.onlineGames.get(gameId);
+    // console.log('test:', test);
+    return test;
   }
 
   getUsersInQueueForGameMode(gameMode: string): number {

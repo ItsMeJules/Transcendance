@@ -110,8 +110,8 @@ const PlayBack = () => {
       }
     } else if (gameState) {
       game.ball.updateBall(game.board, gameState.gameParams.ball);
-      // game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
-      // game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
+      game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
+      game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
       console.log('refreshed ball:', game.ball);
     }
   }, [gameState]);
@@ -142,7 +142,7 @@ const PlayBack = () => {
       socket.game?.off('prepareToPlay'); // dont off and use for status?
       game.isPlaying = true;
       setGame({ ...game, isPlaying: true });
-      socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'refreshInMotion' });
+      // socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'refreshInMotion' });
     }
     return;
   }, [socketPrepare]);

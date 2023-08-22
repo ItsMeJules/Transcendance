@@ -21,6 +21,7 @@ export class GameStruct {
   public pl2: Player;
 
   public prevFrameTime = 0;
+  public playerPrevFrameTime = 0;
   public first = true;
   public scoring = false;
   public collisionType = '';
@@ -31,6 +32,7 @@ export class GameStruct {
   private readonly frameRate: number = 60; // 1 / s
   private readonly frameDuration: number = 1000 / this.frameRate; // s
   private gameLoopInterval: NodeJS.Timeout | null = null;
+  public paddleLoopInterval: NodeJS.Timeout | null = null;
 
   constructor(id: number, pl1Id: number, pl2Id: number, room: string,
     private pongEvents: PongEvents) {
@@ -45,6 +47,7 @@ export class GameStruct {
   startGameLoop() {
     let distanceToPass = 0;
     this.ball.tRefresh = Date.now();
+    console.log('tRefresh at start:', this.ball.tRefresh);
     if (!this.gameLoopInterval) {
       this.gameLoopInterval = setInterval(() => {
         if (!this.scoring) {
@@ -199,7 +202,7 @@ export class GameStruct {
     // const deltaY = this.ball.speed * this.ball.dir.y * (deltaTime / 1000);
     this.ball.pos.x += distance * this.ball.dir.x;
     this.ball.pos.y += distance * this.ball.dir.y;
-    this.ball.tRefresh = Date.now();
+    // this.ball.tRefresh = Date.now();
   }
 
   private handleCollision(distance: number) {
@@ -245,8 +248,6 @@ export class GameStruct {
   }
 
   private updateScoring(frame: number, isStart: boolean) {
-    // console.log('Update scoring into');
-
     const frameStartTime = Date.now();
     const deltaTime = frameStartTime - this.prevFrameTime;
 
@@ -314,7 +315,7 @@ export class GameStruct {
       this.ball.pos.x = newPos.x;
       this.ball.pos.y = newPos.y;
     }
-    return true; 
+    return true;
   }
 
   isPointInPaddleHeight(newPos: Point, playerNum: number) {
@@ -412,14 +413,17 @@ export class GameStruct {
       // console.log('SCOOOOOOOOOOOOORRRRE 1 ball after:', this.ball);
     }
   }
-
-  refreshInMotion() {
+ 
+  refreshInMotion(from: string) {
+    console.log('refresh in motion');
     let tmpBall = this.ball.clone(this.board, 'standard');
     let tInterval = Date.now() - this.ball.tRefresh;
     tmpBall.pos.x += tmpBall.speed * tmpBall.dir.x * (tInterval / 1000);
     tmpBall.pos.y += tmpBall.speed * tmpBall.dir.y * (tInterval / 1000);
     let tmpGameParams: GameParams = this.getState();
     tmpGameParams.ball = tmpBall;
+    console.log(from, ' b:', tmpBall.pos, ' pl1:', this.pl1.pad.pos.y , ' pl2:', this.pl2.pad.pos.y);
+    console.log('tRefresh at in Motion:', this.ball.tRefresh);
     this.pongEvents.server.to(this.prop.room).emit('refreshGame',
       { gameStatus: this.prop.status, gameParams: tmpGameParams, time: Date.now() });
   }
@@ -477,12 +481,73 @@ export class GameStruct {
     }
   }
 
+  movePlayerUp(player: Player) {
+    if (player.isMoving && player.movingDir === 'up') return;
+    player.isMoving = true;
+    player.movingDir = 'up';
+    let frame = 0;
+    let start = true;
+    this.ball.tRefresh = Date.now();
+    if (!this.paddleLoopInterval) {
+      this.paddleLoopInterval = setInterval(() => {
+        if (!this.scoring) this.updatePlayer(player, frame, start);
+      }, 0);
+    }
+  }
+
+  private updatePlayer(player: Player, frame: number, start: boolean) {
+    const frameStartTime = Date.now();
+    const deltaTime = frameStartTime - this.playerPrevFrameTime;
+    if (!start)
+      frame = Date.now() - frame;
+    console.log('ball b4:', this.ball.pos, ' pl b4:', player.pad.pos.y);
+    this.updatePlayerPosition(player, frame);
+    if (this.scoring === false && !start)
+      this.refreshInMotion('paddle');
+    console.log('ball aft:', this.ball.pos, ' pl aft:', player.pad.pos.y);
+    // if (this.paddleLoopInterval && (!player.isMoving || player.movingDir != 'up')) {
+    //   clearInterval(this.paddleLoopInterval); 
+    //   this.paddleLoopInterval = null;
+    //   return;
+    // }
+    const remainingTime = Math.max(this.frameDuration - (Date.now() - frameStartTime), 0);
+    frame = Date.now();
+    start = false;
+    clearTimeout(this.paddleLoopInterval!);
+    this.paddleLoopInterval = setTimeout(() => {
+      this.updatePlayer(player, frame, start);
+    }, remainingTime);
+    this.prevFrameTime = frameStartTime;
+  }
+
+  updatePlayerPosition(player: Player, frame: number) {
+    let deltaY = player.pad.speed * (frame / 1000);
+    if (player.movingDir === 'up') {
+      let newPosY = player.pad.pos.y - deltaY;
+      if (newPosY < this.ball.size * 2) return;
+      player.pad.pos.y = newPosY;
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
-
-
-
-
-
 
 
 // private startGameLoop() {

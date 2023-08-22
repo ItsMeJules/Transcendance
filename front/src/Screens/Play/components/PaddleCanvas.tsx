@@ -41,7 +41,7 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
         event.preventDefault();
         if (movingUp === true) {
           movingUp = false;
-          socket?.emit('moveUp', { player: whichPlayer, action: 'unpressed' });
+          // socket?.emit('unpressUp', { player: whichPlayer, action: 'unpressed' });
         } else if (movingDown === true) {
           movingDown = false;
           socket?.emit('moveDown', { player: whichPlayer, action: 'unpressed' });
@@ -94,6 +94,7 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('resize', handleResize);
 
+    
     // if (whichPlayer === player.num)
     //   updatePaddlePosition();
 

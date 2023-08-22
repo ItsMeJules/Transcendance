@@ -105,12 +105,18 @@ export class PongEvents {
       // console.log('user room:', `user_${game.pl1.id}`);
       this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
       this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
-      player1socket.join(`game_${game.prop.id}`);
-      player2socket.join(`game_${game.prop.id}`);
-      player1socket.data.room = `game_${game.prop.id}`;
-      player2socket.data.room = `game_${game.prop.id}`;
-      player1socket.data.gameId = game.prop.id;
-      player2socket.data.gameId = game.prop.id;
+      if (player1socket !== undefined) {
+        player1socket.join(`game_${game.prop.id}`);
+        player1socket.data.room = `game_${game.prop.id}`;
+        player1socket.data.gameId = game.prop.id;
+      }
+      if (player2socket !== undefined) {
+        player2socket.join(`game_${game.prop.id}`);
+        player2socket.data.room = `game_${game.prop.id}`;
+        player2socket.data.gameId = game.prop.id;
+      }
+
+
     }
   }
 
@@ -136,8 +142,9 @@ export class PongEvents {
       client.disconnect();
       return;
     }
+    const gameId = parseInt(client.data.gameId);
     const user = await this.authService.validateJwtToken(access_token);
-    const gameStruct = this.pongService.getGameStructById(client.data.gameId);
+    const gameStruct = this.pongService.getGameStructById(gameId);
     if (!user || !gameStruct) {
       client.disconnect();
       return;
@@ -220,10 +227,10 @@ export class PongEvents {
       this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status });
       this.server.to(gameStruct.prop.room).emit('refreshGame',
         { gameStatus: gameStruct.prop.status, gameParams: gameStruct.getState(), time: Date.now() });
-      gameStruct.startGameLoop();
+      gameStruct.startGameLoop(); 
     }
     // Give up game
-    else if (data.action === 'giveUp') {
+    else if (data.action === 'giveUp' && gameStruct.prop.status === 'playing') {
       console.log('player:', data.player, ' gave up');
       gameStruct.stopGameLoop();
       gameStruct.prop.status = 'giveUp';
@@ -235,7 +242,7 @@ export class PongEvents {
     }
     // Refresh in motion
     else if (data.action === 'refreshInMotion') {
-      gameStruct.refreshInMotion();
+      gameStruct.refreshInMotion('status');
     }
 
   }
@@ -249,21 +256,44 @@ export class PongEvents {
 
   @SubscribeMessage('moveUp')
   async moveUp(@ConnectedSocket() client: Socket) {
-    // console.log('Move up client.data:', client.data);
-    // console.log('vp:', this.verifyIfPlayer(client.data.room),
-    // '-', client.data.id,
-    // '-', client.data.gameId);
+    console.log('move up gateway');
     if (!this.verifyIfPlayer(client.data.room)
       || !client.data.id
       || !client.data.gameId) return;
     const game = this.pongService.getGameStructById(client.data.gameId);
-    console.log('Game:', game);
-    if (game.prop.status !== 'playing') {
-      console.log('HEREEEEEEEE');
+    if (game.prop.status === 'playing') {
+      let player: Player;
+
+      if (client.data.id === game.pl1.id) player = game.pl1;
+      else if (client.data.id === game.pl2.id) player = game.pl2;
+      if (player === undefined) return;
+      game.movePlayerUp(player);
       return;
     }
-
   }
+
+//  @SubscribeMessage('unpressUp')
+//   async stopMoveUp(@ConnectedSocket() client: Socket) {
+//     console.log('upressssss');
+//     if (!this.verifyIfPlayer(client.data.room)
+//       || !client.data.id
+//       || !client.data.gameId) return;
+//     const game = this.pongService.getGameStructById(client.data.gameId);
+//     if (game.prop.status === 'playing') {
+//       let player: Player;
+//       if (client.data.id === game.pl1.id) player = game.pl1;
+//       else if (client.data.id === game.pl2.id) player = game.pl2;
+//       if (player.isMoving && player.movingDir === 'up') {
+//         player.isMoving = false;
+//         player.movingDir = '';
+//         // clearInterval(game.pro);
+//         // this.gameLoopInterval = null;
+//         console.log('p is moving:', player.isMoving, ' p moiving dir:', player.movingDir);
+//       }
+//       return;
+//     }
+//   }
+
 
 
 

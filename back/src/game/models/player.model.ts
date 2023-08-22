@@ -6,6 +6,8 @@ export class Player {
   public status = 'pending';
   public pad: Paddle;
   public score = 0;
+  public isMoving = false;
+  public movingDir = '';
 
   constructor(board: Board, initType: string, id: number, player: number) {
     this.id = id;
