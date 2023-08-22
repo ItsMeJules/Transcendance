@@ -38,7 +38,7 @@ export class Ball {
     //   Math.cos(angle),
     //   -Math.sin(angle));
 
-    // this.dir = new Vector(1, 0);
+    // this.dir = new Vector(0, 1);
   }
 
   clone(board: Board, initType: string): Ball {
@@ -64,6 +64,7 @@ export class Ball {
       Math.cos(randomAngle) * dirX,
       Math.sin(randomAngle) * randomY);
 
+    // this.dir = new Vector(0, 1);
 
 
     // const angle = Math.PI / 3;
