@@ -5,6 +5,7 @@ import { Player } from './models/player.model';
 import { GameProperties } from './models/properties.model';
 import { PongEvents } from './pong.gateway';
 import { CollisionPointsBall, CollisionPointsSides } from './models/collisionPoints.model';
+import { copyFileSync } from 'fs';
 
 export interface GameParams {
   pl1: Player;
@@ -46,16 +47,7 @@ export class GameStruct {
     this.ball.tRefresh = Date.now();
     if (!this.gameLoopInterval) {
       this.gameLoopInterval = setInterval(() => {
-        console.log('1 LOOOOOOOOOOOOOOOOPPPP HEREEEEEEEEEEEEEEEE');
         if (!this.scoring) {
-          console.log('2 LOOOOOOOOOOOOOOOOPPPP HEREEEEEEEEEEEEEEEE');
-          this.updateGame(distanceToPass);
-          console.log('2.222222 LOOOOOOOOOOOOOOOOPPPP HEREEEEEEEEEEEEEEEE');
-        }
-        if (this.scoring) {
-          console.log('3 LOOOOOOOOOOOOOOOOPPPP HEREEEEEEEEEEEEEEEE');
-          this.updateScoring(0, true);
-          console.log('3.1111111 LOOOOOOOOOOOOOOOOPPPP HEREEEEEEEEEEEEEEEE');
           this.updateGame(distanceToPass);
         }
       }, 0);
@@ -77,9 +69,9 @@ export class GameStruct {
     const determinant = ballColPts.a * sideColPts.b - sideColPts.a * ballColPts.b;
 
     // if (this.prints > 0) {
-      console.log('side:', side);
-      console.log('ball a:', ballColPts.a, ' b:', ballColPts.b, ' c:', ballColPts.c);
-      console.log('ball a:', sideColPts.a, ' b:', sideColPts.b, ' c:', sideColPts.c);
+    // console.log('side:', side);
+    // console.log('ball a:', ballColPts.a, ' b:', ballColPts.b, ' c:', ballColPts.c);
+    // console.log('ball a:', sideColPts.a, ' b:', sideColPts.b, ' c:', sideColPts.c);
     //   this.prints -= 1;
     // }
 
@@ -92,8 +84,8 @@ export class GameStruct {
     }
 
     // if (this.prints > 0) {
-      console.log('x:', x, ' y:', y);
-      console.log(' ');
+    // console.log('x:', x, ' y:', y);
+    // console.log(' ');
     //   this.prints -= 1;
     // }
 
@@ -164,22 +156,22 @@ export class GameStruct {
 
   private updateGame(distanceToPass) {
     // if (this.prints > 0) {
-    console.log('ball before:', this.ball);
+    // console.log('ball before:', this.ball);
     //   console.log('pad1 before:', this.pl1.pad);
     //   console.log(' ');
     //   this.prints -= 1;
     // }
     this.updateBallPosition(distanceToPass);
-    console.log('ball mid 1:', this.ball);
+    // console.log('ball mid 1:', this.ball);
     this.handleCollision(distanceToPass);
     if (this.scoring) {
-      console.log('OUTTTT');
+      // console.log('OUTTTT');
       this.updateScoring(0, true);
       return;
     }
     this.sendUpdate();
     // if (this.prints > 0) {
-    console.log('ball mid 2:', this.ball);
+    // console.log('ball mid 2:', this.ball);
     //   console.log(' ');
     //   this.prints -= 1;
     // }
@@ -187,15 +179,15 @@ export class GameStruct {
     const timeToCollision = distanceToPoint / this.ball.speed * 1000;
     distanceToPass = distanceToPoint;
     // if (this.prints > 0) {
-    console.log('ball after:', this.ball);
-    console.log('distance:', distanceToPoint);
-    console.log('direction:', this.collisionType);
-    console.log('----------------------------------------');
-    console.log('----------------------------------------');
+    // console.log('ball after:', this.ball);
+    // console.log('distance:', distanceToPoint);
+    // console.log('direction:', this.collisionType);
+    // console.log('----------------------------------------');
+    // console.log('----------------------------------------');
     //   this.prints -= 1;
     // }
-    console.log('>>>>>> this scoring:', this.scoring);
-    
+    // console.log('>>>>>> this scoring:', this.scoring);
+
     clearTimeout(this.gameLoopInterval!);
     this.gameLoopInterval = setTimeout(() => {
       this.updateGame(distanceToPass);
@@ -213,7 +205,7 @@ export class GameStruct {
   private handleCollision(distance: number) {
     if (distance === 0) return;
     let collisionPercentage: number;
-    let frame = 0; 
+    let frame = 0;
     if (this.collisionType === 'low') {
       this.ball.dir.y = -this.ball.dir.y;
     } else if (this.collisionType === 'up') {
@@ -223,7 +215,7 @@ export class GameStruct {
         collisionPercentage = this.getCollisionPercentage();
         this.ball.updateDirectionBounce(collisionPercentage, this.collisionType);
       } else {
-        console.log('BOOOOOOOOOOOOOOOOOOOOOMMMMMMMM 1111111111');
+        // console.log('BOOOOOOOOOOOOOOOOOOOOOMMMMMMMM 1111111111');
         // this.updateBallPosition(distance);
         // this.sendUpdate();
         this.scoring = true;
@@ -238,8 +230,8 @@ export class GameStruct {
         this.ball.updateDirectionBounce(collisionPercentage, this.collisionType);
       }
       else {
-        console.log('BOOOOOOOOOOOOOOOOOOOOOMMMMMMMM 22222222222222');
-        console.log('ball in handle collision:', this.ball);
+        // console.log('BOOOOOOOOOOOOOOOOOOOOOMMMMMMMM 22222222222222');
+        // console.log('ball in handle collision:', this.ball);
         // this.updateBallPosition(distance);
         // this.sendUpdate();
         this.scoring = true;
@@ -261,21 +253,14 @@ export class GameStruct {
     if (!isStart) {
       frame = Date.now() - frame;
       const ret = this.updateBallPositionFrame(frame);
-      
       if (!ret) {
-        console.log('RET FALSEEEEEEEEEEE and scoring bool:', this.scoring);
         this.updateGame(0);
         return;
       }
       this.sendUpdate();
-    } else {
-      console.log('ball first:', this.ball);
     }
-
-
     const remainingTime = Math.max(this.frameDuration - (Date.now() - frameStartTime), 0);
     frame = Date.now();
-    // console.log('remainng time:', remainingTime);
     isStart = false;
     clearTimeout(this.gameLoopInterval!);
     if (!this.scoring) return;
@@ -283,8 +268,6 @@ export class GameStruct {
       this.updateScoring(frame, isStart);
     }, remainingTime);
     this.prevFrameTime = frameStartTime;
-    // console.log('after scoring');
-
   }
 
   private updateBallPositionFrame(deltaTime: number) {
@@ -298,49 +281,83 @@ export class GameStruct {
     // console.log('pos x:', this.ball.pos.x, ' y:', this.ball.pos.y);
     // console.log('new x:', newPos.x, ' y:', newPos.y);
     // handle collisions
+    // Up and low collision
     if (newPos.y - this.ball.halfSize <= 0 || newPos.y + this.ball.halfSize >= this.board.height) {
       this.ball.dir.y *= -1;
-    } else if (newPos.x - this.ball.halfSize <= 0) {
+    }
+    // Left
+    else if (newPos.x - this.ball.halfSize <= 0) {
       this.scoring = false;
       this.scorePoint(2);
       return false;
-      // this.updateGame(0);
-    } else if (newPos.x + this.ball.halfSize >= this.board.width) {
+    }
+    // Right
+    else if (newPos.x + this.ball.halfSize >= this.board.width) {
       this.scoring = false;
       this.scorePoint(1);
       return false;
-      // this.updateGame(0);
-    } else {
+    }
+    // Paddle collision &
+    // No collision update
+    else {
+      if (this.ballPaddleAreAligned(newPos, 1) || this.ballPaddleAreAligned(newPos, 2)) {
+        let playerNum = this.ballPaddleAreAligned(newPos, 1) === true ? 1 : 2;
+        let isSideBounce = this.isPointInPaddleHeight(newPos, playerNum);
+        if ((isSideBounce === 'low' && this.ball.dir.y > 0)
+          || (isSideBounce === 'up' && this.ball.dir.y < 0)) {
+          this.ball.dir.y *= -1;
+        }
+
+
+        // console.log('SIDE POTENTIAL COLLISION');
+      }
       this.ball.pos.x = newPos.x;
       this.ball.pos.y = newPos.y;
     }
-    return true;
-    // this.handleCollisionScoring();
-
-    // Check for collisions, scoring, or other game logic involving the ball
+    return true; 
   }
 
-  // private updateGameLogic() {
-  //   const distanceToPassStartTime = Date.now();
-  //   const deltaTime = frameStartTime - this.prevFrameTime;
+  isPointInPaddleHeight(newPos: Point, playerNum: number) {
+    let pl: Player = playerNum === 1 ? this.pl1 : this.pl2;
+    let padUp: Point = pl.pad.pos;
+    let padLow = { x: pl.pad.pos.x, y: pl.pad.pos.y + pl.pad.height };
+    let ballUp = { x: newPos.x, y: newPos.y - this.ball.halfSize };
+    let ballLow = { x: newPos.x, y: newPos.y + this.ball.halfSize };
+    if (ballLow.y >= padUp.y && ballLow.y < padUp.y + pl.pad.height * 0.5)
+      return 'low';
+    // console.log('ballUp y:', ballLow.y, ' padMid y:', padUp.y + pl.pad.height * 0.5, ' padUp y:', padLow.y)
+    if (ballUp.y >= padUp.y + pl.pad.height * 0.5 && ballUp.y <= padLow.y)
+      return 'up';
+    return '';
+  }
 
-  //   // Perform game logic, collision detection, updates, etc.
-  //   this.updateBallPosition(deltaTime);
+  areBallPointsInPaddleWidth(newPos: Point, playerNum: number) {
+    let pl: Player = playerNum === 1 ? this.pl1 : this.pl2;
+    let ballLeft = { x: newPos.x - this.ball.halfSize, y: newPos.y };
+    let ballRight = { x: newPos.x + this.ball.halfSize, y: newPos.y };
+    if (ballLeft.x >= pl.pad.pos.x && ballLeft.x <= pl.pad.pos.x + pl.pad.width)
+      return true;
+    if (ballRight.x >= pl.pad.pos.x && ballRight.x <= pl.pad.pos.x + pl.pad.width)
+      return true;
+    return false;
+  }
 
-  //   // Calculate the remaining time until the next frame
-  //   const frameDuration = 1000 / this.frameRate;
-  //   const remainingTime = Math.max(frameDuration - (Date.now() - frameStartTime), 0);
+  arePaddlePointsInBallWidth(newPos: Point, playerNum: number) {
+    let pl: Player = playerNum === 1 ? this.pl1 : this.pl2;
+    let padLeft = { x: this.pl1.pad.pos.x, y: this.pl1.pad.pos.y };
+    let padRight = { x: this.pl1.pad.pos.x + this.pl1.pad.width, y: this.pl1.pad.pos.y };
+    if (padLeft.x >= this.ball.pos.x - this.ball.halfSize && padLeft.x <= this.ball.pos.x + this.ball.halfSize)
+      return true;
+    if (padRight.x >= newPos.x - this.ball.halfSize && padRight.x <= newPos.x + this.ball.halfSize)
+      return true;
+    return false;
+  }
 
-  //   // Clear the previous frame timeout and set the next frame timeout
-  //   clearTimeout(this.gameLoopInterval!);
-  //   this.gameLoopInterval = setTimeout(() => {
-  //       this.updateGameLogic();
-  //   }, remainingTime);
-
-  //   this.prevFrameTime = frameStartTime;
-  // }
-
-
+  ballPaddleAreAligned(newPos: Point, playerNum: number) {
+    if (this.areBallPointsInPaddleWidth(newPos, playerNum) || this.arePaddlePointsInBallWidth(newPos, playerNum))
+      return true;
+    return false;
+  }
 
   getCollisionPercentage() {
     let padCenterPos: number;
@@ -377,22 +394,22 @@ export class GameStruct {
 
   scorePoint(winner: number) {
     if (winner === 2) {
-      
+
       this.pl2.score += 1;
       this.ball.pos = new Point(this.board.width * 0.5, this.board.height * 0.5);
       this.ball.tRefresh = Date.now();
-      console.log('SCOOOOOOOOOOOOORRRRE 2 ball before:', this.ball);
+      // console.log('SCOOOOOOOOOOOOORRRRE 2 ball before:', this.ball);
       this.ball.randomService(this.board, 2);
       this.collisionType = '';
-      console.log('SCOOOOOOOOOOOOORRRRE 2 ball after:', this.ball);
+      // console.log('SCOOOOOOOOOOOOORRRRE 2 ball after:', this.ball);
     } else if (winner === 1) {
       this.pl1.score += 1;
       this.ball.pos = new Point(this.board.width * 0.5, this.board.height * 0.5);
       this.ball.tRefresh = Date.now();
-      console.log('SCOOOOOOOOOOOOORRRRE 1 ball before:', this.ball);
+      // console.log('SCOOOOOOOOOOOOORRRRE 1 ball before:', this.ball);
       this.ball.randomService(this.board, 1);
       this.collisionType = '';
-      console.log('SCOOOOOOOOOOOOORRRRE 1 ball after:', this.ball);
+      // console.log('SCOOOOOOOOOOOOORRRRE 1 ball after:', this.ball);
     }
   }
 

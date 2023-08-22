@@ -31,6 +31,7 @@ interface GameSocket {
   playerStatus: string;
   opponentStatus: string;
   time: number;
+  // room: string;
 }
 
 const PlayBack = () => {
@@ -109,8 +110,8 @@ const PlayBack = () => {
       }
     } else if (gameState) {
       game.ball.updateBall(game.board, gameState.gameParams.ball);
-      game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
-      game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
+      // game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
+      // game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
       console.log('refreshed ball:', game.ball);
     }
   }, [gameState]);
@@ -182,8 +183,8 @@ const PlayBack = () => {
         </div>
         <BoardCanvas game={game} canvasRef={boardCanvasRef as React.RefObject<HTMLCanvasElement>} />
         <BallCanvas whichPlayer={whichPlayer} game={game} ball={game.ball} canvasRef={ballCanvasRef as React.RefObject<HTMLCanvasElement>} />
-        <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer}/>
-        <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer}/>
+        <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game}/>
+        <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game}/>
       </div>
 
       <button className="text-white" onClick={handleQuitGame} style={{ zIndex: '10' }}>

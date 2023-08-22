@@ -2,15 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import { Board } from '../models/Board';
 import { Player } from '../models/Player';
 import { GameProperties } from '../models/Properties';
+import { Socket } from 'socket.io-client';
 
 interface PaddleCanvasProps {
   game: GameProperties;
   player: Player;
   canvasRef: React.RefObject<HTMLCanvasElement>;
   whichPlayer: number;
+  socket: Socket | null;
 }
 
-const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, whichPlayer }) => {
+const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, whichPlayer, socket }) => {
 
   useEffect(() => {
 
@@ -18,9 +20,44 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
 
+    let movingUp = false;
+    let movingDown = false;
     let previousTimestamp = 0;
 
-    const animatePaddle1 = (timestamp: number) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        if (event.key === 'ArrowUp') {
+          movingUp = true;
+          socket?.emit('moveUp', { player: whichPlayer, action: 'pressed' });
+        }
+        else if (event.key === 'ArrowDown')
+          movingDown = true;
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        if (movingUp === true) {
+          movingUp = false;
+          socket?.emit('moveUp', { player: whichPlayer, action: 'unpressed' });
+        } else if (movingDown === true) {
+          movingDown = false;
+          socket?.emit('moveDown', { player: whichPlayer, action: 'unpressed' });
+        }
+      }
+    };
+
+    const updatePaddlePosition = () => {
+      if (movingUp)
+        player.pad.pos.y -= player.pad.speed;
+      else if (movingDown)
+        player.pad.pos.y += player.pad.speed;
+      requestAnimationFrame(updatePaddlePosition);
+    };
+
+    const animatePaddle = (timestamp: number) => {
       if (!game.isPlaying) return;
       if (!previousTimestamp) {
         previousTimestamp = timestamp;
@@ -35,13 +72,8 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
         ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height);
         ctx.setLineDash([]);
       }
-
-      requestAnimationFrame(animatePaddle1);
+      requestAnimationFrame(animatePaddle);
     };
-
-
-
-    if (!canvasRef.current) return;
 
     const handleResize = () => {
       player.pad.refactorPaddle(game.board.factor);
@@ -56,11 +88,18 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     };
 
     handleResize();
-    requestAnimationFrame(animatePaddle1);
+    requestAnimationFrame(animatePaddle);
 
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('resize', handleResize);
 
+    // if (whichPlayer === player.num)
+    //   updatePaddlePosition();
+
     return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
       window.removeEventListener('resize', handleResize);
     };
   }, [canvasRef, player, game.board.factor, game.isPlaying]);

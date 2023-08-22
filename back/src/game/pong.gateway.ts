@@ -87,6 +87,7 @@ export class PongEvents {
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     const gameQueue = this.pongService.addToQueue(user, gameDto);
+    // console.log('a queue:', gameQueue);
     if (gameQueue != null) {
       this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED' });
       const gameData = await this.pongService.gameCreate(gameDto, this.server);
@@ -121,12 +122,6 @@ export class PongEvents {
     if (!user) return;
     this.pongService.removeFromQueue(user.id);
     // confirm leaving the queue?
-  }
-
-  @SubscribeMessage('game')
-  async handleGame(
-    @ConnectedSocket() client: Socket) {
-
   }
 
   @SubscribeMessage('prepareToPlay')
@@ -168,6 +163,7 @@ export class PongEvents {
           playerStatus: player.status,
           opponentStatus: opponent.status,
           countdown: gameStruct.prop.countdown,
+          // room: gameStruct.prop.room,
         });
       return;
     }
@@ -242,20 +238,39 @@ export class PongEvents {
       gameStruct.refreshInMotion();
     }
 
+  }
 
 
+  verifyIfPlayer(room) {
+    if (room === undefined)
+      return false;
+    return true;
+  }
 
-
-
+  @SubscribeMessage('moveUp')
+  async moveUp(@ConnectedSocket() client: Socket) {
+    // console.log('Move up client.data:', client.data);
+    // console.log('vp:', this.verifyIfPlayer(client.data.room),
+    // '-', client.data.id,
+    // '-', client.data.gameId);
+    if (!this.verifyIfPlayer(client.data.room)
+      || !client.data.id
+      || !client.data.gameId) return;
+    const game = this.pongService.getGameStructById(client.data.gameId);
+    console.log('Game:', game);
+    if (game.prop.status !== 'playing') {
+      console.log('HEREEEEEEEE');
+      return;
+    }
 
   }
+
+
+
 }
 
 
-
-
-
-    // const sockets = await this.server.in(gameStruct.prop.room).fetchSockets();
-    // sockets.forEach((Socket) => {
-    //   console.log('IN room user:', Socket.data);
-    // });
+// const sockets = await this.server.in(gameStruct.prop.room).fetchSockets();
+// sockets.forEach((Socket) => {
+//   console.log('IN room user:', Socket.data);
+// });

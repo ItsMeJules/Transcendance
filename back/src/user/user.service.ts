@@ -173,7 +173,8 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { id: id },
     });
-    delete user.hash;
+    if (user)
+      delete user.hash;
     return user;
   }
 
