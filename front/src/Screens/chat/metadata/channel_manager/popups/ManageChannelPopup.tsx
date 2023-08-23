@@ -29,10 +29,14 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = ({ channel }: ChannelPop
     }
 
     setChannelPassword("");
-  };
+  }
+
+  const quitChannel = () => {
+
+  }
 
   return (
-    <Popup className="popup">
+    <Popup className="channel-popup">
       <div className="channel-description">
         {ChannelTypeDescription[channelType].desc}
       </div>
@@ -72,6 +76,10 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = ({ channel }: ChannelPop
       <div className="validate">
         <p onClick={changeChannel}>Modifier le channel</p>
       </div>
+
+        <div className="quit-channel">
+          <p onClick={quitChannel}>Quitter le channel</p>
+        </div>
     </Popup>
   );
 }

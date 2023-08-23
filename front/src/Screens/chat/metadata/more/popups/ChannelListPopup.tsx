@@ -1,62 +1,62 @@
-import React from "react";
-
-import PublicIcon from "../../../../../assets/globe.png"
-import PrivateIcon from "../../../../../assets/private.png"
-import ProtectedIcon from "../../../../../assets/padlock.png"
+import { useState, KeyboardEvent } from "react";
 
 import Popup from "../../../utils/Popup"
-import { Channel, ChannelType, ChannelData } from "../../../models/Channel";
-
-interface ChannelListProps {
-  channels: ChannelData[];
-}
-
-const ChannelList: React.FC<ChannelListProps> = ({ channels }) => {
-  const getIconFromType = (type: ChannelType) => {
-    let iconSrc = PublicIcon;
-
-    if (type === ChannelType.PROTECTED)
-      iconSrc = ProtectedIcon;
-    else if (type === ChannelType.PRIVATE)
-      iconSrc = PrivateIcon;
-
-    return (<img alt="Channel Type" src={iconSrc} />)
-  }
-
-  const joinChannel = () => {
-
-  }
-
-  return (
-    <div className="channel-list">
-      {channels.map((channelData, index) => (
-        <div className="channel-container" onClick={joinChannel}>
-
-          <div key={index} className="channel">
-            <div className="type-picture">
-              {getIconFromType(channelData.type)}
-            </div>
-
-            <div className="channel-info">
-              <p>{channelData.name}</p>
-              <p>User Count: {channelData.users?.length || 0}</p>
-            </div>
-          </div>
-
-        </div>
-      ))}
-    </div>
-  );
-};
+import { Channel, ChannelType } from "../../../models/Channel";
+import ChannelsList from "../../../utils/ChannelsList";
 
 interface ChannelListPopupProps {
   channels: Channel[]
 }
 
-export default function ChannelListPopup( {channels}: ChannelListPopupProps ) {
+export default function ChannelListPopup({ channels }: ChannelListPopupProps) {
+  const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
+  const [passwordValue, setPasswordValue] = useState<string>("");
+
+  const joinChannel = () => {
+    if (selectedChannel == null)
+      return;
+    if (selectedChannel.channelData.type == ChannelType.PROTECTED && !passwordValue.trim())
+      return ;
+
+    setPasswordValue("")
+    setSelectedChannel(null)
+  }
+
+  const handleEnterPressed = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter")
+      joinChannel()
+  }
+
   return (
-    <Popup className="channel-list-popup">
-      <ChannelList channels={channels.map(channel => channel.channelData)} />
-    </Popup>
+    <>
+      <Popup className="channel-list-popup">
+        <ChannelsList
+          channels={channels}
+          onClickElement={setSelectedChannel}
+        />
+      </Popup>
+
+      {selectedChannel && (
+        <div className="password-popup">
+          <div className="password-popup-content">
+
+            <div className="infos">
+              <h3>Rejoindre<br />{selectedChannel.channelData.name}</h3>
+              <input placeholder="Entrez le mdp..."
+                onChange={(e) => setPasswordValue(e.target.value)}
+                value={passwordValue}
+                onKeyDown={(e) => handleEnterPressed(e)}
+              />
+            </div>
+
+            <div className="buttons">
+              <button className="cancel" onClick={() => setSelectedChannel(null)}>Annuler</button>
+              <button className="validate" onClick={joinChannel}>Rejoindre</button>
+            </div>
+
+          </div>
+        </div>
+      )}
+    </>
   )
 }

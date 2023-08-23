@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent, useEffect } from "react";
+import React, { useState, KeyboardEvent } from "react";
 
 import TextSend from "./TextSend";
 
