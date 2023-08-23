@@ -9,6 +9,7 @@ export class Ball {
   public halfSize: number;
   public speed: number;
   public pos: Point;
+  public prevPos: Point;
   public accelFactor: number;
   public dir: Vector;
   public tRefresh = Date.now();
@@ -20,8 +21,6 @@ export class Ball {
     if (initType === 'standard')
       this.standardInitializer(board);
     this.standardInitializer(board);
-    //
-    // this.dir = new Vector(1, 0);
   }
 
   standardInitializer(board: Board) {
@@ -29,6 +28,7 @@ export class Ball {
     this.halfSize = initGameConfig.ball.size * 0.5;
     this.speed = initGameConfig.ball.speed;
     this.pos = new Point(board.width * 0.5, board.height * 0.5);
+    this.prevPos = this.pos;
     this.accelFactor = initGameConfig.ball.accelFactor;
     const toRandomPlayer = Math.random() < 0.5 ? -1 : 1;
     this.randomService(board, toRandomPlayer);
@@ -48,28 +48,17 @@ export class Ball {
 
   randomService(board: Board, whichPlayerToServe: number) {
     const maxAngle = Math.atan((board.height - this.size) / board.width);
-    // console.log('maxangle:', maxAngle);
     const randomAngle = Math.random() * maxAngle * 2 - maxAngle;
-    // console.log('random angle degree:', randomAngle * 180 / Math.PI);
     const dirX = whichPlayerToServe === 1 ? 1 : -1;
     const randomY = Math.random() < 0.5 ? -1 : 1;
     this.dir = new Vector(
       Math.cos(randomAngle) * dirX,
       Math.sin(randomAngle) * randomY);
 
-    // this.dir = new Vector(1, 0);
-
-
-    // const angle = Math.PI / 3;
-    // this.dir = new Vector(
-    //   -Math.cos(angle),
-    //   Math.sin(angle));
-
-
-    // const angle = Math.PI / 1.01;
-    // this.dir = new Vector(
-    //   -Math.cos(angle),
-    //   -Math.sin(angle));
+    const angle = Math.PI / 4.2;
+    this.dir = new Vector(
+      -Math.cos(angle),
+      -Math.sin(angle));
   }
 
   updateDirectionBounce(collisionPercentage: number) {
@@ -80,9 +69,7 @@ export class Ball {
     );
     if (dirX > 0 && this.dir.x > 0)
       this.dir.x *= -1;
-    else if (dirX < 0 && this.dir.x < 0 )
+    else if (dirX < 0 && this.dir.x < 0)
       this.dir.x *= -1;
   }
-
-
 }

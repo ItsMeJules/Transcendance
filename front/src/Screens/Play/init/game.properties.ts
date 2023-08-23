@@ -26,8 +26,8 @@ export const initGameConfig = {
   pad: {
     width: 15,
     height: 60,
-    wallGap: 150,
-    speed: 10,
+    wallGap: 10,
+    speed: 200,
   },
 
 };

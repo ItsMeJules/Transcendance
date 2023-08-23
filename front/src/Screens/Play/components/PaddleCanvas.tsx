@@ -27,12 +27,15 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
         event.preventDefault();
+        console.log('event key:', event.key);
         if (event.key === 'ArrowUp') {
           movingUp = true;
           socket?.emit('moveUp', { player: whichPlayer, action: 'pressed' });
-        }
-        else if (event.key === 'ArrowDown')
+        } else if (event.key === 'ArrowDown') {
           movingDown = true;
+          console.log('HEERRRE WEIRD');
+          socket?.emit('moveDown', { player: whichPlayer, action: 'pressed' });
+        }
       }
     };
 
@@ -41,10 +44,10 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
         event.preventDefault();
         if (movingUp === true) {
           movingUp = false;
-          // socket?.emit('unpressUp', { player: whichPlayer, action: 'unpressed' });
+          socket?.emit('unpressUp', { player: whichPlayer, action: 'unpressed' });
         } else if (movingDown === true) {
           movingDown = false;
-          socket?.emit('moveDown', { player: whichPlayer, action: 'unpressed' });
+          socket?.emit('unpressDown', { player: whichPlayer, action: 'unpressed' });
         }
       }
     };
@@ -89,15 +92,11 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
 
     handleResize();
     requestAnimationFrame(animatePaddle);
-
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('resize', handleResize);
-
-    
     // if (whichPlayer === player.num)
     //   updatePaddlePosition();
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);

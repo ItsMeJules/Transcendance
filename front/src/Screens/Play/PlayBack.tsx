@@ -88,19 +88,19 @@ const PlayBack = () => {
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
     socket.game?.on('prepareToPlay', (data) => {
       setSocketPrepare(data);
-      console.log('DATA PREPARE', data);
+      // console.log('DATA PREPARE', data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
-      console.log('DATA game', data);
+      // console.log('DATA game', data);
       setGameState(data);
     });
   }, [socket.game]);
 
   useEffect(() => {
-    console.log('gamestate:', gameState);
+    // console.log('gamestate:', gameState);
     if (gameState?.gameStatus === 'giveUp') {
       game.isPlaying = false;
-      console.log('gameState in giveup:');
+      // console.log('gameState in giveup:');
       if (gameState.gameParams.pl1.status === 'givenUp') {
         whichPlayer === 1 ? setCentralText('You gave up!') :
           setCentralText('Your oponent gave up!');
@@ -112,7 +112,7 @@ const PlayBack = () => {
       game.ball.updateBall(game.board, gameState.gameParams.ball);
       game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
       game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
-      console.log('refreshed ball:', game.ball);
+      // console.log('refreshed ball:', game.ball);
     }
   }, [gameState]);
 

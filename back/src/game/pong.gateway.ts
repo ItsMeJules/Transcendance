@@ -227,7 +227,7 @@ export class PongEvents {
       this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status });
       this.server.to(gameStruct.prop.room).emit('refreshGame',
         { gameStatus: gameStruct.prop.status, gameParams: gameStruct.getState(), time: Date.now() });
-      gameStruct.startGameLoop(); 
+      gameStruct.startGameLoop();
     }
     // Give up game
     else if (data.action === 'giveUp' && gameStruct.prop.status === 'playing') {
@@ -256,43 +256,73 @@ export class PongEvents {
 
   @SubscribeMessage('moveUp')
   async moveUp(@ConnectedSocket() client: Socket) {
-    console.log('move up gateway');
     if (!this.verifyIfPlayer(client.data.room)
       || !client.data.id
       || !client.data.gameId) return;
     const game = this.pongService.getGameStructById(client.data.gameId);
+
     if (game.prop.status === 'playing') {
       let player: Player;
-
       if (client.data.id === game.pl1.id) player = game.pl1;
       else if (client.data.id === game.pl2.id) player = game.pl2;
-      if (player === undefined) return;
+      if (player === undefined) return; // what about spectators?
       game.movePlayerUp(player);
       return;
     }
   }
 
-//  @SubscribeMessage('unpressUp')
-//   async stopMoveUp(@ConnectedSocket() client: Socket) {
-//     console.log('upressssss');
-//     if (!this.verifyIfPlayer(client.data.room)
-//       || !client.data.id
-//       || !client.data.gameId) return;
-//     const game = this.pongService.getGameStructById(client.data.gameId);
-//     if (game.prop.status === 'playing') {
-//       let player: Player;
-//       if (client.data.id === game.pl1.id) player = game.pl1;
-//       else if (client.data.id === game.pl2.id) player = game.pl2;
-//       if (player.isMoving && player.movingDir === 'up') {
-//         player.isMoving = false;
-//         player.movingDir = '';
-//         // clearInterval(game.pro);
-//         // this.gameLoopInterval = null;
-//         console.log('p is moving:', player.isMoving, ' p moiving dir:', player.movingDir);
-//       }
-//       return;
-//     }
-//   }
+   @SubscribeMessage('unpressUp')
+    async stopMoveUp(@ConnectedSocket() client: Socket) {
+      if (!this.verifyIfPlayer(client.data.room)
+        || !client.data.id
+        || !client.data.gameId) return;
+      const game = this.pongService.getGameStructById(client.data.gameId);
+      if (game.prop.status === 'playing') {
+        let player: Player;
+        if (client.data.id === game.pl1.id) player = game.pl1;
+        else if (client.data.id === game.pl2.id) player = game.pl2;
+        if (player.isMoving && player.movingDir === 'up') {
+          player.isMoving = false;
+          player.movingDir = '';
+        }
+        return;
+      }
+    }
+
+    @SubscribeMessage('moveDown')
+    async moveDown(@ConnectedSocket() client: Socket) {
+      if (!this.verifyIfPlayer(client.data.room)
+        || !client.data.id
+        || !client.data.gameId) return;
+      const game = this.pongService.getGameStructById(client.data.gameId);
+  
+      if (game.prop.status === 'playing') {
+        let player: Player;
+        if (client.data.id === game.pl1.id) player = game.pl1;
+        else if (client.data.id === game.pl2.id) player = game.pl2;
+        if (player === undefined) return; // what about spectators?
+        game.movePlayerDown(player);
+        return;
+      }
+    }
+
+    @SubscribeMessage('unpressDown')
+    async stopMoveDown(@ConnectedSocket() client: Socket) {
+      if (!this.verifyIfPlayer(client.data.room)
+        || !client.data.id
+        || !client.data.gameId) return;
+      const game = this.pongService.getGameStructById(client.data.gameId);
+      if (game.prop.status === 'playing') {
+        let player: Player;
+        if (client.data.id === game.pl1.id) player = game.pl1;
+        else if (client.data.id === game.pl2.id) player = game.pl2;
+        if (player.isMoving && player.movingDir === 'down') {
+          player.isMoving = false;
+          player.movingDir = '';
+        }
+        return;
+      }
+    }
 
 
 

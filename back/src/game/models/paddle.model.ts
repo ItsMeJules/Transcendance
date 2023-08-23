@@ -10,6 +10,7 @@ export class Paddle {
   public wallGap: number;
   public speed: number;
   public pos: Point;
+  public prevPos: Point;
   public colPtsSide: CollisionPointsPaddle;
   public colPtsUp: CollisionPointsPaddle;
   public colPtsDown: CollisionPointsPaddle;
@@ -33,6 +34,7 @@ export class Paddle {
       this.pos = new Point(
         board.width - this.wallGap - this.width,
         (board.height - this.height) * 0.5);
+    this.prevPos = new Point(this.pos.x, this.pos.y);
     this.colPtsSide = new CollisionPointsPaddle(
       new Point(this.pos.x + this.width, this.pos.y),
       new Point(this.pos.x + this.width, this.pos.y + this.height));
@@ -58,5 +60,18 @@ export class Paddle {
         new Point(this.pos.x, this.pos.y),
         new Point(this.pos.x, this.pos.y + this.height));
     }
+    this.colPtsUp = new CollisionPointsPaddle(
+      new Point(this.pos.x, this.pos.y),
+      new Point(this.pos.x + this.width, this.pos.y));
+    this.colPtsDown = new CollisionPointsPaddle(
+      new Point(this.pos.x, this.pos.y + this.height),
+      new Point(this.pos.x + this.width, this.pos.y + this.height));
+  }
+
+  pointInPaddle(p: Point) {
+    if ((p.x >= this.pos.x && p.x <= this.pos.x + this.width)
+      && (p.y >= this.pos.y && p.y <= this.pos.x + this.height))
+      return true;
+    return false;
   }
 }
