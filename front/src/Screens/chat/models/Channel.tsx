@@ -1,4 +1,4 @@
-import User from "./User";
+import User from "../../../Services/User";
 
 export enum ChannelType {
   PUBLIC = "PUBLIC",
@@ -34,7 +34,7 @@ export interface ChannelData {
 }
 
 export class Channel {
-  channelData: ChannelData | null = null;
+  channelData: ChannelData;
 
   constructor(channelData: ChannelData) {
     this.channelData = channelData;

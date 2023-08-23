@@ -2,7 +2,7 @@ import React, { useState, MouseEvent } from "react";
 
 import MorePopup from "./more/MorePopup";
 import ChannelManager from "./channel_manager/ChannelManager";
-import { Channel, ChannelData, ChannelType } from "../../../Services/Channel";
+import { Channel, ChannelData, ChannelType } from "../models/Channel";
 
 export enum PopupType {
   CHANNEL = "channel",

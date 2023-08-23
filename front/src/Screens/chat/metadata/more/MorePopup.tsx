@@ -1,11 +1,11 @@
 import React from "react";
 
-import Popup from "./Popup";
+import Popup from "../../utils/Popup";
 import { PopupType } from "../ChatMetadata";
-import ChannelCreationPopup from "./types/ChannelCreationPopup";
-import DirectMessagePopup from "./types/DirectMessagePopup";
-import RestrictUserPopup from "./types/RestrictUserPopup";
-import ChannelListPopup from "./types/ChannelListPopup";
+import ChannelCreationPopup from "./popups/ChannelCreationPopup";
+import DirectMessagePopup from "./popups/DirectMessagePopup";
+import RestrictUserPopup from "./popups/RestrictUserPopup";
+import ChannelListPopup from "./popups/ChannelListPopup";
 
 interface MorePopupProps {
   popupType: PopupType | null;

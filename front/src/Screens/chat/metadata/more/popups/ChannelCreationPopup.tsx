@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 
-import Popup from "../Popup";
+import Popup from "../../../utils/Popup";
 
 import PublicIcon from "../../../../../assets/globe.png"
 import PrivateIcon from "../../../../../assets/private.png"
 import ProtectedIcon from "../../../../../assets/padlock.png"
+
 import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
-import { ChannelType, ChannelTypeDescription } from "../../../../../Services/Channel";
+import { ChannelType, ChannelTypeDescription } from "../../../models/Channel";
 
 export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC)
@@ -19,7 +20,6 @@ export default function ChannelCreationPopup() {
       return;
     if (channelType === ChannelType.PROTECTED && !channelPassword.trim())
       return;
-
 
     // Temporary fix by Antoine
     const userDataString = localStorage.getItem("userData");
@@ -38,10 +38,12 @@ export default function ChannelCreationPopup() {
   return (
     <Popup className="channel-creation-popup">
       <div className="icons">
+
         <div className="selected-text">
           <p className="type">Type: {ChannelTypeDescription[channelType].name}</p>
           <p className="description">{ChannelTypeDescription[channelType].desc}</p>
         </div>
+
         <div className="images">
           <img
             className="public"
@@ -62,6 +64,7 @@ export default function ChannelCreationPopup() {
             onClick={() => setChannelType(ChannelType.PROTECTED)}
           ></img>
         </div>
+
       </div>
 
       <div className="channel-name">

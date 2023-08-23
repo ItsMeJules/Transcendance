@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { AxiosInstance } from "axios";
 
-
-import Popup from "../Popup"
-import User from "../../../../../Services/User";
+import Popup from "../../../utils/Popup"
 import { useAxios } from "../../../../../api/axios-config";
+import User from "../../../../../Services/User";
 import UsersList, { fetchAllUsers } from "../../UsersList";
 
-export default function DirectMessagePopup() {
+export default function RestrictUserPopup() {
   const axiosInstance: AxiosInstance = useAxios() // Can't be used inside a callback function, why?
   const [users, setUsers] = useState<User[]>([])
 
@@ -25,7 +24,7 @@ export default function DirectMessagePopup() {
   }, []);
 
   return (
-    <Popup className="dm-popup">
+    <Popup className="restrict-popup">
       <div className="users-list">
         <UsersList users={users} />
       </div>

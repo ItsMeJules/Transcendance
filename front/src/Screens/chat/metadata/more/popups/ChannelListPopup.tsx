@@ -1,6 +1,6 @@
 import React from "react";
 
-import Popup from "../Popup"
+import Popup from "../../../utils/Popup"
 
 export default function ChannelListPopup() {
 	return (

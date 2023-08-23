@@ -16,6 +16,8 @@
     align-items: flex-start;
     transition: height 1s ease;
 
+    height: 50vh;
+
     .metadata-container {
       display: flex;
       flex-direction: row;
@@ -226,12 +228,6 @@
                   }
                 }
               }
-
-              .public {}
-
-              .private {}
-
-              .protected {}
             }
 
             .channel-name {
@@ -454,13 +450,58 @@
 
         height: 100%;
         width: 100%;
+        
+        background-color: lime;
 
-        .manage {
-          width: 8%;
-          height: auto;
+        .text {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-start;   
+
+          height: 100%;
+          width: 100%;
+
+          .channel-name {
+            height: 50%;
+
+          }
+
+          .users-list {
+            height: 50%;
+          }
         }
 
-        background-color: lime;
+        .manage {
+          position: relative;
+          width: 10%;
+          height: auto;
+
+          cursor: pointer;
+
+          margin: 2% 2% 0 0;
+          
+          img {
+            transition: transform 0.5s ease;
+            
+            &:hover {
+              transform: rotate(45deg);
+            }
+          }
+
+          .popup {
+            position: absolute;
+            
+            top: 100%;
+            left: -100%;
+            
+            height: 150px;
+            width: 100px;
+            background-color: lime;
+            display: block;
+          }
+        }
+        
       }
 
       .channel-icon {

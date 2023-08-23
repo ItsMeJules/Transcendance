@@ -14,14 +14,14 @@ export class ChatService {
       const user = await this.prismaService.returnCompleteUser(client.data.id);
       const room = await this.prismaService.returnCompleteRoom(targetRoom);
       if (!room || !user) throw new Error('error name');
-      await client.leave(user.currentRoom);
+      // await client.leave(user.currentRoom);
       await client.join(targetRoom);
       await this.prismaService.user.update({
         where: {
           id: user.id,
         },
         data: {
-          currentRoom: targetRoom,
+          // currentRoom: targetRoom,
         },
       });
     } catch (error) {
@@ -442,7 +442,7 @@ export class ChatService {
             id: targetUser.id,
           },
           data: {
-            currentRoom: 'general',
+            // currentRoom: 'general',
           },
         });
         return true;
