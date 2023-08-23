@@ -10,7 +10,9 @@ export class Paddle {
   public wallGap: number;
   public speed: number;
   public pos: Point;
-  public colPts: CollisionPointsSides;
+  public colPtsSide: CollisionPointsPaddle;
+  public colPtsUp: CollisionPointsPaddle;
+  public colPtsDown: CollisionPointsPaddle;
 
   constructor(board: Board, initType: string, player: number) {
     if (initType === 'standard')
@@ -31,8 +33,14 @@ export class Paddle {
       this.pos = new Point(
         board.width - this.wallGap - this.width,
         (board.height - this.height) * 0.5);
-    this.colPts = new CollisionPointsPaddle(
+    this.colPtsSide = new CollisionPointsPaddle(
       new Point(this.pos.x + this.width, this.pos.y),
+      new Point(this.pos.x + this.width, this.pos.y + this.height));
+    this.colPtsUp = new CollisionPointsPaddle(
+      new Point(this.pos.x, this.pos.y),
+      new Point(this.pos.x + this.width, this.pos.y));
+    this.colPtsDown = new CollisionPointsPaddle(
+      new Point(this.pos.x, this.pos.y + this.height),
       new Point(this.pos.x + this.width, this.pos.y + this.height));
   }
 
@@ -42,11 +50,11 @@ export class Paddle {
 
   collisionUpdate(playerNum: number) {
     if (playerNum === 1) {
-      this.colPts = new CollisionPointsPaddle(
+      this.colPtsSide = new CollisionPointsPaddle(
         new Point(this.pos.x + this.width, this.pos.y),
         new Point(this.pos.x + this.width, this.pos.y + this.height));
     } else if (playerNum === 2) {
-      this.colPts = new CollisionPointsPaddle(
+      this.colPtsSide = new CollisionPointsPaddle(
         new Point(this.pos.x, this.pos.y),
         new Point(this.pos.x, this.pos.y + this.height));
     }

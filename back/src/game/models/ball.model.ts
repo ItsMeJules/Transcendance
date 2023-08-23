@@ -63,19 +63,25 @@ export class Ball {
     // const angle = Math.PI / 3;
     // this.dir = new Vector(
     //   -Math.cos(angle),
+    //   Math.sin(angle));
+
+
+    // const angle = Math.PI / 1.01;
+    // this.dir = new Vector(
+    //   -Math.cos(angle),
     //   -Math.sin(angle));
-    const angle = Math.PI / 1.01;
-    this.dir = new Vector(
-      -Math.cos(angle),
-      -Math.sin(angle));
   }
 
-  updateDirectionBounce(collisionPercentage: number, side: string) {
+  updateDirectionBounce(collisionPercentage: number) {
+    let dirX = this.dir.x;
     this.dir = new Vector(
       Math.cos(this.maxPaddleBounceAngle * collisionPercentage),
       Math.sin(this.maxPaddleBounceAngle * collisionPercentage)
     );
-    if (side === 'right') this.dir.x *= -1;
+    if (dirX > 0 && this.dir.x > 0)
+      this.dir.x *= -1;
+    else if (dirX < 0 && this.dir.x < 0 )
+      this.dir.x *= -1;
   }
 
 
