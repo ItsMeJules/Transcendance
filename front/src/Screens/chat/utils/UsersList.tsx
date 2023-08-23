@@ -1,32 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AxiosInstance, AxiosResponse } from "axios";
 
 import User, { UserData } from "../../../Services/User";
 import { API_ROUTES } from "../../../Utils";
+import { useAxios } from "../../../api/axios-config";
 
-interface UserListProps {
-  users: User[];
-}
-
-export const fetchAllUsers = async (axiosInstance: AxiosInstance): Promise<User[]> => {
-  console.log("getting all users...")
+const fetchAllUsers = async (axiosInstance: AxiosInstance): Promise<User[]> => {
   const response: AxiosResponse<any, any> = await axiosInstance.get(API_ROUTES.GET_ALL_USERS, { withCredentials: true })
 
-  console.log("treating response data...")
   const frontUsers: User[] = response.data.map((data: UserData) => {
-    const frontUser: User = new User(); 
+    const frontUser: User = new User();
 
     frontUser.setUserFromResponseData(data);
-    
+
     return frontUser;
   });
 
   return frontUsers;
 }
 
-const UsersList: React.FC<UserListProps> = ({ users }) => {
+const UsersList = () => {
+  const axiosInstance: AxiosInstance = useAxios() // Can't be used inside a callback function, why?
+  const [users, setUsers] = useState<User[]>([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedUsers = await fetchAllUsers(axiosInstance);
+        setUsers(fetchedUsers);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <>
+    <div className="users-list">
       {users.map((user, key) => ( //key is mandatory.
         <div className="user-container">
           <div key={key} className="user">
@@ -36,7 +47,7 @@ const UsersList: React.FC<UserListProps> = ({ users }) => {
           </div>
         </div>
       ))}
-    </>
+    </div>
   )
 }
 

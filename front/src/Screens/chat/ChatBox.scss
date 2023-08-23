@@ -466,30 +466,81 @@
           height: 100%;
           width: 100%;
 
-          .channel-info-container {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            align-items: center;
-
+          .channel-name {
             height: 50%;
-            width: fit-content;
-
-            .channel-name {
-              
-            }
-
-            .icon-type {
-              margin: 0 0 0 5px;
-
-              img {
-                width: 10%;
-              }
-            }
           }
 
-          .users-list {
-            height: 50%;
+          .channel-users-container {
+            .popup-container {
+              position: relative;
+              height: 50%;
+              cursor: pointer;
+
+              .channel-users-popup {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+    
+                position: absolute;
+                top: 25%;
+                left: 102%;
+    
+                height: max-content;
+                width: 10vw;
+    
+                overflow-y: scroll;
+    
+                background-color: white;
+                border-radius: 5px;
+                border: 1px solid lightgray;
+    
+                .users-list {
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: flex-start;
+    
+                  overflow-x: hidden;
+    
+                  z-index: 10;
+    
+                  .user-container {
+                    border-bottom: 1px solid lightgray;
+    
+                    cursor: pointer;
+    
+                    .user {
+                      display: flex;
+                      flex-direction: row;
+                      justify-content: flex-start;
+                      align-items: center;
+    
+                      transition: transform 0.3s;
+    
+                      &:hover {
+                        background-color: #c9c9c9;
+                        transform: scale(1.05);
+                      }
+    
+                      .profile-picture {
+                        width: 30%;
+                        height: auto;
+                        margin: 5px 0px 5px 5px;
+    
+                        border-radius: 50%;
+                        box-shadow: 7px 10px 10px -6px rgba(0, 0, 0, 0.72);
+    
+                      }
+    
+                      .username {
+                        margin: 0px 0px 0px 10px;
+                      }
+                    }
+    
+                  }
+    
+                }
+              }
+            }
           }
         }
 

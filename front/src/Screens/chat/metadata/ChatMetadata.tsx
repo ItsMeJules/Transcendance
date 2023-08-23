@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
+
+import PublicIcon from "../assets/globe.png"
+import ProtectedIcon from "../assets/padlock.png"
+import PrivateIcon from "../assets/private.png"
 
 import MorePopup from "./more/MorePopup";
 import ChannelManager from "./channel_manager/ChannelManager";
-import { Channel, ChannelData, ChannelType } from "../models/Channel";
+import { Channel, ChannelType } from "../models/Channel";
 import OutsideClickHandler from "../utils/OutsideClickHandler";
 
 export enum PopupType {
@@ -38,6 +42,17 @@ export default function ChatMetadata() {
     setPopupActive(null)
   }
 
+  const getIconFromType = (type: ChannelType) => {
+    let iconSrc = PublicIcon;
+
+    if (type === ChannelType.PROTECTED)
+      iconSrc = ProtectedIcon;
+    else if (type === ChannelType.PRIVATE)
+      iconSrc = PrivateIcon;
+
+    return (<img alt="Channel Type" src={iconSrc} />)
+  }
+
   return (
     <div className="metadata-container">
       <OutsideClickHandler className="more" onInsideClick={handleMoreClick} onOutsideClick={handleOutsideClick}>
@@ -56,7 +71,9 @@ export default function ChatMetadata() {
         <ChannelManager channel={activeChannel} />
       </div>
 
-      <div className="channel-icon"></div>
+      <div className="channel-icon">
+        {getIconFromType(activeChannel.channelData.type)}
+      </div>
     </div>
   );
 }
