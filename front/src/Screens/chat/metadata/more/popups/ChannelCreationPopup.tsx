@@ -45,24 +45,24 @@ export default function ChannelCreationPopup() {
         </div>
 
         <div className="images">
-          <img
-            className="public"
-            src={PublicIcon}
-            alt="Public"
-            onClick={() => setChannelType(ChannelType.PUBLIC)}
-          />
-          <img
-            className="private"
-            src={PrivateIcon}
-            alt="Private"
-            onClick={() => setChannelType(ChannelType.PRIVATE)}
-          />
-          <img
-            className="protected"
-            src={ProtectedIcon}
-            alt="Protected"
-            onClick={() => setChannelType(ChannelType.PROTECTED)}
-          />
+        <img
+          className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
+          src={PublicIcon}
+          alt="Public"
+          onClick={() => setChannelType(ChannelType.PUBLIC)}
+        />
+        <img
+          className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
+          src={PrivateIcon}
+          alt="Private"
+          onClick={() => setChannelType(ChannelType.PRIVATE)}
+        />
+        <img
+          className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
+          src={ProtectedIcon}
+          alt="Protected"
+          onClick={() => setChannelType(ChannelType.PROTECTED)}
+        />
         </div>
 
       </div>

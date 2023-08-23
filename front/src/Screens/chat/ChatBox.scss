@@ -194,7 +194,7 @@
                 .description {
                   font-size: 8px;
                   word-wrap: break-word;
-                  line-height: 5px;
+                  line-height: 10px;
                   margin: 0px;
                 }
               }
@@ -222,6 +222,10 @@
 
                   cursor: pointer;
                   transition: transform 0.3s;
+
+                  &.selected {
+                    background-color: #5e5e5e;
+                  }
 
                   &:hover {
                     transform: scale(1.2);
@@ -798,7 +802,7 @@
 
     background-color: #4682A9;
 
-    border-radius: 0px 10px 10px 0px;
+    border-bottom-right-radius: 10px;
 
     z-index: 1;
 

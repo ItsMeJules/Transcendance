@@ -15,6 +15,7 @@ interface MorePopupProps {
 }
 
 export default function MorePopup({ popupType, setPopupActive, channels }: MorePopupProps) {
+
   const channelCreation = () => {
     setPopupActive(popupType === PopupType.CHANNEL ? null : PopupType.CHANNEL);
   };
@@ -32,18 +33,18 @@ export default function MorePopup({ popupType, setPopupActive, channels }: MoreP
   };
 
   return (
-      <Popup className="more-popup">
-        <div className="contents">
-          <p onClick={channelCreation}>Créer un channel</p>
-          <p onClick={sendDirectMessage}>Envoyer un dm</p>
-          <p onClick={restrictUser}>Bloquer/Débloquer un utilisateur</p>
-          <p onClick={channelList}>Liste des channels</p>
-        </div>
+    <Popup className="more-popup">
+      <div className="contents">
+        <p onClick={channelCreation}>Créer un channel</p>
+        <p onClick={sendDirectMessage}>Envoyer un dm</p>
+        <p onClick={restrictUser}>Bloquer/Débloquer un utilisateur</p>
+        <p onClick={channelList}>Liste des channels</p>
+      </div>
 
-        {popupType === PopupType.CHANNEL && <ChannelCreationPopup />}
-        {popupType === PopupType.DIRECT_MESSAGE && <DirectMessagePopup />}
-        {popupType === PopupType.RESTRICT && <RestrictUserPopup />}
-        {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup channels={channels}/>}
-      </Popup>
+      {popupType === PopupType.CHANNEL && <ChannelCreationPopup />}
+      {popupType === PopupType.DIRECT_MESSAGE && <DirectMessagePopup />}
+      {popupType === PopupType.RESTRICT && <RestrictUserPopup />}
+      {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup channels={channels} />}
+    </Popup>
   );
 }
