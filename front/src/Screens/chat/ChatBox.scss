@@ -576,7 +576,6 @@
           justify-content: flex-start;
           align-items: flex-start;
 
-          padding-bottom: 5px;
           margin-left: 5px;
 
           height: 100%;
@@ -592,6 +591,12 @@
 
             .channel-users-count {
               height: 100%;
+              border-radius: 5px;
+
+              &:hover {
+                outline: 1px solid gray;
+                background-color: #4682A9;
+              }
             }
 
             .popup-container {

@@ -12,14 +12,16 @@ interface ChatMessageProps {
 const ChatMessage: React.FC<ChatMessageProps> = ({ messagesReceived }) => {
   return (
     <>
-      {messagesReceived.map((message, index) => (
-        <div
-          className={"message-" + (message.self ? "self" : "other")}
-          key={index}
-        >
-          {message.message}
-        </div>
-      ))}
+      {messagesReceived.map((message, index) => {
+        return (
+          <div
+            className={"message-" + (message.self ? "self" : "other")}
+            key={index}
+          >
+            {message.message}
+          </div>
+        );
+      })}
     </>
   );
 };
