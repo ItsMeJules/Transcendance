@@ -6,13 +6,15 @@ import ChannelCreationPopup from "./popups/ChannelCreationPopup";
 import DirectMessagePopup from "./popups/DirectMessagePopup";
 import RestrictUserPopup from "./popups/RestrictUserPopup";
 import ChannelListPopup from "./popups/ChannelListPopup";
+import { Channel } from "../../models/Channel";
 
 interface MorePopupProps {
   popupType: PopupType | null;
   setPopupActive: React.Dispatch<React.SetStateAction<PopupType | null>>;
+  channels: Channel[];
 }
 
-export default function MorePopup({ popupType, setPopupActive }: MorePopupProps) {
+export default function MorePopup({ popupType, setPopupActive, channels }: MorePopupProps) {
   const channelCreation = () => {
     setPopupActive(popupType === PopupType.CHANNEL ? null : PopupType.CHANNEL);
   };
@@ -41,7 +43,7 @@ export default function MorePopup({ popupType, setPopupActive }: MorePopupProps)
         {popupType === PopupType.CHANNEL && <ChannelCreationPopup />}
         {popupType === PopupType.DIRECT_MESSAGE && <DirectMessagePopup />}
         {popupType === PopupType.RESTRICT && <RestrictUserPopup />}
-        {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup />}
+        {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup channels={channels}/>}
       </Popup>
   );
 }

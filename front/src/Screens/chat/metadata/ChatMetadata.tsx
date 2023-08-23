@@ -20,15 +20,82 @@ export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false)
   const [popupType, setPopupActive] = useState<PopupType | null>(null)
 
-  const activeChannel: Channel = new Channel({
-    type: ChannelType.PUBLIC,
-    name: "Public",
-    password: null,
-    users: [],
-    owner: null,
-    admins: [],
-    punishments: []
-  })
+  const channels: Channel[] = [
+    new Channel({
+      type: ChannelType.PUBLIC,
+      name: "Public Channel",
+      password: null,
+      users: [],
+      owner: null,
+      admins: [],
+      punishments: [],
+    }),
+    new Channel({
+      type: ChannelType.PRIVATE,
+      name: "Les boss",
+      password: null,
+      users: [],
+      owner: null,
+      admins: [],
+      punishments: [],
+    }),
+    new Channel({
+      type: ChannelType.PROTECTED,
+      name: "Protected Channel",
+      password: "examplePassword",
+      users: [],
+      owner: null,
+      admins: [],
+      punishments: [],
+    }),
+    new Channel({
+      type: ChannelType.PUBLIC,
+      name: "Another Public Channel",
+      password: null,
+      users: [],
+      owner: null,
+      admins: [],
+      punishments: [],
+    }),
+    new Channel({
+      type: ChannelType.PUBLIC,
+      name: "Public Channel",
+      password: null,
+      users: [],
+      owner: null,
+      admins: [],
+      punishments: [],
+    }),
+    new Channel({
+      type: ChannelType.PRIVATE,
+      name: "Les boss",
+      password: null,
+      users: [],
+      owner: null,
+      admins: [],
+      punishments: [],
+    }),
+    new Channel({
+      type: ChannelType.PROTECTED,
+      name: "Protected Channel",
+      password: "examplePassword",
+      users: [],
+      owner: null,
+      admins: [],
+      punishments: [],
+    }),
+    new Channel({
+      type: ChannelType.PUBLIC,
+      name: "Another Public Channel",
+      password: null,
+      users: [],
+      owner: null,
+      admins: [],
+      punishments: [],
+    }),
+  ];
+
+  const activeChannel: Channel = channels[0]
 
   const handleMoreClick = () => {
     if (!isMoreActive)
@@ -63,7 +130,7 @@ export default function ChatMetadata() {
         </div>
 
         {isMoreActive && (
-          <MorePopup popupType={popupType} setPopupActive={setPopupActive} />
+          <MorePopup popupType={popupType} setPopupActive={setPopupActive} channels={channels} />
         )}
       </OutsideClickHandler>
 

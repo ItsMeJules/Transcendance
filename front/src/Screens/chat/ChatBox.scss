@@ -27,8 +27,6 @@
       height: 10%;
       width: 20vw;
 
-      background-color: blue;
-
       .more {
         display: flex;
         flex-direction: column;
@@ -40,7 +38,7 @@
         height: 100%;
         width: 13%;
 
-        background-color: white;
+        background-color: #749BC2;
 
         .more-symbol-container {
           height: 100%;
@@ -332,11 +330,11 @@
                   justify-content: flex-start;
                   align-items: center;
 
-                  transition: transform 0.3s;
+
+                  transition: background-color;
 
                   &:hover {
                     background-color: #c9c9c9;
-                    transform: scale(1.05);
                   }
 
                   .profile-picture {
@@ -363,8 +361,6 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-
-            background: green;
 
             position: absolute;
             top: 50%;
@@ -399,11 +395,10 @@
                   justify-content: flex-start;
                   align-items: center;
 
-                  transition: transform 0.3s;
+                  transition: background-color;
 
                   &:hover {
                     background-color: #c9c9c9;
-                    transform: scale(1.05);
                   }
 
                   .profile-picture {
@@ -431,16 +426,66 @@
             flex-direction: column;
             justify-content: flex-start;
 
-            background: green;
-
             position: absolute;
             top: 75%;
             left: 102%;
 
-            width: 100%;
-            max-height: 80%;
+            height: max-content;
+            max-height: 200px;
+            width: 10vw;
 
+            overflow-x: hidden;
             overflow-y: scroll;
+
+            background-color: white;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+
+            .channel-list {
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+
+              z-index: 10;
+
+              .channel-container {
+                border-bottom: 1px solid lightgray;
+                cursor: pointer;
+
+                .channel {
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: flex-start;
+                  align-items: center;
+
+                  transition: background-color;
+
+                  &:hover {
+                    background-color: #c9c9c9;
+                  }
+
+                  .type-picture {
+                    width: 15%;
+                    min-width: 15%;
+                    height: auto;
+
+                    margin: 5px 0px 5px 5px;
+
+                    border-radius: 50%;
+                  }
+
+                  .channel-info {
+                    overflow: hidden;
+
+                    p {
+                      line-height: 12px;
+                      font-size: 12px;
+                      margin: 0px 0px 0px 10px;
+                    }
+                  }
+                }
+              }
+            }
           }
 
         }
@@ -455,13 +500,18 @@
         height: 100%;
         width: 100%;
 
-        background-color: lime;
+        background-color: #91C8E4;
+        border-left: 2px solid black;
+        border-right: 2px solid black;
 
         .channel-infos {
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
           align-items: flex-start;
+
+          padding-bottom: 5px;
+          margin-left: 5px;
 
           height: 100%;
           width: 100%;
@@ -471,73 +521,79 @@
           }
 
           .channel-users-container {
+            height: 50%;
+            cursor: pointer;
+
+            .channel-users-count {
+              height: 100%;
+            }
+
             .popup-container {
               position: relative;
               height: 50%;
-              cursor: pointer;
 
               .channel-users-popup {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
-    
+
                 position: absolute;
                 top: 25%;
                 left: 102%;
-    
+
                 height: max-content;
                 width: 10vw;
-    
+
                 overflow-y: scroll;
-    
+
                 background-color: white;
                 border-radius: 5px;
                 border: 1px solid lightgray;
-    
+
                 .users-list {
                   display: flex;
                   flex-direction: column;
                   justify-content: flex-start;
-    
+
                   overflow-x: hidden;
-    
+
                   z-index: 10;
-    
+
                   .user-container {
                     border-bottom: 1px solid lightgray;
-    
+
                     cursor: pointer;
-    
+
                     .user {
                       display: flex;
                       flex-direction: row;
                       justify-content: flex-start;
                       align-items: center;
-    
+
                       transition: transform 0.3s;
-    
+
                       &:hover {
                         background-color: #c9c9c9;
                         transform: scale(1.05);
                       }
-    
+
                       .profile-picture {
                         width: 30%;
                         height: auto;
                         margin: 5px 0px 5px 5px;
-    
+
                         border-radius: 50%;
                         box-shadow: 7px 10px 10px -6px rgba(0, 0, 0, 0.72);
-    
+
                       }
-    
+
                       .username {
                         margin: 0px 0px 0px 10px;
                       }
                     }
-    
+
                   }
-    
+
                 }
               }
             }
@@ -664,10 +720,26 @@
       }
 
       .channel-icon {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
         height: 100%;
         width: 17%;
 
-        background-color: deeppink;
+        border-radius: 0px 10px 0px 0px;
+
+        img {
+          background-color: #F6F4EB;
+
+          height: 80%;
+          width: auto;
+
+          border-radius: 50%;
+        }
+
+        background-color: #749BC2;
       }
     }
 
@@ -681,7 +753,7 @@
       width: 20vw;
 
       overflow-y: scroll;
-      background-color: #E8EBF5;
+      background-color: #F6F4EB;
 
       .message-self,
       .message-other {
@@ -724,7 +796,10 @@
     height: 5vh;
     width: 20vw;
 
-    background-color: white;
+    background-color: #4682A9;
+
+    border-radius: 0px 10px 10px 0px;
+
     z-index: 1;
 
     .text {
@@ -744,6 +819,8 @@
 
         height: 80%;
         width: 90%;
+
+        background-color: #F6F4EB;
 
         border-radius: 5rem;
         box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, .8);
