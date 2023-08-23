@@ -47,6 +47,7 @@
           width: 100%;
 
           cursor: pointer;
+          z-index: 5;
 
           .more-symbol {
             height: 100%;
@@ -456,18 +457,35 @@
 
         background-color: lime;
 
-        .text {
+        .channel-infos {
           display: flex;
           flex-direction: column;
-          justify-content: center;
+          justify-content: flex-start;
           align-items: flex-start;
 
           height: 100%;
           width: 100%;
 
-          .channel-name {
-            height: 50%;
+          .channel-info-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
 
+            height: 50%;
+            width: fit-content;
+
+            .channel-name {
+              
+            }
+
+            .icon-type {
+              margin: 0 0 0 5px;
+
+              img {
+                width: 10%;
+              }
+            }
           }
 
           .users-list {
@@ -493,7 +511,7 @@
           .popup {
             display: flex;
             flex-direction: column;
-            
+
             position: absolute;
 
             background-color: #A9A9A9;
@@ -566,7 +584,7 @@
                 border-radius: 5px;
               }
             }
-            
+
             .validate {
               display: flex;
               flex-direction: column;
@@ -575,7 +593,7 @@
               flex-grow: 1;
 
               width: 100%;
-              
+
               text-align: center;
               overflow: hidden;
 

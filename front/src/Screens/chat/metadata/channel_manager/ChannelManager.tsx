@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 
-import { Channel, ChannelData } from "../../models/Channel";
+import SettingsIcon from "../../assets/settings.png";
+import PublicIcon from "../../assets/globe.png"
+import ProtectedIcon from "../../assets/padlock.png"
+import PrivateIcon from "../../assets/private.png"
 
-import Settings from "../../assets/settings.png";
+import { Channel, ChannelData, ChannelType } from "../../models/Channel";
 import ManageChannelPopup from "./popups/ManageChannelPopup";
 
 interface ChannelManagerProps {
@@ -18,11 +21,27 @@ export default function ChannelManager(props: ChannelManagerProps) {
     transform: manageChannel ? "rotate(90deg)" : "",
   };
 
+  const getIconFromType = (type: ChannelType) => {
+    let iconSrc = PublicIcon;
+
+    if (type === ChannelType.PROTECTED)
+      iconSrc = ProtectedIcon;
+    else if (type === ChannelType.PRIVATE)
+      iconSrc = PrivateIcon;
+
+    return (<img alt="Channel Type" src={iconSrc} />)
+  }
+
   return (
     <>
-      <div className="text">
-        <div className="channel-name">
-          {channel.channelData.name}
+      <div className="channel-infos">
+        <div className="channel-info-container">
+          <div className="channel-name">
+            {channel.channelData.name}
+          </div>
+          <div className="icon-type">
+            {getIconFromType(channel.channelData.type)}
+          </div>
         </div>
 
         <div className="users-list">
@@ -33,11 +52,11 @@ export default function ChannelManager(props: ChannelManagerProps) {
       <div className="manage">
         <img
           alt="Settings"
-          src={Settings}
+          src={SettingsIcon}
           style={manageStyle}
           onClick={() => setManageChannel(!manageChannel)} />
 
-        {manageChannel && <ManageChannelPopup channel={channel}/>}
+        {manageChannel && <ManageChannelPopup channel={channel} />}
       </div>
 
     </>

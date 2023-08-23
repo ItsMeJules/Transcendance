@@ -1,8 +1,9 @@
-import React, { useState, MouseEvent } from "react";
+import React, { useState } from "react";
 
 import MorePopup from "./more/MorePopup";
 import ChannelManager from "./channel_manager/ChannelManager";
 import { Channel, ChannelData, ChannelType } from "../models/Channel";
+import OutsideClickHandler from "../utils/OutsideClickHandler";
 
 export enum PopupType {
   CHANNEL = "channel",
@@ -12,8 +13,9 @@ export enum PopupType {
 }
 
 export default function ChatMetadata() {
-  const [isMoreActive, setIsMoreActive] = useState(false);
-  const [popupType, setPopupActive] = useState<PopupType | null>(null);
+  const [isMoreActive, setIsMoreActive] = useState(false)
+  const [popupType, setPopupActive] = useState<PopupType | null>(null)
+
   const activeChannel: Channel = new Channel({
     type: ChannelType.PUBLIC,
     name: "Public",
@@ -24,15 +26,21 @@ export default function ChatMetadata() {
     punishments: []
   })
 
-  const handleMoreClick = (event: MouseEvent<HTMLDivElement>) => {
-    if (!isMoreActive) setPopupActive(null);
+  const handleMoreClick = () => {
+    if (!isMoreActive)
+      setPopupActive(null);
 
-    setIsMoreActive(!isMoreActive);
+    setIsMoreActive(prev => !prev);
   };
+
+  const handleOutsideClick = () => {
+    setIsMoreActive(false)
+    setPopupActive(null)
+  }
 
   return (
     <div className="metadata-container">
-      <div className="more" onClick={handleMoreClick}>
+      <OutsideClickHandler className="more" onInsideClick={handleMoreClick} onOutsideClick={handleOutsideClick}>
         <div className="more-symbol-container">
           <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
             <span></span> {/* Useful for the more symbol animation */}
@@ -42,10 +50,10 @@ export default function ChatMetadata() {
         {isMoreActive && (
           <MorePopup popupType={popupType} setPopupActive={setPopupActive} />
         )}
-      </div>
+      </OutsideClickHandler>
 
       <div className="channel-manager">
-        <ChannelManager channel={activeChannel}/>
+        <ChannelManager channel={activeChannel} />
       </div>
 
       <div className="channel-icon"></div>
