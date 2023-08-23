@@ -28,9 +28,9 @@ export default function ChannelCreationPopup() {
     if (userDataString)
       user = JSON.parse(userDataString);
 
-    const channelData = {type: channelType, name: channelName, password: channelPassword};
+    const channelData = { type: channelType, name: channelName, password: channelPassword };
 
-    socket.chat?.emit("channel_manager", {userId: user.id, channelData})
+    socket.chat?.emit("channel_manager", { userId: user.id, channelData })
     setChannelName("")
     setChannelPassword("")
   }
@@ -50,19 +50,19 @@ export default function ChannelCreationPopup() {
             src={PublicIcon}
             alt="Public"
             onClick={() => setChannelType(ChannelType.PUBLIC)}
-          ></img>
+          />
           <img
             className="private"
             src={PrivateIcon}
             alt="Private"
             onClick={() => setChannelType(ChannelType.PRIVATE)}
-          ></img>
+          />
           <img
             className="protected"
             src={ProtectedIcon}
             alt="Protected"
             onClick={() => setChannelType(ChannelType.PROTECTED)}
-          ></img>
+          />
         </div>
 
       </div>

@@ -24,7 +24,7 @@
       justify-content: flex-start;
       align-items: center;
 
-      height: 5vh;
+      height: 10%;
       width: 20vw;
 
       background-color: blue;
@@ -149,6 +149,7 @@
 
               &:hover {
                 transform: scale(1.05);
+                background-color: #c9c9c9;
               }
             }
           }
@@ -276,7 +277,7 @@
               justify-content: center;
               align-items: center;
 
-              height: 20%;
+              flex-grow: 1;
               width: 100%;
 
               p {
@@ -333,6 +334,7 @@
                   transition: transform 0.3s;
 
                   &:hover {
+                    background-color: #c9c9c9;
                     transform: scale(1.05);
                   }
 
@@ -399,6 +401,7 @@
                   transition: transform 0.3s;
 
                   &:hover {
+                    background-color: #c9c9c9;
                     transform: scale(1.05);
                   }
 
@@ -450,14 +453,14 @@
 
         height: 100%;
         width: 100%;
-        
+
         background-color: lime;
 
         .text {
           display: flex;
           flex-direction: column;
           justify-content: center;
-          align-items: flex-start;   
+          align-items: flex-start;
 
           height: 100%;
           width: 100%;
@@ -474,34 +477,121 @@
 
         .manage {
           position: relative;
-          width: 10%;
-          height: auto;
+
+          width: max-content;
+          height: 100%;
 
           cursor: pointer;
 
-          margin: 2% 2% 0 0;
-          
           img {
-            transition: transform 0.5s ease;
-            
-            &:hover {
-              transform: rotate(45deg);
-            }
+            height: 50%;
+            width: auto;
+
+            margin: 5px 5px 0 0;
           }
 
           .popup {
-            position: absolute;
+            display: flex;
+            flex-direction: column;
             
+            position: absolute;
+
+            background-color: #A9A9A9;
+
+            height: fit-content;
+            width: 100px;
+
             top: 100%;
             left: -100%;
+
+            border-radius: 5px;
+            border: 1px solid gray;
+
+            cursor: auto;
+
+            .channel-description {
+              font-size: 10px;
+              border-bottom: 2px solid black;
+            }
+
+            .images {
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-end;
+
+              border-bottom: 2px solid black;
+
+              img {
+                background-color: gray;
+
+                height: auto;
+                width: 80%;
+
+                padding: 2px;
+                margin: 1px 1px 1px 1px;
+
+                border: 1px solid black;
+                border-radius: 2px;
+
+                cursor: pointer;
+                transition: transform 0.3s, background-color 0.3s;
+
+                &:hover {
+                  opacity: 0.5;
+                }
+
+                &.selected {
+                  background-color: #5e5e5e;
+                }
+              }
+            }
+
+            .password-input {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+
+              height: 20%;
+              border-bottom: 2px solid black;
+
+              input {
+                height: 80%;
+                width: 90%;
+
+                margin: 2px 0 2px 0;
+                font-size: 0.8rem;
+
+                border: 1px solid black;
+                border-radius: 5px;
+              }
+            }
             
-            height: 150px;
-            width: 100px;
-            background-color: lime;
-            display: block;
+            .validate {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              flex-grow: 1;
+
+              width: 100%;
+              
+              text-align: center;
+              overflow: hidden;
+
+              p {
+                margin: 0;
+                cursor: pointer;
+                transition: transform 0.3s;
+
+                &:hover {
+                  transform: scale(1.05);
+                }
+              }
+            }
           }
         }
-        
+
       }
 
       .channel-icon {

@@ -13,6 +13,11 @@ export default function ChannelManager(props: ChannelManagerProps) {
   const [manageChannel, setManageChannel] = useState<boolean>(false);
   const { channel }: ChannelManagerProps = props;
 
+  const manageStyle = {
+    transition: "transform 1s ease",
+    transform: manageChannel ? "rotate(90deg)" : "",
+  };
+
   return (
     <>
       <div className="text">
@@ -29,6 +34,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
         <img
           alt="Settings"
           src={Settings}
+          style={manageStyle}
           onClick={() => setManageChannel(!manageChannel)} />
 
         {manageChannel && <ManageChannelPopup channel={channel}/>}
