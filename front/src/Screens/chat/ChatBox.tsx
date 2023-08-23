@@ -79,8 +79,12 @@ export const ChatBox = () => {
 
   const sendData = (data: string) => {
     if (socketRef.current) {
-      console.log("sending data: ", data);
-      socketRef.current.emit("message", data);
+      if (data === "join_channel") {
+        socketRef.current.emit("chat-action", { action: "createRoom" });
+      } else {
+        console.log("sending data: ", data);
+        socketRef.current.emit("message", data);
+      }
     }
   };
 

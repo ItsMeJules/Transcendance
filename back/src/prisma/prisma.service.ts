@@ -52,6 +52,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         admins: true,
         mutes: true,
         messages: true,
+        usersOnRoom: true,
       },
     });
     if (!room) {
@@ -161,6 +162,20 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         throw new Error('no rooms for this user');
       }
       return user.activeRooms;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async allUsersFromRoom(roomName: string): Promise<User[]> {
+    try {
+      const room = await this.returnCompleteRoom(roomName);
+      if (!room) {
+        throw new Error('no room named' + roomName);
+      }
+      if (!room.usersOnRoom)
+        throw new Error('no users on this room' + roomName);
+      return room.usersOnRoom;
     } catch (error) {
       console.log(error);
     }

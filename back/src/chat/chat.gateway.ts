@@ -2,30 +2,28 @@ import {
   WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
-  OnGatewayInit,
   MessageBody,
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
-import { UseGuards } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guard';
 import { ChatService } from './chat.service';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateRoomDto } from './dto';
-import { subscribe } from 'diagnostics_channel';
+import {
+  ActionChatHandlers,
+  ActionRoomHandlers,
+} from './handlers/handlers.map';
 
 // @UseGuards(JwtGuard) // add jwt guard for chat auth
 @WebSocketGateway({ namespace: 'chat' })
 export class ChatEventsGateway {
+  private userSockets: { [userId: string]: Socket } = {};
   @WebSocketServer() server: Server;
 
   constructor(
     private authService: AuthService,
     private chatService: ChatService,
-    private prismaService: PrismaService,
   ) {}
 
   async handleConnection(client: Socket): Promise<void> {
@@ -43,9 +41,12 @@ export class ChatEventsGateway {
       client.disconnect();
       return;
     }
-    client.data = { id: user.id };
 
-    console.log('bfore');
+    client.data = { id: user.id };
+    this.userSockets[user.id] = client;
+
+    console.log('socket of user assigned to const map');
+
     const messagesWithClientId =
       await this.chatService.fetchMessagesOnRoomForUser('general', client);
     console.log('messages :', messagesWithClientId);
@@ -54,8 +55,8 @@ export class ChatEventsGateway {
   }
 
   handleDisconnect(client: Socket): void {
-    console.log('> chat deconnection ');
-    client.off('message', () => console.log('chat!!!!'));
+    delete this.userSockets[client.data.id];
+    client.off('message', () => console.log('chat !'));
   }
 
   @SubscribeMessage('message')
@@ -63,28 +64,30 @@ export class ChatEventsGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: string,
   ): Promise<void> {
-    // const access_token = extractAccessTokenFromCookie(clientno);
-    // const user = await this.authService.validateJwtToken(access_token);
     console.log('client :', client);
     console.log('Received message: ', payload);
     console.log('userid ?: ', client.data, client.data.id, client.id);
     await this.chatService.sendMessage(payload, client, this.server);
   }
 
-  @SubscribeMessage('create_channel')
-  async createChannelWS(
+  @SubscribeMessage('chat-action')
+  async chatAction(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: CreateRoomDto,
+    @MessageBody() payload: any,
   ): Promise<void> {
-    console.log('creating the room named ', payload);
-    await this.chatService.createRoom(payload, client);
+
+    
+    
+    
+    
+    ActionChatHandlers[payload.action];
   }
 
-  @SubscribeMessage('delete_channel')
-  async deleteChannel(
+  @SubscribeMessage('room-action')
+  async roomAction(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: CreateRoomDto,
+    @MessageBody() payload: any,
   ): Promise<void> {
-    return;
+    ActionRoomHandlers[payload.action];
   }
 }

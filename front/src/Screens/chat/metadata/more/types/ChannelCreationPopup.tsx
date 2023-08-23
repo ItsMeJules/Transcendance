@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Popup from "../Popup"
+import Popup from "../Popup";
 
 import PublicIcon from "../../../../../assets/globe.png"
 import PrivateIcon from "../../../../../assets/private.png"
@@ -43,31 +43,50 @@ export default function ChannelCreationPopup() {
           <p className="description">{ChannelTypeDescription[channelType].desc}</p>
         </div>
         <div className="images">
-          <img className="public" src={PublicIcon} alt="Public" onClick={() => setChannelType(ChannelType.PUBLIC)}></img>
-          <img className="private" src={PrivateIcon} alt="Private" onClick={() => setChannelType(ChannelType.PRIVATE)}></img>
-          <img className="protected" src={ProtectedIcon} alt="Protected" onClick={() => setChannelType(ChannelType.PROTECTED)}></img>
+          <img
+            className="public"
+            src={PublicIcon}
+            alt="Public"
+            onClick={() => setChannelType(ChannelType.PUBLIC)}
+          ></img>
+          <img
+            className="private"
+            src={PrivateIcon}
+            alt="Private"
+            onClick={() => setChannelType(ChannelType.PRIVATE)}
+          ></img>
+          <img
+            className="protected"
+            src={ProtectedIcon}
+            alt="Protected"
+            onClick={() => setChannelType(ChannelType.PROTECTED)}
+          ></img>
         </div>
       </div>
 
       <div className="channel-name">
-        <input placeholder="Nom du channel"
+        <input
+          placeholder="Nom du channel"
           onChange={(e) => setChannelName(e.target.value)}
           value={channelName}
-          required />
+          required
+        />
       </div>
 
-      {channelType === ChannelType.PROTECTED &&
+      {channelType === ChannelType.PROTECTED && (
         <div className="password-input">
-          <input placeholder="Entrez le mdp du channel."
+          <input
+            placeholder="Entrez le mdp du channel."
             onChange={(e) => setChannelPassword(e.target.value)}
             value={channelPassword}
-            required />
+            required
+          />
         </div>
-      }
+      )}
 
-      <div className="validate"><p onClick={createChannel}>Créer le channel</p></div>
-
+      <div className="validate">
+        <p onClick={createChannel}>Créer le channel</p>
+      </div>
     </Popup>
-  )
-
+  );
 }

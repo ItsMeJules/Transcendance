@@ -18,6 +18,6 @@ import { ChatEventsGateway } from './chat.gateway';
     AuthService,
     ChatService,
   ],
-  exports: [SocketService, SocketEvents, ChatEventsGateway],
+  exports: [SocketService, SocketEvents],
 })
 export class ChatModule {}
