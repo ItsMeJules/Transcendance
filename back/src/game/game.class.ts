@@ -63,7 +63,7 @@ export class GameStruct {
     const deltaTime = frameStartTime - this.prevFrameTime;
     if (!isStart) {
       frame = Date.now() - frame;
-      this.updateBallPosition(frame);
+      this.updateBallPosition(deltaTime);
     }
     isStart = false;
     this.sendUpdate();
@@ -82,21 +82,22 @@ export class GameStruct {
     const newPos = new Point(this.ball.pos.x + deltaX, this.ball.pos.y + deltaY);
 
     let ret = this.checkBoxCollisions(newPos);
-    if (!ret) return;
+    if (ret === -1) return;
     this.ball.pos.x = newPos.x;
     this.ball.pos.y = newPos.y;
+
   }
 
   checkBoxCollisions(newPos: Point) {
     // Left score
     if (newPos.x - this.ball.halfSize <= 0 && this.ball.dir.x < 0) {
       this.scorePoint(2);
-      return false;
+      return -1;
     }
     // Right score
     else if (newPos.x + this.ball.halfSize >= this.board.width && this.ball.dir.x > 0) {
       this.scorePoint(1);
-      return false;
+      return -1;
     }
     // Up and Low Wall
     else if ((newPos.y - this.ball.halfSize <= 0 && this.ball.dir.y < 0)
@@ -104,49 +105,66 @@ export class GameStruct {
       this.ball.dir.y *= -1;
     // Paddles
     else {
-      // vertical
-      let vInside = this.isPointInPaddleVertical(newPos);
+      let player: Player = this.ball.dir.x < 0 ? this.pl1 : this.pl2;
+      this.ball.dir.x < 0 ? player.pad.collisionUpdate(1) : player.pad.collisionUpdate(2);
+      let colPt: Point = this.getCollisionPoint(player);
 
+      // console.log('collision pt:', colPt);
+      // console.log('ball +hsx:', this.ball.pos.x + this.ball.halfSize,
+      // ' newposx:', newPos.x);
+      // console.log(' ');
 
-      // horizontal
-      // if (this.ballPaddleAreAligned(newPos, 1) || this.ballPaddleAreAligned(newPos, 2)) {
-      //   let playerNum = this.ballPaddleAreAligned(newPos, 1) === true ? 1 : 2;
-      //   let isSideBounce = this.isPointInPaddleHeight(newPos, playerNum);
-      //   if ((isSideBounce === 'low' && this.ball.dir.y > 0)
-      //     || (isSideBounce === 'up' && this.ball.dir.y < 0)) {
-      //     this.ball.dir.y *= -1;
-      //   }
-      // }
-    }
-    return true;
-  }
-
-
-  isPointInPaddleVertical(newPos: Point) {
-    // Left side - player 1 
-    let player: Player;
-    if (this.ball.pos.x < this.board.width * 0.5) {
-      player = this.pl1;
-      if (newPos.x - this.ball.halfSize <= player.pad.pos.x + player.pad.width
-        && this.ball.dir.x < 0
+      if (this.ball.dir.x < 0
+        && newPos.x - this.ball.halfSize <= colPt.x
+        && this.ball.pos.x - this.ball.halfSize >= colPt.x
         && this.isBallInFrontOfPaddle(player, newPos)) {
         this.ball.dir.x *= -1;
-        return player.pad.pos.x + player.pad.width - newPos.x - this.ball.halfSize;
       }
+      else if (this.ball.dir.x > 0
+        && newPos.x + this.ball.halfSize >= colPt.x
+        && this.ball.pos.x + this.ball.halfSize <= colPt.x) {
+          this.getNewPointAfterCollision(newPos, colPt);
+        return -1;
+      }
+
     }
-    // Right side - player 2
-    else if (this.ball.pos.x > this.board.width * 0.5) {
-      player = this.pl2;
-      if (newPos.x + this.ball.halfSize >= player.pad.pos.x
-        && this.ball.dir.x > 0
-        && this.isBallInFrontOfPaddle(player, newPos)) {
-        this.ball.dir.x *= -1;
-        return newPos.x + this.ball.halfSize - player.pad.pos.x;
-        }
-    }
-    return 0;
+    return 1;
   }
 
+  getNewPointAfterCollision(newPos: Point, colPt: Point) {
+    let dPartial = colPt.x - (this.ball.pos.x + this.ball.halfSize);
+    let dFull = (newPos.x + this.ball.halfSize) - (this.ball.pos.x + this.ball.halfSize);
+    let dPartialY = dPartial * this.ball.dir.y / this.ball.dir.x;
+    let dFullY = dFull * this.ball.dir.y / this.ball.dir.x;
+    let tmpBall = new Point(
+      this.ball.pos.x + dPartial,
+      this.ball.pos.y + dPartialY
+    );
+    this.ball.dir.x *= -1;
+    let tmpBall2 = new Point(
+      tmpBall.x - (dFull - dPartial),
+      tmpBall.y - (dFullY - dPartialY),
+    );
+    // console.log('tmpBall2 x:', tmpBall2.x, ' y:', tmpBall2.y);
+    this.ball.pos = tmpBall2;
+  }
+
+  getCollisionPoint(player: Player) {
+    let colPt: Point;
+    let plColPts = player.pad.colPts;
+    let ballColPts = new CollisionPointsBall(this.ball);
+    let determinant = ballColPts.a * plColPts.b - ballColPts.b * plColPts.a;
+    if (determinant === 0) {
+      colPt = new Point(1000000, 1000000);
+    } else {
+      colPt = new Point(
+        (plColPts.b * ballColPts.c - ballColPts.b * plColPts.c) / determinant,
+        (ballColPts.a * plColPts.c - plColPts.a * ballColPts.c) / determinant);
+    }
+    return colPt;
+  }
+
+  // isColPointInBall
   isBallInFrontOfPaddle(player: Player, newPos: Point) {
     if ((newPos.y - this.ball.halfSize >= player.pad.pos.y
       && newPos.y - this.ball.halfSize <= player.pad.pos.y + player.pad.height))
@@ -156,6 +174,114 @@ export class GameStruct {
       return true;
     return false;
   }
+
+
+  computeCollision(side: string) {
+    let sideColPts: CollisionPointsSides;
+    const ballColPts = new CollisionPointsBall(this.ball);
+
+    if (side === 'low')
+      sideColPts = this.board.lowWall;
+    else if (side === 'up')
+      sideColPts = this.board.upWall;
+    else if (side === 'left')
+      sideColPts = this.board.leftWallPaddleCol;
+    else if (side === 'right')
+      sideColPts = this.board.rightWallPaddleCol;
+    const determinant = ballColPts.a * sideColPts.b - sideColPts.a * ballColPts.b;
+
+    // if (this.prints > 0) {
+    // console.log('side:', side);
+    // console.log('ball a:', ballColPts.a, ' b:', ballColPts.b, ' c:', ballColPts.c);
+    // console.log('ball a:', sideColPts.a, ' b:', sideColPts.b, ' c:', sideColPts.c);
+    //   this.prints -= 1;
+    // }
+
+    if (determinant === 0) {
+      return new Point(100000, 100000);
+      //do something about it
+    } else {
+      var x = (sideColPts.b * ballColPts.c - ballColPts.b * sideColPts.c) / determinant;
+      var y = (ballColPts.a * sideColPts.c - sideColPts.a * ballColPts.c) / determinant;
+    }
+
+    // if (this.prints > 0) {
+    // console.log('x:', x, ' y:', y);
+    // console.log(' ');
+    //   this.prints -= 1;
+    // }
+
+    return (new Point(x, y));
+  }
+
+  hDistanceInsidePaddel(player: Player, newPos: Point) {
+    let vDistance: number;
+    let posX: number = this.ball.pos.x < this.board.width * 0.5 ?
+      newPos.x - this.ball.halfSize :
+      newPos.x + this.ball.halfSize;
+    if (this.ball.pos.x < this.board.width * 0.5) {
+      if (posX <= player.pad.pos.x + player.pad.width
+        && this.ball.dir.x < 0
+        && this.isBallInFrontOfPaddle(player, newPos)) {
+        // this.ball.dir.x *= -1;
+        return player.pad.pos.x + player.pad.width - posX;
+      }
+    }
+    else if (this.ball.pos.x > this.board.width * 0.5) {
+      if (posX >= player.pad.pos.x
+        && this.ball.dir.x > 0
+        && this.isBallInFrontOfPaddle(player, newPos)) {
+        // this.ball.dir.x *= -1;
+        return posX - player.pad.pos.x;
+      }
+    }
+    return -1;
+  }
+
+  vDistanceInsidePaddel(player: Player, newPos: Point) {
+    let posY: number = newPos.y + this.ball.halfSize;
+    // Up
+    if (posY >= player.pad.pos.y
+      && this.ball.dir.y > 0
+      && this.areBallPointsInPaddleWidth(player, newPos)
+      && this.arePaddlePointsInBallWidth(player, newPos)) {
+      // this.ball.dir.y *= -1;
+      return posY - player.pad.pos.y;
+    } else if (posY <= player.pad.pos.y + player.pad.height
+      && this.ball.dir.y < 0
+      && this.areBallPointsInPaddleWidth(player, newPos)
+      && this.arePaddlePointsInBallWidth(player, newPos)) {
+      // this.ball.dir.y *= -1;
+      return player.pad.pos.y + player.pad.height - posY;
+    }
+    return -1;
+  }
+
+  areBallPointsInPaddleWidth(player: Player, newPos: Point) {
+    let ballLeft = { x: newPos.x - this.ball.halfSize, y: newPos.y };
+    let ballRight = { x: newPos.x + this.ball.halfSize, y: newPos.y };
+    if (ballLeft.x >= player.pad.pos.x
+      && ballLeft.x <= player.pad.pos.x + player.pad.width)
+      return true;
+    if (ballRight.x >= player.pad.pos.x
+      && ballRight.x <= player.pad.pos.x + player.pad.width)
+      return true;
+    return false;
+  }
+
+  arePaddlePointsInBallWidth(player: Player, newPos: Point) {
+    let padLeft = { x: player.pad.pos.x, y: player.pad.pos.y };
+    let padRight = { x: player.pad.pos.x + player.pad.width, y: player.pad.pos.y };
+    if (padLeft.x >= this.ball.pos.x - this.ball.halfSize
+      && padLeft.x <= this.ball.pos.x + this.ball.halfSize)
+      return true;
+    if (padRight.x >= newPos.x - this.ball.halfSize
+      && padRight.x <= newPos.x + this.ball.halfSize)
+      return true;
+    return false;
+  }
+
+
 
   isPointInPaddleHeight(newPos: Point, playerNum: number) {
     let pl: Player = playerNum === 1 ? this.pl1 : this.pl2;
@@ -171,31 +297,9 @@ export class GameStruct {
     return '';
   }
 
-  areBallPointsInPaddleWidth(newPos: Point, playerNum: number) {
-    let pl: Player = playerNum === 1 ? this.pl1 : this.pl2;
-    let ballLeft = { x: newPos.x - this.ball.halfSize, y: newPos.y };
-    let ballRight = { x: newPos.x + this.ball.halfSize, y: newPos.y };
-    if (ballLeft.x >= pl.pad.pos.x && ballLeft.x <= pl.pad.pos.x + pl.pad.width)
-      return true;
-    if (ballRight.x >= pl.pad.pos.x && ballRight.x <= pl.pad.pos.x + pl.pad.width)
-      return true;
-    return false;
-  }
-
-  arePaddlePointsInBallWidth(newPos: Point, playerNum: number) {
-    let pl: Player = playerNum === 1 ? this.pl1 : this.pl2;
-    let padLeft = { x: this.pl1.pad.pos.x, y: this.pl1.pad.pos.y };
-    let padRight = { x: this.pl1.pad.pos.x + this.pl1.pad.width, y: this.pl1.pad.pos.y };
-    if (padLeft.x >= this.ball.pos.x - this.ball.halfSize && padLeft.x <= this.ball.pos.x + this.ball.halfSize)
-      return true;
-    if (padRight.x >= newPos.x - this.ball.halfSize && padRight.x <= newPos.x + this.ball.halfSize)
-      return true;
-    return false;
-  }
-
   ballPaddleAreAligned(newPos: Point, playerNum: number) {
-    if (this.areBallPointsInPaddleWidth(newPos, playerNum) || this.arePaddlePointsInBallWidth(newPos, playerNum))
-      return true;
+    // if (this.areBallPointsInPaddleWidth(newPos, playerNum) || this.arePaddlePointsInBallWidth(newPos, playerNum))
+    //   return true;
     return false;
   }
 
@@ -256,43 +360,7 @@ export class GameStruct {
     return true;
   }
 
-  computeCollision(side: string) {
-    let sideColPts: CollisionPointsSides;
-    const ballColPts = new CollisionPointsBall(this.ball, side);
 
-    if (side === 'low')
-      sideColPts = this.board.lowWall;
-    else if (side === 'up')
-      sideColPts = this.board.upWall;
-    else if (side === 'left')
-      sideColPts = this.board.leftWallPaddleCol;
-    else if (side === 'right')
-      sideColPts = this.board.rightWallPaddleCol;
-    const determinant = ballColPts.a * sideColPts.b - sideColPts.a * ballColPts.b;
-
-    // if (this.prints > 0) {
-    // console.log('side:', side);
-    // console.log('ball a:', ballColPts.a, ' b:', ballColPts.b, ' c:', ballColPts.c);
-    // console.log('ball a:', sideColPts.a, ' b:', sideColPts.b, ' c:', sideColPts.c);
-    //   this.prints -= 1;
-    // }
-
-    if (determinant === 0) {
-      return new Point(100000, 100000);
-      //do something about it
-    } else {
-      var x = (sideColPts.b * ballColPts.c - ballColPts.b * sideColPts.c) / determinant;
-      var y = (ballColPts.a * sideColPts.c - sideColPts.a * ballColPts.c) / determinant;
-    }
-
-    // if (this.prints > 0) {
-    // console.log('x:', x, ' y:', y);
-    // console.log(' ');
-    //   this.prints -= 1;
-    // }
-
-    return (new Point(x, y));
-  }
 
   getMinDistCollision() {
     let lowPt = this.computeCollision('low');
@@ -711,3 +779,175 @@ export class GameStruct {
   //     // }, frameDuration);
   //   }
   // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
+
+  // checkBoxCollisions(newPos: Point) {
+  //   // Left score
+  //   if (newPos.x - this.ball.halfSize <= 0 && this.ball.dir.x < 0) {
+  //     this.scorePoint(2);
+  //     return -1;
+  //   }
+  //   // Right score
+  //   else if (newPos.x + this.ball.halfSize >= this.board.width && this.ball.dir.x > 0) {
+  //     this.scorePoint(1);
+  //     return -1;
+  //   }
+  //   // Up and Low Wall
+  //   else if ((newPos.y - this.ball.halfSize <= 0 && this.ball.dir.y < 0)
+  //     || (newPos.y + this.ball.halfSize >= this.board.height && this.ball.dir.y > 0))
+  //     this.ball.dir.y *= -1;
+  //   // Paddles
+  //   else {
+  //     // vertical
+  //     let player: Player = this.ball.pos.x < this.board.width * 0.5 ? this.pl1 :
+  //       this.ball.pos.x > this.board.width * 0.5 ? this.pl2 : null;
+  //     if (player === null) return;
+  //     let hInside = this.hDistanceInsidePaddel(player, newPos);
+  //     let vInside = this.vDistanceInsidePaddel(player, newPos);
+
+  //     // horizontal
+  //     // if (this.ballPaddleAreAligned(newPos, 1) || this.ballPaddleAreAligned(newPos, 2)) {
+  //     //   let playerNum = this.ballPaddleAreAligned(newPos, 1) === true ? 1 : 2;
+  //     //   let isSideBounce = this.isPointInPaddleHeight(newPos, playerNum);
+  //     //   if ((isSideBounce === 'low' && this.ball.dir.y > 0)
+  //     //     || (isSideBounce === 'up' && this.ball.dir.y < 0)) {
+  //     //     this.ball.dir.y *= -1;
+  //     //   }
+  //     // }
+  //   }
+  //   return 1;
+  // }
+
+  // vDistanceInsidePaddel(player: Player, newPos: Point) {
+  //   // Up
+  //   if (newPos.y + this.ball.halfSize >= player.pad.pos.x
+  //     && this.ball.dir.y > 0
+  //     && this.areBallPointsInPaddleWidth(player, newPos)) {
+  //     this.ball.dir.x *= -1;
+  //     return player.pad.pos.x + player.pad.width - newPos.x - this.ball.halfSize;
+  //   }
+  //   // Right side - player 2
+  //   // else if (this.ball.pos.x > this.board.width * 0.5) {
+  //   //   player = this.pl2;
+  //   //   if (newPos.x + this.ball.halfSize >= player.pad.pos.x
+  //   //     && this.ball.dir.x > 0
+  //   //     && this.isBallInFrontOfPaddle(player, newPos)) {
+  //   //     this.ball.dir.x *= -1;
+  //   //     return newPos.x + this.ball.halfSize - player.pad.pos.x;
+  //   //   }
+  //   // }
+  //   return -1;
+  // }
+
+  // hDistanceInsidePaddel(player: Player, newPos: Point) {
+  //   let vDistance: number;
+  //   let posX: number = this.ball.pos.x < this.board.width * 0.5 ?
+  //     newPos.x - this.ball.halfSize :
+  //     newPos.x + this.ball.halfSize;
+
+  //   if (posX <= player.pad.pos.x + player.pad.width
+  //     && this.ball.dir.x < 0
+  //     && this.isBallInFrontOfPaddle(player, newPos)) {
+  //     this.ball.dir.x *= -1;
+  //     vDistance = this.ball.pos.x < this.board.width * 0.5 ?
+  //       player.pad.pos.x + player.pad.width - newPos.x - this.ball.halfSize :
+  //       newPos.x + this.ball.halfSize - player.pad.pos.x;
+  //     return vDistance;
+  //   }
+  //   return -1;
+  // }
+
+  // isBallInFrontOfPaddle(player: Player, newPos: Point) {
+  //   if ((newPos.y - this.ball.halfSize >= player.pad.pos.y
+  //     && newPos.y - this.ball.halfSize <= player.pad.pos.y + player.pad.height))
+  //     return true;
+  //   if ((newPos.y + this.ball.halfSize >= player.pad.pos.y
+  //     && newPos.y - this.ball.halfSize <= player.pad.pos.y + player.pad.height))
+  //     return true;
+  //   return false;
+  // }
+
+  // isPointInPaddleHeight(newPos: Point, playerNum: number) {
+  //   let pl: Player = playerNum === 1 ? this.pl1 : this.pl2;
+  //   let padUp: Point = pl.pad.pos;
+  //   let padLow = { x: pl.pad.pos.x, y: pl.pad.pos.y + pl.pad.height };
+  //   let ballUp = { x: newPos.x, y: newPos.y - this.ball.halfSize };
+  //   let ballLow = { x: newPos.x, y: newPos.y + this.ball.halfSize };
+  //   if (ballLow.y >= padUp.y && ballLow.y < padUp.y + pl.pad.height * 0.5)
+  //     return 'low';
+  //   // console.log('ballUp y:', ballLow.y, ' padMid y:', padUp.y + pl.pad.height * 0.5, ' padUp y:', padLow.y)
+  //   if (ballUp.y >= padUp.y + pl.pad.height * 0.5 && ballUp.y <= padLow.y)
+  //     return 'up';
+  //   return '';
+  // }
+
+  // areBallPointsInPaddleWidth(player: Player, newPos: Point) {
+  //   let ballLeft = { x: newPos.x - this.ball.halfSize, y: newPos.y };
+  //   let ballRight = { x: newPos.x + this.ball.halfSize, y: newPos.y };
+  //   if (ballLeft.x >= player.pad.pos.x
+  //     && ballLeft.x <= player.pad.pos.x + player.pad.width)
+  //     return true;
+  //   if (ballRight.x >= player.pad.pos.x
+  //     && ballRight.x <= player.pad.pos.x + player.pad.width)
+  //     return true;
+  //   return false;
+  // }
+
+  // arePaddlePointsInBallWidth(newPos: Point, playerNum: number) {
+  //   let pl: Player = playerNum === 1 ? this.pl1 : this.pl2;
+  //   let padLeft = { x: this.pl1.pad.pos.x, y: this.pl1.pad.pos.y };
+  //   let padRight = { x: this.pl1.pad.pos.x + this.pl1.pad.width, y: this.pl1.pad.pos.y };
+  //   if (padLeft.x >= this.ball.pos.x - this.ball.halfSize && padLeft.x <= this.ball.pos.x + this.ball.halfSize)
+  //     return true;
+  //   if (padRight.x >= newPos.x - this.ball.halfSize && padRight.x <= newPos.x + this.ball.halfSize)
+  //     return true;
+  //   return false;
+  // }
+
+
+
+
+
+
+
+
+        // let player: Player = this.ball.pos.x < this.board.width * 0.5 ?
+      //   this.pl1 :
+      //   this.ball.pos.x > this.board.width * 0.5 ? this.pl2 : null;
+      // if (player === null) return;
+      // let hInside = this.hDistanceInsidePaddel(player, newPos);
+      // // const vInside = -1;
+      // let vInside = this.vDistanceInsidePaddel(player, newPos);
+      // console.log('h:', hInside, ' v:', vInside, ' limit:', Math.abs(this.ball.speed * this.ball.dir.x));
+      // if (hInside !== -1 && hInside <= Math.abs(this.ball.speed * this.ball.dir.x)) {
+      //   this.ball.dir.x *= -1;
+      //   return -1;
+      // }
+
+      // if (hInside >= vInside && hInside !== -1) { // fine tune
+      //   this.ball.dir.x *= -1;
+      // } else if (hInside < vInside) {
+      //   this.ball.dir.y *= -1;
+      // }

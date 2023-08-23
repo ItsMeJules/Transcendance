@@ -12,6 +12,7 @@ export class Ball {
   public accelFactor: number;
   public dir: Vector;
   public tRefresh = Date.now();
+  public collisionSide = '';
 
   private readonly maxPaddleBounceAngle = initGameConfig.ball.maxPaddleBounceAngle;
 
@@ -31,14 +32,6 @@ export class Ball {
     this.accelFactor = initGameConfig.ball.accelFactor;
     const toRandomPlayer = Math.random() < 0.5 ? -1 : 1;
     this.randomService(board, toRandomPlayer);
-    //
-    // this.dir = new Vector(0.7, 0.4);
-    // const angle = Math.PI / 3;
-    // this.dir = new Vector(
-    //   Math.cos(angle),
-    //   -Math.sin(angle));
-
-    // this.dir = new Vector(0, 1);
   }
 
   clone(board: Board, initType: string): Ball {
@@ -64,17 +57,17 @@ export class Ball {
       Math.cos(randomAngle) * dirX,
       Math.sin(randomAngle) * randomY);
 
-    // this.dir = new Vector(0, 1);
+    // this.dir = new Vector(1, 0);
 
 
     // const angle = Math.PI / 3;
     // this.dir = new Vector(
     //   -Math.cos(angle),
     //   -Math.sin(angle));
-    // const angle = Math.PI / 12;
-    // this.dir = new Vector(
-    //   -Math.cos(angle),
-    //   Math.sin(angle));
+    const angle = Math.PI / 1.01;
+    this.dir = new Vector(
+      -Math.cos(angle),
+      -Math.sin(angle));
   }
 
   updateDirectionBounce(collisionPercentage: number, side: string) {
