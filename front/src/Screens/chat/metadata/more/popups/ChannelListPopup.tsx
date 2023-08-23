@@ -15,7 +15,7 @@ export default function ChannelListPopup({ channels }: ChannelListPopupProps) {
   const joinChannel = () => {
     if (selectedChannel == null)
       return;
-    if (selectedChannel.channelData.type == ChannelType.PROTECTED && !passwordValue.trim())
+    if (selectedChannel.channelData.type === ChannelType.PROTECTED && !passwordValue.trim())
       return ;
 
     setPasswordValue("")

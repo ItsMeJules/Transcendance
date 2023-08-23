@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import SettingsIcon from "../../assets/settings.png";
 
-import { Channel, ChannelData, ChannelType } from "../../models/Channel";
+import { Channel } from "../../models/Channel";
 import ManageChannelPopup from "./popups/ManageChannelPopup";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
 import Popup from "../../utils/Popup";

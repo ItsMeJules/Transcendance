@@ -17,7 +17,7 @@ function useClick(ref: React.RefObject<HTMLElement | null>, onOutsideClick: () =
     document.addEventListener("mousedown", handleClickOutside)
 
     return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [ref])
+  }, [ref, onOutsideClick])
 }
 
 const OutsideClickHandler: React.FC<OutsideClickAlerterProps> = ({ children, className, onOutsideClick, onInsideClick }) => {
