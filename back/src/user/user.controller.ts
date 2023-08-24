@@ -39,6 +39,12 @@ export class UserController {
     private socketEvents: SocketEvents,
   ) {}
 
+  @Get('current-chat')
+  getCurrentChat(@GetUser() user: User): string {
+    console.log('user :', user);
+    return user.currentRoom;
+  }
+
   @Get('me')
   getMe(@GetUser() user: User) {
     return user;

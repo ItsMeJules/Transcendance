@@ -3,11 +3,8 @@ import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 export class SendMsgRoomDto {
   @IsNotEmpty()
   @IsString()
-  text: string;
+  message: string;
 
   @IsString()
-  clientId: string;
-
-  @IsNumber()
-  authorID: number;
+  roomName: string;
 }

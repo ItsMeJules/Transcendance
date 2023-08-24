@@ -1,96 +1,91 @@
 import * as ChatDtos from '../dto';
 import { ChatService } from '../chat.service';
-import { Socket, Server } from 'socket.io';
+import { Socket } from 'socket.io';
 import { Room, Message } from '@prisma/client';
 
 export const ActionChatHandlers = {
   block: async (
     chatService: ChatService,
     client: Socket,
-    idBlockToggle: number,
-  ): Promise<void> => chatService.blockUserToggle(client, idBlockToggle),
+    blockDto: ChatDtos.BlockDto,
+  ): Promise<void> => chatService.blockUserToggle(client, blockDto),
   unblock: async (
     chatService: ChatService,
     client: Socket,
-    idBlockToggle: number,
-  ): Promise<void> => chatService.blockUserToggle(client, idBlockToggle),
-  message: async (
-    chatService: ChatService,
-    messageDto: ChatDtos.SendMsgRoomDto,
-    client: Socket,
-    server: Server,
-    roomName: string,
-  ): Promise<void> =>
-    chatService.sendMessageToRoom(messageDto, client, server, roomName),
+    blockDto: ChatDtos.BlockDto,
+  ): Promise<void> => chatService.blockUserToggle(client, blockDto),
   createRoom: async (
     chatService: ChatService,
-    createRoomDto: ChatDtos.CreateRoomDto,
     client: Socket,
-  ): Promise<Room> => chatService.createRoom(createRoomDto, client),
+    createRoomDto: ChatDtos.CreateRoomDto,
+  ): Promise<Room> => chatService.createRoom(client, createRoomDto),
   fetchHistory: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
+    fetchRoomDto: ChatDtos.FetchRoomDto,
   ): Promise<Message[]> =>
-    chatService.fetchMessagesOnRoomForUser(roomName, client),
+    chatService.fetchMessagesOnRoomForUser(client, fetchRoomDto),
   joinRoom: async (
     chatService: ChatService,
-    joinRoomDto: ChatDtos.JoinRoomDto,
     client: Socket,
-    userJoining: number,
-  ): Promise<Room> => chatService.joinRoom(joinRoomDto, client, userJoining),
+    joinRoomDto: ChatDtos.JoinRoomDto,
+  ): Promise<Room> => chatService.joinRoom(client, joinRoomDto),
   leaveRoom: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-  ): Promise<void> => chatService.leaveRoom(roomName, client),
+    leaveDto: ChatDtos.LeaveDto,
+  ): Promise<void> => chatService.leaveRoom(client, leaveDto),
+  // message: async (
+  //   chatService: ChatService,
+  //   client: Socket,
+  //   sendMsgRoomDto: ChatDtos.SendMsgRoomDto,
+  // ): Promise<void> => chatService.sendMessageToRoom(client, sendMsgRoomDto),
 };
 
 export const ActionRoomHandlers = {
   ban: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-  ): Promise<void> => chatService.banUserToggle(roomName, client),
+    banDto: ChatDtos.BanDto,
+  ): Promise<void> => chatService.banUserToggle(client, banDto),
   unban: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-  ): Promise<void> => chatService.banUserToggle(roomName, client),
+    banDto: ChatDtos.BanDto,
+  ): Promise<void> => chatService.banUserToggle(client, banDto),
   promote: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-  ): Promise<void> => chatService.promoteToAdminToggle(roomName, client),
+    promoteDto: ChatDtos.PromoteDto,
+  ): Promise<void> => chatService.promoteToAdminToggle(client, promoteDto),
   demote: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-  ): Promise<void> => chatService.promoteToAdminToggle(roomName, client),
+    promoteDto: ChatDtos.PromoteDto,
+  ): Promise<void> => chatService.promoteToAdminToggle(client, promoteDto),
   mute: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-  ): Promise<void> => chatService.muteUserFromRoomToggle(roomName, client),
+    muteDto: ChatDtos.MuteDto,
+  ): Promise<void> => chatService.muteUserFromRoomToggle(client, muteDto),
   unmute: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-  ): Promise<void> => chatService.muteUserFromRoomToggle(roomName, client),
+    muteDto: ChatDtos.MuteDto,
+  ): Promise<void> => chatService.muteUserFromRoomToggle(client, muteDto),
   kick: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-  ): Promise<boolean> => chatService.kickUserRoom(roomName, client),
+    kickDto: ChatDtos.KickDto,
+  ): Promise<boolean> => chatService.kickUserRoom(client, kickDto),
   changePassword: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-  ): Promise<string> => chatService.modifyPassword(roomName, client),
+    modifyPasswordDto: ChatDtos.ModifyPasswordDto,
+  ): Promise<string> => chatService.modifyPassword(client, modifyPasswordDto),
   invite: async (
     chatService: ChatService,
-    roomName: string,
     client: Socket,
-    target: number,
-  ): Promise<void> => chatService.inviteUser(roomName, client, target),
+    inviteDto: ChatDtos.InviteDto,
+  ): Promise<void> => chatService.inviteUser(client, inviteDto),
 };

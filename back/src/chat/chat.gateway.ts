@@ -14,6 +14,8 @@ import {
   ActionChatHandlers,
   ActionRoomHandlers,
 } from './handlers/handlers.map';
+import { Payload } from '@prisma/client/runtime/library';
+import { PayloadActionDto } from './dto';
 
 // @UseGuards(JwtGuard) // add jwt guard for chat auth
 @WebSocketGateway({ namespace: 'chat' })
@@ -44,14 +46,23 @@ export class ChatEventsGateway {
 
     client.data = { id: user.id };
     this.userSockets[user.id] = client;
-
     console.log('socket of user assigned to const map');
 
+    await client.join(user.currentRoom);
+    console.log('joined room :', user.currentRoom);
     const messagesWithClientId =
-      await this.chatService.fetchMessagesOnRoomForUser('general', client);
-    console.log('messages :', messagesWithClientId);
-    this.server.emit('load_general_chat_' + user.id, messagesWithClientId);
-    console.log('load_general_chat_' + user.id, messagesWithClientId);
+      await this.chatService.fetchMessagesOnRoomForUser(client, {
+        roomName: user.currentRoom,
+        server: this.server,
+      });
+    this.server
+      .to(client.id)
+      .emit('load_chat_' + user.currentRoom, messagesWithClientId);
+    console.log(
+      'End of first socket establishment function and client.id is ',
+      client.id,
+    );
+    // console.log('load_general_chat_' + user.id, messagesWithClientId);
   }
 
   handleDisconnect(client: Socket): void {
@@ -62,32 +73,38 @@ export class ChatEventsGateway {
   @SubscribeMessage('message')
   async handleMessage(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: string,
+    @MessageBody()
+    payload: {
+      message: string;
+      roomName: string;
+    },
   ): Promise<void> {
-    console.log('client :', client);
-    console.log('Received message: ', payload);
-    console.log('userid ?: ', client.data, client.data.id, client.id);
-    await this.chatService.sendMessage(payload, client, this.server);
+    console.log('Received payload: ', payload);
+    await this.chatService.sendMessageToRoom(client, payload, this.server);
   }
 
   @SubscribeMessage('chat-action')
   async chatAction(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: any,
+    @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
-
-    
-    
-    
-    
-    ActionChatHandlers[payload.action];
+    console.log(payload);
+    const updatedPayload = {
+      ...payload,
+      server: this.server,
+    };
+    await ActionChatHandlers[payload.action](
+      this.chatService,
+      client,
+      updatedPayload,
+    );
   }
 
   @SubscribeMessage('room-action')
   async roomAction(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: any,
+    @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
-    ActionRoomHandlers[payload.action];
+    await ActionRoomHandlers[payload.action](this.chatService, client, payload);
   }
 }
