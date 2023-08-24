@@ -127,7 +127,7 @@ export class ChatService {
     }
   }
 
-  async fetchMessagesOnRoomForUser(
+  async fetchMessagesOnRoomForUser( // I need the user's profile picture & name. For now I hardcode mine.
     client: Socket,
     fetchRoomDto: ChatDtos.FetchRoomDto,
   ): Promise<Message[]> {
@@ -150,7 +150,11 @@ export class ChatService {
             text: 'blocked message',
           };
         }
-        return currentMessage;
+        return {
+          ...currentMessage,
+          profilePicture: "https://cdn.intra.42.fr/users/d97b6212aaf900daa3e64abff472b7b8/jpeyron.jpg", // Here's my picture.
+          userName: "jpeyron"
+        }
       });
       // fetchRoomDto.server
       //   .to(client.id)
