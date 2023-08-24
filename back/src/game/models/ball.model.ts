@@ -26,8 +26,8 @@ export class Ball {
     this.size = initGameConfig.ball.size;
     this.halfSize = initGameConfig.ball.size * 0.5;
     this.speed = initGameConfig.ball.speed;
-    this.pos = new Point(board.width * 0.5, board.height * 0.5);
-    // this.pos = new Point(18, 150);
+    // this.pos = new Point(board.width * 0.5, board.height * 0.5);
+    this.pos = new Point(100, 190);
     this.accelFactor = initGameConfig.ball.accelFactor;
     const toRandomPlayer = Math.random() < 0.5 ? -1 : 1;
     this.randomService(board, toRandomPlayer);
@@ -55,10 +55,12 @@ export class Ball {
 
     // this.it += 1;
     // let side = this.it % 2 === 1 ? 1 : -1;
-    const angle = Math.PI / 3.3;
+    const angle = Math.PI / 4;
     this.dir = new Vector(
       -Math.cos(angle),
-      Math.sin(angle));
+      -Math.sin(angle));
+      this.pos = new Point(board.width * 0.5, board.height * 0.5);
+      this.pos = new Point(100, 190);
   }
 
   updateDirectionBounce(collisionPercentage: number) {

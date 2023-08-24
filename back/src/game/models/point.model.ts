@@ -32,4 +32,9 @@ export class Point {
         Math.pow((this.y - ball.pos.y), 2));
     }
   }
+
+  round() {
+    this.x = Math.round(this.x);
+    this.y = Math.round(this.y);
+  }
 }

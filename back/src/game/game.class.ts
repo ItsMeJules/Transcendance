@@ -72,14 +72,19 @@ export class GameStruct {
   }
 
   private updateBallPosition(deltaTime: number) {
+    console.log('0 ball(1):', this.ball.getBallPoint(1));
+    this.pl1.pad.posPrev = new Point(this.pl1.pad.pos.x, this.pl1.pad.pos.y);
     this.updatePlayers(deltaTime);
     const deltaX = this.ball.speed * this.ball.dir.x * (deltaTime / 1000);
     const deltaY = this.ball.speed * this.ball.dir.y * (deltaTime / 1000);
+    console.log('1 ball(1):', this.ball.getBallPoint(1));
     const newPos = new Point(this.ball.pos.x + deltaX, this.ball.pos.y + deltaY);
     let ret = this.checkBoxCollisions(newPos);
+    console.log('2 ball(1):', this.ball.getBallPoint(1));
     if (ret === -1) return;
     this.ball.pos.x = newPos.x;
     this.ball.pos.y = newPos.y;
+    console.log('3 ball(1):', this.ball.getBallPoint(1));
   }
 
   updatePlayers(deltaTime: number) {
@@ -97,28 +102,39 @@ export class GameStruct {
         this.ball.speed = pad.speed > this.ball.speed ? pad.speed : this.ball.speed;
       }
     } else if (this.pl1.isMoving && this.pl1.movingDir === 'down') {
+      console.log(' ');
       console.log('DOWNNNNNNNNNNNNNNNNNNNNNNNNNNNNN PLAYER');
+      console.log('BALL POS IN y (1):', this.ball.getBallPoint(1));
+      console.log('BALL POS IN y (2):', this.ball.getBallPoint(2));
+
       // also modify player 2 accordingly!!!
       let pad = this.pl1.pad;
+      console.log('Pad low(4) b4:', new Point(pad.pos.x + pad.width, pad.pos.y + pad.height));
+      // console.log('padPos(3):',  pad.pos.y + pad.height);
       let newPos = new Point(pad.pos.x, pad.pos.y + pad.speed * (deltaTime / 1000));
+      // console.log('Pad low(4) new:', new Point(newPos.x + pad.width, newPos.y + pad.height));
+      // console.log('pad newPos (3):',  newPos.y + pad.height);
       if (newPos.y > this.board.height - pad.height - this.ball.size * 2)
         newPos.y = this.board.height - pad.height - this.ball.size * 2;
-      let padPosPrev = pad.pos;
+      let padPosPrev = pad.posPrev;
       pad.pos = newPos;
 
       let pptmp = new Point(padPosPrev.x, padPosPrev.y + pad.height);
       let nptmp = new Point(newPos.x, newPos.y + pad.height);
-      // console.log('bpos:', this.ball.pos.y);
-      // console.log('padPrev:', pptmp.y);
-      // console.log('padNew:', newPos.y);
+      // console.log('bpos(1):', this.ball.pos.y - this.ball.halfSize);   
+      // console.log('padPrev y:', pptmp.y);
+      // console.log('padNew y:', nptmp.y);
       // console.log('union now:', this.ballAndPaddleUnionDown(newPos, pad));
       // console.log('union prev:', this.ballAndPaddleUnionDown(padPosPrev, pad));
 
       if (this.ballAndPaddleUnionDown(newPos, pad) && !this.ballAndPaddleUnionDown(padPosPrev, pad)) {
-        // console.log('triggered!!!!!!!!!!!!!!!!!!!');
+        console.log('triggered!!!!!!!!!!!!!!!!!!!');
         this.ball.pos.y = newPos.y + pad.height + this.ball.halfSize;
-        this.ball.speed = pad.speed > this.ball.speed ? pad.speed : this.ball.speed;
+        this.ball.dir.y = this.ball.dir.y < 0 ? -this.ball.dir.y : this.ball.dir.y; // TO DO for the others!!!!
+        console.log('ball after:', this.ball.pos);
+        // this.ball.speed = pad.speed > this.ball.speed ? pad.speed : this.ball.speed;
       }
+      // console.log('BALL POS OUT (4):', this.ball.getBallPoint(4), ' dir:', this.ball.dir);
     }
     // Player 2
     if (this.pl2.isMoving && this.pl2.movingDir === 'up') {
@@ -154,11 +170,22 @@ export class GameStruct {
   }
 
   ballAndPaddleUnionDown(pos: Point, pad: Paddle) {
-    let posDown = new Point(pos.x, pos.y + pad.height);
+    let posDownLeft = new Point(pos.x, pos.y + pad.height);
+    let posDownRight = new Point(pos.x + pad.width, pos.y + pad.height);
     // console.log('__UNION__');
     // console.log('')
-    if ((this.isPointInBall(posDown)
-      || this.isPointInBall(new Point(posDown.x + pad.width, posDown.y)))
+    // console.log('pos:', pos);
+    // console.log('posDownLeft:', posDownLeft);
+    // console.log('posDownLeft:', posDownRight);
+    // console.log('this.isPointInBall(posDownLeft):', this.isPointInBall(posDownLeft));
+    // console.log('this.isPointInBall(posDownRight):', this.isPointInBall(posDownRight));
+    // console.log('this.isPointInNewPaddle(this.ball.getBallPoint(2), pad, pos):', this.isPointInNewPaddle(this.ball.getBallPoint(2), pad, pos));
+    // console.log('this.isPointInNewPaddle(this.ball.getBallPoint(1), pad, pos):', this.isPointInNewPaddle(this.ball.getBallPoint(1), pad, pos));
+    // if (this.isPointInBall(new Point(posDownLeft.x + pad.width, posDownLeft.y)))
+    //   return true;
+
+    if ((this.isPointInBall(posDownLeft)
+      || this.isPointInBall(new Point(posDownLeft.x + pad.width, posDownLeft.y)))
       || (this.isPointInNewPaddle(this.ball.getBallPoint(2), pad, pos)
         || this.isPointInNewPaddle(this.ball.getBallPoint(1), pad, pos)))
       return true;
@@ -167,17 +194,23 @@ export class GameStruct {
 
   isPointInBall(p: Point) {
     let b = this.ball;
-    if (!(p.x >= b.getBallPoint(1).x && p.x <= b.getBallPoint(2).x))
+    // console.log('Is point in ball?');
+    // console.log(p.x, '>',  b.getBallPoint(1).x);
+    // console.log(p.x, '<', b.getBallPoint(2).x);
+    // console.log(p.y , '>',  b.getBallPoint(1).x);
+    // console.log(p.y, '<',  p.y < b.getBallPoint(4).y);
+
+    if (!(p.x > b.getBallPoint(1).x && p.x < b.getBallPoint(2).x))
       return false;
-    if (!(p.y >= b.getBallPoint(1).x && p.y <= b.getBallPoint(4).y))
+    if (!(p.y > b.getBallPoint(1).y && p.y < b.getBallPoint(4).y))
       return false;
     return true;
   }
 
   isPointInNewPaddle(p: Point, pad: Paddle, newPos: Point) {
-    if (!(p.x >= newPos.x && p.x <= newPos.x + pad.width))
+    if (!(p.x > newPos.x && p.x < newPos.x + pad.width))
       return false;
-    if (!(p.y >= newPos.y && p.y <= newPos.y + pad.height))
+    if (!(p.y > newPos.y && p.y < newPos.y + pad.height))
       return false;
     return true;
   }
@@ -202,35 +235,67 @@ export class GameStruct {
     else {
       // Paddles
       let player: Player = this.ball.dir.x < 0 ? this.pl1 : this.pl2;
+      let colPtsSide;
+      // if (this.ball.dir.x < 0) {
+      //   let colPtsSide = player.pad.collisionUpdate(1);
+      // } else {
+
+      // }
       this.ball.dir.x < 0 ? player.pad.collisionUpdate(1) : player.pad.collisionUpdate(2);
       let colPtSide: Point = this.getCollisionPointSide(player, player.pad.colPtsSide);
       let colPtUp: Point = this.getCollisionPointSide(player, player.pad.colPtsUp);
       let colPtDown: Point = this.getCollisionPointSide(player, player.pad.colPtsDown);
+      colPtSide.round();
+
+      console.log('___DOWN VERIF____');
+      console.log('ball dir y:', this.ball.dir.y);
+      console.log('pos:', this.ball.getBallPoint(1));
+      console.log('newpos:', new Point(newPos.x - this.ball.halfSize, newPos.y - this.ball.halfSize));
+      console.log('paddle y:', player.pad.pos.y + player.pad.height);
+      console.log('colPtDown:', colPtDown);
+      console.log(newPos.y - this.ball.halfSize, '<=', colPtDown.y);
+      console.log(this.ball.pos.y  - this.ball.halfSize, '>=', colPtDown.y);
+
       // Left
-      if (this.ball.dir.x < 0
+      if (this.ball.dir.x < 0 
         && newPos.x - this.ball.halfSize <= colPtSide.x
         && this.ball.pos.x - this.ball.halfSize >= colPtSide.x) {
         console.log('-> Left');
+        // console.log('colPt:', colPtSide);
+        // console.log('ball:', this.ball.getBallPoint(1));
+        // console.log('newPos:', new Point(newPos.x - this.ball.halfSize, newPos.y - this.ball.halfSize));
+        // console.log('padPos(3):', new Point(player.pad.pos.x + player.pad.width, player.pad.pos.y + player.pad.height));
         return this.getNewPointAfterCollisionSide(player, newPos, colPtSide);
       }
       // Right
-      else if (this.ball.dir.x > 0
+      if (this.ball.dir.x > 0
         && newPos.x + this.ball.halfSize >= colPtSide.x
         && this.ball.pos.x + this.ball.halfSize <= colPtSide.x) {
-          console.log('-> RIGHT');
+        console.log('-> RIGHT');
         return this.getNewPointAfterCollisionSide(player, newPos, colPtSide);
       }
       // Up
-      else if (this.ball.dir.y > 0
+      if (this.ball.dir.y > 0
         && newPos.y + this.ball.halfSize >= colPtUp.y
         && this.ball.pos.y + this.ball.halfSize <= colPtUp.y) {
+        console.log('-> UP:');
+        // console.log('colPt:', colPtUp);
+        // console.log('ball:', this.ball.getBallPoint(3));
+        // console.log('newPos:', new Point(newPos.x + this.ball.halfSize, newPos.y + this.ball.halfSize));
+        colPtUp.round();
+
         return this.getNewPointAfterCollisionUpDown(player, newPos, colPtUp);
       }
       // Down
-      else if (this.ball.dir.y < 0
+      if (this.ball.dir.y < 0
         && newPos.y - this.ball.halfSize <= colPtDown.y
         && this.ball.pos.y - this.ball.halfSize >= colPtDown.y) {
-        console.log('-> DOWN:', this.getNewPointAfterCollisionUpDown(player, newPos, colPtDown));
+        colPtDown.round();
+        // console.log('-> DOWN:', this.getNewPointAfterCollisionUpDown(player, newPos, colPtDown));
+        console.log('-> DOWN:');
+        // console.log('colPt:', colPtDown);
+        // console.log('ball:', this.ball.getBallPoint(1));
+        // console.log('newPos:', new Point(newPos.x - this.ball.halfSize, newPos.y - this.ball.halfSize));
         return this.getNewPointAfterCollisionUpDown(player, newPos, colPtDown);
       }
 
@@ -246,13 +311,26 @@ export class GameStruct {
   getNewPointAfterCollisionUpDown(player: Player, newPos: Point, colPt: Point) {
     let ballPosY = this.ball.pos.y < player.pad.pos.y ?
       this.ball.pos.y + this.ball.halfSize : this.ball.pos.y - this.ball.halfSize;
+      console.log(' ');
+    console.log('ballPosY:', ballPosY);
     let newPosY = this.ball.pos.y < player.pad.pos.y ?
       newPos.y + this.ball.halfSize : newPos.y - this.ball.halfSize;
+    console.log('newPosY:', newPosY);
     let dPartial = colPt.y - ballPosY;
+    console.log('dPartial:', dPartial);
     let dFull = newPosY - ballPosY;
+    console.log('dFull:', dFull);
     let dPartialX = dPartial * this.ball.dir.x / this.ball.dir.y;
     let dFullX = dFull * this.ball.dir.x / this.ball.dir.y;
     let tmpBallPos = new Point(this.ball.pos.x + dPartialX, this.ball.pos.y + dPartial);
+
+    // tmpBallPos.round();
+
+    console.log('is ball in front of paddle UpDown:', this.isBallInFrontOfPaddleSide(player, tmpBallPos));
+    let padtmp = new Point(player.pad.pos.x + player.pad.width, player.pad.pos.y + player.pad.height);
+    console.log('paddle(4):', padtmp);
+    console.log('balltmp(1)', new Point(tmpBallPos.x - this.ball.halfSize, tmpBallPos.y - this.ball.halfSize));
+
     if (!this.isBallInFrontOfPaddleUpDown(player, tmpBallPos)) return 1; /// to do
     this.ball.dir.y *= -1;
     let dNorm = Math.sqrt(Math.pow((dFull - dPartial), 2) + Math.pow((dFullX - dPartialX), 2));
@@ -266,6 +344,8 @@ export class GameStruct {
 
   isBallInFrontOfPaddleUpDown(player: Player, newPos: Point) {
     // Check ball points
+    let newPoint = new Point( newPos.x, newPos.y);
+    // newPoint.round()
     if ((newPos.x - this.ball.halfSize >= player.pad.pos.x
       && newPos.x - this.ball.halfSize <= player.pad.pos.x + player.pad.width))
       return true;
@@ -284,20 +364,28 @@ export class GameStruct {
 
   getNewPointAfterCollisionSide(player: Player, newPos: Point, colPt: Point) {
     let ballPosX = this.ball.dir.x < 0 ? this.ball.pos.x - this.ball.halfSize : this.ball.pos.x + this.ball.halfSize;
+    console.log('ballPosX:', ballPosX);
     let newPosX = this.ball.dir.x < 0 ? newPos.x - this.ball.halfSize : newPos.x + this.ball.halfSize;
+    console.log('newPosX:', newPosX);
     let dPartial = colPt.x - ballPosX;
+    console.log('dPartial:', dPartial);
     let dFull = newPosX - ballPosX;
+    console.log('dFull:', dFull);
     let dPartialY = dPartial * this.ball.dir.y / this.ball.dir.x;
     let dFullY = dFull * this.ball.dir.y / this.ball.dir.x;
+
     let tmpBallPos = new Point(this.ball.pos.x + dPartial, this.ball.pos.y + dPartialY);
+    tmpBallPos.round();
 
 
-    console.log('is ball in front of paddle:', this.isBallInFrontOfPaddleSide(player, tmpBallPos));
-    let padtmp = new Point(player.pad.pos)
-    console.log('paddle(4):', player.pad.);
+    console.log('is ball in front of paddle Side:', this.isBallInFrontOfPaddleSide(player, tmpBallPos));
+    let padtmp = new Point(player.pad.pos.x + player.pad.width, player.pad.pos.y + player.pad.height);
+    console.log('paddle(4):', padtmp);
+    console.log('balltmp', new Point(tmpBallPos.x - this.ball.halfSize, tmpBallPos.y - this.ball.halfSize));
 
 
     if (!this.isBallInFrontOfPaddleSide(player, tmpBallPos)) return 1;
+    console.log('WE HEEEEEEEEEEEEEERREEEE OKKKKKKKK');
     let colPercentage = this.getCollisionPercentage(player, tmpBallPos);
     this.ball.updateDirectionBounce(colPercentage);
     let dNorm = Math.sqrt(Math.pow((dFull - dPartial), 2) + Math.pow((dFullY - dPartialY), 2));
@@ -311,9 +399,15 @@ export class GameStruct {
 
   isBallInFrontOfPaddleSide(player: Player, newPos: Point) {
     // check ball points
+    console.log('___IN FRONT OF?___');
+    console.log(newPos.y - this.ball.halfSize, '>=', player.pad.pos.y);
+    console.log(newPos.y - this.ball.halfSize, '<=', player.pad.pos.y + player.pad.height);
     if ((newPos.y - this.ball.halfSize >= player.pad.pos.y
       && newPos.y - this.ball.halfSize <= player.pad.pos.y + player.pad.height))
       return true;
+    // console.log(' ');
+    console.log(newPos.y + this.ball.halfSize, '>=', player.pad.pos.y);
+    console.log(newPos.y + this.ball.halfSize, '<=', player.pad.pos.y + player.pad.height);
     if ((newPos.y + this.ball.halfSize >= player.pad.pos.y
       && newPos.y + this.ball.halfSize <= player.pad.pos.y + player.pad.height))
       return true;
@@ -335,8 +429,15 @@ export class GameStruct {
   }
 
   getCollisionPointSide(player: Player, colPts: CollisionPointsPaddle) {
+
     let colPt: Point;
     let ballColPts = new CollisionPointsBall(this.ball);
+    // console.log('',);
+    // console.log('----_>>>> ball pos:', this.ball.pos);
+    // console.log('ball dir:', this.ball.dir);
+    // console.log('ball col Pts:', ballColPts);
+    // console.log('player pad pos (1):', player.pad.pos);
+    // console.log('side col Pts:', colPts);
     let determinant = ballColPts.a * colPts.b - ballColPts.b * colPts.a;
     if (determinant === 0) {
       colPt = new Point(1000000, 1000000);
@@ -344,21 +445,23 @@ export class GameStruct {
       colPt = new Point(
         (colPts.b * ballColPts.c - ballColPts.b * colPts.c) / determinant,
         (ballColPts.a * colPts.c - colPts.a * ballColPts.c) / determinant);
+      // console.log('COL PT FINAL:', colPt);
     }
     return colPt;
   }
-
-
 
   scorePoint(winner: number) {
     if (winner === 2) {
       this.pl2.score += 1;
       this.ball.randomService(this.board, 2);
+      this.ball.pos = new Point(120, 190);
     } else if (winner === 1) {
       this.pl1.score += 1;
       this.ball.randomService(this.board, 1);
+      this.ball.pos = new Point(120, 190);
     }
-    this.ball.pos = new Point(this.board.width * 0.5, this.board.height * 0.5);
+    this.ball.pos = new Point(120, 190);
+    // this.ball.pos = new Point(this.board.width * 0.5, this.board.height * 0.5);
   }
 
   private startRegularUpdates() {
