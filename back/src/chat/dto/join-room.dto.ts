@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class JoinRoomDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  roomName: string;
 
   @IsString()
   password: string;

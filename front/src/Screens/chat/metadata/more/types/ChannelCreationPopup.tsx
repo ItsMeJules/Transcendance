@@ -23,7 +23,6 @@ export default function ChannelCreationPopup() {
   const createChannel = () => {
     if (!channelName.trim()) return;
     if (channelType === ChannelType.PROTECTED && !channelPassword.trim()) return;
-    socket.current.emit("");
     setChannelName("");
     setChannelPassword("");
   };
