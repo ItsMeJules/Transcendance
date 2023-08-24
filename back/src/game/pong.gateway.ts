@@ -242,7 +242,7 @@ export class PongEvents {
     }
     // Refresh in motion
     else if (data.action === 'refreshInMotion') {
-      gameStruct.refreshInMotion('status');
+      // gameStruct.refreshInMotion('status');
     }
 
   }

@@ -9,11 +9,10 @@ export class Ball {
   public halfSize: number;
   public speed: number;
   public pos: Point;
-  public prevPos: Point;
   public accelFactor: number;
   public dir: Vector;
-  public tRefresh = Date.now();
-  public collisionSide = '';
+  
+  public it = 0;
 
   private readonly maxPaddleBounceAngle = initGameConfig.ball.maxPaddleBounceAngle;
 
@@ -29,7 +28,6 @@ export class Ball {
     this.speed = initGameConfig.ball.speed;
     this.pos = new Point(board.width * 0.5, board.height * 0.5);
     // this.pos = new Point(18, 150);
-    this.prevPos = this.pos;
     this.accelFactor = initGameConfig.ball.accelFactor;
     const toRandomPlayer = Math.random() < 0.5 ? -1 : 1;
     this.randomService(board, toRandomPlayer);
@@ -43,7 +41,6 @@ export class Ball {
     clonedBall.pos = new Point(this.pos.x, this.pos.y);
     clonedBall.accelFactor = this.accelFactor;
     clonedBall.dir = new Vector(this.dir.x, this.dir.y);
-    clonedBall.tRefresh = this.tRefresh;
     return clonedBall;
   }
 
@@ -56,10 +53,12 @@ export class Ball {
       Math.cos(randomAngle) * dirX,
       Math.sin(randomAngle) * randomY);
 
-    const angle = Math.PI / 4.2;
+    // this.it += 1;
+    // let side = this.it % 2 === 1 ? 1 : -1;
+    const angle = Math.PI / 3.3;
     this.dir = new Vector(
       -Math.cos(angle),
-      -Math.sin(angle));
+      Math.sin(angle));
   }
 
   updateDirectionBounce(collisionPercentage: number) {
@@ -75,11 +74,8 @@ export class Ball {
   }
 
   getBallPoint(num: number) {
-    // Returns points
-    // 1 : Upper Left
-    // 2 : Upper Right
-    // 3 : Lower Right
-    // 4 : Lower Left
+    // Returns ball corner points
+    // 1 : Upper Left     2 : Upper Right      3 : Lower Right      4 : Lower Left
     if (num === 1)
       return (new Point(this.pos.x - this.halfSize, this.pos.y - this.halfSize));
     if (num === 2)

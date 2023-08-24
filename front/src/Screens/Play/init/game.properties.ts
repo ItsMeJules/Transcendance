@@ -16,7 +16,7 @@ export const initGameConfig = {
   // Ball
   ball: {
     size: 10,
-    speed: 100,
+    speed: 400,
     accelFactor: 0.2,
     minWidth: 350,
     maxPaddleBounceAngle: Math.PI * 0.33, // 60 degrees
@@ -24,7 +24,7 @@ export const initGameConfig = {
 
   // Paddle
   pad: {
-    width: 15,
+    width: 100,
     height: 60,
     wallGap: 10,
     speed: 200,
