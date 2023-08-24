@@ -74,4 +74,36 @@ export class Paddle {
       return true;
     return false;
   }
+
+  getPaddlePoint(num: number) {
+    // Returns points
+    // 1 : Upper Left
+    // 2 : Upper Right
+    // 3 : Lower Right
+    // 4 : Lower Left
+    if (num === 1)
+      return (this.pos);
+    if (num === 2)
+      return (new Point(this.pos.x + this.width, this.pos.y));
+    if (num === 3)
+      return (new Point(this.pos.x + this.width, this.pos.y + this.height));
+    if (num === 4)
+      return (new Point(this.pos.x, this.pos.y + this.height));
+  }
+
+  getPaddleNewPoint(num: number, newPos: Point) {
+    // Returns points
+    // 1 : Upper Left
+    // 2 : Upper Right
+    // 3 : Lower Right
+    // 4 : Lower Left
+    if (num === 1)
+      return (newPos);
+    if (num === 2)
+      return (new Point(newPos.x + this.width, newPos.y));
+    if (num === 3)
+      return (new Point(newPos.x + this.width, newPos.y + this.height));
+    if (num === 4)
+      return (new Point(newPos.x, newPos.y + this.height));
+  }
 }

@@ -97,7 +97,7 @@ const PlayBack = () => {
   }, [socket.game]);
 
   useEffect(() => {
-    // console.log('gamestate:', gameState);
+    console.log('gamestate:', gameState);
     if (gameState?.gameStatus === 'giveUp') {
       game.isPlaying = false;
       // console.log('gameState in giveup:');

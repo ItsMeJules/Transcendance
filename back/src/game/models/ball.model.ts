@@ -28,6 +28,7 @@ export class Ball {
     this.halfSize = initGameConfig.ball.size * 0.5;
     this.speed = initGameConfig.ball.speed;
     this.pos = new Point(board.width * 0.5, board.height * 0.5);
+    // this.pos = new Point(18, 150);
     this.prevPos = this.pos;
     this.accelFactor = initGameConfig.ball.accelFactor;
     const toRandomPlayer = Math.random() < 0.5 ? -1 : 1;
@@ -71,5 +72,21 @@ export class Ball {
       this.dir.x *= -1;
     else if (dirX < 0 && this.dir.x < 0)
       this.dir.x *= -1;
+  }
+
+  getBallPoint(num: number) {
+    // Returns points
+    // 1 : Upper Left
+    // 2 : Upper Right
+    // 3 : Lower Right
+    // 4 : Lower Left
+    if (num === 1)
+      return (new Point(this.pos.x - this.halfSize, this.pos.y - this.halfSize));
+    if (num === 2)
+      return (new Point(this.pos.x + this.halfSize, this.pos.y - this.halfSize));
+    if (num === 3)
+      return (new Point(this.pos.x + this.halfSize, this.pos.y + this.halfSize));
+    if (num === 4)
+      return (new Point(this.pos.x - this.halfSize, this.pos.y + this.halfSize));
   }
 }
