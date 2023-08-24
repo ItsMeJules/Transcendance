@@ -15,6 +15,7 @@ interface ChannelManagerProps {
 export default function ChannelManager(props: ChannelManagerProps) {
   const [manageChannel, setManageChannel] = useState<boolean>(false);
   const [channelUsersList, toggleChannelUsersList] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState("");
 
   const { channel }: ChannelManagerProps = props;
   const usersSize = channel.channelData.users?.length || 0
@@ -42,7 +43,14 @@ export default function ChannelManager(props: ChannelManagerProps) {
           {channelUsersList &&
             <div className="popup-container">
               <Popup className="channel-users-popup">
-                <UsersList />
+                <input
+                  className="filter-users"
+                  type="search"
+                  placeholder="Chercher un utilisateur"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                />
+                <UsersList filter={(userName) => userName.includes(searchText)} />
               </Popup>
             </div>
           }

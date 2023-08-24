@@ -11,8 +11,7 @@ import OutsideClickHandler from "../utils/OutsideClickHandler";
 
 export enum PopupType {
   CHANNEL = "channel",
-  DIRECT_MESSAGE = "direct message",
-  RESTRICT = "restrict user",
+  ALL_USERS = "all users",
   CHANNEL_LIST = "channel list",
 }
 

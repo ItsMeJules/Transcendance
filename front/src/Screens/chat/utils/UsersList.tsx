@@ -5,7 +5,11 @@ import User, { UserData } from "../../../Services/User";
 import { API_ROUTES } from "../../../Utils";
 import { useAxios } from "../../../api/axios-config";
 
-const UsersList = () => {
+type UsersListProps = {
+  filter?: (userName: string) => boolean;
+}
+
+const UsersList = ({ filter = () => true} : UsersListProps) => {
   const axiosInstance: AxiosInstance = useAxios() // Can't be used inside a callback function, why?
   const [users, setUsers] = useState<User[]>([])
 
@@ -13,14 +17,16 @@ const UsersList = () => {
     const fetchAllUsers = async (axiosInstance: AxiosInstance): Promise<User[]> => {
       const response: AxiosResponse<any, any> = await axiosInstance.get(API_ROUTES.GET_ALL_USERS, { withCredentials: true })
     
-      const frontUsers: User[] = response.data.map((data: UserData) => {
+      const frontUsers: User[] = response.data.reduce((filteredUsers: User[], data: UserData) => {
         const frontUser: User = new User();
-    
+        
         frontUser.setUserFromResponseData(data);
-    
-        return frontUser;
-      });
-    
+        if (filter(frontUser.getUsername()))
+          filteredUsers.push(frontUser);
+
+        return filteredUsers;
+      }, []);
+
       return frontUsers;
     }
     
