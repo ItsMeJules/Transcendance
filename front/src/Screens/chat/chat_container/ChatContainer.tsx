@@ -5,6 +5,9 @@ import ChatMessage from "./ChatMessage";
 interface Message {
   message: string;
   self: boolean;
+  authorId: number;
+  profilePicture: string;
+  userName: string;
 }
 
 interface ChatContainerProps {

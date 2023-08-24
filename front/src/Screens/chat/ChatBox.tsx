@@ -8,10 +8,14 @@ import ChatMetadata from "./metadata/ChatMetadata";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
 import axios from "axios";
 import { API_ROUTES } from "../../Utils";
+import { useAxios } from "../../api/axios-config";
 
 interface Message {
   message: string;
   self: boolean;
+  authorId: number;
+  profilePicture: string;
+  userName: string;
 }
 
 export const ChatBox = () => {
@@ -38,7 +42,7 @@ export const ChatBox = () => {
     fetchRoomName();
   }, []);
 
-  const onNewMessage = (payload: any) => {
+  const onNewMessage = (payload: any) => { 
     //////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
     const userDataString = localStorage.getItem("userData");
     let userId;
@@ -50,6 +54,9 @@ export const ChatBox = () => {
     const message: Message = {
       message: payload.text,
       self: payload.authorId === userId,
+      authorId: payload.authorId,
+      profilePicture: payload.profilePicture,
+      userName: payload.userName
     };
     
     setMessages((messages) => [...messages, message]);
