@@ -30,38 +30,41 @@ import { Play } from "./Screens/Play/Play";
 import { TwoFa } from "./screens/2fa";
 import PlayBack from "./Screens/Play/PlayBack";
 import { ChatBox } from "./Screens/chat/ChatBox";
+import { Provider } from "react-redux";
 
 const App: React.FC = () => {
   return (
-    <div>
-      <Websocket>
-        <AppWrapper>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path={APP_ROUTES.SIGN_IN} element={<Signin />} />
-            <Route path={APP_ROUTES.SIGN_UP} element={<Signup />} />
-            <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
-            <Route
-              path={APP_ROUTES.USER_PROFILE_EDIT}
-              element={<UserProfileEdit />}
-            />
-            <Route path={APP_ROUTES.USER_FRIENDS} element={<UserFriends />} />
-            <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
-            <Route
-              path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"}
-              element={React.createElement(GenericUserProfile)}
-            />
-            <Route path="/test" element={<Test />} />
-            <Route path="/chattest" element={<ChatBox />} />
-            <Route path="/play" element={<Play />} />
-            <Route path="/playback" element={<PlayBack />} />
-          </Routes>
-          <Routes>
-            <Route path={APP_ROUTES.LOG_2FA} element={<TwoFa />} />
-          </Routes>
-        </AppWrapper>
-      </Websocket>
-    </div>
+    <Provider>
+      <div>
+        <Websocket>
+          <AppWrapper>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path={APP_ROUTES.SIGN_IN} element={<Signin />} />
+              <Route path={APP_ROUTES.SIGN_UP} element={<Signup />} />
+              <Route path={APP_ROUTES.USER_PROFILE} element={<UserProfile />} />
+              <Route
+                path={APP_ROUTES.USER_PROFILE_EDIT}
+                element={<UserProfileEdit />}
+              />
+              <Route path={APP_ROUTES.USER_FRIENDS} element={<UserFriends />} />
+              <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
+              <Route
+                path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"}
+                element={React.createElement(GenericUserProfile)}
+              />
+              <Route path="/test" element={<Test />} />
+              <Route path="/chattest" element={<ChatBox />} />
+              <Route path="/play" element={<Play />} />
+              <Route path="/playback" element={<PlayBack />} />
+            </Routes>
+            <Routes>
+              <Route path={APP_ROUTES.LOG_2FA} element={<TwoFa />} />
+            </Routes>
+          </AppWrapper>
+        </Websocket>
+      </div>
+    </Provider>
   );
 };
 
