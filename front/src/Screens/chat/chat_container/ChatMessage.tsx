@@ -1,15 +1,9 @@
 import React from "react";
 
-interface Message {
-  message: string;
-  self: boolean;
-  authorId: number;
-  profilePicture: string;
-  userName: string;
-}
+import { ChatMessageData } from "../models/ChatMessageData";
 
 interface ChatMessageProps {
-  messagesReceived: Message[];
+  messagesReceived: ChatMessageData[];
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ messagesReceived }) => {

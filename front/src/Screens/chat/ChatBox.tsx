@@ -9,18 +9,11 @@ import { useWebsocketContext } from "../../Wrappers/Websocket";
 import axios from "axios";
 import { API_ROUTES } from "../../Utils";
 import { useAxios } from "../../api/axios-config";
-
-interface Message {
-  message: string;
-  self: boolean;
-  authorId: number;
-  profilePicture: string;
-  userName: string;
-}
+import { ChatMessageData } from "./models/ChatMessageData";
 
 export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessageData[]>([]);
   const [roomName, setRoomName] = useState<string | null>(null);
   const socketRef = useRef<Socket | null>(null);
   const socket = useWebsocketContext();

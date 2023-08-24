@@ -1,17 +1,10 @@
 import React, { useRef, useEffect } from "react";
 
 import ChatMessage from "./ChatMessage";
-
-interface Message {
-  message: string;
-  self: boolean;
-  authorId: number;
-  profilePicture: string;
-  userName: string;
-}
+import { ChatMessageData } from "../models/ChatMessageData";
 
 interface ChatContainerProps {
-  messagesReceived: Message[];
+  messagesReceived: ChatMessageData[];
 }
 
 const ChatContainer: React.FC<ChatContainerProps> = ({ messagesReceived }) => {
