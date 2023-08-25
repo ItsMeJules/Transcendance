@@ -8,7 +8,7 @@ import getProgressBarClass from '../../Components/ProgressBarClass';
 import DisplayData from './components/DisplayData';
 import DisplayStats from './components/DisplayStats';
 import ProfilePicContainer from './components/ProfilePicContainer';
-import LogoutParent from '../../hooks/logoutParent';
+import LogoutParent from '../../layout/logoutParent';
 import ToastErrorMessage from '../../Components/ToastErrorMessage';
 import { FaHeart } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';

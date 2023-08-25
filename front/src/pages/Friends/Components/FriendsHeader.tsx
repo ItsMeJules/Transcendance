@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoutParent from "../../../hooks/logoutParent";
+import LogoutParent from "../../../layout/logoutParent";
 
 interface FriendsHeaderProps {
   setErrMsg: React.Dispatch<React.SetStateAction<string>>;

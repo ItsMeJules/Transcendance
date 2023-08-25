@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { API_ROUTES, APP_ROUTES } from "../../utils/constants";
-import { Link, useNavigate } from "react-router-dom";
-import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import getProgressBarClass from "../../Components/ProgressBarClass";
+import { useNavigate } from "react-router-dom";
+import ToastErrorMessage from "../../layout/ToastErrorMessage";
+import getProgressBarClass from "../../layout/ProgressBarClass";
 import User from "../../services/User";
 import { UserData } from "../../services/User";
 import { useAxios } from "../../utils/axios-config";

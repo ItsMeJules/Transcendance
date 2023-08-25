@@ -3,11 +3,11 @@ import ParticlesBackgroundNew from "./ParticlesSlow.memo";
 import { useLocation} from 'react-router-dom';
 import GlobalNavDropdown from "./GlobalNavDropdown";
 
-interface AppWrapperProps {
+interface LayoutWrapperProps {
   children: ReactNode;
 }
 
-const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
+const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
   const location = useLocation();
 
   return (
@@ -21,4 +21,4 @@ const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
   );
 };
 
-export default AppWrapper;
+export default LayoutWrapper;

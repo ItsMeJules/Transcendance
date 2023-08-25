@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../../../utils/constants";
 import { MDBCardImage } from 'mdb-react-ui-kit';
-import LogoutParent from "../../../hooks/logoutParent";
+import LogoutParent from "../../../layout/logoutParent";
 import { IconContext } from 'react-icons';
 import { FaHeart } from 'react-icons/fa6';
 import { FaUser } from 'react-icons/fa6';

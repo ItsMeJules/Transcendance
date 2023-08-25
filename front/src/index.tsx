@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './utils/reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
-import AuthProvider from './context/AuthProvider';
+
 import './index.css';
+import AuthProvider from './utils/AuthProvider';
+import Websocket from './services/Websocket';
 import App from './App';
 
 const root = ReactDOM.createRoot(
@@ -15,7 +17,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
+        <Websocket>
           <App />
+        </Websocket>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

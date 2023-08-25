@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Particle from '../../Components/Particle';
+import Particle from '../../layout/Particle';
 import VideoSection from './VideoSection';
 import TextSection from './TextSection';
 import { useNavigate } from 'react-router-dom';
