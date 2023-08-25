@@ -27,7 +27,7 @@ export interface ChannelData {
   type: ChannelType;
   name: string;
   password: string | null;
-  users: User[] | null;
+  users: User[];
   owner: User | null;
   admins: User[] | null;
   punishments: PunishmentData[]

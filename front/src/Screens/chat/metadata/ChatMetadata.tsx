@@ -94,7 +94,7 @@ export default function ChatMetadata() {
     }),
   ];
 
-  const activeChannel: Channel = channels[0]
+  const activeChannel: Channel = channels[1]
 
   const handleMoreClick = () => {
     if (!isMoreActive)
@@ -134,7 +134,7 @@ export default function ChatMetadata() {
       </OutsideClickHandler>
 
       <div className="channel-manager">
-        <ChannelManager channel={activeChannel} />
+        <ChannelManager channelData={activeChannel.channelData} />
       </div>
 
       <div className="channel-icon">

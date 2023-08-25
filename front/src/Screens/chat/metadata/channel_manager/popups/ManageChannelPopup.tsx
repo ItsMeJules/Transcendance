@@ -5,18 +5,18 @@ import PrivateIcon from "../../../../../assets/private.png"
 import ProtectedIcon from "../../../../../assets/padlock.png"
 
 import Popup from "../../../utils/Popup";
-import { Channel, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
+import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
 
 interface ChannelPopupProps {
-  channel: Channel
+  channelData: ChannelData
 }
 
-const ManageChannelPopup: React.FC<ChannelPopupProps> = ({ channel }: ChannelPopupProps) => {
+const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProps) => {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC);
   const [channelPassword, setChannelPassword] = useState("");
 
   const changeChannel = () => {
-    const { channelData } = channel;
+    const { channelData } = props;
 
     if (channelType === channelData.type) {
       return;

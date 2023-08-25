@@ -2,14 +2,14 @@ import { useState } from "react";
 
 import SettingsIcon from "../../assets/settings.png";
 
-import { Channel } from "../../models/Channel";
+import { ChannelData } from "../../models/Channel";
 import ManageChannelPopup from "./popups/ManageChannelPopup";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
 import Popup from "../../utils/Popup";
 import UsersList from "../../utils/UsersList";
 
 interface ChannelManagerProps {
-  channel: Channel;
+  channelData: ChannelData;
 }
 
 export default function ChannelManager(props: ChannelManagerProps) {
@@ -17,8 +17,8 @@ export default function ChannelManager(props: ChannelManagerProps) {
   const [channelUsersList, toggleChannelUsersList] = useState<boolean>(false);
   const [searchText, setSearchText] = useState("");
 
-  const { channel }: ChannelManagerProps = props;
-  const usersSize = channel.channelData.users?.length || 0
+  const { channelData }: ChannelManagerProps = props;
+  const usersSize = channelData.users?.length || 0
 
   const manageStyle = {
     transition: "transform 1s ease",
@@ -29,7 +29,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
     <>
       <div className="channel-infos">
         <div className="channel-name">
-          {channel.channelData.name}
+          {channelData.name}
         </div>
 
         <OutsideClickHandler className="channel-users-container"
@@ -66,7 +66,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
           style={manageStyle}
         />
 
-        {manageChannel && <ManageChannelPopup channel={channel} />}
+        {manageChannel && <ManageChannelPopup channelData={channelData} />}
       </OutsideClickHandler>
     </>
   )

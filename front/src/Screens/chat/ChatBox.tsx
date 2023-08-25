@@ -10,10 +10,12 @@ import axios from "axios";
 import { API_ROUTES } from "../../Utils";
 import { useAxios } from "../../api/axios-config";
 import { ChatMessageData } from "./models/ChatMessageData";
+import { useAppDispatch, useAppSelector } from "../../redux/Hooks";
 
 export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);
   const [messages, setMessages] = useState<ChatMessageData[]>([]);
+
   const [roomName, setRoomName] = useState<string | null>(null);
   const socketRef = useRef<Socket | null>(null);
   const socket = useWebsocketContext();
@@ -44,7 +46,7 @@ export const ChatBox = () => {
       userId = userData.id;
     }
 
-    const message: Message = {
+    const message: ChatMessageData = {
       message: payload.text,
       self: payload.authorId === userId,
       authorId: payload.authorId,

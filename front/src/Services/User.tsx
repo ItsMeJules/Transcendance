@@ -1,3 +1,5 @@
+import { Channel } from "../Screens/chat/models/Channel";
+
 export interface UserData {
     id:  string | null;
     createdAt: string | null;

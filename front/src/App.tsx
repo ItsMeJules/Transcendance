@@ -31,10 +31,11 @@ import { TwoFa } from "./screens/2fa";
 import PlayBack from "./Screens/Play/PlayBack";
 import { ChatBox } from "./Screens/chat/ChatBox";
 import { Provider } from "react-redux";
+import { store } from "./redux/Store";
 
 const App: React.FC = () => {
   return (
-    <Provider>
+    <Provider store={store}>
       <div>
         <Websocket>
           <AppWrapper>
