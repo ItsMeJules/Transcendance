@@ -47,12 +47,10 @@ export const ChatBox = () => {
   };
 
   useEffect(() => {
-    console.log("roomName is now : ", roomName);
     const currentEventRoom = "load_chat_" + roomName;
     const previousEventRoom = "load_chat_" + previousRoomName.current;
     socketRef.current?.off(previousEventRoom);
     socketRef.current?.on(currentEventRoom, (payload: any) => {
-      console.log("yoyoyo");
       setMessages([]);
       payload.forEach((msg: any) => {
         onNewMessage({
@@ -75,7 +73,6 @@ export const ChatBox = () => {
     if (socket.chat === null) {
       return;
     }
-    console.log("Setting up socket :", socket);
     socketRef.current = socket.chat;
 
     const handleReconnect = async () => {
@@ -83,7 +80,6 @@ export const ChatBox = () => {
         const response = await axios.get(API_ROUTES.CURRENT_CHAT, {
           withCredentials: true,
         });
-        console.log("Set of roomName to :", response.data);
         setRoomName(response.data);
         previousRoomName.current = response.data;
       } catch (error) {
@@ -92,7 +88,6 @@ export const ChatBox = () => {
       socketRef.current?.off("message");
       socketRef.current?.on("message", onNewMessage);
       socketRef.current?.on("joinRoom", (payload: any) => {
-        console.log("joinRoom : ", payload);
         setRoomName(payload);
       });
     };
@@ -132,7 +127,7 @@ export const ChatBox = () => {
         socketRef.current?.emit("chat-action", {
           action: "fetchHistory",
           roomName: roomName,
-          password: "", //How to handle password ?
+          password: "",
         });
       } else {
         console.log("sending data: ", data, " on roomName : ", roomName);
