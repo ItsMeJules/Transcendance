@@ -55,9 +55,15 @@ export class ChatEventsGateway {
         roomName: user.currentRoom,
         server: this.server,
       });
-    this.server
-      .to(client.id)
-      .emit('load_chat_' + user.currentRoom, messagesWithClientId);
+    const nameChatFetch = 'load_chat_' + user.currentRoom;
+    console.log(
+      'emitting to client.id :',
+      client.id,
+      'messages :',
+      messagesWithClientId,
+      nameChatFetch,
+    );
+    this.server.to(client.id).emit(nameChatFetch, messagesWithClientId);
     console.log(
       'End of first socket establishment function and client.id is ',
       client.id,
@@ -105,6 +111,14 @@ export class ChatEventsGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
-    await ActionRoomHandlers[payload.action](this.chatService, client, payload);
+    const updatedPayload = {
+      ...payload,
+      server: this.server,
+    };
+    await ActionRoomHandlers[payload.action](
+      this.chatService,
+      client,
+      updatedPayload,
+    );
   }
 }

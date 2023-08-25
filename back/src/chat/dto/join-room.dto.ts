@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import { Server } from 'socket.io';
 
 export class JoinRoomDto {
   @IsNotEmpty()
@@ -7,4 +8,6 @@ export class JoinRoomDto {
 
   @IsString()
   password: string;
+
+  server: Server;
 }
