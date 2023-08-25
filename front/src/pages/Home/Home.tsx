@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Particle from '../../layout/Background/Particle';
+import BackgroundMoving from 'layout/BackgroundMoving/BackgroundMoving';
 import VideoSection from './VideoSection';
 import TextSection from './TextSection';
 import { useNavigate } from 'react-router-dom';
@@ -36,12 +36,12 @@ const Home = () => {
   };
 
   return (
-    <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
-      <div style={{ zIndex: 0, position: 'absolute', width: '100%', height: '100%' }}>
-        <Particle />
+    <div style={{ position: "relative" }}>
+      <BackgroundMoving key={location.state?.key} style={{ position: "absolute", top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} />
+      <div style={{ position: 'relative', zIndex: 2 }}>
+        <VideoSection playSecondVideo={playSecondVideo} handleTimeUpdate={handleTimeUpdate} />
+        <TextSection screenSize={screenSize} handleButtonClick={handleButtonClick} />
       </div>
-      <VideoSection playSecondVideo={playSecondVideo} handleTimeUpdate={handleTimeUpdate} />
-      <TextSection screenSize={screenSize} handleButtonClick={handleButtonClick} />
     </div>
   );
 };

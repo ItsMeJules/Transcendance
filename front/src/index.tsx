@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import reportWebVitals from './utils/reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import reportWebVitals from './utils/reportWebVitals/reportWebVitals';
 
 import './index.css';
-import AuthProvider from './services/AuthProvider/AuthProvider';
-import Websocket from './services/socket/Websocket';
+import AuthProvider from './services/AuthProvider';
+import Websocket from './services/Websocket';
 import App from './App';
 
 const root = ReactDOM.createRoot(

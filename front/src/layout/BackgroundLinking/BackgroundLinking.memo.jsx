@@ -1,30 +1,28 @@
+import React from 'react';
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
-import { useCallback, useEffect } from "react";
-import React from "react";
+import { useCallback, useEffect} from "react";
 
-function Particle() {
+const BackgroundLinking = ({ style }) => {
+
+  useEffect(() => {
+    console.log("BackgroundLinking rendered");
+ }, []);
+
     const particlesInit = useCallback(async engine => {
+        // console.log(engine);
+        // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
+        // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
+        // starting from v2 you can add only the features you need reducing the bundle size
         await loadFull(engine);
     }, []);
 
     const particlesLoaded = useCallback(async container => {
+        // await console.log(container);
     }, []);
-
-    useEffect(() => {
-        const originalConsoleLog = console.log;
-
-        // Override console.log with an empty function
-        console.log = () => { };
-
-        return () => {
-            // Restore the original console.log function when the component unmounts
-            console.log = originalConsoleLog;
-        };
-    }, []);
-
     return (
         <Particles
+            style={{ zIndex: 1}}
             init={particlesInit}
             loaded={particlesLoaded}
             options={{
@@ -37,7 +35,7 @@ function Particle() {
                     composite: "destination-out",
                     cover: {
                         color: {
-                            value: "#fff"
+                            value: "#ffffff"
                         },
                         opacity: 1,
                     },
@@ -52,11 +50,7 @@ function Particle() {
                         },
                         onHover: {
                             enable: true,
-                            mode: "bubble",
-                            parallax: {
-                                enable: true,
-                                force: 100
-                            },
+                            mode: "connect",
                         },
                         resize: true,
                     },
@@ -64,7 +58,7 @@ function Particle() {
                         push: {
                             quantity: 4,
                         },
-                        bubble: {
+                        connect: {
                             distance: 200,
                             duration: 0.4,
                         },
@@ -74,29 +68,28 @@ function Particle() {
                     bounce: {
                         horizontal: {
                             random: {
-                                enable: false,
-                                minimumValue: 0.1
+                                enable: true,
+                                minimumValue: 0.5
                             },
                             value: 1
                         },
                         vertical: {
                             random: {
-                                enable: false,
+                                enable: true,
                                 minimumValue: 0.1
                             },
                             value: 1
                         }
                     },
                     color: {
-                        value: "#000000",
+                        value: "#ffffff",
+                        // value: "#ffd27d",
                     },
 
                     collisions: {
                         absorb: {
                             speed: 2
                         },
-
-
                         bounce: {
                             horizontal: {
                                 random: {
@@ -113,11 +106,11 @@ function Particle() {
                                 value: 1
                             }
                         },
-                        enable: false,
+                        enable: false,   
                         maxSpeed: 50,
                         mode: "bounce",
                         overlap: {
-                            enable: false,
+                            enable: true,
                             retries: 0
                         }
 
@@ -152,30 +145,30 @@ function Particle() {
                             acceleration: 9.81,
                             enable: false,
                             inverse: false,
-                            maxSpeed: 50
+                            maxSpeed: 5
                         },
                         path: {
                             clamp: true,
                             delay: {
                                 random: {
-                                    enable: false,
-                                    minimumValue: 0
+                                    enable: true,
+                                    minimumValue: 0.1
                                 },
-                                value: 0
+                                value: 1
                             },
                             enable: false,
                             options: {}
                         },
-                        outModes: {
-                            default: "destroy",
-                            bottom: "destroy",
-                            left: "destroy",
-                            right: "destroy",
-                            top: "destroy"
-                        },
-                        random: false,
+                        // outModes: {
+                        //     default: "destroy",
+                        //     bottom: "destroy",
+                        //     left: "destroy",
+                        //     right: "destroy",
+                        //     top: "destroy"
+                        // },
+                        random: true,
                         size: true,
-                        speed: 5,
+                        speed: { min: 0.01, max: 0.4 },
                         spin: {
                             acceleration: 0,
                             enable: false
@@ -183,7 +176,7 @@ function Particle() {
                         straight: false,
                         trail: {
                             enable: true,
-                            length: 9,
+                            length: 2,
                             fill: {
                                 color: {
                                     value: "#000000"
@@ -201,62 +194,30 @@ function Particle() {
                         value: 80,
                     },
                     opacity: {
-                        value: 0.5,
+                        value: 0.3,
                     },
                     shape: {
-                        type: "square",
+                        type: "circle",
                     },
                     size: {
                         value: { min: 0.1, max: 1 },
+                        random: {
+                            enable: true,
+                            minimumValue: 0.5
+                        },
                         anim: {
                             enable: true,
-                            speed: { min: 0.1, max: 1 },
-                            startValue: "min",
-                            destroy: "max",
-                            minimumValue: 10, // Minimum size of the particle
-                            maximumValue: 50, // Maximum size of the particle (the size at the end of its lifetime)
-                            // size_min: 4,
+                            speed: { min: 0, max: 10 },
+                            size_min: 3,
                             sync: false
                         }
                     },
-                },
-                emitters: {
-                    autoPlay: true,
-                    fill: true,
-                    life: {
-                        wait: false
-                    },
-                    rate: {
-                        quantity: { min: 5, max: 20 },
-                        delay: { min: 0.3, max: 0.5 }
-                    },
-                    shape: {
-                        type: "square",
-                    },
-                    radius: 500,
-                    startCount: 100,
-                    size: {
-                        mode: "percent",
-                        height: 1000,
-                        width: 1000
-                    },
-                    direction: "none",
-                    particles: {},
-                    position: {
-                        x: 50,
-                        y: 50
-                    },
-                    spawnColor: {
-                        value: "#ffffff",
-                    }
                 },
                 detectRetina: true,
             }}
 
         />
     )
+};
 
-
-}
-
-export default Particle;
+export default React.memo(BackgroundLinking);

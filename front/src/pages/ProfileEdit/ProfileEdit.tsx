@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_ROUTES, APP_ROUTES } from "../../utils/routing";
-import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
-import { UserData } from "../../services/User/User";
-import { useNavigate } from "react-router-dom";
-import ToastErrorMessage from "../../layout/ToastErrorMessage";
-import ProfileHeader from './components/ProfileHeader';
-import ProfilePicContainer from "./components/ProfilePicContainer";
-import ImageChange from "./components/ImageChange";
-import EditUserFormValidation from "./components/EditUserFormValidation";
-import UserProfileContainer from "./components/UserProfileContainer";
-import ProfileCard from "./components/ProfileCard";
 
-export const UserProfileEdit: React.FC = () => {
+import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
+import { UserData } from "services/User/User";
+import { useNavigate } from "react-router-dom";
+import ToastError from "layout/ToastError/ToastError";
+import UserProfileContainer from "pages/Profile/components/UserProfileContainer";
+import ProfileCard from "pages/Profile/components/ProfileCard";
+
+export const ProfileEdit: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
   const [username, setUsername] = useState('');
@@ -61,7 +57,9 @@ export const UserProfileEdit: React.FC = () => {
   return (
     <UserProfileContainer>
       <ProfileCard userData={userData} setErrMsg={setErrMsg} type="edit" fetchUserProfile={fetchUserProfile} />
-      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
+      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </UserProfileContainer>
       );
 }
+
+export default ProfileEdit;

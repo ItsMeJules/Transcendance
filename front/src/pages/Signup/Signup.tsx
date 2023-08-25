@@ -1,10 +1,10 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { API_ROUTES, APP_ROUTES } from "../../utils";
-import { GlowTextSignin } from "../../utils";
-import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import { connectSocket } from "../../services/Socket/Socket.io";
+
+import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
+import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
+import ToastErrorMessage from "layout/ToastMessage/ToastMessage";
 
 export const Signup = () => {
   const history = useNavigate();
@@ -155,3 +155,5 @@ export const Signup = () => {
     </div>
   )
 }
+
+export default Signup;

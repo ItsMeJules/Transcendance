@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAxios } from "../../utils/axios-config";
-import { API_ROUTES } from "../../utils/routing";
+import { useAxios } from "../../utils/axiosConfig/axiosConfig";
+import { API_ROUTES } from "../../utils/routing/routing";
 import TwoFaContainer from './components/2faContainer';
 import AuthenticationHeader from './components/AuthentificationHeader';
 import ErrorMessage from './components/ErrorMessage';

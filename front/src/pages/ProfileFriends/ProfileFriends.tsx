@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import axios, { } from "axios";
-import { API_ROUTES, APP_ROUTES } from "../../utils";
-import { Link, useNavigate } from "react-router-dom";
-import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import ToastNotificationMessage from "./Components/ToastNotificationMessage";
-import { UserArray } from "../../services/UserArray";
-import { UserData } from "../../services/User/User";
-import User from "../../services/User/User";
-import { useWebsocketContext } from "../../services/Websocket";
+import { useNavigate } from "react-router-dom";
+
+import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
+import ToastError from "layout/ToastError/ToastError";
+import ToastMessage from "layout/ToastMessage/ToastMessage";
+import { useWebsocketContext } from "services/Websocket/Websocket";
+import { UserArray } from "services/User/UserArray";
+import { UserData } from "services/User/User";
+import User from "services/User/User";
+
 import FriendsHeader from "./Components/FriendsHeader";
 import UserProfileList from "./Components/UserProfileList";
 import FriendsContainer from "./Components/FriendsContainer";
@@ -122,8 +124,8 @@ const UserFriends = () => {
         <UserProfileList users={users} onRemoveClick={removeFriend} onProfileClick={handleProfileClick}/>
       </FriendsContainer>
 
-      <ToastNotificationMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
-      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
+      <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
+      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div>
   );
 }

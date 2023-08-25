@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import { APP_ROUTES } from "../../../utils/routing";
+import { APP_ROUTES } from "../../../utils/routing/routing";
 import { MDBCardImage } from 'mdb-react-ui-kit';
 import LogoutParent from "../../../layout/LogoutButton/LogoutParent";
 import { IconContext } from 'react-icons';

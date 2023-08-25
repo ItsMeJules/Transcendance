@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ProfilePicContainer from '../Profile/components/ProfilePicContainer';
 import { UserData } from '../../services/User/User';
 import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
-import getParseLocalStorage from '../../utils/getParseLocalStorage';
+import getParseLocalStorage from '../../utils/getParseLocalStorage/getParseLocalStorage';
 import GameBoard from '../../minigame/components/GameBoard';
 import { useWebsocketContext } from '../../services/Websocket';
 import PlayBack from './PlayBack';
@@ -86,3 +86,5 @@ export const Play = () => {
     </div>
   )
 }
+
+default export Play;

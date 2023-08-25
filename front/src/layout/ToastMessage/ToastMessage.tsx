@@ -68,4 +68,4 @@ const ToastNotificationMessage: React.FC<ToastNotificationMessageProps> = ({ not
   );
 };
 
-export default ToastNotificationMessage;
+export default ToastNotification;

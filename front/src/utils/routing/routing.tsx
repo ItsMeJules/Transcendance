@@ -32,7 +32,7 @@ export const APP_ROUTES = {
   USER_PROFILE: "/profile/me",
   USER_PROFILE_EDIT: "/profile/me/edit",
   USER_FRIENDS: "/profile/me/friends",
-  LOG_2FA: "/profile/me/two-fa",
+  AUTH_2FA: "/profile/me/two-fa",
   GENERIC_USER_PROFILE: "/profile/",
   LEADERBOARD: "/leaderboard",
   PLAY: "/play",

@@ -1,28 +1,30 @@
-import React from 'react';
+import React from "react";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
-import { useCallback, useEffect} from "react";
+import { useCallback, useEffect } from "react";
 
-const ParticlesBackgroundNew = ({ style }) => {
-
-  useEffect(() => {
-    console.log("ParticlesBackgroundNew rendered");
- }, []);
-
+function BackgroundMoving() {
     const particlesInit = useCallback(async engine => {
-        // console.log(engine);
-        // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
-        // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
-        // starting from v2 you can add only the features you need reducing the bundle size
         await loadFull(engine);
     }, []);
 
     const particlesLoaded = useCallback(async container => {
-        // await console.log(container);
     }, []);
+
+    useEffect(() => {
+        const originalConsoleLog = console.log;
+
+        // Override console.log with an empty function
+        console.log = () => { };
+
+        return () => {
+            // Restore the original console.log function when the component unmounts
+            console.log = originalConsoleLog;
+        };
+    }, []);
+
     return (
         <Particles
-            style={{ zIndex: 1}}
             init={particlesInit}
             loaded={particlesLoaded}
             options={{
@@ -35,7 +37,7 @@ const ParticlesBackgroundNew = ({ style }) => {
                     composite: "destination-out",
                     cover: {
                         color: {
-                            value: "#ffffff"
+                            value: "#fff"
                         },
                         opacity: 1,
                     },
@@ -50,7 +52,11 @@ const ParticlesBackgroundNew = ({ style }) => {
                         },
                         onHover: {
                             enable: true,
-                            mode: "connect",
+                            mode: "bubble",
+                            parallax: {
+                                enable: true,
+                                force: 100
+                            },
                         },
                         resize: true,
                     },
@@ -58,7 +64,7 @@ const ParticlesBackgroundNew = ({ style }) => {
                         push: {
                             quantity: 4,
                         },
-                        connect: {
+                        bubble: {
                             distance: 200,
                             duration: 0.4,
                         },
@@ -68,28 +74,29 @@ const ParticlesBackgroundNew = ({ style }) => {
                     bounce: {
                         horizontal: {
                             random: {
-                                enable: true,
-                                minimumValue: 0.5
+                                enable: false,
+                                minimumValue: 0.1
                             },
                             value: 1
                         },
                         vertical: {
                             random: {
-                                enable: true,
+                                enable: false,
                                 minimumValue: 0.1
                             },
                             value: 1
                         }
                     },
                     color: {
-                        value: "#ffffff",
-                        // value: "#ffd27d",
+                        value: "#000000",
                     },
 
                     collisions: {
                         absorb: {
                             speed: 2
                         },
+
+
                         bounce: {
                             horizontal: {
                                 random: {
@@ -106,11 +113,11 @@ const ParticlesBackgroundNew = ({ style }) => {
                                 value: 1
                             }
                         },
-                        enable: false,   
+                        enable: false,
                         maxSpeed: 50,
                         mode: "bounce",
                         overlap: {
-                            enable: true,
+                            enable: false,
                             retries: 0
                         }
 
@@ -145,30 +152,30 @@ const ParticlesBackgroundNew = ({ style }) => {
                             acceleration: 9.81,
                             enable: false,
                             inverse: false,
-                            maxSpeed: 5
+                            maxSpeed: 50
                         },
                         path: {
                             clamp: true,
                             delay: {
                                 random: {
-                                    enable: true,
-                                    minimumValue: 0.1
+                                    enable: false,
+                                    minimumValue: 0
                                 },
-                                value: 1
+                                value: 0
                             },
                             enable: false,
                             options: {}
                         },
-                        // outModes: {
-                        //     default: "destroy",
-                        //     bottom: "destroy",
-                        //     left: "destroy",
-                        //     right: "destroy",
-                        //     top: "destroy"
-                        // },
-                        random: true,
+                        outModes: {
+                            default: "destroy",
+                            bottom: "destroy",
+                            left: "destroy",
+                            right: "destroy",
+                            top: "destroy"
+                        },
+                        random: false,
                         size: true,
-                        speed: { min: 0.01, max: 0.4 },
+                        speed: 5,
                         spin: {
                             acceleration: 0,
                             enable: false
@@ -176,7 +183,7 @@ const ParticlesBackgroundNew = ({ style }) => {
                         straight: false,
                         trail: {
                             enable: true,
-                            length: 2,
+                            length: 9,
                             fill: {
                                 color: {
                                     value: "#000000"
@@ -194,30 +201,60 @@ const ParticlesBackgroundNew = ({ style }) => {
                         value: 80,
                     },
                     opacity: {
-                        value: 0.3,
+                        value: 0.5,
                     },
                     shape: {
-                        type: "circle",
+                        type: "square",
                     },
                     size: {
                         value: { min: 0.1, max: 1 },
-                        random: {
-                            enable: true,
-                            minimumValue: 0.5
-                        },
                         anim: {
                             enable: true,
-                            speed: { min: 0, max: 10 },
-                            size_min: 3,
+                            speed: { min: 0.1, max: 1 },
+                            startValue: "min",
+                            destroy: "max",
+                            minimumValue: 10, // Minimum size of the particle
+                            maximumValue: 50, // Maximum size of the particle (the size at the end of its lifetime)
+                            // size_min: 4,
                             sync: false
                         }
                     },
+                },
+                emitters: {
+                    autoPlay: true,
+                    fill: true,
+                    life: {
+                        wait: false
+                    },
+                    rate: {
+                        quantity: { min: 5, max: 20 },
+                        delay: { min: 0.3, max: 0.5 }
+                    },
+                    shape: {
+                        type: "square",
+                    },
+                    radius: 500,
+                    startCount: 100,
+                    size: {
+                        mode: "percent",
+                        height: 1000,
+                        width: 1000
+                    },
+                    direction: "none",
+                    particles: {},
+                    position: {
+                        x: 50,
+                        y: 50
+                    },
+                    spawnColor: {
+                        value: "#ffffff",
+                    }
                 },
                 detectRetina: true,
             }}
 
         />
     )
-};
+}
 
-export default React.memo(ParticlesBackgroundNew);
+export default BackgroundMoving;

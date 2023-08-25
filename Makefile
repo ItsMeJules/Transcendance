@@ -28,7 +28,7 @@ fclean : clean
 re: fclean all
 
 log :
-	docker-compose -f ./srcs/docker-compose.yml logs
+	docker-compose -f docker-compose.yml logs
 
 node_modules:
 	@if [ ! -d "./front/node_modules" ]; then \

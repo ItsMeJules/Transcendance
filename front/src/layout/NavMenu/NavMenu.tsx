@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const GlobalNavDropdown: React.FC = () => {
+const NavMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -24,4 +24,4 @@ const GlobalNavDropdown: React.FC = () => {
   );
 }
 
-export default GlobalNavDropdown;
+export default NavMenu;

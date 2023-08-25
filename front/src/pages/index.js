@@ -1,0 +1,9 @@
+export {default as Home} from './Home/Home';
+export {default as Signin} from './Signin/Signin';
+export {default as Signup} from './Signup/Signup';
+export {default as Profile} from './Profile/Profile';
+export {default as ProfileEdit} from './ProfileEdit/ProfileEdit';
+export {default as ProfileFriends} from './ProfileFriends/ProfileFriends';
+export {default as LeaderBoard} from './LeaderBoard/LeaderBoard';
+export {default as Play} from './Play/Play';
+export {default as Auth2factor} from './Auth2factor/Auth2factor';

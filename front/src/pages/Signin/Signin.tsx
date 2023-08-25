@@ -1,9 +1,9 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { APP_ROUTES, API_ROUTES } from "../../utils/routing";
-import { GlowTextSignin } from "../../utils";
-import ToastErrorMessage from "../../Components/ToastErrorMessage";
+import { APP_ROUTES, API_ROUTES } from "utils/routing/routing";
+import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
+import ToastError from "layout/ToastError/ToastError";
 
 export const Signin = () => {
   const history = useNavigate();
@@ -170,7 +170,9 @@ export const Signin = () => {
         <div id="desc">{errMsg}</div>
       </div>
 
-      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
+      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div >
   )
 }
+
+export default Signin;
