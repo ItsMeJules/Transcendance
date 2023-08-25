@@ -119,7 +119,11 @@ export class ChatService {
           },
         },
       });
-      await this.connectToRoom(client, createRoomDto.roomName);
+      await this.joinRoom(client, {
+        roomName: createRoomDto.roomName,
+        password: createRoomDto.password,
+        server: createRoomDto.server,
+      });
       console.log('createRoom function ending');
       return room;
     } catch (error) {
@@ -127,12 +131,12 @@ export class ChatService {
     }
   }
 
-  async fetchMessagesOnRoomForUser( // I need the user's profile picture & name. For now I hardcode mine.
+  async fetchMessagesOnRoomForUser(
+    // I need the user's profile picture & name. For now I hardcode mine.
     client: Socket,
     fetchRoomDto: ChatDtos.FetchRoomDto,
   ): Promise<Message[]> {
     try {
-      console.log('alerte au gogole voici le Server : ');
       const messages = await this.prismaService.allMessagesFromRoom(
         fetchRoomDto.roomName,
       );
@@ -152,13 +156,14 @@ export class ChatService {
         }
         return {
           ...currentMessage,
-          profilePicture: "https://cdn.intra.42.fr/users/d97b6212aaf900daa3e64abff472b7b8/jpeyron.jpg", // Here's my picture.
-          userName: "jpeyron"
-        }
+          profilePicture:
+            'https://cdn.intra.42.fr/users/d97b6212aaf900daa3e64abff472b7b8/jpeyron.jpg', // Here's my picture.
+          userName: 'jpeyron',
+        };
       });
-      // fetchRoomDto.server
-      //   .to(client.id)
-      //   .emit('load_chat_', fetchRoomDto.roomName); // check this!
+      fetchRoomDto.server
+        .to(client.id)
+        .emit('load_chat_' + fetchRoomDto.roomName, messagesWithClientId); // check this!
       return messagesWithClientId;
     } catch (error) {
       console.log(error);
@@ -181,13 +186,15 @@ export class ChatService {
       if (!room || !user) throw new Error('error name');
       if (room.password) {
         if (room.password !== joinRoomDto.password) {
-          throw new Error('wrong password');
+          throw new Error('wrong password'); // change this
         }
       }
       if (room.bans.some((banned) => banned.id === user.id))
         throw new Error('user is banned from the room');
       await client.leave(user.currentRoom);
+      console.log('client id leaving room : ', user.currentRoom);
       await client.join(joinRoomDto.roomName);
+      console.log('client id joining room : ', joinRoomDto.roomName);
       await this.prismaService.user.update({
         where: {
           id: user.id,
@@ -196,17 +203,7 @@ export class ChatService {
           currentRoom: joinRoomDto.roomName,
         },
       });
-      await this.prismaService.room.update({
-        where: { id: room.id },
-        data: {
-          users: {
-            connect: {
-              id: user.id,
-            },
-          },
-        },
-      });
-      console.log('joinRoom function ending');
+      joinRoomDto.server.to(client.id).emit('joinRoom', joinRoomDto.roomName);
       return room;
     } catch (error) {
       console.log(error);
@@ -534,6 +531,7 @@ export class ChatService {
         await this.joinRoom(client, {
           roomName: room.name,
           password: room.password,
+          server: inviteDto.server,
         }); // behavior for private rooms?
       }
     } catch (error) {

@@ -22,28 +22,12 @@ export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);
   const [messages, setMessages] = useState<Message[]>([]);
   const [roomName, setRoomName] = useState<string | null>(null);
+  const previousRoomName = useRef<string | null>(null);
   const socketRef = useRef<Socket | null>(null);
+  const roomNameRef = useRef<string | null>(null);
   const socket = useWebsocketContext();
-  socketRef.current = socket.chat;
 
-  useEffect(() => {
-    const fetchRoomName = async () => {
-      try {
-        const response = await axios.get(API_ROUTES.CURRENT_CHAT, {
-          withCredentials: true,
-        });
-        console.log("response :", response);
-        setRoomName(response.data);
-      } catch (error) {
-        console.error("There was an error fetching the data", error);
-      }
-    };
-
-    fetchRoomName();
-  }, []);
-
-  const onNewMessage = (payload: any) => { 
-    //////////// TEMPORARY FIX \\\\\\\\\\\\\\\\
+  const onNewMessage = (payload: any) => {
     const userDataString = localStorage.getItem("userData");
     let userId;
     if (userDataString) {
@@ -56,94 +40,99 @@ export const ChatBox = () => {
       self: payload.authorId === userId,
       authorId: payload.authorId,
       profilePicture: payload.profilePicture,
-      userName: payload.userName
+      userName: payload.userName,
     };
-    
+
     setMessages((messages) => [...messages, message]);
   };
 
   useEffect(() => {
-    console.log("roomName : ", roomName);
-    if (!roomName) {
-      return;
-    }
-    console.log("Setting current to :", socket.chat);
-    socketRef.current = socket.chat;
-    
-    const handleReconnect = () => {
-      console.log("roomName is : ", roomName, " socket id : ", socketRef.current);
-      const fetchRoomForUser = "load_chat_" + roomName;
-      socketRef.current?.off("message");
-      socketRef.current?.on("message", onNewMessage);
-      socketRef.current?.on(fetchRoomForUser, (payload: any) => {
-        payload.forEach((msg: any) => {
-          onNewMessage({
-            message: msg.text,
-            authorId: msg.authorId,
-            clientId: msg.clientId,
-            ...msg, // ADD MESSAGE INTERFACE
-          });
+    console.log("roomName is now : ", roomName);
+    const currentEventRoom = "load_chat_" + roomName;
+    const previousEventRoom = "load_chat_" + previousRoomName.current;
+    socketRef.current?.off(previousEventRoom);
+    socketRef.current?.on(currentEventRoom, (payload: any) => {
+      console.log("yoyoyo");
+      setMessages([]);
+      payload.forEach((msg: any) => {
+        onNewMessage({
+          message: msg.text,
+          authorId: msg.authorId,
+          clientId: msg.clientId,
+          ...msg, // ADD MESSAGE INTERFACE
         });
       });
-      socketRef.current?.emit("chat-action", {
-        action: "createRoom",
-        roomName: roomName,
-        password: "", // fetch information on the reset off the channel
+    });
+    previousRoomName.current = roomName;
+    socketRef.current?.emit("chat-action", {
+      action: "fetchHistory",
+      roomName: roomName,
+      password: "", //How to handle password ?
+    });
+  }, [roomName]);
+
+  useEffect(() => {
+    if (socket.chat === null) {
+      return;
+    }
+    console.log("Setting up socket :", socket);
+    socketRef.current = socket.chat;
+
+    const handleReconnect = async () => {
+      try {
+        const response = await axios.get(API_ROUTES.CURRENT_CHAT, {
+          withCredentials: true,
+        });
+        console.log("Set of roomName to :", response.data);
+        setRoomName(response.data);
+        previousRoomName.current = response.data;
+      } catch (error) {
+        console.error("There was an error fetching the data", error);
+      }
+      socketRef.current?.off("message");
+      socketRef.current?.on("message", onNewMessage);
+      socketRef.current?.on("joinRoom", (payload: any) => {
+        console.log("joinRoom : ", payload);
+        setRoomName(payload);
       });
     };
 
     socketRef.current?.on("connect", handleReconnect);
 
-    socketRef.current?.on("connection", (payload: any) => {
-      console.log("user " + (payload.connected ? "connected" : "disconnected") + ": ", payload)
-    })
-
     return () => {
       if (socketRef.current) {
         socketRef.current.off("message", onNewMessage);
         socketRef.current.off("connect", handleReconnect);
-        socketRef.current.off("connection")
         socketRef.current.disconnect();
       }
     };
-  }, [socket, roomName]);
+  }, [socket]);
 
   const sendData = (data: string) => {
-    console.log("roomName is : ", roomName);
     if (socketRef.current) {
       if (data === "create_channel") {
-        setRoomName("roomOne");
         socketRef.current.emit("chat-action", {
           action: "createRoom",
           roomName: "roomOne",
           password: "",
         });
-        console.log("room is now :", roomName);
       } else if (data === "change_channel") {
-        setRoomName("roomOne");
         socketRef.current.emit("chat-action", {
           action: "joinRoom",
           roomName: "roomOne",
           password: "",
         });
-        console.log("room is now :", roomName);
       } else if (data === "change_channel_pub") {
-        setRoomName("general");
         socketRef.current.emit("chat-action", {
           action: "joinRoom",
           roomName: "general",
           password: "",
         });
-        console.log("room is now :", roomName);
-      } else if (data === "block") {
-        socketRef.current.emit("chat-action", {
-          action: "block",
-          roomName: "rooo",
-        });
-      } else if (data === "block") {
-        socketRef.current.emit("chat-action", {
-          action: "block",
-          targetId: 2,
+      } else if (data === "fetch") {
+        socketRef.current?.emit("chat-action", {
+          action: "fetchHistory",
+          roomName: roomName,
+          password: "", //How to handle password ?
         });
       } else {
         console.log("sending data: ", data, " on roomName : ", roomName);

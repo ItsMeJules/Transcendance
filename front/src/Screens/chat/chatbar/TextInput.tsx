@@ -11,7 +11,6 @@ const TextInput: React.FunctionComponent<TextInputProps> = ({ sendData }) => {
 
   const handleSend = () => {
     if (!value.trim()) return;
-    console.log("in handleSend ft,", value);
     sendData(value);
     setValue("");
   };
