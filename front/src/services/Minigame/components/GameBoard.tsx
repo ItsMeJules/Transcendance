@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 // import Paddle from "./Paddle";
 import Ball from "./Ball";
 import { MdHeight } from 'react-icons/md';
-import { useWebsocketContext } from '../../services/Websocket';
+import { useWebsocketContext } from '../../Websocket/Websocket';
 import { useNavigate } from 'react-router-dom';
 import { BallNew, GameBoardNew, Player, PaddleNew } from '../models';
 

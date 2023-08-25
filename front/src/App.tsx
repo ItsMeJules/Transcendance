@@ -9,7 +9,6 @@ import LayoutWrapper from './layout/LayoutWrapper';
 import { APP_ROUTES } from './utils/routing';
 import { UserProfile } from './pages/Profile/Profile';
 import { UserProfileEdit } from './pages/Profile/EditProfile';
-import { Test } from './pages/Test';
 import LeaderBoard from './pages/LeaderBoard/LeaderBoard';
 import UserFriends from './pages/Friends/Friends';
 import { Play } from './pages/Play/Play';
@@ -28,9 +27,7 @@ const App: React.FC = () => {
           <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<UserProfileEdit />} />
           <Route path={APP_ROUTES.USER_FRIENDS} element={<UserFriends />} />
           <Route path={APP_ROUTES.LEADERBOARD} element={<LeaderBoard />} />
-          <Route path="/test" element={<Test />} />
           <Route path="/play" element={<Play />} />
-          {/* <Route path="/playback" element={<PlayBack />} /> */}
           <Route path={APP_ROUTES.LOG_2FA} element={<TwoFa />} />
         </LayoutWrapper>
       </Routes>
