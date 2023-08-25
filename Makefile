@@ -1,20 +1,41 @@
+all: node_modules build
+
+build:
+	docker-compose -f docker-compose.yml up --build --attach backend --attach frontend --attach bdd
+
+stop:
+	docker-compose -f docker-compose.yml stop
+
+start:
+	docker-compose -f docker-compose.yml start
+
+restart:
+	docker-compose -f docker-compose.yml restart
+
+down:
+	docker-compose -f docker-compose.yml down
+
 prod:
-			docker compose -f docker-compose.prod.yml up --build --attach backend --attach frontend --attach bdd
+	docker-compose -f docker-compose.prod.yml up --build --attach backend --attach frontend --attach bdd
 
-dev:
-			docker compose up --attach backend --attach frontend --attach bdd
+clean: down
+	docker system prune -af
 
-dev-build:
-			docker compose up --build --attach backend --attach frontend --attach bdd
+fclean : clean
+	docker volume ls -q | xargs --no-run-if-empty docker volume rm
+	docker volume prune -f
 
-prune:
-			docker system prune -af
+re: fclean all
 
-volume:
-			docker volume ls -q | xargs --no-run-if-empty docker volume rm
+log :
+	docker-compose -f ./srcs/docker-compose.yml logs
 
-prune-all:	prune volume
-			clear
-			@echo "All cleared"
+node_modules:
+	@if [ ! -d "./front/node_modules" ]; then \
+		cd ./front && npm install; \
+	fi
+	@if [ ! -d "./back/node_modules" ]; then \
+		cd ./back && npm install; \
+	fi
 
-.PHONY: prod dev dev-build prune volume prune-all
+.PHONY: all build stop start down clean fclean re log

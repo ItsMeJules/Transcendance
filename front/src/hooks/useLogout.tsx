@@ -1,10 +1,10 @@
-import React, { useCallback } from "react";
-import { APP_ROUTES, API_ROUTES} from "../Utils";
+import { APP_ROUTES, API_ROUTES } from "../utils";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { disconnectSocket } from "../services/Socket.io";
 
 const handleLogout = async (setErrMsg: (error: string) => void) => {
   try {
+    disconnectSocket();
     const response = await axios.post(API_ROUTES.LOG_OUT, null, {
       withCredentials: true,
     });

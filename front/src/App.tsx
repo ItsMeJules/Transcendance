@@ -1,43 +1,39 @@
 import React, { } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
-import './Screens/UserProfile/css/ProgressBar.scss'
-import './Screens/Login/css/LoginButtons.css'
-import './Screens/Login/css/Signin.scss'
+import './pages/UserProfile/css/ProgressBar.scss'
+import './pages/Login/css/LoginButtons.css'
+import './pages/Login/css/Signin.scss'
 import './Components/css/Toast.scss'
 import './Components/css/ToastNotif.scss'
 import './Components/css/GlobalNavDropdown.scss'
-import './Screens/UserProfile/css/UserProfile.scss'
-import './Screens/LeaderBoard/css/LeaderBoard.scss'
-import './Screens/Friends/css/friends.scss'
-import './Screens/JoinGame/css/loading.css'
-import './Screens/Play/css/play.scss'
+import './pages/UserProfile/css/UserProfile.scss'
+import './pages/LeaderBoard/css/LeaderBoard.scss'
+import './pages/Friends/css/friends.scss'
+import './pages/JoinGame/css/loading.css'
+import './pages/Play/css/play.scss'
 import './css/2faButton.scss'
-import './game/components/GameStyles.css'
-import { Home } from './Screens/Home/Home';
-import { Signin } from './Screens/Login/Signin';
-import { Signup } from './Screens/Login/Signup';
+import './minigame/components/GameStyles.css'
+import Home from './pages/Home/Home';
+import { Signin } from './pages/Login/Signin';
+import { Signup } from './pages/Login/Signup';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import AppWrapper from './AppWrapper';
-import { UserProfile } from './Screens/UserProfile/UserProfile';
-import { UserProfileEdit } from './Screens/UserProfile/UserProfileEdit';
-import { APP_ROUTES } from './Utils/constants';
-import { Test } from './Screens/Test';
-import LeaderBoard from './Screens/LeaderBoard/LeaderBoard';
-import GenericUserProfile from './Screens/UserProfile/GenericUserProfile';
-import UserFriends from './Screens/Friends/Friends';
-import Websocket from './Wrappers/Websocket';
-import { Play } from './Screens/Play/Play';
-import { TwoFa } from "./screens/2fa";
-import { render } from "@testing-library/react";
-import PlayBack from './Screens/Play/PlayBack';
-import { History } from './History';
+import AppWrapper from './layout/AppWrapper';
+import { UserProfile } from './pages/UserProfile/UserProfile';
+import { UserProfileEdit } from './pages/UserProfile/UserProfileEdit';
+import { APP_ROUTES } from './utils/constants';
+import { Test } from './pages/Test';
+import LeaderBoard from './pages/LeaderBoard/LeaderBoard';
+import GenericUserProfile from './pages/UserProfile/GenericUserProfile';
+import UserFriends from './pages/Friends/Friends';
+import Websocket from './services/Websocket';
+import { Play } from './pages/Play/Play';
+import { TwoFa } from "./pages/2fa";
 
 const App: React.FC = () => {
 
   return (
     <div>
-
       <Websocket>
         <AppWrapper>
           <Routes>
