@@ -44,7 +44,7 @@ export const Play = () => {
 
   return (
     <div className="play-main-container">
-        {/* <MDBCard className="profile-game-card">
+        <MDBCard className="profile-game-card">
           <div className="profile-info">
             
             {player1Data?.profilePicture ? (
@@ -73,7 +73,7 @@ export const Play = () => {
               <div>empty</div>
             )}
           </div>
-        </MDBCard> */}
+        </MDBCard>
 
         {/* <div className="page-container text-white"> */}
               {/* <PlayBack whichPlayer={whichPlayer}/> */}

@@ -4,6 +4,7 @@ import { Ball } from "./models/Ball";
 import { Player } from "./models/Player";
 import { Paddle } from "./models/Paddle";
 import GameBoard from "./components/BoardCanvas";
+import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
 import BoardCanvas from "./components/BoardCanvas";
 import BallCanvas from "./components/BallCanvas";
 import PaddleCanvas from "./components/PaddleCanvas";
@@ -75,6 +76,7 @@ const PlayBack = () => {
     }
   };
 
+  // Data parsing
   useEffect(() => {
     const userData = getParseLocalStorage('userData');
     const gameData = getParseLocalStorage('gameData');
@@ -89,6 +91,7 @@ const PlayBack = () => {
       setWhichPlayer(2);
   }, []);
 
+  // Sockets on
   useEffect(() => {
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
     socket.game?.on('prepareToPlay', (data) => {
@@ -119,19 +122,14 @@ const PlayBack = () => {
         setGame({ ...game, isEnded: true });
       }
     } else if (gameState?.gameStatus === 'ended') {
-      if (gameState.gameParams.pl1.isWinner === true) {
-        if (whichPlayer === 1)
-          setCentralText('You win!!');
-        else
-          setCentralText('You lose...');
-      } else if (gameState.gameParams.pl2.isWinner === true) {
-        if (whichPlayer === 2)
-          setCentralText('You win!!');
-        else
-          setCentralText('You lose...');
+      if ((gameState.gameParams.pl1.isWinner === true && whichPlayer === 1)
+        || (gameState.gameParams.pl2.isWinner === true && whichPlayer === 2)) {
+        setCentralText('You win!!');
+        setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
+      } else {
+        setCentralText('You lose...');
+        setGame({ ...game, isEnded: true, isPlaying: false });
       }
-      setGame({ ...game, isEnded: true, isPlaying: false });
-      // setGame({ ...game, isEnded: true });
     }
     else if (gameState) {
       game.ball.updateBall(game.board, gameState.gameParams.ball);
@@ -173,6 +171,7 @@ const PlayBack = () => {
     return;
   }, [socketPrepare]);
 
+  // Window resizing
   useEffect(() => {
     const handleResize = () => {
       const newWidth = window.innerWidth * 0.8;
@@ -186,6 +185,7 @@ const PlayBack = () => {
     };
   }, []);
 
+  // Winner confettis animation
   useEffect(() => {
     if (confettiCanvasRef.current) {
       confettisAnimation(confettiCanvasRef.current);
@@ -194,14 +194,43 @@ const PlayBack = () => {
 
   return (
     <div className='pong-main-container'>
-      
-      {game.isEnded && (
-      <canvas ref={confettiCanvasRef}
-      id="confettis"
-      style={{ position: 'absolute', zIndex: '2', width: '100%', height: '100%' }}></canvas>)}
+      {game.isUserWinner && (
+        <canvas ref={confettiCanvasRef}
+          id="confettis"
+          style={{ position: 'absolute', zIndex: '2', width: '100%', height: '100%' }}></canvas>)}
+
+
+<div className='profile-infos-container'>
+        <MDBCard className="profile-game-card-l border">
+          <div className="profile-info">
+            {player1Data?.profilePicture ? (
+              <div className="profile-picture-l">
+                <img src={player1Data?.profilePicture} alt="User Profile" />
+              </div>
+            ) : (
+              <div>empty</div>
+            )}
+          </div>
+          <div className="profile-name">{player1Data?.username}</div>
+        </MDBCard>
+
+        <MDBCard className="profile-game-card-r border">
+          <div className="profile-info">
+            <div className="profile-name" title={player2Data?.username ? player2Data?.username : ""}>{player2Data?.username}</div>
+            {player2Data?.profilePicture ? (
+              <div className="profile-picture-r">
+                <img src={player2Data?.profilePicture} alt="User Profile" />
+              </div>
+            ) : (
+              <div>empty</div>
+            )}
+          </div>
+        </MDBCard>
+
+      </div>
+
 
       <div className="pong-sub-container text-white border">
-
         <div style={{ height: '30px', marginBottom: '10px', marginTop: '0px' }}>
           {!game.isPlaying && !isPlayerReady &&
             <button className="text-white" onClick={handleReadyClick} >
@@ -229,8 +258,6 @@ const PlayBack = () => {
         <button className="text-white" onClick={handleQuitGame} style={{ zIndex: '10' }}>
           {giveUp ? 'Confirm by clicking again' : 'Give up?'}
         </button >}
-
-        
     </div >
   );
 
