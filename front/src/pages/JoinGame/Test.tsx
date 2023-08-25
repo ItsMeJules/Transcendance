@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { sendMessage } from "../../services/Socket.io";
-import { UserData } from "../../services/User";
+import { sendMessage } from "../../services/Socket/Socket.io";
+import { UserData } from "../../services/User/User";
 import PlayButton from "../../Components/PlayButton";
 
 

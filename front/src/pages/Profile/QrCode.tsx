@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_ROUTES } from "../../utils/constants";
+import { API_ROUTES } from "../../utils/routing";
 import Popup from "./components/Popup";
 import { useAxios } from "../../utils/axios-config";
 

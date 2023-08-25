@@ -1,6 +1,6 @@
 import React from 'react';
 import { MDBCardBody, MDBTypography, } from 'mdb-react-ui-kit';
-import { UserData } from '../../../services/User';
+import { UserData } from '../../../services/User/User';
 
 interface DisplayDataProps {
   userData: UserData | null,

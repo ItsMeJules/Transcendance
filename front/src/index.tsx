@@ -4,8 +4,8 @@ import reportWebVitals from './utils/reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
 import './index.css';
-import AuthProvider from './utils/AuthProvider';
-import Websocket from './services/Websocket';
+import AuthProvider from './services/AuthProvider/AuthProvider';
+import Websocket from './services/socket/Websocket';
 import App from './App';
 
 const root = ReactDOM.createRoot(

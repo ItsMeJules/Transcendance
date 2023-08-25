@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import ProfilePicContainer from '../UserProfile/components/ProfilePicContainer';
-import { UserData } from '../../services/User';
+import ProfilePicContainer from '../Profile/components/ProfilePicContainer';
+import { UserData } from '../../services/User/User';
 import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
 import getParseLocalStorage from '../../utils/getParseLocalStorage';
 import GameBoard from '../../minigame/components/GameBoard';

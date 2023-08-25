@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { APP_ROUTES, API_ROUTES } from "../../utils/constants";
+import { APP_ROUTES, API_ROUTES } from "../../utils/routing";
 import { GlowTextSignin } from "../../utils";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 

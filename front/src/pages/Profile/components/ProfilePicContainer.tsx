@@ -1,5 +1,5 @@
 import React, { } from 'react';
-import { UserData } from '../../../services/User';
+import { UserData } from '../../../services/User/User';
 
 interface ProfilePicContainerProps {
   userData: UserData | null;

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_ROUTES, APP_ROUTES } from "../../utils/constants";
+import { API_ROUTES, APP_ROUTES } from "../../utils/routing";
 import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
-import { UserData } from "../../services/User";
+import { UserData } from "../../services/User/User";
 import { useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../layout/ToastErrorMessage";
 import ProfileHeader from './components/ProfileHeader';

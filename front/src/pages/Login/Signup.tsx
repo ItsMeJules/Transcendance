@@ -4,7 +4,7 @@ import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../utils";
 import { GlowTextSignin } from "../../utils";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import { connectSocket } from "../../services/Socket.io";
+import { connectSocket } from "../../services/Socket/Socket.io";
 
 export const Signup = () => {
   const history = useNavigate();

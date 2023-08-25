@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaHeart } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
-import User from "../../../services/User";
+import User from "../../../services/User/User";
 
 interface UserProfileProps {
   user: User;

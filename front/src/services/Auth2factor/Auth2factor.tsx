@@ -1,13 +1,13 @@
 import { useRef, useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAxios } from "../../utils/axios-config";
-import { API_ROUTES } from "../../utils/constants";
-import TwoFaContainer from './2fa_components/2faContainer';
-import AuthenticationHeader from './2fa_components/AuthentificationHeader';
-import ErrorMessage from './2fa_components/ErrorMessage';
-import AuthentificationForm from './2fa_components/AuthentificationForm';
+import { API_ROUTES } from "../../utils/routing";
+import TwoFaContainer from './components/2faContainer';
+import AuthenticationHeader from './components/AuthentificationHeader';
+import ErrorMessage from './components/ErrorMessage';
+import AuthentificationForm from './components/AuthentificationForm';
 
-export const TwoFa = () => {
+export const Auth2factor = () => {
   const errRef = useRef<HTMLParagraphElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
   const history = useNavigate();
@@ -77,7 +77,7 @@ export const TwoFa = () => {
     }
   };
 
-    return (
+  return (
     <TwoFaContainer>
       <AuthenticationHeader />
       <ErrorMessage errMsg={errMsg} />
@@ -85,3 +85,5 @@ export const TwoFa = () => {
     </TwoFaContainer>
   );
 };
+
+export default Auth2factor;

@@ -2,7 +2,7 @@ import React from 'react';
 import { MDBCard } from 'mdb-react-ui-kit';
 import ProfileHeader from './ProfileHeader';
 import UserProfileContent from './UserProfileContent';
-import { UserData } from "../../../services/User";
+import { UserData } from "../../../services/User/User";
 import QrCode from '../QrCode';
 import ImageChange from "./ImageChange";
 import EditUserFormValidation from "./EditUserFormValidation";

@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import ParticlesBackgroundNew from "./ParticlesSlow.memo";
 import { useLocation} from 'react-router-dom';
-import GlobalNavDropdown from "./GlobalNavDropdown";
+import GlobalNavDropdown from "./NavMenu";
 
 interface LayoutWrapperProps {
   children: ReactNode;

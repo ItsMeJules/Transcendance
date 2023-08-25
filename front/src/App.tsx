@@ -6,14 +6,14 @@ import { Signin } from './pages/Login/Signin';
 import { Signup } from './pages/Login/Signup';
 import { Route, Routes } from 'react-router-dom';
 import LayoutWrapper from './layout/LayoutWrapper';
-import { APP_ROUTES } from './utils/constants';
-import { UserProfile } from './pages/UserProfile/UserProfile';
-import { UserProfileEdit } from './pages/UserProfile/UserProfileEdit';
+import { APP_ROUTES } from './utils/routing';
+import { UserProfile } from './pages/Profile/Profile';
+import { UserProfileEdit } from './pages/Profile/EditProfile';
 import { Test } from './pages/Test';
 import LeaderBoard from './pages/LeaderBoard/LeaderBoard';
 import UserFriends from './pages/Friends/Friends';
 import { Play } from './pages/Play/Play';
-import { TwoFa } from "./pages/2fa";
+import { TwoFa } from "./pages/Profile/2fa";
 
 const App: React.FC = () => {
 
