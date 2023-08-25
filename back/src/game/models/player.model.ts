@@ -8,15 +8,23 @@ export class Player {
   public score = 0;
   public isMoving = false;
   public movingDir = '';
+  public isWinner = false;
 
-  constructor(board: Board, initType: string, id: number, player: number) {
+  constructor(board: Board, gameMode: number, id: number, player: number) {
     this.id = id;
-    if (initType === 'standard')
-      this.standardInitializer(board, initType, player);
-    this.standardInitializer(board, initType, player);
+    if (gameMode === 1)
+      this.standardInitializer(board, gameMode, player);
+    else if (gameMode ===2)
+      this.randomInitializer(board, gameMode, player);
+    else
+    this.standardInitializer(board, gameMode, player);
   }
 
-  standardInitializer(board: Board, initType: string, player: number) {
-    this.pad = new Paddle(board, initType, player);
+  standardInitializer(board: Board, gameMode: number, player: number) {
+    this.pad = new Paddle(board, gameMode, player);
+  }
+
+  randomInitializer(board: Board, gameMode: number, player: number) {
+    this.pad = new Paddle(board, gameMode, player);
   }
 }

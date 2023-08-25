@@ -6,10 +6,11 @@ export class Player {
     public this = false;
     public num: number;
     public pad: Paddle;
+    public isWinner = false;
   
     constructor(board: Board, number: number) {
       this.num = number;
-      this.pad = new Paddle(board, 'standard', number);
+      this.pad = new Paddle(board, number);
     }
 
     updatePlayer(board: Board, incomingPlayer : Player) {

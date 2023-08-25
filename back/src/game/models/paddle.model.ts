@@ -16,17 +16,54 @@ export class Paddle {
   public colPtsUp: CollisionPointsPaddle;
   public colPtsDown: CollisionPointsPaddle;
 
-  constructor(board: Board, initType: string, player: number) {
-    if (initType === 'standard')
-      this.standardInitializer(board, initType, player);
-    this.standardInitializer(board, initType, player);
+  constructor(board: Board, gameMode: number, player: number) {
+    if (gameMode === 1)
+      this.standardInitializer(board, player);
+    else if (gameMode === 2)
+      this.randomInitializer(board, player);
+    else
+      this.standardInitializer(board, player);
   }
 
-  standardInitializer(board: Board, initType: string, player: number) {
+  standardInitializer(board: Board, player: number) {
     this.width = initGameConfig.pad.width;
     this.height = initGameConfig.pad.height;
     this.wallGap = initGameConfig.pad.wallGap;
     this.speed = initGameConfig.pad.speed;
+    if (player === 1)
+      this.pos = new Point(
+        this.wallGap,
+        (board.height - this.height) * 0.5);
+    else
+      this.pos = new Point(
+        board.width - this.wallGap - this.width,
+        (board.height - this.height) * 0.5);
+    this.prevPos = new Point(this.pos.x, this.pos.y);
+    this.colPtsSide = new CollisionPointsPaddle(
+      new Point(this.pos.x + this.width, this.pos.y),
+      new Point(this.pos.x + this.width, this.pos.y + this.height));
+    this.colPtsUp = new CollisionPointsPaddle(
+      new Point(this.pos.x, this.pos.y),
+      new Point(this.pos.x + this.width, this.pos.y));
+    this.colPtsDown = new CollisionPointsPaddle(
+      new Point(this.pos.x, this.pos.y + this.height),
+      new Point(this.pos.x + this.width, this.pos.y + this.height));
+  }
+
+  randomInitializer(board: Board, player: number) {
+    this.width = Math.round(Math.random() * initGameConfig.pad.maxWidth) + 2;
+    // this.width = 0;
+    
+    this.height = Math.round(Math.random() * initGameConfig.pad.maxHeight) + 2;
+    // this.height = initGameConfig.pad.maxHeight
+    this.height = this.height < 30 ? 30 : this.height;
+    this.wallGap = initGameConfig.pad.wallGap;
+    let maxSpeed = this.width >= initGameConfig.pad.maxWidth * 0.5 ?
+      initGameConfig.pad.maxSpeed * 0.6 : initGameConfig.pad.speed;
+    maxSpeed = this.height >= initGameConfig.pad.maxHeight * 0.5 ?
+      Math.round(maxSpeed * 1.55) : Math.round(maxSpeed * 0.85);
+    this.speed = Math.round(Math.random() * maxSpeed) + 100;
+    this.speed = this.speed * (2 - this.width / initGameConfig.pad.maxWidth);
     if (player === 1)
       this.pos = new Point(
         this.wallGap,

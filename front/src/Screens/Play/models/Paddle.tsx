@@ -9,15 +9,13 @@ export class Paddle {
   public speed!: number;
   public pos!: Point;
 
-  constructor(board: Board, initType: string, player: number) {
-    if (initType === 'standard')
-      this.standardInitializer(board, initType, player);
-    this.standardInitializer(board, initType, player);
+  constructor(board: Board, player: number) {
+    this.standardInitializer(board, player);
   }
 
-  standardInitializer(board: Board, initType: string, player: number) {
-    this.width = initGameConfig.pad.width * board.scaleFactor;
-    this.height = initGameConfig.pad.height * board.scaleFactor;
+  standardInitializer(board: Board, player: number) {
+    this.width = 0;
+    this.height = 0;
     this.wallGap = initGameConfig.pad.wallGap * board.scaleFactor;
     this.speed = initGameConfig.pad.speed * board.scaleFactor;
     if (player === 1)

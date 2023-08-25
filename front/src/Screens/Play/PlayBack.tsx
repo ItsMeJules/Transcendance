@@ -14,6 +14,7 @@ import { GameProperties } from "./models/Properties";
 import { SocketPrepare } from "./models/socket.prepare";
 import getParseLocalStorage from "../../Utils/getParseLocalStorage";
 import { UserData } from "../../Services/User";
+import confettisAnimation from './components/confettis'
 
 interface PlayBackProps {
   whichPlayer: number,
@@ -31,7 +32,6 @@ interface GameSocket {
   playerStatus: string;
   opponentStatus: string;
   time: number;
-  // room: string;
 }
 
 const PlayBack = () => {
@@ -39,6 +39,7 @@ const PlayBack = () => {
   const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle2CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
+  const confettiCanvasRef = useRef(null);
   const socket = useWebsocketContext();
   const [whichPlayer, setWhichPlayer] = useState(0);
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
@@ -63,9 +64,13 @@ const PlayBack = () => {
   };
 
   const handleQuitGame = () => {
-    if (!giveUp)
+    if (!giveUp) {
       setGiveUp(true);
-    else if (giveUp && socket.game) {
+      const interval = setInterval(() => {
+        setGiveUp(false);
+        clearInterval(interval);
+      }, 3000);
+    } else if (giveUp && socket.game) {
       socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'giveUp' });
     }
   };
@@ -91,11 +96,12 @@ const PlayBack = () => {
       // console.log('DATA PREPARE', data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
-      // console.log('DATA game', data);
+      console.log('DATA game', data);
       setGameState(data);
     });
   }, [socket.game]);
 
+  // Game useEffect
   useEffect(() => {
     console.log('gamestate:', gameState);
     if (gameState?.gameStatus === 'giveUp') {
@@ -104,11 +110,30 @@ const PlayBack = () => {
       if (gameState.gameParams.pl1.status === 'givenUp') {
         whichPlayer === 1 ? setCentralText('You gave up!') :
           setCentralText('Your oponent gave up!');
+        game.isEnded = true;
+        setGame({ ...game, isEnded: true });
       } else if (gameState.gameParams.pl2.status === 'givenUp') {
         whichPlayer === 2 ? setCentralText('You gave up!') :
-        setCentralText('Your oponent gave up!');
+          setCentralText('Your oponent gave up!');
+        game.isEnded = true;
+        setGame({ ...game, isEnded: true });
       }
-    } else if (gameState) {
+    } else if (gameState?.gameStatus === 'ended') {
+      if (gameState.gameParams.pl1.isWinner === true) {
+        if (whichPlayer === 1)
+          setCentralText('You win!!');
+        else
+          setCentralText('You lose...');
+      } else if (gameState.gameParams.pl2.isWinner === true) {
+        if (whichPlayer === 2)
+          setCentralText('You win!!');
+        else
+          setCentralText('You lose...');
+      }
+      setGame({ ...game, isEnded: true, isPlaying: false });
+      // setGame({ ...game, isEnded: true });
+    }
+    else if (gameState) {
       game.ball.updateBall(game.board, gameState.gameParams.ball);
       game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
       game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
@@ -116,6 +141,7 @@ const PlayBack = () => {
     }
   }, [gameState]);
 
+  // Prepare useEffect
   useEffect(() => {
     // console.log('socketData:', socketPrepare);
     if (socketPrepare?.gameStatus === 'pending' || socketPrepare?.playerStatus === 'pending') {
@@ -160,8 +186,20 @@ const PlayBack = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (confettiCanvasRef.current) {
+      confettisAnimation(confettiCanvasRef.current);
+    }
+  }, [game.isEnded]);
+
   return (
     <div className='pong-main-container'>
+      
+      {game.isEnded && (
+      <canvas ref={confettiCanvasRef}
+      id="confettis"
+      style={{ position: 'absolute', zIndex: '2', width: '100%', height: '100%' }}></canvas>)}
+
       <div className="pong-sub-container text-white border">
 
         <div style={{ height: '30px', marginBottom: '10px', marginTop: '0px' }}>
@@ -183,13 +221,16 @@ const PlayBack = () => {
         </div>
         <BoardCanvas game={game} canvasRef={boardCanvasRef as React.RefObject<HTMLCanvasElement>} />
         <BallCanvas whichPlayer={whichPlayer} game={game} ball={game.ball} canvasRef={ballCanvasRef as React.RefObject<HTMLCanvasElement>} />
-        <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game}/>
-        <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game}/>
+        <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
+        <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
       </div>
 
-      <button className="text-white" onClick={handleQuitGame} style={{ zIndex: '10' }}>
-        {giveUp ? 'Confirm by clicking again' : 'Give up?'}
-      </button >
+      {!game.isEnded &&
+        <button className="text-white" onClick={handleQuitGame} style={{ zIndex: '10' }}>
+          {giveUp ? 'Confirm by clicking again' : 'Give up?'}
+        </button >}
+
+        
     </div >
   );
 

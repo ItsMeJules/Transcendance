@@ -5,9 +5,10 @@ import { GameData } from "../Services/Game";
 interface playButtonProps {
   gameMode: number,
   setSocketData: (data: any) => void;
+  buttonText: string;
 }
 
-const PlayButton: React.FC<playButtonProps> = ({ gameMode, setSocketData }) => {
+const PlayButton: React.FC<playButtonProps> = ({ gameMode, setSocketData, buttonText }) => {
   const socket = useWebsocketContext();
   const [isInQueue, setIsInQueue] = useState(false);
 
@@ -31,7 +32,7 @@ const PlayButton: React.FC<playButtonProps> = ({ gameMode, setSocketData }) => {
       style={{ fontSize: '30px', zIndex: '1' }
       }
       onClick={() => handleJoinGameQueue(gameMode)}>
-      {isInQueue ? "Cancel - leave queue" : "Play - join queue"}
+      {isInQueue ? "Cancel - leave queue" : `${buttonText}`}
     </button >
   );
 }

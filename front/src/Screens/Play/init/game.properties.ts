@@ -16,6 +16,7 @@ export const initGameConfig = {
   // Ball
   ball: {
     size: 10,
+    maxSize: 40,
     speed: 500,
     accelFactor: 0.2,
     minWidth: 350,

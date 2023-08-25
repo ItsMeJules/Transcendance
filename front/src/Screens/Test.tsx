@@ -44,7 +44,8 @@ export const Test = () => {
       <header className="flex"
         style={{ flexDirection: 'column', zIndex: '1' }}>
 
-        <PlayButton gameMode={4} setSocketData={setSocketData} />
+        <PlayButton gameMode={1} setSocketData={setSocketData} buttonText="Play normal mode" />
+        <PlayButton gameMode={2} setSocketData={setSocketData} buttonText="Play random mode" />
 
         {inQueue &&
           <div className="loading-container">

@@ -92,8 +92,11 @@ export class PongEvents {
       this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED' });
       const gameData = await this.pongService.gameCreate(gameDto, this.server);
       if (!gameData) return;
-      const game = new GameStruct(gameData.gameId, gameData.player1Id, gameData.player2Id, gameData.gameChannel, this);
-      if (!gameData) return; // correct error handling
+      let gameMode = parseInt(gameDto.gameMode);
+      console.log('GAMEMODE int:', gameMode);
+      const game = new GameStruct(gameMode, gameData.gameId, gameData.player1Id,
+        gameData.player2Id, gameData.gameChannel, this, this.pongService);
+      if (!gameData) return; // correct error handling 
       this.pongService.onlineGames.set(game.prop.id, game);
       const player1 = await this.userService.findOneById(game.pl1.id);
       const player2 = await this.userService.findOneById(game.pl2.id);
@@ -186,7 +189,8 @@ export class PongEvents {
         });
       const timeoutInSeconds = 10;
       setTimeout(() => {
-        if (opponent.status === 'pending') {
+        if (opponent.status === 'pending'
+          && gameStruct.prop.status === 'waiting') {
           gameStruct.prop.status = 'timeout';
           this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status });
           this.pongService.deleteGamePrisma(gameStruct.prop.id);
@@ -227,16 +231,17 @@ export class PongEvents {
       this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: gameStruct.prop.status });
       this.server.to(gameStruct.prop.room).emit('refreshGame',
         { gameStatus: gameStruct.prop.status, gameParams: gameStruct.getState(), time: Date.now() });
-      gameStruct.startGameLoop();
+      await gameStruct.startGameLoop();
     }
     // Give up game
-    else if (data.action === 'giveUp' && gameStruct.prop.status === 'playing') {
+    else if (data.action === 'giveUp' && (gameStruct.prop.status === 'playing'
+      || gameStruct.prop.status === 'waiting' || gameStruct.prop.status === 'pending')) {
       console.log('player:', data.player, ' gave up');
       gameStruct.stopGameLoop();
       gameStruct.prop.status = 'giveUp';
       player.status = 'givenUp';
       const roomToGiveUp = gameStruct.prop.room;
-      this.pongService.endGame(gameStruct, opponent, player);
+      this.pongService.giveUpGame(gameStruct, opponent, player, true);
       this.server.to(roomToGiveUp).emit('refreshGame',
         { gameStatus: gameStruct.prop.status, gameParams: gameStruct.getState(), time: Date.now() });
     }
@@ -260,7 +265,7 @@ export class PongEvents {
       || !client.data.id
       || !client.data.gameId) return;
     const game = this.pongService.getGameStructById(client.data.gameId);
-
+    if (game === undefined || game === null) return;
     if (game.prop.status === 'playing') {
       let player: Player;
       if (client.data.id === game.pl1.id) player = game.pl1;
@@ -271,58 +276,60 @@ export class PongEvents {
     }
   }
 
-   @SubscribeMessage('unpressUp')
-    async stopMoveUp(@ConnectedSocket() client: Socket) {
-      if (!this.verifyIfPlayer(client.data.room)
-        || !client.data.id
-        || !client.data.gameId) return;
-      const game = this.pongService.getGameStructById(client.data.gameId);
-      if (game.prop.status === 'playing') {
-        let player: Player;
-        if (client.data.id === game.pl1.id) player = game.pl1;
-        else if (client.data.id === game.pl2.id) player = game.pl2;
-        if (player.isMoving && player.movingDir === 'up') {
-          player.isMoving = false;
-          player.movingDir = '';
-        }
-        return;
+  @SubscribeMessage('unpressUp')
+  async stopMoveUp(@ConnectedSocket() client: Socket) {
+    if (!this.verifyIfPlayer(client.data.room)
+      || !client.data.id
+      || !client.data.gameId) return;
+    const game = this.pongService.getGameStructById(client.data.gameId);
+    if (game === undefined || game === null) return;
+    if (game.prop.status === 'playing') {
+      let player: Player;
+      if (client.data.id === game.pl1.id) player = game.pl1;
+      else if (client.data.id === game.pl2.id) player = game.pl2;
+      if (player.isMoving && player.movingDir === 'up') {
+        player.isMoving = false;
+        player.movingDir = '';
       }
+      return; 
     }
+  }
 
-    @SubscribeMessage('moveDown')
-    async moveDown(@ConnectedSocket() client: Socket) {
-      if (!this.verifyIfPlayer(client.data.room)
-        || !client.data.id
-        || !client.data.gameId) return;
-      const game = this.pongService.getGameStructById(client.data.gameId);
-  
-      if (game.prop.status === 'playing') {
-        let player: Player;
-        if (client.data.id === game.pl1.id) player = game.pl1;
-        else if (client.data.id === game.pl2.id) player = game.pl2;
-        if (player === undefined) return; // what about spectators?
-        game.movePlayerDown(player);
-        return;
-      }
+  @SubscribeMessage('moveDown')
+  async moveDown(@ConnectedSocket() client: Socket) {
+    if (!this.verifyIfPlayer(client.data.room)
+      || !client.data.id
+      || !client.data.gameId) return;
+    const game = this.pongService.getGameStructById(client.data.gameId);
+    if (game === undefined || game === null) return;
+    if (game.prop.status === 'playing') {
+      let player: Player;
+      if (client.data.id === game.pl1.id) player = game.pl1;
+      else if (client.data.id === game.pl2.id) player = game.pl2;
+      if (player === undefined) return; // what about spectators?
+      game.movePlayerDown(player);
+      return;
     }
+  }
 
-    @SubscribeMessage('unpressDown')
-    async stopMoveDown(@ConnectedSocket() client: Socket) {
-      if (!this.verifyIfPlayer(client.data.room)
-        || !client.data.id
-        || !client.data.gameId) return;
-      const game = this.pongService.getGameStructById(client.data.gameId);
-      if (game.prop.status === 'playing') {
-        let player: Player;
-        if (client.data.id === game.pl1.id) player = game.pl1;
-        else if (client.data.id === game.pl2.id) player = game.pl2;
-        if (player.isMoving && player.movingDir === 'down') {
-          player.isMoving = false;
-          player.movingDir = '';
-        }
-        return;
+  @SubscribeMessage('unpressDown')
+  async stopMoveDown(@ConnectedSocket() client: Socket) {
+    if (!this.verifyIfPlayer(client.data.room)
+      || !client.data.id
+      || !client.data.gameId) return;
+    const game = this.pongService.getGameStructById(client.data.gameId);
+    if (game === undefined || game === null) return;
+    if (game.prop.status === 'playing') {
+      let player: Player;
+      if (client.data.id === game.pl1.id) player = game.pl1;
+      else if (client.data.id === game.pl2.id) player = game.pl2;
+      if (player.isMoving && player.movingDir === 'down') {
+        player.isMoving = false;
+        player.movingDir = '';
       }
+      return;
     }
+  }
 
 
 

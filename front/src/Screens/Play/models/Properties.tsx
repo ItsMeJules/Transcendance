@@ -4,6 +4,7 @@ import { Player } from "./Player";
 
 export class GameProperties {
     public isPlaying = false;
+    public isEnded = false;
     public tNow = Date.now();
     public tPrev = Date.now();
     public board: Board;
