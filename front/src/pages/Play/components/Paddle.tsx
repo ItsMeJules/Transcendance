@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { BallNew, GameBoardNew, Player } from '../../../minigame/models'; // Import your GameBoardNew logic
+import { GameBoardNew, Player } from 'services/Minigame/models'; // Import your GameBoardNew logic
 
 interface PaddleCanvasProps {
   board: GameBoardNew;

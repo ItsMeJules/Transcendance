@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { BallNew, GameBoardNew } from '../../../minigame/models'; // Import your GameBoardNew logic
+import React, { useEffect } from 'react';
+import { BallNew, GameBoardNew } from 'services/Minigame/models'; // Import your GameBoardNew logic
 
 interface BallCanvasProps {
   board: GameBoardNew;

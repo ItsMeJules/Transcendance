@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios, { } from "axios";
-import { API_ROUTES, APP_ROUTES } from "../../utils";
-import User from "../../services/User/User";
-import { Link, useNavigate } from "react-router-dom";
+import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
+import User from "services/User/User";
+import { useNavigate } from "react-router-dom";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import { UserArray } from "../../services/UserArray";
 import { UserData } from "../../services/User/User";

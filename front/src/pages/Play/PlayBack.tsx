@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Point, Vector } from "./components/BallOld";
-import { BallNew, GameBoardNew, Player, PaddleNew } from '../../minigame/models';
-import GameBoard from "./components/Board";
+import { BallNew, GameBoardNew, Player } from 'services/Minigame/models';
 import BoardCanvas from "./components/Board";
 import BallCanvas from "./components/Ball";
 import PaddleCanvas from "./components/Paddle";
-import { useWebsocketContext } from "../../services/Websocket";
+import { useWebsocketContext } from "services/Websocket/Websocket";
 import { useNavigate } from "react-router-dom";
 
 class GameProperties {

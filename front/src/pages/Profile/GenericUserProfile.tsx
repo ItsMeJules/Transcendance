@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { API_ROUTES, APP_ROUTES, APP_URL } from '../../utils';
-import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
-import { UserData } from '../../services/User/User';
-import getProgressBarClass from '../../Components/ProgressBarClass';
-import DisplayData from './components/DisplayData';
-import DisplayStats from './components/DisplayStats';
-import ProfilePicContainer from './components/ProfilePicContainer';
-import LogoutParent from '../../layout/LogoutButton/LogoutParent';
-import ToastErrorMessage from '../../Components/ToastErrorMessage';
-import { FaHeart } from 'react-icons/fa6';
-import { IconContext } from 'react-icons';
+
+import { API_ROUTES, APP_ROUTES, APP_URL } from 'utils/routing/routing';
+import getProgressBarClass from 'utils/progressBar/ProgressBar';
+import ToastError from 'layout/ToastError/ToastError';
+import { UserData } from 'services/User/User';
+
 import UserProfileContainer from './components/UserProfileContainer';
 import ProfileCard from './components/ProfileCard';
 
@@ -78,7 +73,7 @@ const GenericUserProfile = () => {
   return (
     <UserProfileContainer>
       <ProfileCard userData={userData} setErrMsg={setErrMsg} type="generic" iconColor={iconColor} onAddFriend={() => addFriend(id)} />
-      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
+      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </UserProfileContainer>
   );
 };
