@@ -5,9 +5,9 @@ import { API_ROUTES, APP_ROUTES } from "../../Utils";
 import { GlowTextSignin } from "../../Utils";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import { connectSocket } from "../../Websocket/Socket.io";
-import { useAppDispatch } from "../../redux/Hooks";
-import { setUser } from "../../redux/slices/UserReducer";
+import { setUser } from "../../redux/reducers/UserSlice";
 import User from "../../Services/User";
+import { useAppDispatch } from "../../redux/Store";
 
 export const Signup = () => {
   const history = useNavigate();

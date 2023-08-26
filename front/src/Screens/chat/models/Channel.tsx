@@ -1,3 +1,5 @@
+import { ChatMessageData } from "./ChatMessageData";
+
 export enum ChannelType {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
@@ -5,9 +7,9 @@ export enum ChannelType {
 }
 
 export const ChannelTypeDescription = {
-  PUBLIC: {name: "Public", desc: "Canal accessible par tout le monde."},
-  PRIVATE: {name: "Privé", desc: "Canal accessible sous invitation."},
-  PROTECTED: {name: "Protégé", desc: "Canal protégé par un mot de passe."}
+  PUBLIC: { name: "Public", desc: "Canal accessible par tout le monde." },
+  PRIVATE: { name: "Privé", desc: "Canal accessible sous invitation." },
+  PROTECTED: { name: "Protégé", desc: "Canal protégé par un mot de passe." }
 }
 
 export interface PunishmentData {
@@ -19,7 +21,12 @@ export interface MuteData extends PunishmentData {
   expireAt: number;
 }
 
-export interface BanData extends PunishmentData {}
+export interface BanData extends PunishmentData { }
+
+export interface ChannelMessageData {
+  authorId: number,
+  text: "YE",
+}
 
 export interface ChannelData {
   type: ChannelType;
@@ -29,6 +36,7 @@ export interface ChannelData {
   ownerId: number | null;
   adminsId: number[] | null;
   punishments: PunishmentData[]
+  messages: ChannelMessageData[];
 }
 
 export class Channel {
@@ -39,6 +47,7 @@ export class Channel {
   }
 }
 
+// TODO Finish this type
 export function transformToChannelData(data: any): ChannelData {
   const punishments: PunishmentData[] = []
 
@@ -53,6 +62,7 @@ export function transformToChannelData(data: any): ChannelData {
     usersId: data.users,
     ownerId: data.ownerId,
     adminsId: data.admins,
-    punishments: punishments
+    punishments: punishments,
+    messages: data.messages
   }
 }

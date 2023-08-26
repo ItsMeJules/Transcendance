@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import PublicIcon from "../assets/globe.png"
 import ProtectedIcon from "../assets/padlock.png"
@@ -6,8 +6,10 @@ import PrivateIcon from "../assets/private.png"
 
 import MorePopup from "./more/MorePopup";
 import ChannelManager from "./channel_manager/ChannelManager";
-import { Channel, ChannelType } from "../models/Channel";
+import { Channel, ChannelData, ChannelType } from "../models/Channel";
 import OutsideClickHandler from "../utils/OutsideClickHandler";
+import { useAppSelector } from "../../../redux/Store";
+import { findChannelByName } from "../../../redux/reducers/ChannelSlice";
 
 export enum PopupType {
   CHANNEL = "channel",
@@ -19,82 +21,16 @@ export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false)
   const [popupType, setPopupActive] = useState<PopupType | null>(null)
 
-  const channels: Channel[] = [
-    new Channel({
-      type: ChannelType.PUBLIC,
-      name: "Public Channel",
-      password: null,
-      usersId: [],
-      ownerId: null,
-      adminsId: [],
-      punishments: [],
-    }),
-    new Channel({
-      type: ChannelType.PRIVATE,
-      name: "Les boss",
-      password: null,
-      usersId: [],
-      ownerId: null,
-      adminsId: [],
-      punishments: [],
-    }),
-    new Channel({
-      type: ChannelType.PROTECTED,
-      name: "Protected Channel",
-      password: "examplePassword",
-      usersId: [],
-      ownerId: null,
-      adminsId: [],
-      punishments: [],
-    }),
-    new Channel({
-      type: ChannelType.PUBLIC,
-      name: "Another Public Channel",
-      password: null,
-      usersId: [],
-      ownerId: null,
-      adminsId: [],
-      punishments: [],
-    }),
-    new Channel({
-      type: ChannelType.PUBLIC,
-      name: "Public Channel",
-      password: null,
-      usersId: [],
-      ownerId: null,
-      adminsId: [],
-      punishments: [],
-    }),
-    new Channel({
-      type: ChannelType.PRIVATE,
-      name: "Les boss",
-      password: null,
-      usersId: [],
-      ownerId: null,
-      adminsId: [],
-      punishments: [],
-    }),
-    new Channel({
-      type: ChannelType.PROTECTED,
-      name: "Protected Channel",
-      password: "examplePassword",
-      usersId: [],
-      ownerId: null,
-      adminsId: [],
-      punishments: [],
-    }),
-    new Channel({
-      type: ChannelType.PUBLIC,
-      name: "Another Public Channel",
-      password: null,
-      usersId: [],
-      ownerId: null,
-      adminsId: [],
-      punishments: [],
-    }),
-  ];
+  const activeChannelName = useAppSelector(store => store.user.userData.currentRoom)
+  const activeChannel: ChannelData | undefined = useAppSelector(store => {
+    if (activeChannelName === null)
+      return
 
-  const activeChannel: Channel = channels[1]
+    const channel = findChannelByName(store.channels, activeChannelName)
+    if (channel)
+      return channel
+    return 
+  })
 
   const handleMoreClick = () => {
     if (!isMoreActive)
@@ -129,16 +65,16 @@ export default function ChatMetadata() {
         </div>
 
         {isMoreActive && (
-          <MorePopup popupType={popupType} setPopupActive={setPopupActive} channels={channels} />
+          <MorePopup popupType={popupType} setPopupActive={setPopupActive} />
         )}
       </OutsideClickHandler>
 
       <div className="channel-manager">
-        <ChannelManager channelData={activeChannel.channelData} />
+        <ChannelManager channelData={activeChannel} />
       </div>
 
       <div className="channel-icon">
-        {getIconFromType(activeChannel.channelData.type)}
+        {activeChannel ? getIconFromType(activeChannel.type) : undefined}
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import Popup from "../../../utils/Popup";
 import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
 
 interface ChannelPopupProps {
-  channelData: ChannelData
+  channelData: ChannelData | undefined
 }
 
 const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProps) => {
@@ -18,16 +18,13 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
   const changeChannel = () => {
     const { channelData } = props;
 
-    if (channelType === channelData.type) {
+    if (!channelData || channelType === channelData.type)
       return;
-    }
+
+    if (channelType === ChannelType.PROTECTED)
+      channelData.password = channelPassword;
 
     channelData.type = channelType;
-
-    if (channelType === ChannelType.PROTECTED) {
-      channelData.password = channelPassword;
-    }
-
     setChannelPassword("");
   }
 

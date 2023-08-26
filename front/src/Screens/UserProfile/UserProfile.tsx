@@ -19,7 +19,6 @@ import User from "../../Services/User";
 import { UserData } from "../../Services/User";
 import QRCode from "react-qr-code";
 import { useAxios } from "../../api/axios-config";
-import { useAppSelector } from "../../redux/Hooks";
 
 function QrCode(): React.ReactElement {
   const popupRef = React.createRef<HTMLDivElement>();

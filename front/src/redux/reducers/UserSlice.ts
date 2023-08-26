@@ -21,7 +21,7 @@ const initialState = {
     userPoints: null,
     userLevel: null,
     isOnline: null,
-    activeChannel: null,
+    currentRoom: null,
   }
 } as UserDataState
 
@@ -34,5 +34,5 @@ export const userReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(setUser, (state, action) => { state.userData = action.payload })
     .addCase(unsetUser, (state, action) => { })
-    .addCase(setUserActiveChannel, (state, action) => { state.userData.activeChannel = action.payload })
+    .addCase(setUserActiveChannel, (state, action) => { state.userData.currentRoom = action.payload })
 })

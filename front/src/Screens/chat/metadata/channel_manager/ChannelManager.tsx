@@ -9,7 +9,7 @@ import Popup from "../../utils/Popup";
 import UsersList from "../../utils/UsersList";
 
 interface ChannelManagerProps {
-  channelData: ChannelData;
+  channelData: ChannelData | undefined;
 }
 
 export default function ChannelManager(props: ChannelManagerProps) {
@@ -18,7 +18,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
   const [searchText, setSearchText] = useState("");
 
   const { channelData }: ChannelManagerProps = props;
-  const usersSize = channelData.usersId?.length || 0
+  const usersSize = channelData?.usersId?.length || 0
 
   const manageStyle = {
     transition: "transform 1s ease",
@@ -29,7 +29,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
     <>
       <div className="channel-infos">
         <div className="channel-name">
-          {channelData.name}
+          {channelData?.name}
         </div>
 
         <OutsideClickHandler className="channel-users-container"

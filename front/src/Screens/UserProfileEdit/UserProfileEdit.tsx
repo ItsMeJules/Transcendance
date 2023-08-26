@@ -9,8 +9,8 @@ import LogoutParent from "../../LogoutHook/logoutParent";
 import ProfilePicContainer from "../UserProfile/components/ProfilePicContainer";
 import ImageChange from "./components/ImageChange";
 import EditUserFormValidation from "./components/EditUserFormValidation";
-import { useAppDispatch } from "../../redux/Hooks";
-import { setUser } from "../../redux/slices/UserReducer";
+import { setUser } from "../../redux/reducers/UserSlice";
+import { useAppDispatch } from "../../redux/Store";
 
 export const UserProfileEdit: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);

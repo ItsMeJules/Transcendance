@@ -4,8 +4,8 @@ import axios from "axios";
 import { APP_ROUTES, API_ROUTES } from "../../Utils/constants";
 import { GlowTextSignin } from "../../Utils";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import { useAppDispatch } from "../../redux/Hooks";
-import { setUser } from "../../redux/slices/UserReducer";
+import { setUser } from "../../redux/reducers/UserSlice";
+import { useAppDispatch } from "../../redux/Store";
 
 export const Signin = () => {
   const history = useNavigate();

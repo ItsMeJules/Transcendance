@@ -1,8 +1,8 @@
 import React from "react";
 import handleLogout from "./useLogout";
 import { MDBCardImage } from "mdb-react-ui-kit";
-import { useAppDispatch } from "../redux/Hooks";
-import { unsetUser } from "../redux/slices/UserReducer";
+import { unsetUser } from "../redux/reducers/UserSlice";
+import { useAppDispatch } from "../redux/Store";
 
 interface LogoutParentProps {
   setErrMsg: (error: string) => void; // Callback function to set errMsg in UserProfile component

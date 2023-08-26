@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import User from "../Services/User";
 import { UserData } from "../Services/User";
 import { getNameOfJSDocTypedef } from "typescript";
-import { useAppSelector } from "../redux/Hooks";
+import { useAppSelector } from "../redux/Store";
 
 interface WebsocketProps {
   children: ReactElement;

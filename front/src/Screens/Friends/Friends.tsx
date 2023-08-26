@@ -16,8 +16,8 @@ import { Socket } from "socket.io-client";
 import { UserData } from "../../Services/User";
 import User from "../../Services/User";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
-import { useAppDispatch } from "../../redux/Hooks";
-import { setUser } from "../../redux/slices/UserReducer";
+import { setUser } from "../../redux/reducers/UserSlice";
+import { useAppDispatch } from "../../redux/Store";
 
 const UserFriends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);

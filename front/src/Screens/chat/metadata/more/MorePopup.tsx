@@ -10,10 +10,9 @@ import AllUsersPopup from "./popups/AllUsersPopup";
 interface MorePopupProps {
   popupType: PopupType | null;
   setPopupActive: React.Dispatch<React.SetStateAction<PopupType | null>>;
-  channels: Channel[];
 }
 
-export default function MorePopup({ popupType, setPopupActive, channels }: MorePopupProps) {
+export default function MorePopup({ popupType, setPopupActive }: MorePopupProps) {
 
   const channelCreation = () => {
     setPopupActive(popupType === PopupType.CHANNEL ? null : PopupType.CHANNEL);
@@ -37,7 +36,7 @@ export default function MorePopup({ popupType, setPopupActive, channels }: MoreP
 
       {popupType === PopupType.CHANNEL && <ChannelCreationPopup />}
       {popupType === PopupType.ALL_USERS && <AllUsersPopup />}
-      {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup channels={channels} />}
+      {/* {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup channels={channels} />} */}
     </Popup>
   );
 }

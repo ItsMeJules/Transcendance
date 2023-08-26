@@ -8,8 +8,8 @@ import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import { UserArray } from "../../Services/UserArray";
 import LogoutParent from "../../LogoutHook/logoutParent";
 import { UserData } from "../../Services/User";
-import { useAppDispatch } from "../../redux/Hooks";
-import { setUser } from "../../redux/slices/UserReducer";
+import { setUser } from "../../redux/reducers/UserSlice";
+import { useAppDispatch } from "../../redux/Store";
 
 const LeaderBoard: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
