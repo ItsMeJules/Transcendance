@@ -18,12 +18,13 @@ import { addChannel } from "../../redux/slices/ChannelReducer";
 enum ChatSocketEventType {
   JOIN_ROOM = "join-room",
   CHAT_ACTION = "chat-action",
+  MESSAGE = "message"
 }
 
 export enum ChatSocketActionType {
   CREATE_CHANNEL = "create-channel",
   SWITCH_CHANNEL = "switch-channel",
-  MESSAGE = "message"
+  SEND_MESSAGE = "send-message",
 }
 
 export const SendDataContext = createContext<null | ((action: ChatSocketActionType, data: any) => void)>(null)
@@ -80,14 +81,14 @@ export const ChatBox = () => {
     };
 
     chatSocket.on(ChatSocketEventType.JOIN_ROOM, setupConnection)
-    chatSocket.on(ChatSocketActionType.MESSAGE, onNewMessage)
+    chatSocket.on(ChatSocketEventType.MESSAGE, onNewMessage)
 
     return () => {
       if (chatSocket == null)
         return
 
       chatSocket.off(ChatSocketEventType.JOIN_ROOM)
-      chatSocket.off(ChatSocketActionType.MESSAGE)
+      chatSocket.off(ChatSocketEventType.MESSAGE)
     }
   }, [dispatch, chatSocket, userId])
 
@@ -96,8 +97,34 @@ export const ChatBox = () => {
   }, [activeChannelName])
 
   const sendData = (action: ChatSocketActionType, data: any) => {
-    console.log(action, data)
-    chatSocket?.emit(action, { ...data, roomName: activeChannelName })
+    let eventType = ChatSocketEventType.MESSAGE;
+
+    switch (action) {
+      case ChatSocketActionType.CREATE_CHANNEL:
+        eventType = ChatSocketEventType.CHAT_ACTION
+        data = {
+          ...data,
+          action: "createRoom"
+        }
+        break;
+      case ChatSocketActionType.SWITCH_CHANNEL:
+        eventType = ChatSocketEventType.CHAT_ACTION
+        data = {
+          ...data,
+          action: "joinRoom"
+        }
+        break;
+      case ChatSocketActionType.SEND_MESSAGE:
+        data = {
+          message: data,
+          roomName: activeChannelName
+        }
+        break;
+      default:
+        break;
+    }
+
+    chatSocket?.emit(eventType, data)
   };
 
   const togglerTransition = {

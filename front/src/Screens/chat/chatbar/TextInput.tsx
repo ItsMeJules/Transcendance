@@ -1,17 +1,18 @@
-import React, { useState, KeyboardEvent, useContext } from "react";
+import { useState, KeyboardEvent, useContext } from "react";
 
 import TextSend from "./TextSend";
 import { ChatSocketActionType, SendDataContext } from "../ChatBox";
 
 const TextInput = () => {
   const [value, setValue] = useState<string>("");
+  
   const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext) 
 
   const handleSend = () => {
     if (!value.trim())
       return;
 
-    sendData?.call(this, ChatSocketActionType.MESSAGE, { message: value })
+    sendData?.call(undefined, ChatSocketActionType.SEND_MESSAGE, value)
     setValue("");
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 
 import Popup from "../../../utils/Popup";
 
@@ -6,14 +6,15 @@ import PublicIcon from "../../../../../assets/globe.png"
 import PrivateIcon from "../../../../../assets/private.png"
 import ProtectedIcon from "../../../../../assets/padlock.png"
 
-import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
 import { ChannelType, ChannelTypeDescription } from "../../../models/Channel";
+import { ChatSocketActionType, SendDataContext } from "../../../ChatBox";
 
 export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC)
   const [channelName, setChannelName] = useState("")
   const [channelPassword, setChannelPassword] = useState("")
-  const socket = useWebsocketContext();
+  
+  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext) 
 
   const createChannel = () => {
     if (!channelName.trim())
@@ -21,16 +22,9 @@ export default function ChannelCreationPopup() {
     if (channelType === ChannelType.PROTECTED && !channelPassword.trim())
       return;
 
-    // Temporary fix by Antoine
-    const userDataString = localStorage.getItem("userData");
+    const channelData = { type: channelType, roomName: channelName, password: channelPassword };
 
-    let user = null;
-    if (userDataString)
-      user = JSON.parse(userDataString);
-
-    const channelData = { type: channelType, name: channelName, password: channelPassword };
-
-    socket.chat?.emit("channel_manager", { userId: user.id, channelData })
+    sendData?.call(undefined, ChatSocketActionType.CREATE_CHANNEL, channelData)
     setChannelName("")
     setChannelPassword("")
   }
