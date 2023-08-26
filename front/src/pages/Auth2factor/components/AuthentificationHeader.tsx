@@ -1,5 +1,5 @@
 import React from 'react';
-import { GlowTextSignin } from "../../../utils";
+import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 
 const AuthenticationHeader: React.FC = () => {
   return (

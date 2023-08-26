@@ -1,7 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { ReactElement, createContext, useEffect, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserData } from "../User/User";
+import { UserData } from "services/User/User";
 
 interface WebsocketProps {
   children: ReactElement;

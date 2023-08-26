@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios, { } from "axios";
-import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
-import User from "services/User/User";
 import { useNavigate } from "react-router-dom";
-import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import { UserArray } from "../../services/UserArray";
-import { UserData } from "../../services/User/User";
+
+import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
+import ToastError from "layout/ToastError/ToastError";
+import User from "services/User/User";
+import { UserArray } from "services/User/UserArray";
+import { UserData } from "services/User/User";
+
 import LeaderBoardHeader from "./components/LeaderBoardHeader";
 import UserProfilesList from "./components/UserProfileList";
 import LeaderBoardContainer from "./components/LeaderBoardContainer"
@@ -98,7 +100,7 @@ const LeaderBoard: React.FC = () => {
         <UserProfilesList users={users} currentUserId={userData?.id} />
       </LeaderBoardContainer>
       
-      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
+      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div>
   );
 }

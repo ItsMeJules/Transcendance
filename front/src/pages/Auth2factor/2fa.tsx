@@ -1,9 +1,8 @@
 import { useRef, useState, useEffect, FormEvent } from "react";
-import { keyframes } from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-import { useAxios } from "../../utils/axiosConfig/axiosConfig";
-import { GlowTextSignin } from "../utils";
-import { API_ROUTES } from "../../utils/routing/routing";
+import { useNavigate } from "react-router-dom";
+import { useAxios } from "utils/axiosConfig/axiosConfig";
+import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
+import { API_ROUTES } from "utils/routing/routing";
 
 export const TwoFa = () => {
   const errRef = useRef<HTMLParagraphElement>(null);

@@ -1,6 +1,6 @@
-import { APP_ROUTES, API_ROUTES } from "../utils";
 import axios from "axios";
-import { disconnectSocket } from "../services/Socket.io";
+import { APP_ROUTES, API_ROUTES } from "utils/routing/routing";
+import { disconnectSocket } from "services/Socket/Socket.io";
 
 const handleLogout = async (setErrMsg: (error: string) => void) => {
   try {

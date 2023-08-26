@@ -1,5 +1,5 @@
 import React from 'react';
-import { GlowText, PulseGlowText } from '../../utils';
+import { GlowText, PulseGlowText } from 'utils/cssAnimation/cssAnimation';
 
 interface TextSectionProps {
   screenSize: { width: number; height: number };

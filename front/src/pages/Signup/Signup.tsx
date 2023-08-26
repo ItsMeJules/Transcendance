@@ -4,7 +4,7 @@ import axios from "axios";
 
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
-import ToastErrorMessage from "layout/ToastMessage/ToastMessage";
+import ToastError from "layout/ToastError/ToastError";
 
 export const Signup = () => {
   const history = useNavigate();
@@ -151,7 +151,7 @@ export const Signup = () => {
         </div>
       </div>
 
-      <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
+      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div>
   )
 }

@@ -1,7 +1,8 @@
 import React, { ReactNode } from "react";
-import BackgroundLinking from "layout/BackgroundLinking/BackgroundLinking.memo";
-import { useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import BackgroundLinking from "layout/BackgroundLinking/BackgroundLinking";
 import NavMenu from "./NavMenu/NavMenu";
+
 
 interface LayoutWrapperProps {
   children: ReactNode;

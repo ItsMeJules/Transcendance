@@ -1,4 +1,3 @@
-import React from 'react';
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import { useCallback, useEffect} from "react";
@@ -220,4 +219,4 @@ const BackgroundLinking = ({ style }) => {
     )
 };
 
-export default React.memo(BackgroundLinking);
+export default BackgroundLinking;

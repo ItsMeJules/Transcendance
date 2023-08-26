@@ -1,12 +1,9 @@
 import React from 'react';
-import { Link } from "react-router-dom";
-import { APP_ROUTES } from "../../../utils/routing/routing";
-import { MDBCardImage } from 'mdb-react-ui-kit';
 import ProfilePicContainer from "./ProfilePicContainer";
 import DisplayData from "./DisplayData";
 import DisplayStats from "./DisplayStats";
 import FadeLine from './FadeLine';
-import { UserData } from "../../../services/User/User";
+import { UserData } from "services/User/User";
 
 type UserProfileContentProps = {
     userData: UserData | null;
