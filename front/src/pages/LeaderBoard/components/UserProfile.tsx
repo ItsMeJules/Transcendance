@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import { APP_ROUTES } from "../../../utils";
-import User from "../../../services/User/User";
+import { APP_ROUTES } from "utils/routing/routing";
+import User from "services/User/User";
 
 interface UserProfileProps {
   user: User;

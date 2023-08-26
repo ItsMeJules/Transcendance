@@ -1,9 +1,10 @@
 import React, { ReactNode } from "react";
-import BackgroundLinking from "layout/BackgroundLinking/BackgroundLinking.memo";
-import { useLocation} from 'react-router-dom';
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import MainContent from "./MainContent/MainContent";
+import { useLocation } from 'react-router-dom';
+import BackgroundLinking from "layout/BackgroundLinking/BackgroundLinking";
+
 
 interface LayoutWrapperProps {
   children: ReactNode;

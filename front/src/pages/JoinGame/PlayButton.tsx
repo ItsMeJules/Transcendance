@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useWebsocketContext } from "../../services/Websocket";
-import { GameData } from "../../services/Game/Game";
+import { useWebsocketContext } from "services/Websocket/Websocket";
 
 interface playButtonProps {
   gameMode: number,

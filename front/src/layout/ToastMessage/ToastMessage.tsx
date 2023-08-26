@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { MdOutlineNotificationImportant } from 'react-icons/md';
 import { IconContext } from 'react-icons';
 
-interface ToastNotificationMessageProps {
+interface ToastMessageProps {
   notifMsg: string;
   resetNotifMsg: () => void; // New prop to reset errMsg in the parent component
   changeRemoveFlag: () => void;
   resetIdToRemove: () => void;
 }
 
-const ToastNotificationMessage: React.FC<ToastNotificationMessageProps> = ({ notifMsg, resetNotifMsg, changeRemoveFlag, resetIdToRemove }) => {
+const ToastMessage: React.FC<ToastMessageProps> = ({ notifMsg, resetNotifMsg, changeRemoveFlag, resetIdToRemove }) => {
   const [isToastVisible, setToastVisible] = useState(false);
   const toastRef = useRef<HTMLDivElement | null>(null);
 
@@ -68,4 +68,4 @@ const ToastNotificationMessage: React.FC<ToastNotificationMessageProps> = ({ not
   );
 };
 
-export default ToastNotification;
+export default ToastMessage;

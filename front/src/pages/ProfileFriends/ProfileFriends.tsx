@@ -16,18 +16,12 @@ import FriendsContainer from "./Components/FriendsContainer";
 
 const UserFriends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [userDataMain, setUserDataMain] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
   const [removeFlag, setRemoveFlag] = useState(false);
   const history = useNavigate();
-  const [iconColor, setIconColor] = useState('red');
   const [notifMsg, setNotifMsg] = useState('');
   const [idToRemove, setIdToRemove] = useState<string | undefined>('none');
-  const [friendOnlineStatus, setFriendOnlineStatus] = useState<{ [key: string]: boolean }>({});
-  const [loading, setLoading] = useState(true);
-  const socket = useWebsocketContext();
-
 
   const resetErrMsg = () => {
     setErrMsg(''); // Reset errMsg to an empty string

@@ -1,5 +1,5 @@
 import React, { FormEvent } from 'react';
-import '2fa_css/AuthentificationForm.css'
+import 'pages/Auth2factor/css/AuthentificationForm.scss'
 
 interface AuthentificationFormProps {
   code: string;

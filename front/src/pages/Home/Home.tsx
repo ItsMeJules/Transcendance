@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BackgroundMoving from 'layout/BackgroundMoving/BackgroundMoving';
 import VideoSection from './VideoSection';
 import TextSection from './TextSection';
-import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [playSecondVideo, setPlaySecondVideo] = useState(false);
@@ -37,7 +37,9 @@ const Home = () => {
 
   return (
     <div style={{ position: "relative" }}>
-      <BackgroundMoving key={location.state?.key} style={{ position: "absolute", top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} />
+      <div style={{ position: "absolute", top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
+        <BackgroundMoving />
+      </div>
       <div style={{ position: 'relative', zIndex: 2 }}>
         <VideoSection playSecondVideo={playSecondVideo} handleTimeUpdate={handleTimeUpdate} />
         <TextSection screenSize={screenSize} handleButtonClick={handleButtonClick} />

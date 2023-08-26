@@ -13,8 +13,6 @@ const BoardCanvas: React.FC<BoardCanvasProps> = ({ board, canvasRef }) => {
     const ctx = canvas?.getContext('2d');
 
     const handleResize = () => {
-      const newWidth = window.innerWidth * 0.8;
-      const factor = board.updateDimensions(newWidth);
 
       if (ctx && canvas) {
         canvas.width = board.width;
