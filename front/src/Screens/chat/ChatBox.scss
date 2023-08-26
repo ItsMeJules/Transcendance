@@ -442,6 +442,13 @@
             border-radius: 5px;
             border: 1px solid lightgray;
 
+            .filter-channels {
+              padding: 10px;
+              border: none;
+              border-bottom: 1px solid lightgray;
+              outline: none;
+            }
+
             .channel-list {
               display: flex;
               flex-direction: column;

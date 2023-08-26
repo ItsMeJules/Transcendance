@@ -1,7 +1,8 @@
-import { KeyboardEvent, useEffect, useState } from "react";
 import axios from "axios";
+import { KeyboardEvent, useEffect, useState } from "react";
 
 import { API_ROUTES } from "../../../../../Utils";
+import { useAppSelector } from "../../../../../redux/Store";
 import { ChannelInfoInList } from "../../../models/partial/PartialModels";
 import ChannelsList from "../../../utils/ChannelsList";
 import Popup from "../../../utils/Popup";
@@ -10,6 +11,9 @@ export default function ChannelListPopup() {
   const [selectedChannelName, setSelectedChannelName] = useState<string | null>(null);
   const [passwordValue, setPasswordValue] = useState<string>("");
   const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([])
+  const [searchText, setSearchText] = useState("");
+
+  const visibleChannelsStore = useAppSelector(store => store.channels.visibleChannels)
 
   useEffect(() => {
     const requestVisibleChannels = async () => {
@@ -22,7 +26,7 @@ export default function ChannelListPopup() {
     }
 
     requestVisibleChannels()
-  }, []) // add dependencies
+  }, [visibleChannelsStore]) // add dependencies
 
   const joinChannel = () => {
     // if (selectedChannel == null)
@@ -42,9 +46,17 @@ export default function ChannelListPopup() {
   return (
     <>
       <Popup className="channel-list-popup">
+        <input
+          className="filter-channels"
+          type="search"
+          placeholder="Chercher un channel"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
         <ChannelsList
           channels={visibleChannels}
           onClickElement={setSelectedChannelName}
+          filter={(channelName) => channelName.includes(searchText)}
         />
       </Popup>
 

@@ -40,7 +40,7 @@ const UsersList = ({ filter = () => true} : UsersListProps) => {
     };
 
     fetchData();
-  }, [axiosInstance]);
+  }, [axiosInstance, filter]);
 
   return (
     <div className="users-list">
