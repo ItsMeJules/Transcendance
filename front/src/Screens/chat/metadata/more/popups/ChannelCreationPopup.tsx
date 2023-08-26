@@ -13,18 +13,20 @@ export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC)
   const [channelName, setChannelName] = useState("")
   const [channelPassword, setChannelPassword] = useState("")
-  
-  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext) 
+
+  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext)
 
   const createChannel = () => {
+    if (sendData == null)
+      return
     if (!channelName.trim())
       return;
     if (channelType === ChannelType.PROTECTED && !channelPassword.trim())
       return;
 
     const channelData = { type: channelType, roomName: channelName, password: channelPassword };
-
-    sendData?.call(undefined, ChatSocketActionType.CREATE_CHANNEL, channelData)
+    
+    sendData(ChatSocketActionType.CREATE_CHANNEL, channelData)
     setChannelName("")
     setChannelPassword("")
   }
@@ -39,24 +41,24 @@ export default function ChannelCreationPopup() {
         </div>
 
         <div className="images">
-        <img
-          className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
-          src={PublicIcon}
-          alt="Public"
-          onClick={() => setChannelType(ChannelType.PUBLIC)}
-        />
-        <img
-          className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
-          src={PrivateIcon}
-          alt="Private"
-          onClick={() => setChannelType(ChannelType.PRIVATE)}
-        />
-        <img
-          className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
-          src={ProtectedIcon}
-          alt="Protected"
-          onClick={() => setChannelType(ChannelType.PROTECTED)}
-        />
+          <img
+            className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
+            src={PublicIcon}
+            alt="Public"
+            onClick={() => setChannelType(ChannelType.PUBLIC)}
+          />
+          <img
+            className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
+            src={PrivateIcon}
+            alt="Private"
+            onClick={() => setChannelType(ChannelType.PRIVATE)}
+          />
+          <img
+            className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
+            src={ProtectedIcon}
+            alt="Protected"
+            onClick={() => setChannelType(ChannelType.PROTECTED)}
+          />
         </div>
 
       </div>

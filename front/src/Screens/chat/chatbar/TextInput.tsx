@@ -5,14 +5,17 @@ import { ChatSocketActionType, SendDataContext } from "../ChatBox";
 
 const TextInput = () => {
   const [value, setValue] = useState<string>("");
-  
-  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext) 
+
+  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext)
 
   const handleSend = () => {
+    if (sendData == null)
+      return
+      
     if (!value.trim())
       return;
 
-    sendData?.call(undefined, ChatSocketActionType.SEND_MESSAGE, value)
+    sendData(ChatSocketActionType.SEND_MESSAGE, value)
     setValue("");
   };
 

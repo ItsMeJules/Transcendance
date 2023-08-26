@@ -1,8 +1,10 @@
 import axios from "axios";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useContext, useEffect, useState } from "react";
 
 import { API_ROUTES } from "../../../../../Utils";
 import { useAppSelector } from "../../../../../redux/Store";
+import { ChatSocketActionType, SendDataContext } from "../../../ChatBox";
+import { ChannelType } from "../../../models/Channel";
 import { ChannelInfoInList } from "../../../models/partial/PartialModels";
 import ChannelsList from "../../../utils/ChannelsList";
 import Popup from "../../../utils/Popup";
@@ -14,6 +16,12 @@ export default function ChannelListPopup() {
   const [searchText, setSearchText] = useState("");
 
   const visibleChannelsStore = useAppSelector(store => store.channels.visibleChannels)
+  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext)
+
+  const shouldShowPopup = selectedChannelName !== null
+  && visibleChannels.find(
+    value => value.name === selectedChannelName)
+  ?.type === ChannelType.PROTECTED
 
   useEffect(() => {
     const requestVisibleChannels = async () => {
@@ -28,19 +36,21 @@ export default function ChannelListPopup() {
     requestVisibleChannels()
   }, [visibleChannelsStore]) // add dependencies
 
-  const joinChannel = () => {
-    // if (selectedChannel == null)
-    //   return;
-    // if (selectedChannel.channelData.type === ChannelType.PROTECTED && !passwordValue.trim())
-    //   return ;
+  const joinChannel = (channelName: string | null) => {
+    if (sendData == null)
+      return
 
-    // setPasswordValue("")
-    // setSelectedChannel(null)
+    channelName = channelName === null ? selectedChannelName : channelName
+
+    console.log(selectedChannelName)
+    sendData(ChatSocketActionType.SWITCH_CHANNEL, { roomName: channelName })
+    setPasswordValue("")
+    setSelectedChannelName(null)
   }
 
   const handleEnterPressed = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter")
-      joinChannel()
+      joinChannel(null)
   }
 
   return (
@@ -55,31 +65,38 @@ export default function ChannelListPopup() {
         />
         <ChannelsList
           channels={visibleChannels}
-          onClickElement={setSelectedChannelName}
+          onClickElement={(channelName: string) => {
+            joinChannel(channelName)
+            setSelectedChannelName(channelName)
+          }}
           filter={(channelName) => channelName.includes(searchText)}
         />
       </Popup>
 
-      {selectedChannelName && (
-        <div className="password-popup">
-          <div className="password-popup-content">
+      {shouldShowPopup
+        ? (
+          <div className="password-popup">
+            <div className="password-popup-content">
 
-            <div className="infos">
-              <h3>Rejoindre<br />{selectedChannelName}</h3>
-              <input placeholder="Entrez le mdp..."
-                onChange={(e) => setPasswordValue(e.target.value)}
-                value={passwordValue}
-                onKeyDown={(e) => handleEnterPressed(e)}
-              />
+              <div className="infos">
+                <h3>Rejoindre<br />{selectedChannelName}</h3>
+                <input placeholder="Entrez le mdp..."
+                  onChange={(e) => setPasswordValue(e.target.value)}
+                  value={passwordValue}
+                  onKeyDown={(e) => handleEnterPressed(e)}
+                />
+              </div>
+
+              <div className="buttons">
+                <button className="cancel" onClick={() => setSelectedChannelName("")}>Annuler</button>
+                <button className="validate" onClick={() => joinChannel(null)}>Rejoindre</button>
+              </div>
+
             </div>
-
-            <div className="buttons">
-              <button className="cancel" onClick={() => setSelectedChannelName("")}>Annuler</button>
-              <button className="validate" onClick={joinChannel}>Rejoindre</button>
-            </div>
-
           </div>
-        </div>
+        )
+      : (
+        undefined
       )}
     </>
   )

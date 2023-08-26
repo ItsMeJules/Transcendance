@@ -103,6 +103,7 @@ model Room {
 
 enum RoomType {
   PUBLIC
+  PROTECTED
   PRIVATE
   DIRECT
 }

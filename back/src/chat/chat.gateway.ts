@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { User } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
-import { extractAccessTokenFromCookie } from 'src/utils';
+import { ChatSocketEventType, extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
 import { ChatService } from './chat.service';
 import { PayloadActionDto } from './dto';
@@ -15,13 +15,6 @@ import {
   ActionChatHandlers,
   ActionRoomHandlers,
 } from './handlers/handlers.map';
-
-export enum ChatSocketEventType {
-  JOIN_ROOM = 'join-room',
-  MESSAGE = 'message',
-  CHAT_ACTION = 'chat-action',
-  ROOM_ACTION = 'room-action',
-}
 
 // @UseGuards(JwtGuard) // add jwt guard for chat auth
 @WebSocketGateway({ namespace: 'chat' })

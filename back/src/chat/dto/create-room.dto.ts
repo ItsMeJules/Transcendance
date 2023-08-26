@@ -6,6 +6,10 @@ export class CreateRoomDto {
   @IsString()
   roomName: string;
 
+  @IsNotEmpty()
+  @IsString()
+  type: string;
+
   @IsString()
   password: string;
 
