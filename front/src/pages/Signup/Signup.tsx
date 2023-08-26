@@ -71,7 +71,7 @@ export const Signup = () => {
     <div className="login-container">
 
       <GlowTextSignin
-        className="signin-container border border-white"
+        className="signin-container"
         style={{ fontSize: '2rem', zIndex: '1' }}>
         sign up lololol
       </GlowTextSignin>
@@ -80,7 +80,7 @@ export const Signup = () => {
         <div className="secondary-login-container">
           <div className="form-master-container">
 
-            <div className="flex border border-white"
+            <div className="flex"
               style={{ height: '310px', width: 350, marginBottom: '10px' }}>
               <form onSubmit={handleSubmit}
                 action="POST"
@@ -138,7 +138,7 @@ export const Signup = () => {
               </form>
             </div>
 
-            <div className="flex justify-center w-full items-center border border-white">
+            <div className="flex justify-center w-full items-center">
               <p className="flex justify-center items-center text-white">
                 Already registered?&nbsp;
                 <Link to={APP_ROUTES.SIGN_IN} className="text-white">

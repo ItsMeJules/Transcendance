@@ -1,9 +1,12 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
+
 import { APP_ROUTES, API_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import ToastError from "layout/ToastError/ToastError";
+
+import "./Signin.scss"
 
 export const Signin = () => {
   const history = useNavigate();
@@ -81,21 +84,16 @@ export const Signin = () => {
     <div className="login-container">
 
       <GlowTextSignin
-        className="signin-container border border-white"
+        className="signin-container"
         style={{ fontSize: '2rem', zIndex: '1', minWidth: '200px' }}>
         sign in
       </GlowTextSignin>
-
-      {/* <p ref={errRef} className={errMsg ? "errmsg text-white" :
-                "offscreen"} aria-live="assertive">
-                {errMsg}
-            </p> */}
 
       <div className="main-login-container">
         <div className="secondary-login-container">
           <div className="form-master-container">
 
-            <div className="flex border border-white"
+            <div className="flex"
               style={{ height: '230px', width: 350, marginBottom: '0px' }}>
               <form onSubmit={handleSubmit}
                 action="POST"
@@ -139,7 +137,7 @@ export const Signin = () => {
               </form>
             </div>
 
-            <div className="flex border items-center" style={{ flexDirection: "column" }}>
+            <div className="flex items-center" style={{ flexDirection: "column" }}>
               <div className="loginBtn loginBtn--42 text-white">
                 <button className="text-white" onClick={RequestURI42}>Continue with 42</button>
 
@@ -150,7 +148,7 @@ export const Signin = () => {
 
             </div>
 
-            <div className="border">
+            <div>
               <p className="flex justify-center items-center text-white">
                 No account yet?&nbsp;
                 <Link to={APP_ROUTES.SIGN_UP} className="text-white">
@@ -161,13 +159,6 @@ export const Signin = () => {
 
           </div>
         </div>
-      </div>
-
-      <div id="toast">
-        <div id="img">
-          <img src='/images/error.png' alt="Error" />
-        </div>
-        <div id="desc">{errMsg}</div>
       </div>
 
       <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
