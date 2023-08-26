@@ -9,7 +9,7 @@ import Popup from "../../utils/Popup";
 import UsersList from "../../utils/UsersList";
 
 interface ChannelManagerProps {
-  channelData: ChannelData | undefined;
+  channelData: ChannelData | null;
 }
 
 export default function ChannelManager(props: ChannelManagerProps) {

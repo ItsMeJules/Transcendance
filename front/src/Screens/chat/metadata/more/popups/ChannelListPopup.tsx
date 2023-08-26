@@ -1,21 +1,37 @@
-import { useState, KeyboardEvent } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
+import axios from "axios";
 
-import Popup from "../../../utils/Popup"
-import { Channel, ChannelType } from "../../../models/Channel";
+import { API_ROUTES } from "../../../../../Utils";
+import { ChannelInfoInList } from "../../../models/partial/PartialModels";
 import ChannelsList from "../../../utils/ChannelsList";
+import Popup from "../../../utils/Popup";
 
 export default function ChannelListPopup() {
-  const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
+  const [selectedChannelName, setSelectedChannelName] = useState<string | null>(null);
   const [passwordValue, setPasswordValue] = useState<string>("");
+  const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([])
+
+  useEffect(() => {
+    const requestVisibleChannels = async () => {
+      try {
+        const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, { withCredentials: true });
+        setVisibleChannels(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    requestVisibleChannels()
+  }, []) // add dependencies
 
   const joinChannel = () => {
-    if (selectedChannel == null)
-      return;
-    if (selectedChannel.channelData.type === ChannelType.PROTECTED && !passwordValue.trim())
-      return ;
+    // if (selectedChannel == null)
+    //   return;
+    // if (selectedChannel.channelData.type === ChannelType.PROTECTED && !passwordValue.trim())
+    //   return ;
 
-    setPasswordValue("")
-    setSelectedChannel(null)
+    // setPasswordValue("")
+    // setSelectedChannel(null)
   }
 
   const handleEnterPressed = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -27,17 +43,17 @@ export default function ChannelListPopup() {
     <>
       <Popup className="channel-list-popup">
         <ChannelsList
-          channels={channels}
-          onClickElement={setSelectedChannel}
+          channels={visibleChannels}
+          onClickElement={setSelectedChannelName}
         />
       </Popup>
 
-      {selectedChannel && (
+      {selectedChannelName && (
         <div className="password-popup">
           <div className="password-popup-content">
 
             <div className="infos">
-              <h3>Rejoindre<br />{selectedChannel.channelData.name}</h3>
+              <h3>Rejoindre<br />{selectedChannelName}</h3>
               <input placeholder="Entrez le mdp..."
                 onChange={(e) => setPasswordValue(e.target.value)}
                 value={passwordValue}
@@ -46,7 +62,7 @@ export default function ChannelListPopup() {
             </div>
 
             <div className="buttons">
-              <button className="cancel" onClick={() => setSelectedChannel(null)}>Annuler</button>
+              <button className="cancel" onClick={() => setSelectedChannelName("")}>Annuler</button>
               <button className="validate" onClick={joinChannel}>Rejoindre</button>
             </div>
 

@@ -18,6 +18,7 @@ export const API_ROUTES = {
   CURRENT_CHAT: `${API_URL}/users/current-chat`,
   COMPLETE_ROOM: `${API_URL}/users/complete-room`,
   AUTHENTICATE_2FA: `${API_URL}/auth/authenticate`,
+  VISIBLE_CHANNELS: `${API_URL}/chat/visible-rooms`
 };
 
 export const APP_URL = "http://localhost:8000";

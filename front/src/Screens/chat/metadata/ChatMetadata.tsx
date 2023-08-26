@@ -5,8 +5,7 @@ import ProtectedIcon from "../assets/padlock.png";
 import PrivateIcon from "../assets/private.png";
 
 import { useAppSelector } from "../../../redux/Store";
-import { findChannelByName } from "../../../redux/reducers/ChannelSlice";
-import { ChannelData, ChannelType } from "../models/Channel";
+import { ChannelType } from "../models/Channel";
 import OutsideClickHandler from "../utils/OutsideClickHandler";
 import ChannelManager from "./channel_manager/ChannelManager";
 import MorePopup from "./more/MorePopup";
@@ -21,16 +20,7 @@ export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false)
   const [popupType, setPopupActive] = useState<PopupType | null>(null)
 
-  const activeChannelName = useAppSelector(store => store.user.userData.currentRoom)
-  const activeChannel: ChannelData | undefined = useAppSelector(store => {
-    if (activeChannelName === null)
-      return
-
-    const channel = findChannelByName(store.channels, activeChannelName)
-    if (channel)
-      return channel
-    return 
-  })
+  const{ activeChannel } = useAppSelector(store => store.channels)
 
   const handleMoreClick = () => {
     if (!isMoreActive)

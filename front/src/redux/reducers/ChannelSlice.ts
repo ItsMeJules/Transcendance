@@ -5,11 +5,13 @@ import { ChannelData, ChannelMessageData, ChannelType, transformToChannelData } 
 import { API_ROUTES } from "../../Utils";
 
 interface ChannelDataState {
-  channelsData: ChannelData[];
+  activeChannel: ChannelData | null,
+  visibleChannels: ChannelData[];
 }
 
 const initialState: ChannelDataState = {
-  channelsData: []
+  activeChannel: null,
+  visibleChannels: []
 };
 
 export const fetchActiveChannel = createAsyncThunk(
@@ -20,12 +22,20 @@ export const fetchActiveChannel = createAsyncThunk(
   }
 );
 
+// export const fetchVisibleChannels = createAsyncThunk(
+//   "channel/fetchVisibleChannels",
+//   async (_, thunkAPI) => {
+//     const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, { withCredentials: true });
+//     return response.data;
+//   }
+// );
+
 export const findChannelByName = (state: ChannelDataState, channelName: string) => {
-  return state.channelsData.find(channelData => channelData.name === channelName);
+  return state.visibleChannels.find(channelData => channelData.name === channelName);
 };
 
 const findChannelIdndex = (state: ChannelDataState, channelName: string) => {
-  return state.channelsData.findIndex(channelData => channelData.name === channelName);
+  return state.visibleChannels.findIndex(channelData => channelData.name === channelName);
 };
 
 const channelSlice = createSlice({
@@ -37,7 +47,7 @@ const channelSlice = createSlice({
       const channelIndex = findChannelIdndex(state, channelName);
 
       if (channelIndex !== -1)
-        state.channelsData[channelIndex].type = type;
+        state.visibleChannels[channelIndex].type = type;
     },
     setName: (state, action: PayloadAction<string>) => {
       // state.channelData.name = action.payload;
@@ -50,13 +60,21 @@ const channelSlice = createSlice({
       const channelIndex = findChannelIdndex(state, channelName);
 
       if (channelIndex !== -1)
-        state.channelsData[channelIndex].messages.push(message);
+        state.visibleChannels[channelIndex].messages.push(message);
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchActiveChannel.fulfilled, (state, action) => {
-      state.channelsData.push(transformToChannelData(action.payload));
-    });
+    builder
+      .addCase(fetchActiveChannel.fulfilled, (state, action) => {
+      state.activeChannel = transformToChannelData(action.payload);
+    })
+    // .addCase(fetchVisibleChannels.fulfilled, (state, action) => {
+    //   state.visibleChannels = action.payload.reduce(
+    //     (visibleChannels: ChannelData[], roomInfo: any) => {
+
+    //     return visibleChannels;
+    //   }, [])
+    // });
   },
 });
 
