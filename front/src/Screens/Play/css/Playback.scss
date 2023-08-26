@@ -4,13 +4,19 @@
     min-width: 400px;
     align-items: center;
 
+    .profile-infos-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 800px; /* Adjust this value as needed */
+    }
+
     .pong-sub-container {
         align-items: center;
         text-align: center;
         margin-top: 00px;
-        
         width: 85%;
-        // height: 600px;
     }
 
     .pong-game-canvas {

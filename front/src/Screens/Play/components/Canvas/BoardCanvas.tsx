@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { Board } from '../models/Board';
-import { GameProperties } from '../models/Properties';
+import { Board } from '../../models/Board';
+import { GameProperties } from '../../models/Properties';
 
 interface BoardCanvasProps {
   game: GameProperties;

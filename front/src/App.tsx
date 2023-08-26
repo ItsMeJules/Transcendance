@@ -10,9 +10,9 @@ import './Screens/UserProfile/css/UserProfile.scss'
 import './Screens/LeaderBoard/css/LeaderBoard.scss'
 import './Screens/Friends/css/friends.scss'
 import './Screens/JoinGame/css/loading.css'
-import './Screens/Play/css/play.scss'
 import './css/2faButton.scss'
-import './Screens/Play/css/playback.scss'
+import './Screens/Play/css/Playback.scss'
+import './Screens/Play/components/PlayersProfile/GamePlayersProfile.scss'
 import { Home } from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';
@@ -26,7 +26,6 @@ import LeaderBoard from './Screens/LeaderBoard/LeaderBoard';
 import GenericUserProfile from './Screens/UserProfile/GenericUserProfile';
 import UserFriends from './Screens/Friends/Friends';
 import Websocket from './Wrappers/Websocket';
-import { Play } from './Screens/Play/Play';
 import { TwoFa } from "./screens/2fa";
 import { render } from "@testing-library/react";
 import PlayBack from './Screens/Play/PlayBack';

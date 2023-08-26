@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Point, Vector } from "./components/Olds/BallOld";
 import { Ball } from "./models/Ball";
 import { Player } from "./models/Player";
 import { Paddle } from "./models/Paddle";
-import GameBoard from "./components/BoardCanvas";
+import GameBoard from "./components/Canvas/BoardCanvas";
 import { MDBContainer, MDBCard, MDBCardImage } from 'mdb-react-ui-kit';
-import BoardCanvas from "./components/BoardCanvas";
-import BallCanvas from "./components/BallCanvas";
-import PaddleCanvas from "./components/PaddleCanvas";
+import BoardCanvas from "./components/Canvas/BoardCanvas";
+import BallCanvas from "./components/Canvas/BallCanvas";
+import PaddleCanvas from "./components/Canvas/PaddleCanvas";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
 import { useNavigate } from "react-router-dom";
 import { Board } from "./models/Board";
@@ -15,7 +14,10 @@ import { GameProperties } from "./models/Properties";
 import { SocketPrepare } from "./models/socket.prepare";
 import getParseLocalStorage from "../../Utils/getParseLocalStorage";
 import { UserData } from "../../Services/User";
-import confettisAnimation from './components/confettis'
+import confettisAnimation from './components/Confettis/confettis'
+import ConfettisComponent from "./components/Confettis/ConfettisComponent";
+import LeftPlayerProfile from "./components/PlayersProfile/LeftPlayerProfile";
+import RightPlayerProfile from "./components/PlayersProfile/RightPlayerProfile";
 
 interface PlayBackProps {
   whichPlayer: number,
@@ -40,7 +42,6 @@ const PlayBack = () => {
   const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle2CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
-  const confettiCanvasRef = useRef(null);
   const socket = useWebsocketContext();
   const [whichPlayer, setWhichPlayer] = useState(0);
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
@@ -185,53 +186,17 @@ const PlayBack = () => {
     };
   }, []);
 
-  // Winner confettis animation
-  useEffect(() => {
-    if (confettiCanvasRef.current) {
-      confettisAnimation(confettiCanvasRef.current);
-    }
-  }, [game.isEnded]);
-
   return (
     <div className='pong-main-container'>
-      {game.isUserWinner && (
-        <canvas ref={confettiCanvasRef}
-          id="confettis"
-          style={{ position: 'absolute', zIndex: '2', width: '100%', height: '100%' }}></canvas>)}
 
+      <ConfettisComponent gameIsEnded={game.isEnded} userIsWinner={game.isUserWinner} />
 
-<div className='profile-infos-container'>
-        <MDBCard className="profile-game-card-l border">
-          <div className="profile-info">
-            {player1Data?.profilePicture ? (
-              <div className="profile-picture-l">
-                <img src={player1Data?.profilePicture} alt="User Profile" />
-              </div>
-            ) : (
-              <div>empty</div>
-            )}
-          </div>
-          <div className="profile-name">{player1Data?.username}</div>
-        </MDBCard>
-
-        <MDBCard className="profile-game-card-r border">
-          <div className="profile-info">
-            <div className="profile-name" title={player2Data?.username ? player2Data?.username : ""}>{player2Data?.username}</div>
-            {player2Data?.profilePicture ? (
-              <div className="profile-picture-r">
-                <img src={player2Data?.profilePicture} alt="User Profile" />
-              </div>
-            ) : (
-              <div>empty</div>
-            )}
-          </div>
-        </MDBCard>
-
+      <div className='profile-infos-container' style={{ width: `${game.board.width}px`}}>
+        <LeftPlayerProfile player1Data={player1Data}/>
+        <RightPlayerProfile player2Data={player2Data}/>
       </div>
 
-
-      <div className="pong-sub-container text-white border">
-        <div style={{ height: '30px', marginBottom: '10px', marginTop: '0px' }}>
+      <div style={{ height: '30px', marginBottom: '10px', marginTop: '0px' }}>
           {!game.isPlaying && !isPlayerReady &&
             <button className="text-white" onClick={handleReadyClick} >
               {centralText}
@@ -241,6 +206,9 @@ const PlayBack = () => {
               {centralText}
             </div>}
         </div>
+
+      <div className="pong-sub-container text-white border">
+        
 
         <div className="pong-game-canvas" style={{ height: `${game.board.height + 80}px` }}>
           <canvas ref={boardCanvasRef as React.RefObject<HTMLCanvasElement>} id="boardCanvas" width={game.board.width} height={game.board.height} className="canvas-container-board" />
