@@ -1,3 +1,4 @@
+import React from 'react';
 import { MDBCard } from 'mdb-react-ui-kit';
 import { UserData } from '../../../../Services/User';
 
@@ -8,7 +9,7 @@ interface LeftPlayerProfileProps {
 const LeftPlayerProfile: React.FC<LeftPlayerProfileProps> = ({ player1Data }) => {
 
   return (
-    <MDBCard className="profile-game-card-l border">
+    <MDBCard className="profile-game-card-l">
       {player1Data?.profilePicture ? (
         <div className="profile-picture">
           <img src={player1Data?.profilePicture} alt="User Profile" />

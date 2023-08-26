@@ -522,7 +522,7 @@ export class GameStruct {
 
   scorePoint(winner: number) {
     // set to 11
-    let maxScore = 1;
+    let maxScore = 100;
 
     if (winner === 2) {
       this.pl2.score += 1;

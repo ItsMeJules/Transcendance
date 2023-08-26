@@ -18,6 +18,7 @@ import confettisAnimation from './components/Confettis/confettis'
 import ConfettisComponent from "./components/Confettis/ConfettisComponent";
 import LeftPlayerProfile from "./components/PlayersProfile/LeftPlayerProfile";
 import RightPlayerProfile from "./components/PlayersProfile/RightPlayerProfile";
+import MainText from "./components/MainText/MainText";
 
 interface PlayBackProps {
   whichPlayer: number,
@@ -29,7 +30,7 @@ interface GameParams {
   ball: Ball;
 }
 
-interface GameSocket {
+export interface GameSocket {
   gameParams: GameParams;
   gameStatus: string;
   playerStatus: string;
@@ -53,17 +54,11 @@ const PlayBack = () => {
   const [gameState, setGameState] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
 
+  const [profileCardHeight, setProfileCardHeight] = useState(0);
   const [centralText, setCentralText] = useState('');
   const [giveUp, setGiveUp] = useState(false);
   const history = useNavigate();
 
-  const handleReadyClick = () => {
-    if (!isPlayerReady) {
-      setIsPlayerReady(true);
-      if (socket.game)
-        socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
-    }
-  };
 
   const handleQuitGame = () => {
     if (!giveUp) {
@@ -90,6 +85,15 @@ const PlayBack = () => {
       setWhichPlayer(1);
     else
       setWhichPlayer(2);
+
+    const element = document.getElementById("pong-canvas-container");
+    if (element) {
+      const computedStyle = window.getComputedStyle(element);
+      const elementHeight = computedStyle.height;
+      console.log('elementheight:', elementHeight);
+    }
+    // Retrieve the height value
+
   }, []);
 
   // Sockets on
@@ -97,7 +101,7 @@ const PlayBack = () => {
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
     socket.game?.on('prepareToPlay', (data) => {
       setSocketPrepare(data);
-      // console.log('DATA PREPARE', data);
+      console.log('DATA PREPARE', data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
       console.log('DATA game', data);
@@ -142,7 +146,7 @@ const PlayBack = () => {
 
   // Prepare useEffect
   useEffect(() => {
-    // console.log('socketData:', socketPrepare);
+    console.log('socketData:', socketPrepare);
     if (socketPrepare?.gameStatus === 'pending' || socketPrepare?.playerStatus === 'pending') {
       setCentralText('Ready?');
     } else if (socketPrepare?.gameStatus === 'waiting'
@@ -191,26 +195,22 @@ const PlayBack = () => {
 
       <ConfettisComponent gameIsEnded={game.isEnded} userIsWinner={game.isUserWinner} />
 
-      <div className='profile-infos-container' style={{ width: `${game.board.width}px`}}>
-        <LeftPlayerProfile player1Data={player1Data}/>
-        <RightPlayerProfile player2Data={player2Data}/>
-      </div>
+      <article className='profile-infos-container glow-border' id='profile-card' style={{ width: `${game.board.width}px` }}>
+        <LeftPlayerProfile player1Data={player1Data} />
+        <div className="versus-text" style={{ verticalAlign: 'center' }}>VS</div>
+        <RightPlayerProfile player2Data={player2Data} />
+      </article>
 
-      <div style={{ height: '30px', marginBottom: '10px', marginTop: '0px' }}>
-          {!game.isPlaying && !isPlayerReady &&
-            <button className="text-white" onClick={handleReadyClick} >
-              {centralText}
-            </button>}
-          {!game.isPlaying && isPlayerReady &&
-            <div className="text-white">
-              {centralText}
-            </div>}
-        </div>
 
-      <div className="pong-sub-container text-white border">
-        
 
-        <div className="pong-game-canvas" style={{ height: `${game.board.height + 80}px` }}>
+      <div className="pong-sub-container text-white">
+
+
+        <div className="pong-game-canvas" id='pong-canvas-container' style={{ height: `${game.board.height + 80}px` }}>
+          <MainText textToDisplay={centralText} socket={socket.game}
+            whichPlayer={whichPlayer} gameIsPlaying={game.isPlaying}
+            isPlayerReady={isPlayerReady} game={game}
+            elementHeight={profileCardHeight} gameStatus={socketPrepare?.gameStatus} />
           <canvas ref={boardCanvasRef as React.RefObject<HTMLCanvasElement>} id="boardCanvas" width={game.board.width} height={game.board.height} className="canvas-container-board" />
           <canvas ref={ballCanvasRef as React.RefObject<HTMLCanvasElement>} id="ballCanvas" width={game.board.width} height={game.board.height} className="canvas-container-ball" />
           <canvas ref={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" />

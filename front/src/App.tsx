@@ -13,6 +13,7 @@ import './Screens/JoinGame/css/loading.css'
 import './css/2faButton.scss'
 import './Screens/Play/css/Playback.scss'
 import './Screens/Play/components/PlayersProfile/GamePlayersProfile.scss'
+import './Screens/Play/components/MainText/MainText.scss'
 import { Home } from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';

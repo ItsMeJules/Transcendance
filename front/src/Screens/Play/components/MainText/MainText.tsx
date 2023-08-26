@@ -1,13 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Socket } from 'socket.io-client';
+import { Board } from '../../models/Board';
+import { GameProperties } from '../../models/Properties';
+import { GameSocket } from '../../PlayBack';
 
 interface MainTextProps {
   textToDisplay: string;
+  socket: Socket | null;
+  whichPlayer: number;
+  gameIsPlaying: boolean;
+  isPlayerReady: boolean;
+  game: GameProperties;
+  gameStatus: string | undefined;
+  elementHeight: number | null;
 }
 
-const MainText: React.FC<MainTextProps> = ({ textToDisplay}) => {
+const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer, gameIsPlaying, isPlayerReady, game, gameStatus, elementHeight }) => {
+  const [isPlayerReadyComponent, setIsPlayerReadyComponent] = useState(false);
+  const [finalPlayerReady, setFinalPlayerReady] = useState(false);
+
+  const handleReadyClick = () => {
+    if (!isPlayerReady) {
+      setIsPlayerReadyComponent(true);
+      if (socket)
+        socket?.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
+    }
+  };
+
+  useEffect(() => {
+    if (isPlayerReady || isPlayerReadyComponent)
+      setFinalPlayerReady(true);
+  }, [isPlayerReady, isPlayerReadyComponent]);
 
   return (
-    <div></div>
+    <article className='main-text-container'
+      style={{
+        marginTop: `-${game.board.height / 2 - 20}px`,
+        maxWidth: `${game.board.width -100}px` }}>
+      {gameStatus === 'pending' && !finalPlayerReady &&
+        <button className="text-button-style" onClick={handleReadyClick} 
+        style={{ maxWidth: `${game.board.width -100}px` }}>
+          {textToDisplay}
+        </button>}
+
+      {!gameIsPlaying && finalPlayerReady &&
+        <section className="text-container-style">
+          {textToDisplay}
+        </section>}
+
+    </article>
   );
 }
 

@@ -1,59 +1,78 @@
 .pong-main-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 400px;
+  align-items: center;
+
+  .profile-infos-container {
     display: flex;
-    flex-direction: column;
-    min-width: 400px;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+
+    .versus-text {
+      text-align: center;
+      font-weight: bold;
+      font-family: "dune", Arial, sans-serif;
+      color: white;
+      -webkit-text-fill-color: transparent;
+      animation: glow-text-animation 2s infinite;
+    }
+  }
+
+  .pong-sub-container {
     align-items: center;
+    text-align: center;
+    margin-top: 00px;
+    width: 85%;
+  }
 
-    .profile-infos-container {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      width: 100%;
-      max-width: 800px; /* Adjust this value as needed */
+  .pong-game-canvas {
+    position: relative;
+    display: flex;
+    top: 50;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    top: 50px;
+  }
+
+  @mixin canvas-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+
+  .canvas-container-board {
+    @include canvas-container();
+    z-index: 1;
+  }
+
+  .canvas-container-ball {
+    @include canvas-container();
+    z-index: 2;
+  }
+
+  .canvas-container-paddle {
+    @include canvas-container();
+    z-index: 3;
+  }
+
+  @keyframes glow-text-animation {
+    0% {
+      text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
     }
-
-    .pong-sub-container {
-        align-items: center;
-        text-align: center;
-        margin-top: 00px;
-        width: 85%;
+    50% {
+      text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
     }
-
-    .pong-game-canvas {
-        position: relative;
-        display: flex;
-        top: 50;
-        left: 50%;
-        transform: translateX(-50%);
-        align-items: center;
-        align-content: center;
-        justify-content: center;
-        top: 50px;
+    100% {
+      text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
     }
+  }
 
-    @mixin canvas-container {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1;
-    }
-
-    .canvas-container-board {
-        @include canvas-container();
-        z-index: 1;
-    }
-
-    .canvas-container-ball {
-        @include canvas-container();
-        z-index: 2;
-    }
-
-    .canvas-container-paddle {
-        @include canvas-container();
-        z-index: 3;
-    }
-
-
-    
 }

@@ -118,8 +118,6 @@ export class PongEvents {
         player2socket.data.room = `game_${game.prop.id}`;
         player2socket.data.gameId = game.prop.id;
       }
-
-
     }
   }
 
@@ -208,20 +206,7 @@ export class PongEvents {
           playerStatus: player.status,
           opponentStatus: opponent.status
         });
-      // Countdown activity
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-      // gameStruct.prop.countdown = 3;
-      // this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.prop.countdown });
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-      // gameStruct.prop.countdown = 2;
-      // this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.prop.countdown });
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-      // gameStruct.prop.countdown = 1;
-      // this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.prop.countdown });
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-      // gameStruct.prop.countdown = 0;
-      // this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: 'GO!' });
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      await this.launchCountdown(gameStruct);
 
       gameStruct.prop.status = 'playing';
       gameStruct.pl1.status = 'playing';
@@ -291,7 +276,7 @@ export class PongEvents {
         player.isMoving = false;
         player.movingDir = '';
       }
-      return; 
+      return;
     }
   }
 
@@ -331,7 +316,29 @@ export class PongEvents {
     }
   }
 
-
+  async launchCountdown(gameStruct: GameStruct) {
+    for (let i = 3; i >= 0; i--) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (i > 0)
+        this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: i });
+      else
+        this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: 'GO' });
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    //   gameStruct.prop.countdown = 3;
+    //   this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.prop.countdown });
+    //   await new Promise((resolve) => setTimeout(resolve, 1000));
+    //   gameStruct.prop.countdown = 2;
+    //   this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.prop.countdown });
+    //   await new Promise((resolve) => setTimeout(resolve, 1000));
+    //   gameStruct.prop.countdown = 1;
+    //   this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.prop.countdown });
+    //   await new Promise((resolve) => setTimeout(resolve, 1000));
+    //   gameStruct.prop.countdown = 0;
+    //   this.server.to(gameStruct.prop.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: 'GO!' });
+    //   await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
 
 
 }

@@ -9,7 +9,7 @@ interface RightPlayerProfileProps {
 const RightPlayerProfile: React.FC<RightPlayerProfileProps> = ({ player2Data }) => {
 
   return (
-    <MDBCard className="profile-game-card-r border">
+    <MDBCard className="profile-game-card-r">
       <article className='player-profile-information-r'>
         <section className="player-profile-name" title={player2Data?.username ? player2Data?.username : ""}>
           {player2Data?.username}
