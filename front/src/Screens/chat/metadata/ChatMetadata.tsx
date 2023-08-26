@@ -20,7 +20,7 @@ export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false)
   const [popupType, setPopupActive] = useState<PopupType | null>(null)
 
-  const{ activeChannel } = useAppSelector(store => store.channels)
+  const { activeChannel } = useAppSelector(store => store.channels)
 
   const handleMoreClick = () => {
     if (!isMoreActive)
@@ -60,7 +60,9 @@ export default function ChatMetadata() {
       </OutsideClickHandler>
 
       <div className="channel-manager">
-        <ChannelManager channelData={activeChannel} />
+        {activeChannel
+          ? <ChannelManager channelData={activeChannel} />
+          : undefined}
       </div>
 
       <div className="channel-icon">

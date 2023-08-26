@@ -8,7 +8,7 @@ import { JwtGuard } from 'src/auth/guard';
 @UseGuards(JwtGuard)
 @Controller('chat')
 export class ChatController {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   @Get('visible-rooms')
   async getActiveRooms(@GetUser() user: User): Promise<RoomInfo[]> {

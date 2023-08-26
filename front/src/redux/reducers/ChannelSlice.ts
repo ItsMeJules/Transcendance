@@ -3,10 +3,11 @@ import axios from "axios";
 
 import { ChannelData, ChannelMessageData, ChannelType, transformToChannelData } from "../../Screens/chat/models/Channel";
 import { API_ROUTES } from "../../Utils";
+import { ChannelInfoInList } from "../../Screens/chat/models/partial/PartialModels";
 
 interface ChannelDataState {
   activeChannel: ChannelData | null,
-  visibleChannels: ChannelData[];
+  visibleChannels: ChannelInfoInList[];
 }
 
 const initialState: ChannelDataState = {
@@ -55,12 +56,8 @@ const channelSlice = createSlice({
     setPassword: (state, action: PayloadAction<string>) => {
       // state.channelData.password = action.payload;
     },
-    addMessage: (state, action: PayloadAction<{ channelName: string; message: ChannelMessageData }>) => {
-      const { channelName, message } = action.payload;
-      const channelIndex = findChannelIdndex(state, channelName);
-
-      if (channelIndex !== -1)
-        state.visibleChannels[channelIndex].messages.push(message);
+    addMessageToActiveChannel: (state, action: PayloadAction<ChannelMessageData>) => {
+      state.activeChannel?.messages.push(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -78,5 +75,5 @@ const channelSlice = createSlice({
   },
 });
 
-export const { setType, setName, setPassword, addMessage } = channelSlice.actions;
+export const { setType, setName, setPassword, addMessageToActiveChannel } = channelSlice.actions;
 export default channelSlice.reducer;

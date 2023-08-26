@@ -8,7 +8,7 @@ import Popup from "../../../utils/Popup";
 import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
 
 interface ChannelPopupProps {
-  channelData: ChannelData | null
+  channelData: ChannelData
 }
 
 const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProps) => {

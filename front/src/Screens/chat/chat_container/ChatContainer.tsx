@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 import { useWebsocketContext } from "../../../Wrappers/Websocket";
 import { useAppDispatch, useAppSelector } from "../../../redux/Store";
-import { addMessage, findChannelByName } from "../../../redux/reducers/ChannelSlice";
+import { addMessageToActiveChannel } from "../../../redux/reducers/ChannelSlice";
 import { ChatSocketEventType } from "../ChatBox";
 import { ChannelMessageData } from "../models/Channel";
 import { ChatMessageData } from "../models/ChatMessageData";
@@ -15,17 +15,8 @@ const ChatContainer: React.FC = () => {
   const dispatch = useAppDispatch()
   const { id: userId, currentRoom: activeChannelName } = useAppSelector(store => store.user.userData)
 
-  const messages: ChannelMessageData[] = useAppSelector(store => {
-    if (activeChannelName === null)
-      return []
-
-    const channel = findChannelByName(store.channels, activeChannelName)
-    if (channel)
-      return channel.messages
-
-    return []
-  })
-  const chatMessages = messages.reduce((chatMessages: ChatMessageData[], message: any) => {
+  const messages: ChannelMessageData[] | undefined = useAppSelector(store => store.channels.activeChannel?.messages)
+  const chatMessages = messages?.reduce((chatMessages: ChatMessageData[], message: any) => {
     chatMessages.push({
       message: message.text,
       self: message.authorId === userId,
@@ -42,7 +33,7 @@ const ChatContainer: React.FC = () => {
       if (activeChannelName === null)
         return
 
-      dispatch(addMessage({ channelName: activeChannelName, message: payload }))
+      dispatch(addMessageToActiveChannel(payload))
     };
 
     chatSocket?.on(ChatSocketEventType.MESSAGE, onNewMessage)
@@ -58,7 +49,9 @@ const ChatContainer: React.FC = () => {
 
   return (
     <div className="messages-container">
-      <ChatMessage messagesReceived={chatMessages} />
+      {chatMessages !== undefined
+        ? <ChatMessage messagesReceived={chatMessages} />
+        : undefined}
       <div ref={messagesEndRef} />
     </div>
   );
