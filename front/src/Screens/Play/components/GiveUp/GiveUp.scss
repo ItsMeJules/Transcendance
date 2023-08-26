@@ -1,0 +1,25 @@
+.give-up-main-container {
+  z-index: 100000;
+
+  .give-up-button-text {
+    font-weight: bold;
+    font-family: "dune", Arial, sans-serif;
+    color: white;
+    -webkit-text-fill-color: transparent;
+    animation: glow-text-animation-soft 4s infinite;
+  }
+}
+
+@keyframes glow-text-animation-soft {
+  0% {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
+  }
+
+  50% {
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.6);
+  }
+
+  100% {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
+  }
+}

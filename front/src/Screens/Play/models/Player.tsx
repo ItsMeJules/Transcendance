@@ -7,6 +7,7 @@ export class Player {
     public num: number;
     public pad: Paddle;
     public isWinner = false;
+    public score = 0;
   
     constructor(board: Board, number: number) {
       this.num = number;

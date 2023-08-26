@@ -19,6 +19,8 @@ import ConfettisComponent from "./components/Confettis/ConfettisComponent";
 import LeftPlayerProfile from "./components/PlayersProfile/LeftPlayerProfile";
 import RightPlayerProfile from "./components/PlayersProfile/RightPlayerProfile";
 import MainText from "./components/MainText/MainText";
+import GiveUp from "./components/GiveUp/GiveUp";
+import ScoreBoard from "./components/ScoreBoard/ScoreBoard";
 
 interface PlayBackProps {
   whichPlayer: number,
@@ -36,7 +38,15 @@ export interface GameSocket {
   playerStatus: string;
   opponentStatus: string;
   time: number;
+  countdown: string;
 }
+
+// export interface SocketPrepare {
+//   gameStatus: string;
+//   playerStatus: string;
+//   opponentStatus: string;
+//   countdown: string;
+// }
 
 const PlayBack = () => {
   const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
@@ -50,27 +60,14 @@ const PlayBack = () => {
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isOpponentReady, setIsOpponentReady] = useState(false);
 
-  const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
+  // const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameState, setGameState] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
+  const [gameStatus, setGameStatus] = useState('');
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
   const [centralText, setCentralText] = useState('');
-  const [giveUp, setGiveUp] = useState(false);
   const history = useNavigate();
-
-
-  const handleQuitGame = () => {
-    if (!giveUp) {
-      setGiveUp(true);
-      const interval = setInterval(() => {
-        setGiveUp(false);
-        clearInterval(interval);
-      }, 3000);
-    } else if (giveUp && socket.game) {
-      socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'giveUp' });
-    }
-  };
 
   // Data parsing
   useEffect(() => {
@@ -90,7 +87,7 @@ const PlayBack = () => {
     if (element) {
       const computedStyle = window.getComputedStyle(element);
       const elementHeight = computedStyle.height;
-      console.log('elementheight:', elementHeight);
+      // console.log('elementheight:', elementHeight);
     }
     // Retrieve the height value
 
@@ -100,7 +97,7 @@ const PlayBack = () => {
   useEffect(() => {
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
     socket.game?.on('prepareToPlay', (data) => {
-      setSocketPrepare(data);
+      setGameState(data);
       console.log('DATA PREPARE', data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
@@ -112,17 +109,22 @@ const PlayBack = () => {
   // Game useEffect
   useEffect(() => {
     console.log('gamestate:', gameState);
+    if (gameState?.gameStatus) {
+      setGameStatus(gameState?.gameStatus);
+      game.pl1.score = gameState.gameParams.pl1.score === -1 ? 0 : gameState.gameParams.pl1.score;
+      game.pl2.score = gameState.gameParams.pl2.score === -1 ? 0 : gameState.gameParams.pl2.score;
+      setGame({ ...game });
+    }
     if (gameState?.gameStatus === 'giveUp') {
       game.isPlaying = false;
-      // console.log('gameState in giveup:');
       if (gameState.gameParams.pl1.status === 'givenUp') {
         whichPlayer === 1 ? setCentralText('You gave up!') :
-          setCentralText('Your oponent gave up!');
+          setCentralText('Your opponent gave up!');
         game.isEnded = true;
         setGame({ ...game, isEnded: true });
       } else if (gameState.gameParams.pl2.status === 'givenUp') {
         whichPlayer === 2 ? setCentralText('You gave up!') :
-          setCentralText('Your oponent gave up!');
+          setCentralText('Your opponent gave up!');
         game.isEnded = true;
         setGame({ ...game, isEnded: true });
       }
@@ -140,41 +142,41 @@ const PlayBack = () => {
       game.ball.updateBall(game.board, gameState.gameParams.ball);
       game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
       game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
-      // console.log('refreshed ball:', game.ball);
     }
   }, [gameState]);
 
   // Prepare useEffect
   useEffect(() => {
-    console.log('socketData:', socketPrepare);
-    if (socketPrepare?.gameStatus === 'pending' || socketPrepare?.playerStatus === 'pending') {
+    console.log('socketDataPrepare:', gameState);
+    if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);
+    if (gameState?.gameStatus === 'pending' || gameState?.playerStatus === 'pending') {
       setCentralText('Ready?');
-    } else if (socketPrepare?.gameStatus === 'waiting'
-      && socketPrepare.playerStatus === 'ready'
-      && socketPrepare.opponentStatus === 'pending') {
+    } else if (gameState?.gameStatus === 'waiting'
+      && gameState.playerStatus === 'ready'
+      && gameState.opponentStatus === 'pending') {
       setIsPlayerReady(true);
       setCentralText('Waiting for opponent');
-    } else if (socketPrepare?.gameStatus === 'countdown') {
+    } else if (gameState?.gameStatus === 'countdown') {
       setIsOpponentReady(true);
-      if (socketPrepare.countdown) {
-        setCentralText(socketPrepare.countdown);
+      if (gameState.countdown) {
+        setCentralText(gameState.countdown);
       } else
         setCentralText('Get ready!');
-    } else if (socketPrepare?.gameStatus === 'noGame') {
+    } else if (gameState?.gameStatus === 'noGame') {
       history('/test');
-    } else if (socketPrepare?.gameStatus === 'timeout') {
+    } else if (gameState?.gameStatus === 'timeout') {
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
         history('/test');
       }, 3 * 1000);
-    } else if (socketPrepare?.gameStatus === 'playing') {
+    } else if (gameState?.gameStatus === 'playing') {
       socket.game?.off('prepareToPlay'); // dont off and use for status?
       game.isPlaying = true;
       setGame({ ...game, isPlaying: true });
       // socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'refreshInMotion' });
     }
     return;
-  }, [socketPrepare]);
+  }, [gameState]);
 
   // Window resizing
   useEffect(() => {
@@ -201,16 +203,15 @@ const PlayBack = () => {
         <RightPlayerProfile player2Data={player2Data} />
       </article>
 
+    <ScoreBoard game={game}/>
 
 
       <div className="pong-sub-container text-white">
-
-
         <div className="pong-game-canvas" id='pong-canvas-container' style={{ height: `${game.board.height + 80}px` }}>
           <MainText textToDisplay={centralText} socket={socket.game}
             whichPlayer={whichPlayer} gameIsPlaying={game.isPlaying}
             isPlayerReady={isPlayerReady} game={game}
-            elementHeight={profileCardHeight} gameStatus={socketPrepare?.gameStatus} />
+            elementHeight={profileCardHeight} gameStatus={gameStatus} />
           <canvas ref={boardCanvasRef as React.RefObject<HTMLCanvasElement>} id="boardCanvas" width={game.board.width} height={game.board.height} className="canvas-container-board" />
           <canvas ref={ballCanvasRef as React.RefObject<HTMLCanvasElement>} id="ballCanvas" width={game.board.width} height={game.board.height} className="canvas-container-ball" />
           <canvas ref={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" />
@@ -222,10 +223,8 @@ const PlayBack = () => {
         <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
       </div>
 
-      {!game.isEnded &&
-        <button className="text-white" onClick={handleQuitGame} style={{ zIndex: '10' }}>
-          {giveUp ? 'Confirm by clicking again' : 'Give up?'}
-        </button >}
+      <GiveUp socket={socket.game} whichPlayer={whichPlayer} gameIsEnded={game.isEnded}></GiveUp>
+
     </div >
   );
 

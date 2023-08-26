@@ -24,7 +24,6 @@
   .pong-sub-container {
     align-items: center;
     text-align: center;
-    margin-top: 00px;
     width: 85%;
   }
 
@@ -37,7 +36,7 @@
     align-items: center;
     align-content: center;
     justify-content: center;
-    top: 50px;
+    // top: 50px;
   }
 
   @mixin canvas-container {

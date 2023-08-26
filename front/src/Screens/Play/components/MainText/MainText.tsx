@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { Board } from '../../models/Board';
 import { GameProperties } from '../../models/Properties';
-import { GameSocket } from '../../PlayBack';
 
 interface MainTextProps {
   textToDisplay: string;
@@ -43,7 +41,7 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
           {textToDisplay}
         </button>}
 
-      {!gameIsPlaying && finalPlayerReady &&
+      {((!gameIsPlaying && finalPlayerReady) || gameStatus === 'giveUp') &&
         <section className="text-container-style">
           {textToDisplay}
         </section>}

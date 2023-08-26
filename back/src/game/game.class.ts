@@ -47,6 +47,16 @@ export class GameStruct {
     this.winner = null;
     this.loser = null;
     this.board.updatePointsAndCollisionParameters(this.pl1.pad);
+    this.sendParametersOnCreation();
+  }
+
+  sendParametersOnCreation() {
+    const data = {
+      gamsStatus: this,
+      status: 'START',
+      player1: this.pl1, player2: this.pl2 };
+    this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
+    this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
   }
 
   async startGameLoop() {
@@ -522,7 +532,7 @@ export class GameStruct {
 
   scorePoint(winner: number) {
     // set to 11
-    let maxScore = 100;
+    let maxScore = 11;
 
     if (winner === 2) {
       this.pl2.score += 1;

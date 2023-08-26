@@ -1,0 +1,29 @@
+.score-main-container {
+  display: flex;
+  flex-direction: column;
+  vertical-align: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: white;
+  font-size: clamp(10px, 3vw, 30px);
+  font-weight: bold;
+  font-family: "dune", Arial, sans-serif;
+  -webkit-text-fill-color: transparent;
+  animation: glow-text-animation-score-board 10s infinite;
+}
+
+@keyframes glow-text-animation-score-board {
+  0% {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+  }
+
+  50% {
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.6);
+  }
+
+  100% {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+  }
+}
