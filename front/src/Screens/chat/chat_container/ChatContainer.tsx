@@ -25,7 +25,7 @@ const ChatContainer: React.FC = () => {
 
     return []
   })
-  let chatMessages = messages.reduce((chatMessages: ChatMessageData[], message: any) => {
+  const chatMessages = messages.reduce((chatMessages: ChatMessageData[], message: any) => {
     chatMessages.push({
       message: message.text,
       self: message.authorId === userId,

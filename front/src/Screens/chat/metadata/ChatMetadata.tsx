@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import PublicIcon from "../assets/globe.png"
-import ProtectedIcon from "../assets/padlock.png"
-import PrivateIcon from "../assets/private.png"
+import PublicIcon from "../assets/globe.png";
+import ProtectedIcon from "../assets/padlock.png";
+import PrivateIcon from "../assets/private.png";
 
-import MorePopup from "./more/MorePopup";
-import ChannelManager from "./channel_manager/ChannelManager";
-import { Channel, ChannelData, ChannelType } from "../models/Channel";
-import OutsideClickHandler from "../utils/OutsideClickHandler";
 import { useAppSelector } from "../../../redux/Store";
 import { findChannelByName } from "../../../redux/reducers/ChannelSlice";
+import { ChannelData, ChannelType } from "../models/Channel";
+import OutsideClickHandler from "../utils/OutsideClickHandler";
+import ChannelManager from "./channel_manager/ChannelManager";
+import MorePopup from "./more/MorePopup";
 
 export enum PopupType {
   CHANNEL = "channel",

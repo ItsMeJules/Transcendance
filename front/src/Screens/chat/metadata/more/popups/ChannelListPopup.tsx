@@ -4,11 +4,7 @@ import Popup from "../../../utils/Popup"
 import { Channel, ChannelType } from "../../../models/Channel";
 import ChannelsList from "../../../utils/ChannelsList";
 
-interface ChannelListPopupProps {
-  channels: Channel[]
-}
-
-export default function ChannelListPopup({ channels }: ChannelListPopupProps) {
+export default function ChannelListPopup() {
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
   const [passwordValue, setPasswordValue] = useState<string>("");
 

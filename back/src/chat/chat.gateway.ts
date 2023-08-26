@@ -1,28 +1,26 @@
 import {
+  ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  SubscribeMessage,
-  MessageBody,
-  ConnectedSocket,
 } from '@nestjs/websockets';
+import { User } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
 import { ChatService } from './chat.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PayloadActionDto } from './dto';
 import {
   ActionChatHandlers,
   ActionRoomHandlers,
 } from './handlers/handlers.map';
-import { Payload } from '@prisma/client/runtime/library';
-import { PayloadActionDto } from './dto';
-import { User } from '@prisma/client';
 
 export enum ChatSocketEventType {
-  JOIN_ROOM = "join-room",
-  MESSAGE = "message",
-  CHAT_ACTION = "chat-action",
-  ROOM_ACTION = "room-action",
+  JOIN_ROOM = 'join-room',
+  MESSAGE = 'message',
+  CHAT_ACTION = 'chat-action',
+  ROOM_ACTION = 'room-action',
 }
 
 // @UseGuards(JwtGuard) // add jwt guard for chat auth
@@ -34,7 +32,7 @@ export class ChatEventsGateway {
   constructor(
     private authService: AuthService,
     private chatService: ChatService,
-  ) { }
+  ) {}
 
   private async setupConnection(client: Socket): Promise<User | null> {
     console.log('> chat connection in');
@@ -59,28 +57,41 @@ export class ChatEventsGateway {
   }
 
   async handleConnection(client: Socket): Promise<void> {
-    const user = this.setupConnection(client)
+    const user = this.setupConnection(client);
 
     user
-      .then(async user => {
+      .then(async (user) => {
         await client.join(user.currentRoom);
 
-        const dto = { roomName: user.currentRoom, server: this.server }
-        const messagesWithClientId = await this.chatService.fetchMessagesOnRoomForUser(client, dto);
+        const dto = { roomName: user.currentRoom, server: this.server };
+        const messagesWithClientId =
+          await this.chatService.fetchMessagesOnRoomForUser(client, dto);
 
-        const payload = { currentRoom: user.currentRoom, messages: messagesWithClientId }
+        const payload = {
+          currentRoom: user.currentRoom,
+          messages: messagesWithClientId,
+        };
         this.server.to(client.id).emit(ChatSocketEventType.JOIN_ROOM, payload);
 
-        console.log("Emitting to client: ", client.id, "\n\tpayload: ", payload)
+        console.log(
+          'Emitting to client: ',
+          client.id,
+          '\n\tpayload: ',
+          payload,
+        );
       })
-      .catch(reason => console.log(reason))
+      .catch((reason) => console.log(reason));
   }
 
   handleDisconnect(client: Socket): void {
     delete this.userSockets[client.data.id];
     client.off(ChatSocketEventType.MESSAGE, () => console.log('chat !'));
-    client.off(ChatSocketEventType.CHAT_ACTION, () => console.log('chat action !'));
-    client.off(ChatSocketEventType.ROOM_ACTION, () => console.log('room action !'));
+    client.off(ChatSocketEventType.CHAT_ACTION, () =>
+      console.log('chat action !'),
+    );
+    client.off(ChatSocketEventType.ROOM_ACTION, () =>
+      console.log('room action !'),
+    );
   }
 
   @SubscribeMessage(ChatSocketEventType.MESSAGE)
@@ -104,7 +115,11 @@ export class ChatEventsGateway {
     console.log(payload);
 
     const updatedPayload = { ...payload, server: this.server };
-    await ActionChatHandlers[payload.action](this.chatService, client, updatedPayload);
+    await ActionChatHandlers[payload.action](
+      this.chatService,
+      client,
+      updatedPayload,
+    );
   }
 
   @SubscribeMessage(ChatSocketEventType.ROOM_ACTION)
@@ -113,7 +128,10 @@ export class ChatEventsGateway {
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
     const updatedPayload = { ...payload, server: this.server };
-    await ActionRoomHandlers[payload.action](this.chatService, client, updatedPayload);
-
+    await ActionRoomHandlers[payload.action](
+      this.chatService,
+      client,
+      updatedPayload,
+    );
   }
 }

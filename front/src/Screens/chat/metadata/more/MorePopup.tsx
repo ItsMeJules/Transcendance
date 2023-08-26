@@ -2,10 +2,9 @@ import React from "react";
 
 import Popup from "../../utils/Popup";
 import { PopupType } from "../ChatMetadata";
+import AllUsersPopup from "./popups/AllUsersPopup";
 import ChannelCreationPopup from "./popups/ChannelCreationPopup";
 import ChannelListPopup from "./popups/ChannelListPopup";
-import { Channel } from "../../models/Channel";
-import AllUsersPopup from "./popups/AllUsersPopup";
 
 interface MorePopupProps {
   popupType: PopupType | null;
@@ -36,7 +35,7 @@ export default function MorePopup({ popupType, setPopupActive }: MorePopupProps)
 
       {popupType === PopupType.CHANNEL && <ChannelCreationPopup />}
       {popupType === PopupType.ALL_USERS && <AllUsersPopup />}
-      {/* {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup channels={channels} />} */}
+      {popupType === PopupType.CHANNEL_LIST && <ChannelListPopup />}
     </Popup>
   );
 }

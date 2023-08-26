@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaClient, User, Room, Message } from '@prisma/client';
+import { PrismaClient, User, Room, Message, RoomType } from '@prisma/client';
+import { RoomInfo } from 'src/chat/partial_types/partial.types';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
 @Injectable()
@@ -41,6 +42,57 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       where: { id: userId },
       include: { friends: true },
     });
+  }
+
+  async returnUserVisibleRooms(userId: number): Promise<RoomInfo[]> {
+    try {
+      const user = await this.returnCompleteUser(userId);
+      const activeRoomsId = user.activeRooms.map((room) => room.id);
+
+      const rooms = await this.room.findMany({
+        where: {
+          OR: [
+            {
+              id: {
+                in: activeRoomsId,
+              },
+            },
+            {
+              AND: [
+                {
+                  NOT: {
+                    id: {
+                      in: activeRoomsId,
+                    },
+                  },
+                },
+                {
+                  type: {
+                    not: RoomType.PRIVATE,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        select: {
+          name: true,
+          type: true,
+          usersOnRoom: true,
+        },
+        orderBy: { createdAt: 'asc' },
+      });
+
+      const roomsInfo = rooms.map((room) => ({
+        name: room.name,
+        type: room.type,
+        userCount: room.usersOnRoom.length,
+      }));
+
+      return roomsInfo;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async returnCompleteRoom(roomName: string): Promise<CompleteRoom> {
