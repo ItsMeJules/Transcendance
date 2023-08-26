@@ -7,6 +7,8 @@ import AuthenticationHeader from './components/AuthentificationHeader';
 import ErrorMessage from './components/ErrorMessage';
 import AuthentificationForm from './components/AuthentificationForm';
 
+import './css/AuthentificationForm.scss';
+
 export const Auth2factor = () => {
   const errRef = useRef<HTMLParagraphElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);

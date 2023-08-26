@@ -7,6 +7,9 @@ import ToastError from "layout/ToastError/ToastError";
 import User from "services/User/User";
 import { UserData } from "services/User/User";
 
+import './css/UserProfile.scss';
+import './css/ProgressBar.scss';
+
 import ProfileCard from "./components/ProfileCard";
 import UserProfileContainer from "./components/UserProfileContainer";
 

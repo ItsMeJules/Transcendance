@@ -5,6 +5,8 @@ import { APP_ROUTES, API_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import ToastError from "layout/ToastError/ToastError";
 
+import './Signin.scss'
+
 export const Signin = () => {
   const history = useNavigate();
   const [email, setEmail] = useState('');
@@ -162,14 +164,6 @@ export const Signin = () => {
           </div>
         </div>
       </div>
-
-      <div id="toast">
-        <div id="img">
-          <img src='/images/error.png' alt="Error" />
-        </div>
-        <div id="desc">{errMsg}</div>
-      </div>
-
       <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div >
   )

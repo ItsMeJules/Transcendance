@@ -14,6 +14,8 @@ import FriendsHeader from "./Components/FriendsHeader";
 import UserProfileList from "./Components/UserProfileList";
 import FriendsContainer from "./Components/FriendsContainer";
 
+import './css/friends.scss';
+
 const UserFriends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
