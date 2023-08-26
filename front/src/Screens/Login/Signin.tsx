@@ -4,6 +4,8 @@ import axios from "axios";
 import { APP_ROUTES, API_ROUTES } from "../../Utils/constants";
 import { GlowTextSignin } from "../../Utils";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
+import { useAppDispatch } from "../../redux/Hooks";
+import { setUser } from "../../redux/slices/UserReducer";
 
 export const Signin = () => {
   const history = useNavigate();
@@ -11,6 +13,7 @@ export const Signin = () => {
   const [password, setPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
+  const dispatchUser = useAppDispatch()
 
   function RequestURI42() {
     console.log("ok");
@@ -54,7 +57,7 @@ export const Signin = () => {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         })
-      localStorage.setItem('userData', JSON.stringify(response.data));
+      dispatchUser(setUser(response.data))
       // User.getInstance().setAccessToken(response.data.accessToken);
       setEmail('');
       setPassword('');

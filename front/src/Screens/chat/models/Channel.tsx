@@ -1,5 +1,3 @@
-import User from "../../../Services/User";
-
 export enum ChannelType {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
@@ -13,7 +11,7 @@ export const ChannelTypeDescription = {
 }
 
 export interface PunishmentData {
-  user: User;
+  userId: number;
   channelFrom: string;
 }
 
@@ -27,9 +25,9 @@ export interface ChannelData {
   type: ChannelType;
   name: string;
   password: string | null;
-  users: User[];
-  owner: User | null;
-  admins: User[] | null;
+  usersId: number[];
+  ownerId: number | null;
+  adminsId: number[] | null;
   punishments: PunishmentData[]
 }
 
@@ -38,5 +36,23 @@ export class Channel {
 
   constructor(channelData: ChannelData) {
     this.channelData = channelData;
+  }
+}
+
+export function transformToChannelData(data: any): ChannelData {
+  const punishments: PunishmentData[] = []
+
+  // data.mutes.forEach(mute => {
+  //   punishments.push({userId:})
+  // })
+
+  return {
+    type: data.type,
+    name: data.name,
+    password: data.password,
+    usersId: data.users,
+    ownerId: data.ownerId,
+    adminsId: data.admins,
+    punishments: punishments
   }
 }

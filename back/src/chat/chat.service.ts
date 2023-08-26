@@ -5,23 +5,26 @@ import { Room, Message } from '@prisma/client';
 import * as ChatDtos from './dto';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 import { BlockDto } from './dto/block.dto';
+import { ChatEventsGateway } from './chat.gateway';
 
 @Injectable()
 export class ChatService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) { }
 
   async connectToRoom(client: Socket, targetRoom: string): Promise<void> {
     try {
       const user = await this.prismaService.returnCompleteUser(client.data.id);
       const room = await this.prismaService.returnCompleteRoom(targetRoom);
-      if (!room || !user) throw new Error('error name');
+
+      if (!room || !user)
+        throw new Error('error name');
+
       await client.leave(user.currentRoom);
       console.log('client id leaving room : ', client.data.id);
+
       await client.join(targetRoom);
       await this.prismaService.user.update({
-        where: {
-          id: user.id,
-        },
+        where: { id: user.id },
         data: {
           // currentRoom: targetRoom,
         },
@@ -38,35 +41,22 @@ export class ChatService {
   ): Promise<void> {
     try {
       console.log('sendMessageToRoom function beginning');
-      const room = await this.prismaService.returnCompleteRoom(
-        sendMsgRoomDto.roomName,
-      );
+      const room = await this.prismaService.returnCompleteRoom(sendMsgRoomDto.roomName);
+
       if (room.mutes.some((muted) => client.data.id === muted.id))
         throw new Error('user is muted until :'); //time
-      await this.prismaService.message.create({
-        data: {
-          text: sendMsgRoomDto.message,
-          roomId: room.id,
-          authorId: client.data.id,
-          clientId: client.id,
-        },
-      });
-      // implement the "block" feature.
-      server.to(sendMsgRoomDto.roomName).emit('message', {
+
+      const messageData = {
         text: sendMsgRoomDto.message,
         authorId: client.data.id,
         clientId: client.id,
-      });
-      console.log(
-        'message sent : ',
-        {
-          text: sendMsgRoomDto.message,
-          authorId: client.data.id,
-          clientId: client.id,
-        },
-        'to room : ',
-        sendMsgRoomDto.roomName,
-      );
+      }
+      await this.prismaService.message.create({ data: { ...messageData, roomId: room.id } });
+
+      // implement the "block" feature.
+      server.to(sendMsgRoomDto.roomName).emit('message', messageData);
+
+      console.log('message sent : ', messageData, 'to room : ', sendMsgRoomDto.roomName);
       console.log('sendMessageToRoom function end');
     } catch (error) {
       console.log(error);
@@ -74,16 +64,10 @@ export class ChatService {
   }
 
   async createOrReturnGeneralChat(): Promise<Room> {
-    let generalChat = await this.prismaService.room.findUnique({
-      where: { id: 1 },
-    });
-    if (!generalChat) {
-      generalChat = await this.prismaService.room.create({
-        data: {
-          name: 'general',
-        },
-      });
-    }
+    let generalChat = await this.prismaService.room.findUnique({ where: { id: 1 } });
+    if (!generalChat)
+      generalChat = await this.prismaService.room.create({ data: { name: 'general' } });
+
     return generalChat;
   }
 
@@ -97,33 +81,26 @@ export class ChatService {
       let room = await this.prismaService.room.findUnique({
         where: { name: createRoomDto.roomName },
       });
-      if (room) {
-        throw new Error(
-          "room already exists with the name '" + createRoomDto.roomName + "'",
-        );
-      }
+
+      if (room)
+        throw new Error("room already exists with the name '" + createRoomDto.roomName + "'");
+
       room = await this.prismaService.room.create({
         data: {
           name: createRoomDto.roomName,
           password: createRoomDto.password,
           ownerId: client.data.id,
-          users: {
-            connect: {
-              id: client.data.id,
-            },
-          },
-          admins: {
-            connect: {
-              id: client.data.id,
-            },
-          },
+          users: { connect: { id: client.data.id } },
+          admins: { connect: { id: client.data.id } },
         },
       });
+
       await this.joinRoom(client, {
         roomName: createRoomDto.roomName,
         password: createRoomDto.password,
         server: createRoomDto.server,
       });
+
       console.log('createRoom function ending');
       return room;
     } catch (error) {
@@ -137,15 +114,12 @@ export class ChatService {
     fetchRoomDto: ChatDtos.FetchRoomDto,
   ): Promise<Message[]> {
     try {
-      const messages = await this.prismaService.allMessagesFromRoom(
-        fetchRoomDto.roomName,
-      );
-      const usersBanned = await this.prismaService.allBlockedUsersFromUser(
-        client.data.id,
-      );
-      const messagesWithClientId = messages.map((currentMessage) => {
-        const isAuthorBanned = usersBanned.some(
-          (bannedUser) => bannedUser.id === currentMessage.authorId,
+      const messages = await this.prismaService.allMessagesFromRoom(fetchRoomDto.roomName);
+      const usersBlocked = await this.prismaService.allBlockedUsersFromUser(client.data.id);
+
+      const messagesWithClientId = messages.map(currentMessage => {
+        const isAuthorBanned = usersBlocked.some(
+          bannedUser => bannedUser.id === currentMessage.authorId
         );
 
         if (isAuthorBanned) {
@@ -154,6 +128,7 @@ export class ChatService {
             text: 'blocked message',
           };
         }
+
         return {
           ...currentMessage,
           profilePicture:
@@ -161,49 +136,42 @@ export class ChatService {
           userName: 'jpeyron',
         };
       });
-      fetchRoomDto.server
-        .to(client.id)
-        .emit('load_chat_' + fetchRoomDto.roomName, messagesWithClientId); // check this!
+
       return messagesWithClientId;
     } catch (error) {
       console.log(error);
     }
   }
 
-  async joinRoom(
-    client: Socket,
-    joinRoomDto: ChatDtos.JoinRoomDto,
-  ): Promise<Room> {
+  async joinRoom(client: Socket, joinRoomDto: ChatDtos.JoinRoomDto): Promise<Room> {
     // encode pw later + pay attention to behavior
     try {
       console.log('joinRoom function beginning');
-      const room = await this.prismaService.returnCompleteRoom(
-        joinRoomDto.roomName,
-      );
-      const user = await this.prismaService.user.findUnique({
-        where: { id: client.data.id },
-      });
-      if (!room || !user) throw new Error('error name');
-      if (room.password) {
-        if (room.password !== joinRoomDto.password) {
-          throw new Error('wrong password'); // change this
-        }
-      }
+      const room = await this.prismaService.returnCompleteRoom(joinRoomDto.roomName);
+      const user = await this.prismaService.user.findUnique({ where: { id: client.data.id } });
+
+      if (!room || !user)
+        throw new Error('error name');
+
+      if (room.password && room.password !== joinRoomDto.password)
+        throw new Error('wrong password'); // change this
+
       if (room.bans.some((banned) => banned.id === user.id))
         throw new Error('user is banned from the room');
+
       await client.leave(user.currentRoom);
       console.log('client id leaving room : ', user.currentRoom);
+
       await client.join(joinRoomDto.roomName);
       console.log('client id joining room : ', joinRoomDto.roomName);
+
       await this.prismaService.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          currentRoom: joinRoomDto.roomName,
-        },
+        where: { id: user.id },
+        data: { currentRoom: joinRoomDto.roomName }
       });
-      joinRoomDto.server.to(client.id).emit('joinRoom', joinRoomDto.roomName);
+
+      joinRoomDto.server.to(client.id).emit("join-room", joinRoomDto.roomName);
+
       return room;
     } catch (error) {
       console.log(error);
@@ -212,18 +180,10 @@ export class ChatService {
 
   async leaveRoom(client: Socket, leaveDto: ChatDtos.LeaveDto): Promise<void> {
     try {
-      const room = await this.prismaService.returnCompleteRoom(
-        leaveDto.roomName,
-      );
+      const room = await this.prismaService.returnCompleteRoom(leaveDto.roomName);
       await this.prismaService.room.update({
         where: { id: room.id },
-        data: {
-          users: {
-            disconnect: {
-              id: client.data.id,
-            },
-          },
-        },
+        data: { users: { disconnect: { id: client.data.id } } },
       });
     } catch (error) {
       console.log(error);
@@ -233,34 +193,24 @@ export class ChatService {
   async blockUserToggle(client: Socket, blockDto: BlockDto): Promise<void> {
     console.log('blockUserToggle function beginning');
     try {
-      const blockedUsers = await this.prismaService.allBlockedUsersFromUser(
-        client.data.id,
-      );
+      const blockedUsers = await this.prismaService.allBlockedUsersFromUser(client.data.id);
+
       if (client.data.id === blockDto.targetId)
         throw new Error("you can't block yourself");
+        
       if (blockedUsers.some((banned) => banned.id === blockDto.targetId)) {
         await this.prismaService.user.update({
           where: { id: client.data.id },
-          data: {
-            blockedUsers: {
-              disconnect: {
-                id: blockDto.targetId,
-              },
-            },
-          },
+          data: { blockedUsers: { disconnect: { id: blockDto.targetId } } },
         });
+
         console.log('unblocking');
       } else {
         await this.prismaService.user.update({
           where: { id: client.data.id },
-          data: {
-            blockedUsers: {
-              connect: {
-                id: blockDto.targetId,
-              },
-            },
-          },
+          data: { blockedUsers: { connect: { id: blockDto.targetId } } }
         });
+
         console.log('blocking');
       }
       console.log('blockUserToggle function end');
@@ -292,42 +242,24 @@ export class ChatService {
     promoteDto: ChatDtos.PromoteDto,
   ): Promise<void> {
     try {
-      const actingUser = await this.prismaService.returnCompleteUser(
-        client.data.id,
-      );
+      const actingUser = await this.prismaService.returnCompleteUser(client.data.id);
       const targetUser = await this.prismaService.returnCompleteUser(
         promoteDto.targetId, // add targetUserId
       );
-      const room = await this.prismaService.returnCompleteRoom(
-        promoteDto.roomName,
-      );
+      const room = await this.prismaService.returnCompleteRoom(promoteDto.roomName);
+      
       if (this.hierarchyCheck(room, actingUser, targetUser))
         throw new Error("You don't have permission");
+
       if (room.admins.some((admin) => admin.id === targetUser.id)) {
         await this.prismaService.room.update({
-          where: {
-            name: promoteDto.roomName,
-          },
-          data: {
-            admins: {
-              disconnect: {
-                id: targetUser.id,
-              },
-            },
-          },
+          where: { name: promoteDto.roomName },
+          data: { admins: { disconnect: { id: targetUser.id } } }
         });
       } else {
         await this.prismaService.room.update({
-          where: {
-            name: promoteDto.roomName,
-          },
-          data: {
-            admins: {
-              connect: {
-                id: targetUser.id,
-              },
-            },
-          },
+          where: { name: promoteDto.roomName },
+          data: { admins: { connect: { id: targetUser.id } } }
         });
       }
     } catch (error) {

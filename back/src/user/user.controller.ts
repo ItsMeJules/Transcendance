@@ -28,6 +28,7 @@ import { Multer, multer, diskStorage } from 'multer';
 import { MulterModule } from '@nestjs/platform-express';
 import { editFileName, imageFileFilter } from './module';
 import { Response } from 'express';
+import { CompleteRoom } from 'src/utils/complete.type';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -43,6 +44,11 @@ export class UserController {
   getCurrentChat(@GetUser() user: User): string {
     console.log('user :', user);
     return user.currentRoom;
+  }
+
+  @Get('complete-room')
+  getCompleteRoom(@GetUser() user: User): Promise<CompleteRoom> {
+    return this.prisma.returnCompleteRoom(user.currentRoom)
   }
 
   @Get('me')

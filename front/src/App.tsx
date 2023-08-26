@@ -1,4 +1,9 @@
 import React from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { Provider } from "react-redux";
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor, store } from "./redux/Store";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./Screens/UserProfile/css/ProgressBar.scss";
@@ -13,10 +18,10 @@ import "./Screens/JoinGame/css/loading.css";
 import "./Screens/Play/css/play.scss";
 import "./css/2faButton.scss";
 import "./game/components/GameStyles.css";
+
 import { Home } from "./Screens/Home/Home";
 import { Signin } from "./Screens/Login/Signin";
 import { Signup } from "./Screens/Login/Signup";
-import { Route, Routes, useLocation } from "react-router-dom";
 import AppWrapper from "./AppWrapper";
 import { UserProfile } from "./Screens/UserProfile/UserProfile";
 import { UserProfileEdit } from "./Screens/UserProfileEdit/UserProfileEdit";
@@ -30,13 +35,12 @@ import { Play } from "./Screens/Play/Play";
 import { TwoFa } from "./screens/2fa";
 import PlayBack from "./Screens/Play/PlayBack";
 import { ChatBox } from "./Screens/chat/ChatBox";
-import { Provider } from "react-redux";
-import { store } from "./redux/Store";
+
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <div>
+      <PersistGate persistor={persistor}>
         <Websocket>
           <AppWrapper>
             <Routes>
@@ -64,7 +68,7 @@ const App: React.FC = () => {
             </Routes>
           </AppWrapper>
         </Websocket>
-      </div>
+      </PersistGate>
     </Provider>
   );
 };

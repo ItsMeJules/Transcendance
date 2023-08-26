@@ -24,7 +24,8 @@ export const setPassword = createAction<string>("channel/setPassword");
 export const channelReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(addChannel, (state, action) => {
-      state.channelsData.push(action.payload)
+      if (state.channelsData.find(data => data.name === action.payload.name) === undefined)
+        state.channelsData.push(action.payload)
     })
     .addCase(setType, (state, action) => {
       const { channelName, type } = action.payload;

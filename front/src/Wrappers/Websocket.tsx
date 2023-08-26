@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import User from "../Services/User";
 import { UserData } from "../Services/User";
 import { getNameOfJSDocTypedef } from "typescript";
+import { useAppSelector } from "../redux/Hooks";
 
 interface WebsocketProps {
   children: ReactElement;
@@ -49,13 +50,10 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
     chat: null,
     game: null,
   });
-  let userData: UserData;
+  const { userData } = useAppSelector(state => state.user)
 
   useEffect((): (() => void) => {
-    const storedUserData = localStorage.getItem("userData");
-
-    if (storedUserData) {
-      userData = JSON.parse(storedUserData);
+    if (userData) {
       const general =
         socketInstances.general?.connected !== true
           ? OpenSocket("http://localhost:8000/general")
@@ -79,7 +77,7 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
       closeOpenSockets(socketInstances);
       setSocketInstances({ general: null, chat: null, game: null });
     };
-  }, [localStorage.getItem("userData")]);
+  }, [userData]);
 
   return (
     <WebsocketContext.Provider value={socketInstances}>{children}</WebsocketContext.Provider>

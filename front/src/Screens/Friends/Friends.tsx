@@ -16,6 +16,8 @@ import { Socket } from "socket.io-client";
 import { UserData } from "../../Services/User";
 import User from "../../Services/User";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
+import { useAppDispatch } from "../../redux/Hooks";
+import { setUser } from "../../redux/slices/UserReducer";
 
 const UserFriends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -30,7 +32,7 @@ const UserFriends = () => {
   const [friendOnlineStatus, setFriendOnlineStatus] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState(true);
   const socket = useWebsocketContext();
-
+  const dispatchUser = useAppDispatch()
 
   const resetErrMsg = () => {
     setErrMsg(''); // Reset errMsg to an empty string
@@ -58,7 +60,7 @@ const UserFriends = () => {
           withCredentials: true
         });
       // console.log("ici:", response.data);
-      localStorage.setItem('userData', JSON.stringify(response.data));
+      dispatchUser(setUser(response.data))
       setUserData(userData);
       localStorage.setItem('userFriends', JSON.stringify(response.data.friends));
       let updatedUsers: User[] = [];

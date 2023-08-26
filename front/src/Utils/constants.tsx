@@ -16,6 +16,7 @@ export const API_ROUTES = {
   ACTIVATE_2FA: `${API_URL}/auth/turn-on`,
   DEACTIVATE_2FA: `${API_URL}/auth/turn-off`,
   CURRENT_CHAT: `${API_URL}/users/current-chat`,
+  COMPLETE_ROOM: `${API_URL}/users/complete-room`,
   AUTHENTICATE_2FA: `${API_URL}/auth/authenticate`,
 };
 

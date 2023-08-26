@@ -8,6 +8,8 @@ import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import { UserArray } from "../../Services/UserArray";
 import LogoutParent from "../../LogoutHook/logoutParent";
 import { UserData } from "../../Services/User";
+import { useAppDispatch } from "../../redux/Hooks";
+import { setUser } from "../../redux/slices/UserReducer";
 
 const LeaderBoard: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -15,6 +17,7 @@ const LeaderBoard: React.FC = () => {
   const [users, setUsers] = useState<UserArray>([]);
   const history = useNavigate();
   // const userDataStore = useSelector((state: RootState) => state.user);
+  const dispatchUser = useAppDispatch()
 
   const resetErrMsg = () => {
     setErrMsg(''); // Reset errMsg to an empty string
@@ -67,7 +70,7 @@ const LeaderBoard: React.FC = () => {
             withCredentials: true
           });
         const userData = response.data;
-        localStorage.setItem('userData', JSON.stringify(userData));
+        dispatchUser(setUser(response.data))
         setUserData(userData);
         User.getInstance().setUserFromResponseData(userData);
       } catch (err: any) {

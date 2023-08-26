@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { APP_URL, SOCKET_GENERAL } from '../Utils';
+import { useAppSelector } from '../redux/Hooks';
 
 const socketUrl = 'http://localhost:8000/general';
 // const socketUrl = APP_URL + SOCKET_GENERAL;
@@ -8,7 +9,6 @@ const socketUrl = 'http://localhost:8000/general';
 let socket: Socket | null = null;
 
 export const connectSocket = () => {
-
   // console.log("inside connect socket");
   if (!socket) {
     socket = io(socketUrl, {

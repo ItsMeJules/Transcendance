@@ -19,6 +19,7 @@ import User from "../../Services/User";
 import { UserData } from "../../Services/User";
 import QRCode from "react-qr-code";
 import { useAxios } from "../../api/axios-config";
+import { useAppSelector } from "../../redux/Hooks";
 
 function QrCode(): React.ReactElement {
   const popupRef = React.createRef<HTMLDivElement>();
@@ -132,12 +133,12 @@ export const UserProfile: React.FC = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const storedUserData = localStorage.getItem("userData");
-      if (storedUserData) {
-        const parsedUserData = JSON.parse(storedUserData);
-        console.log("dispatching 1 and parsed ud", parsedUserData);
-        // dispatch(setUserData(parsedUserData));
-      }
+      // const storedUserData = localStorage.getItem("userData");
+      // if (storedUserData) {
+      //   const parsedUserData = JSON.parse(storedUserData);
+      //   console.log("dispatching 1 and parsed ud", parsedUserData);
+      //   // dispatch(setUserData(parsedUserData));
+      // }
 
       const response = await axiosInstanceError.get(API_ROUTES.USER_PROFILE, {
         withCredentials: true,

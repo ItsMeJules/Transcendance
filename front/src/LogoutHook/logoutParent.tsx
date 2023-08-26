@@ -1,6 +1,8 @@
 import React from "react";
 import handleLogout from "./useLogout";
 import { MDBCardImage } from "mdb-react-ui-kit";
+import { useAppDispatch } from "../redux/Hooks";
+import { unsetUser } from "../redux/slices/UserReducer";
 
 interface LogoutParentProps {
   setErrMsg: (error: string) => void; // Callback function to set errMsg in UserProfile component
@@ -9,10 +11,13 @@ interface LogoutParentProps {
 const LogoutParent: React.FC<LogoutParentProps> = ({ setErrMsg }) => {
   const searchParams = new URLSearchParams(window.location.search);
   const error = searchParams.get("error");
+  const dispatch = useAppDispatch()
 
   const onLogout = async () => {
     try {
       await handleLogout(setErrMsg);
+      dispatch(unsetUser())
+      
     } catch (error: any) {
     }
   };

@@ -18,7 +18,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
   const [searchText, setSearchText] = useState("");
 
   const { channelData }: ChannelManagerProps = props;
-  const usersSize = channelData.users?.length || 0
+  const usersSize = channelData.usersId?.length || 0
 
   const manageStyle = {
     transition: "transform 1s ease",

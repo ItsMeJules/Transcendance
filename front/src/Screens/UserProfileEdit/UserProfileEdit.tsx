@@ -9,6 +9,8 @@ import LogoutParent from "../../LogoutHook/logoutParent";
 import ProfilePicContainer from "../UserProfile/components/ProfilePicContainer";
 import ImageChange from "./components/ImageChange";
 import EditUserFormValidation from "./components/EditUserFormValidation";
+import { useAppDispatch } from "../../redux/Hooks";
+import { setUser } from "../../redux/slices/UserReducer";
 
 export const UserProfileEdit: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -17,6 +19,7 @@ export const UserProfileEdit: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const history = useNavigate();
+  const dispatchUser = useAppDispatch()
 
   const resetErrMsg = () => {
     setErrMsg('');
@@ -29,7 +32,7 @@ export const UserProfileEdit: React.FC = () => {
           withCredentials: true
         });
       const userData = response.data;
-      localStorage.setItem('userData', JSON.stringify(userData));
+      dispatchUser(setUser(response.data))
       setUserData(userData);
       setUsername(userData.username);
       setFirstName(userData.firstName);

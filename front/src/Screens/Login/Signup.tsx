@@ -5,6 +5,9 @@ import { API_ROUTES, APP_ROUTES } from "../../Utils";
 import { GlowTextSignin } from "../../Utils";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
 import { connectSocket } from "../../Websocket/Socket.io";
+import { useAppDispatch } from "../../redux/Hooks";
+import { setUser } from "../../redux/slices/UserReducer";
+import User from "../../Services/User";
 
 export const Signup = () => {
   const history = useNavigate();
@@ -13,6 +16,7 @@ export const Signup = () => {
   const [password, setPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
+  const dispatchUser = useAppDispatch()
 
   useEffect(() => {
     setErrMsg('');
@@ -37,7 +41,8 @@ export const Signup = () => {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         });
-      localStorage.setItem('userData', JSON.stringify(response.data));
+        
+      dispatchUser(setUser(response.data))
       setEmail('');
       setPassword('');
       setSuccess(true);
