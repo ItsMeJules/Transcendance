@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 import "./ChatBox.scss";
@@ -35,19 +35,6 @@ export const ChatBox = () => {
 
   const chatSocket = useWebsocketContext().chat;
 
-  const onNewMessage = (payload: any) => {
-    console.log(payload.authorId, userId)
-    const message: ChatMessageData = {
-      message: payload.text,
-      self: payload.authorId === userId,
-      authorId: payload.authorId,
-      profilePicture: payload.profilePicture,
-      userName: payload.userName,
-    };
-
-    setMessages((messages) => [...messages, message]);
-  };
-
   useEffect(() => {
     if (chatSocket == null)
       return
@@ -59,7 +46,7 @@ export const ChatBox = () => {
         dispatch(addChannel(transformToChannelData(response.data)))
         dispatch(setUserActiveChannel(payload.currentRoom))
 
-        const messages: ChatMessageData[] = response.data.messages.reduce(
+        const receivedMessages: ChatMessageData[] = response.data.messages.reduce(
           (chatMessages: ChatMessageData[], message: any) => {
             chatMessages.push({
               message: message.text,
@@ -72,10 +59,23 @@ export const ChatBox = () => {
             return chatMessages
           }, [])
 
-        setMessages(messages)
+        setMessages(receivedMessages)
       } catch (error) {
-        console.error("There was an error fetching the data", error);
+        console.log("There was an error fetching the data", error);
       }
+    };
+
+    const onNewMessage = (payload: any) => {
+      console.log(payload.authorId, userId)
+      const message: ChatMessageData = {
+        message: payload.text,
+        self: payload.authorId === userId,
+        authorId: payload.authorId,
+        profilePicture: payload.profilePicture,
+        userName: payload.userName,
+      };
+  
+      setMessages((messages) => [...messages, message]);
     };
 
     chatSocket.on(ChatSocketEventType.JOIN_ROOM, setupConnection)
@@ -88,7 +88,7 @@ export const ChatBox = () => {
       chatSocket.off(ChatSocketEventType.JOIN_ROOM)
       chatSocket.off(ChatSocketEventType.MESSAGE)
     }
-  }, [chatSocket])
+  }, [dispatch, chatSocket, userId])
 
   useEffect(() => {
 
