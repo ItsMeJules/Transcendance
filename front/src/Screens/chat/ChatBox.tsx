@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import axios from "axios";
 
 import "./ChatBox.scss";
@@ -14,17 +14,19 @@ import { setUserActiveChannel } from "../../redux/slices/UserReducer";
 import { transformToChannelData } from "./models/Channel";
 import { addChannel } from "../../redux/slices/ChannelReducer";
 
+
 enum ChatSocketEventType {
   JOIN_ROOM = "join-room",
-  MESSAGE = "message",
-  ROOM_MESSAGES = "room-messages",
   CHAT_ACTION = "chat-action",
 }
 
-enum ChatSocketActionType {
+export enum ChatSocketActionType {
   CREATE_CHANNEL = "create-channel",
   SWITCH_CHANNEL = "switch-channel",
+  MESSAGE = "message"
 }
+
+export const SendDataContext = createContext<null | ((action: ChatSocketActionType, data: any) => void)>(null)
 
 export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);
@@ -66,7 +68,6 @@ export const ChatBox = () => {
     };
 
     const onNewMessage = (payload: any) => {
-      console.log(payload.authorId, userId)
       const message: ChatMessageData = {
         message: payload.text,
         self: payload.authorId === userId,
@@ -74,19 +75,19 @@ export const ChatBox = () => {
         profilePicture: payload.profilePicture,
         userName: payload.userName,
       };
-  
+
       setMessages((messages) => [...messages, message]);
     };
 
     chatSocket.on(ChatSocketEventType.JOIN_ROOM, setupConnection)
-    chatSocket.on(ChatSocketEventType.MESSAGE, onNewMessage)
+    chatSocket.on(ChatSocketActionType.MESSAGE, onNewMessage)
 
     return () => {
       if (chatSocket == null)
         return
 
       chatSocket.off(ChatSocketEventType.JOIN_ROOM)
-      chatSocket.off(ChatSocketEventType.MESSAGE)
+      chatSocket.off(ChatSocketActionType.MESSAGE)
     }
   }, [dispatch, chatSocket, userId])
 
@@ -94,32 +95,9 @@ export const ChatBox = () => {
 
   }, [activeChannelName])
 
-
-  const sendData = (data: string) => {
-    let payload = null
-
-    switch (data) {
-      case ChatSocketActionType.CREATE_CHANNEL:
-        payload = {
-          action: "createRoom",
-          roomName: "roomOne", // Needs some modifications
-          password: ""
-        }
-        break;
-      case ChatSocketActionType.SWITCH_CHANNEL:
-        payload = {
-          action: "joinRoom",
-          roomName: "general",
-          password: ""
-        }
-        break;
-
-      default:
-        chatSocket?.emit(ChatSocketEventType.MESSAGE, { message: data, roomName: activeChannelName });
-        return;
-    }
-
-    chatSocket?.emit(ChatSocketEventType.CHAT_ACTION, payload)
+  const sendData = (action: ChatSocketActionType, data: any) => {
+    console.log(action, data)
+    chatSocket?.emit(action, { ...data, roomName: activeChannelName })
   };
 
   const togglerTransition = {
@@ -128,12 +106,14 @@ export const ChatBox = () => {
 
   return (
     <div className="chat-container">
-      <div className="toggler" style={togglerTransition}>
-        <ChatMetadata />
-        <ChatContainer messagesReceived={messages} />
-      </div>
+      <SendDataContext.Provider value={sendData}>
+        <div className="toggler" style={togglerTransition}>
+          <ChatMetadata />
+          <ChatContainer messagesReceived={messages} />
+        </div>
 
-      <ChatBar chatToggled={chatToggled} setChatToggled={setChatToggled} sendData={sendData} />
+        <ChatBar chatToggled={chatToggled} setChatToggled={setChatToggled} />
+      </SendDataContext.Provider>
     </div>
   );
 };

@@ -2,17 +2,16 @@ import React from "react";
 
 import UpArrow from "../assets/up-arrow.png";
 import TextInput from "./TextInput";
+import { ChatSocketActionType } from "../ChatBox";
 
 interface ChatBarProps {
   setChatToggled: (toggled: boolean) => void;
   chatToggled: boolean;
-  sendData: (message: string) => void;
 }
 
 const ChatBar: React.FC<ChatBarProps> = ({
   setChatToggled,
   chatToggled,
-  sendData,
 }) => {
   const arrowStyle = {
     transition: "transform 1s ease",
@@ -22,7 +21,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   return (
     <div className="chatbar-container">
       <div className="text">
-        {chatToggled && <TextInput sendData={sendData} />}
+        {chatToggled && <TextInput />}
       </div>
 
       <div className="toggler">
