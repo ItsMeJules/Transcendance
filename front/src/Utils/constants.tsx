@@ -35,4 +35,5 @@ export const APP_ROUTES = {
   GENERIC_USER_PROFILE: '/profile/',
   LEADERBOARD: '/leaderboard',
   PLAY: '/play',
+  WATCH: '/watch',
 }

@@ -28,19 +28,8 @@ const LeaderBoard: React.FC = () => {
         {
           withCredentials: true
         });
-
-      // console.log("ici:", response.data);
       localStorage.setItem('leaderboardData', JSON.stringify(response.data));
-
-      // let userInstance = User.getInstance();
-      // console.log("1 User:", userInstance);
-
-
       let updatedUsers: User[] = [];
-
-
-      // console.log('1: ', updatedUsers);
-
       response.data.forEach((userDatat: any) => {
         let userInstance = new User();
         userInstance.setUserFromResponseData(userDatat);

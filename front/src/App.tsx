@@ -16,6 +16,7 @@ import './Screens/Play/components/PlayersProfile/GamePlayersProfile.scss'
 import './Screens/Play/components/MainText/MainText.scss'
 import './Screens/Play/components/GiveUp/GiveUp.scss'
 import './Screens/Play/components/ScoreBoard/ScoreBoard.scss'
+import './Screens/OnlineGames/css/OnlineGames.scss'
 import { Home } from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';
@@ -33,6 +34,7 @@ import { TwoFa } from "./screens/2fa";
 import { render } from "@testing-library/react";
 import PlayBack from './Screens/Play/PlayBack';
 import { History } from './History';
+import OnlineGames from './Screens/OnlineGames/OnlineGames';
 
 const App: React.FC = () => {
 
@@ -52,6 +54,7 @@ const App: React.FC = () => {
             <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
             <Route path="/test" element={<Test />} />
             <Route path="/play" element={<PlayBack />} />
+            <Route path="/watch" element={<OnlineGames />} />
             {/* <Route path="/playback" element={<PlayBack />} /> */}
             <Route path={APP_ROUTES.LOG_2FA} element={<TwoFa />} />
           </Routes>

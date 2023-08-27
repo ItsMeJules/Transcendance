@@ -14,6 +14,8 @@ import { GameDto } from './dto/game.dto';
 import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
 import { Player } from './models/player.model';
+import { User } from '@prisma/client';
+import { use } from 'passport';
 
 @WebSocketGateway({ namespace: 'game' })
 export class PongEvents {
@@ -84,16 +86,20 @@ export class PongEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() gameDto: GameDto) {
     console.log('Matchmaking - gameMode:', gameDto);
+
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!client.data.id || !access_token) {
+      client.disconnect();
+      return;
+    }
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     const gameQueue = this.pongService.addToQueue(user, gameDto);
-    // console.log('a queue:', gameQueue);
     if (gameQueue != null) {
       this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED' });
       const gameData = await this.pongService.gameCreate(gameDto, this.server);
       if (!gameData) return;
       let gameMode = parseInt(gameDto.gameMode);
-      console.log('GAMEMODE int:', gameMode);
       const game = new GameStruct(gameMode, gameData.gameId, gameData.player1Id,
         gameData.player2Id, gameData.gameChannel, this, this.pongService);
       if (!gameData) return; // correct error handling 
@@ -115,6 +121,52 @@ export class PongEvents {
         player2socket.data.room = `game_${game.prop.id}`;
         player2socket.data.gameId = game.prop.id;
       }
+      this.updateEmitOnlineGames('toRoom', 0);
+
+    }
+  }
+
+  async updateEmitOnlineGames(type: string, userId: number) {
+    const dataMap = new Map<number, { player1: User, player1Score: number, player2: User, player2Score: number }>();
+    for (const [key, value] of this.pongService.onlineGames.entries()) {
+      value.prop.id
+      let player1 = await this.userService.findOneById(value.pl1.id);
+      let player1Score = value.pl1.score;
+      let player2 = await this.userService.findOneById(value.pl2.id);
+      let player2Score = value.pl2.score;
+      let players = { player1, player1Score, player2, player2Score };
+      dataMap.set(key, players);
+    };
+    const dataObject = {};
+    dataMap.forEach((value, key) => {
+      dataObject[key] = value;
+    });
+    if (type === 'toUser')
+      this.server.to(`user_${userId}`).emit('onlineGames', dataObject);
+    else if (type === 'toRoom')
+      this.server.to('onlineGames').emit('onlineGames', dataObject);
+    // console.log('online games data Map:', dataObject);
+  }
+
+  @SubscribeMessage('onlineGames') // This decorator listens for messages with the event name 'message'
+  async getOnlineGames(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { action: string, gameId: string }) {
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!client.data.id || !access_token) {
+      client.disconnect();
+      return;
+    }
+    const user = await this.authService.validateJwtToken(access_token);
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    // console.log('IN ONLINE GAMES QUERY and og:', this.pongService.onlineGames);
+    if (data.action === 'query') {
+      this.updateEmitOnlineGames('toUser', user.id);
+      const clientSocket = this.getSocketById(client.data.id);
+      clientSocket.join('onlineGames');
     }
   }
 
@@ -217,6 +269,28 @@ export class PongEvents {
     return true;
   }
 
+  @SubscribeMessage('watchGame')
+  async watchGame(@ConnectedSocket() client: Socket,
+    @MessageBody() data: { gameId: string }) {
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!client.data.id || !access_token || !data.gameId) {
+      client.disconnect();
+      // console.log('Here 1');
+      return;
+    }
+    // console.log('Here 2');
+    const gameId = parseInt(data.gameId);
+    const game = this.pongService.getGameStructById(gameId);
+    if (!game) return; // error handling?
+    // console.log('Here 3');
+    const clientSocket = this.getSocketById(client.data.id);
+    if (!clientSocket) return  // error handling?
+    // console.log('Here 4');
+    clientSocket.join(`game_${game.prop.id}`);
+    this.server.to(`user_${client.data.id}`).emit('watchGame', {message: 'daaaaaang'});
+    // console.log('Here 5');
+  }
+
   @SubscribeMessage('giveUp')
   async giveUpGame(@ConnectedSocket() client: Socket,
     @MessageBody() data: { player: string, action: string }) {
@@ -226,16 +300,20 @@ export class PongEvents {
       if (!client.data.gameId && client.data.id)
         this.server.to(`user_${client.data.id}`).emit('prepareToPlay', { gameStatus: 'noGame' });
       client.disconnect();
+      console.log('Here 1');
       return;
     }
     if (data.action !== 'giveUp') return;
+    console.log('Here 2');
     const gameId = parseInt(client.data.gameId);
     const user = await this.authService.validateJwtToken(access_token);
     const gameStruct = this.pongService.getGameStructById(gameId);
     if (!gameStruct) return;
+    console.log('Here 3');
     let player: Player;
     let opponent: Player;
-    const playerNum = await this.pongService.getPlayerById(gameStruct.prop.id, user.id);
+    const playerNum = await this.pongService.getPlayerById(gameStruct.prop.id, user.id); // error handling
+    console.log('Here 4');
     if (playerNum === 1) {
       player = gameStruct.pl1;
       opponent = gameStruct.pl2;
@@ -244,13 +322,17 @@ export class PongEvents {
       opponent = gameStruct.pl1;
     } else
       return;
+    console.log('Here 5');
     if (gameStruct.prop.status !== 'ended') {
+      console.log('Here 6');
       gameStruct.stopGameLoop();
       gameStruct.prop.status = 'giveUp';
-      console.log('status:', gameStruct.prop.status);
       player.status = 'givenUp';
-      this.pongService.giveUpGame(gameStruct, opponent, player, true);
+      await this.pongService.giveUpGame(gameStruct, opponent, player, true);
+
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'refreshGame');
+      this.updateEmitOnlineGames('toRoom', 0);
+      console.log('Here 7');
     }
   }
 

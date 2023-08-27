@@ -69,8 +69,10 @@ export class GameStruct {
     const remainingTime = Math.max(this.frameDuration - (Date.now() - frameStartTime), 0);
     if (this.prop.status === 'ended') {
       this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
-      if (this.winner && this.loser)
-        this.pongService.endGame(this, this.winner, this.loser);
+      if (this.winner && this.loser) {
+        await this.pongService.endGame(this, this.winner, this.loser);
+        this.pongEvents.updateEmitOnlineGames('toRoom', 0);
+      }
       return;
     }
     clearTimeout(this.gameLoopInterval!);
@@ -533,6 +535,7 @@ export class GameStruct {
       this.ball.randomService(this.board, 1, this.gameMode);
     }
     this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+    this.pongEvents.updateEmitOnlineGames('toRoom', 0);
     if (this.pl1.score >= maxScore || this.pl2.score >= maxScore) {
       this.winner = this.pl1.score >= maxScore ? this.pl1 : this.pl2;
       this.loser = this.pl1.score >= maxScore ? this.pl2 : this.pl1;
@@ -570,12 +573,7 @@ export class GameStruct {
   }
 
   sendUpdateToRoom(playerStatus: string, opponentStatus: string, countdown: number, channel: string) {
-    // if (this.prop.status === 'playing' || this.prop.status === 'ended')
     let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
-
-    console.log('RO to send gstat:', this.prop.status, ' countdown:', countdown,
-    ' player status:', playerStatus);
-
     this.pongEvents.server.to(this.prop.room).emit(channel,
       {
         gameStatus: this.prop.status,
@@ -589,10 +587,6 @@ export class GameStruct {
 
   sendUpdateToPlayer(player: Player, opponentStatus: string, countdown: number, channel:string) {
     let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
-
-    console.log('PL to send gstat:', this.prop.status, ' countdown:', countdown,
-    ' player status:', player.status);
-
     this.pongEvents.server.to(`user_${player.id}`).emit(channel,
       {
         gameStatus: this.prop.status,
