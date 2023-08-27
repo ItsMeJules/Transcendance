@@ -12,21 +12,21 @@ export type UserQueue = Map<number, string>;
 export class GameService {
   constructor(
     private prismaService: PrismaService,
-    private userService: UserService) { }
+    private userService: UserService,
+  ) {}
   private connectedSockets: Map<number, Socket> = new Map();
   userQueue: UserQueue = new Map<number, string>();
   private maxQueuesize = 1000;
 
   // Set a queue limit?
   queueIsFull(): boolean {
-    return (this.userQueue.size >= this.maxQueuesize);
+    return this.userQueue.size >= this.maxQueuesize;
   }
 
   // Add user to the queue
   addToQueue(user: User, gameMode: GameDto): UserQueue {
     // console.log(`User ${user.id} added to queue for game mode ${gameMode.gameMode}`);
-    if (this.queueIsFull())
-      return null;
+    if (this.queueIsFull()) return null;
     // console.log('______QUEU BEFORE ADD______');
     // this.userQueue.forEach((value, key) => {
     //   console.log(`Qid ${key} and gameMode:${value}`);
@@ -45,10 +45,8 @@ export class GameService {
     let player2Id: number = 0;
     const gameModeInt = parseInt(gameMode.gameMode, 10);
     this.userQueue.forEach((value, key) => {
-      if (!player1Id && value === gameMode.gameMode)
-        player1Id = key;
-      else if (!player2Id && value === gameMode.gameMode)
-        player2Id = key;
+      if (!player1Id && value === gameMode.gameMode) player1Id = key;
+      else if (!player2Id && value === gameMode.gameMode) player2Id = key;
     });
     if (player1Id && player2Id) {
       this.userQueue.delete(player1Id);
@@ -63,7 +61,13 @@ export class GameService {
       const player1 = await this.userService.findOneById(newGame.player1Id);
       const player2 = await this.userService.findOneById(newGame.player2Id);
       const gameChannel = `game_${newGame.id}`;
-      const data = { status: 'START', gameChannel: gameChannel, game: newGame, player1: player1, player2: player2 };
+      const data = {
+        status: 'START',
+        gameChannel: gameChannel,
+        game: newGame,
+        player1: player1,
+        player2: player2,
+      };
       return data;
     }
     return null;
@@ -87,5 +91,4 @@ export class GameService {
     }
     return count;
   }
-
 }
