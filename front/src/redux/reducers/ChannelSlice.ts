@@ -117,6 +117,7 @@ const channelSlice = createSlice({
           messages: payload.messages,
         }
 
+        console.log(newState)
         state.activeChannel = newState
       })
     // .addCase(fetchVisibleChannels.fulfilled, (state, action) => {

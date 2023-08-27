@@ -76,7 +76,6 @@ export const ChatBox = () => {
         break;
     }
 
-    console.log(data)
     chatSocket?.emit(eventType, data)
   };
 

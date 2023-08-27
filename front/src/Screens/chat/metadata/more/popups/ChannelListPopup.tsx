@@ -2,7 +2,6 @@ import axios from "axios";
 import { KeyboardEvent, useContext, useEffect, useState } from "react";
 
 import { API_ROUTES } from "../../../../../Utils";
-import { useAppSelector } from "../../../../../redux/Store";
 import { ChatSocketActionType, SendDataContext } from "../../../ChatBox";
 import { ChannelType } from "../../../models/Channel";
 import { ChannelInfoInList } from "../../../models/partial/PartialModels";
@@ -15,13 +14,8 @@ export default function ChannelListPopup() {
   const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([])
   const [searchText, setSearchText] = useState("");
 
-  const visibleChannelsStore = useAppSelector(store => store.channels.visibleChannels)
+  // const visibleChannelsStore = useAppSelector(store => store.channels.visibleChannels)
   const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext)
-
-  const shouldShowPopup = selectedChannelName !== null
-  && visibleChannels.find(
-    value => value.name === selectedChannelName)
-  ?.type === ChannelType.PROTECTED
 
   useEffect(() => {
     const requestVisibleChannels = async () => {
@@ -34,7 +28,15 @@ export default function ChannelListPopup() {
     }
 
     requestVisibleChannels()
-  }, [visibleChannelsStore]) // add dependencies
+  }, [/*visibleChannelsStore*/])
+
+  const channelHasPassword = (name: string | null) => {
+    if (name === null)
+      return false
+
+    return visibleChannels.find(value => value.name === name)
+      ?.type === ChannelType.PROTECTED
+  }
 
   const joinChannel = (channelName: string | null) => {
     if (sendData != null) {
@@ -64,14 +66,16 @@ export default function ChannelListPopup() {
         <ChannelsList
           channels={visibleChannels}
           onClickElement={(channelName: string) => {
-            joinChannel(channelName)
-            setSelectedChannelName(channelName)
+            if (!channelHasPassword(channelName))
+              joinChannel(channelName)
+            else
+              setSelectedChannelName(channelName)
           }}
           filter={(channelName) => channelName.includes(searchText)}
         />
       </Popup>
 
-      {shouldShowPopup
+      {channelHasPassword(selectedChannelName)
         ? (
           <div className="password-popup">
             <div className="password-popup-content">
@@ -93,9 +97,9 @@ export default function ChannelListPopup() {
             </div>
           </div>
         )
-      : (
-        undefined
-      )}
+        : (
+          undefined
+        )}
     </>
   )
 }
