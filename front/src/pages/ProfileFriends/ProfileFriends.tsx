@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import ToastError from "layout/ToastError/ToastError";
 import ToastMessage from "layout/ToastMessage/ToastMessage";
-import { useWebsocketContext } from "services/Websocket/Websocket";
 import { UserArray } from "services/User/UserArray";
 import { UserData } from "services/User/User";
 import User from "services/User/User";

@@ -6,8 +6,6 @@ import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import ToastError from "layout/ToastError/ToastError";
 
-import './LoginButtons.css'
-
 export const Signup = () => {
   const history = useNavigate();
   const [email, setEmail] = useState('');

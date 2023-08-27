@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { UserData } from '../../services/User/User';
-import getParseLocalStorage from '../../utils/getParseLocalStorage/getParseLocalStorage';
+import { UserData } from 'services/User/User';
+import getParseLocalStorage from 'utils/getParseLocalStorage/getParseLocalStorage';
 import { useWebsocketContext } from 'services/Websocket/Websocket';
 import PlayBack from './PlayBack';
 
@@ -9,7 +9,7 @@ export const Play = () => {
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
   const [whichPlayer, setWhichPlayer] = useState(0);
-  const [socketData, setSocketData] = useState('');
+  // const [socketData, setSocketData] = useState('');
   const socket = useWebsocketContext();
 
   useEffect(() => {

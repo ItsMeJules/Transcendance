@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client';
-import { ReactElement, createContext, useEffect, useState, useContext } from 'react';
+import { ReactElement, createContext, useEffect, useState, useContext, useRef } from 'react';
 import { UserData } from "services/User/User";
 
 interface WebsocketProps {
@@ -43,13 +43,14 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
     general: null,
     game: null,
   });
-  let userData: UserData;
+  
+  const userDataRef = useRef<UserData | null>(null); // Use useRef to store userData
 
   useEffect((): (() => void) => {
     const storedUserData = localStorage.getItem('userData');
 
     if (storedUserData) {
-      userData = JSON.parse(storedUserData);
+      userDataRef.current = JSON.parse(storedUserData); // Assign to userDataRef
       const general =
         socketInstances.general?.connected !== true
           ? OpenSocket("http://localhost:8000/general")
