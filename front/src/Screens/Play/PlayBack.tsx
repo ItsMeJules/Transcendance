@@ -73,16 +73,11 @@ const PlayBack = () => {
     const player2Data = getParseLocalStorage('player2');
     setPlayer1Data(player1Data);
     setPlayer2Data(player2Data);
-    if (player1Data.id === userData.id)
-      setWhichPlayer(1);
-    else
-      setWhichPlayer(2);
-
-    const element = document.getElementById("pong-canvas-container");
-    if (element) {
-      const computedStyle = window.getComputedStyle(element);
-      const elementHeight = computedStyle.height;
-      // console.log('elementheight:', elementHeight);
+    if (player1Data !== null && player2Data != null) {
+      if (player1Data.id === userData.id)
+        setWhichPlayer(1);
+      else
+        setWhichPlayer(2);
     }
     // Retrieve the height value
 
@@ -90,11 +85,11 @@ const PlayBack = () => {
 
   // Sockets on
   useEffect(() => {
-    socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
     socket.game?.on('prepareToPlay', (data: GameSocket) => {
       console.log('DATA PREPARE', data);
       setGameState(data);
     });
+    socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
     socket.game?.on('refreshGame', (data: GameSocket) => {
       console.log('DATA game', data);
       setGameState(data);

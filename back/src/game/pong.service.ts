@@ -135,7 +135,9 @@ export class PongService {
       this.onlineGames.delete(gameStruct.prop.id);
       this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
       console.log('Game updated successfully');
+
     } catch (error) {
+
       console.error('Error updating game:', error);
     }
   }
