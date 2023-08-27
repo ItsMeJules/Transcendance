@@ -10,15 +10,13 @@ import DisplayStats from "./components/DisplayStats";
 import ProfilePicContainer from "./components/ProfilePicContainer";
 import LogoutParent from "../../LogoutHook/logoutParent";
 import { Socket } from "socket.io-client";
-import {
-  connectSocket,
-  disconnectSocket,
-  deregisterSocket,
-} from "../../Websocket/Socket.io";
+import { connectSocket, disconnectSocket, deregisterSocket } from "../../Websocket/Socket.io";
 import User from "../../Services/User";
 import { UserData } from "../../Services/User";
 import QRCode from "react-qr-code";
 import { useAxios } from "../../api/axios-config";
+import { useAppDispatch } from "../../redux/Store";
+import { setUser } from "../../redux/reducers/UserSlice";
 
 function QrCode(): React.ReactElement {
   const popupRef = React.createRef<HTMLDivElement>();
@@ -65,11 +63,7 @@ function QrCode(): React.ReactElement {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (
-      popupRef &&
-      popupRef.current &&
-      !popupRef.current.contains(event.target as Node)
-    ) {
+    if (popupRef && popupRef.current && !popupRef.current.contains(event.target as Node)) {
       changeVisibleNone(event as any);
     }
   };
@@ -124,6 +118,7 @@ export const UserProfile: React.FC = () => {
   const progressBarClass = getProgressBarClass(level);
   const history = useNavigate();
   const [socket, setSocket] = useState<Socket | null | undefined>(null);
+  const dispatchUser = useAppDispatch();
   const axiosInstanceError = useAxios();
 
   const resetErrMsg = () => {
@@ -143,6 +138,7 @@ export const UserProfile: React.FC = () => {
         withCredentials: true,
       });
       const userData = response.data;
+      dispatchUser(setUser(userData));
       localStorage.setItem("userData", JSON.stringify(userData));
       setUserDataHere(userData);
       User.getInstance().setUserFromResponseData(userData);
@@ -180,11 +176,7 @@ export const UserProfile: React.FC = () => {
               to={APP_ROUTES.USER_PROFILE_EDIT}
               style={{ padding: "0px" }}
             >
-              <MDBCardImage
-                src="/images/edit_profile.png"
-                fluid
-                style={{ width: "30px" }}
-              />
+              <MDBCardImage src="/images/edit_profile.png" fluid style={{ width: "30px" }} />
             </Link>
 
             <LogoutParent setErrMsg={setErrMsg} />
