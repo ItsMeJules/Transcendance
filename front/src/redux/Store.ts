@@ -1,15 +1,14 @@
-import { AnyAction, Reducer, combineReducers, configureStore } from '@reduxjs/toolkit'
-import storage from 'redux-persist/lib/storage';
+import { AnyAction, Reducer, combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
-import thunk from 'redux-thunk';
+import storage from 'redux-persist/lib/storage';
 
-import { userReducer } from './reducers/UserSlice'
-import ChannelSlice from './reducers/ChannelSlice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import ChannelSlice from './reducers/ChannelSlice';
+import { userReducer } from './reducers/UserSlice';
 
 const appReducer = combineReducers({
   channels: ChannelSlice,
-  user: persistReducer({ key: "root", storage }, userReducer),
+  user: persistReducer({ key: "user", storage }, userReducer),
 })
 
 const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
@@ -22,7 +21,7 @@ const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
 }
 
 export const store = configureStore({
-  reducer: rootReducer
+  reducer: rootReducer,
 })
 
 export const persistor = persistStore(store)

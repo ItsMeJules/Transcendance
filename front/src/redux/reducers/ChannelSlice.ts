@@ -1,13 +1,32 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-import { ChannelData, ChannelMessageData, ChannelType, transformToChannelData } from "../../Screens/chat/models/Channel";
+import { ChannelMessageData, ChannelType } from "../../Screens/chat/models/Channel";
 import { API_ROUTES } from "../../Utils";
-import { ChannelInfoInList } from "../../Screens/chat/models/partial/PartialModels";
 
 interface ChannelDataState {
-  activeChannel: ChannelData | null,
-  visibleChannels: ChannelInfoInList[];
+  activeChannel: {
+    type: string | null;
+    name: string | null;
+    password: string | null;
+    usersId: number[];
+    ownerId: number | null;
+    adminsId: number[];
+    punishments: {
+      type: string;
+      userId: number;
+      expireAt: number;
+    }[];
+    messages: {
+      authorId: number;
+      text: string;
+    }[];
+  } | null,
+  visibleChannels: {
+    name: string;
+    type: ChannelType;
+    userCount: number;
+  }[];
 }
 
 const initialState: ChannelDataState = {
@@ -19,6 +38,7 @@ export const fetchActiveChannel = createAsyncThunk(
   "channel/fetchActiveChannel",
   async (_, thunkAPI) => {
     const response = await axios.get(API_ROUTES.COMPLETE_ROOM, { withCredentials: true });
+    console.log(response.data)
     return response.data;
   }
 );
@@ -63,7 +83,7 @@ const channelSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchActiveChannel.fulfilled, (state, action) => {
-      state.activeChannel = transformToChannelData(action.payload);
+      // state.activeChannel = ;
     })
     // .addCase(fetchVisibleChannels.fulfilled, (state, action) => {
     //   state.visibleChannels = action.payload.reduce(

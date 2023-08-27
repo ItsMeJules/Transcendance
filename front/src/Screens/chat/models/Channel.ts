@@ -1,5 +1,3 @@
-import { ChatMessageData } from "./ChatMessageData";
-
 export enum ChannelType {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
@@ -12,9 +10,14 @@ export const ChannelTypeDescription = {
   PROTECTED: { name: "Protégé", desc: "Canal protégé par un mot de passe." }
 }
 
+export enum PunishmentType {
+  BAN,
+  MUTE
+}
+
 export interface PunishmentData {
+  type: PunishmentType;
   userId: number;
-  channelFrom: string;
 }
 
 export interface MuteData extends PunishmentData {
@@ -25,7 +28,7 @@ export interface BanData extends PunishmentData { }
 
 export interface ChannelMessageData {
   authorId: number,
-  text: "YE",
+  text: string,
 }
 
 export interface ChannelData {
@@ -49,11 +52,31 @@ export class Channel {
 
 // TODO Finish this type
 export function transformToChannelData(data: any): ChannelData {
-  const punishments: PunishmentData[] = []
+  if (data === null)
+    return {} as ChannelData
+    
+  const punishments: PunishmentData[] = data.punishments.map((punishment: any) => {
+    if (punishment.type === PunishmentType.BAN) {
+      return {
+        type: PunishmentType.BAN,
+        userId: punishment.userId
+      } as BanData;
+    } else if (punishment.type === PunishmentType.MUTE) {
+      return {
+        type: PunishmentType.MUTE,
+        userId: punishment.userId,
+        expireAt: punishment.expireAt
+      } as MuteData;
+    }
+    return {} as PunishmentData;
+  });
 
-  // data.mutes.forEach(mute => {
-  //   punishments.push({userId:})
-  // })
+  const messages: ChannelMessageData[] = data.messages.map((message: any) => {
+    return {
+      authorId: message.authorId,
+      text: message.text
+    };
+  });
 
   return {
     type: data.type,
@@ -63,6 +86,6 @@ export function transformToChannelData(data: any): ChannelData {
     ownerId: data.ownerId,
     adminsId: data.admins,
     punishments: punishments,
-    messages: data.messages
+    messages: messages,
   }
 }
