@@ -2,11 +2,12 @@ import axios from "axios";
 import { KeyboardEvent, useContext, useEffect, useState } from "react";
 
 import { API_ROUTES } from "../../../../../Utils";
-import { ChatSocketActionType, SendDataContext } from "../../../ChatBox";
+import { SendDataContext } from "../../../ChatBox";
 import { ChannelType } from "../../../models/Channel";
 import { ChannelInfoInList } from "../../../models/partial/PartialModels";
 import ChannelsList from "../../../utils/ChannelsList";
 import Popup from "../../../utils/Popup";
+import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
 
 export default function ChannelListPopup() {
   const [selectedChannelName, setSelectedChannelName] = useState<string | null>(null);
@@ -108,15 +109,8 @@ export default function ChannelListPopup() {
               </button>
             </div>
           </div>
-<<<<<<< HEAD
-        )
-        : (
-          undefined
-        )}
-=======
         </div>
       ) : undefined}
->>>>>>> 3ed59749ac462ccad42a3a1227756c04fbd75d6d
     </>
   );
 }
