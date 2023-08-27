@@ -11,21 +11,23 @@ import Popup from "../../../utils/Popup";
 export default function ChannelListPopup() {
   const [selectedChannelName, setSelectedChannelName] = useState<string | null>(null);
   const [passwordValue, setPasswordValue] = useState<string>("");
-  const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([])
+  const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([]);
   const [searchText, setSearchText] = useState("");
 
   // const visibleChannelsStore = useAppSelector(store => store.channels.visibleChannels)
-  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext)
+  const sendData: null | ((action: string, data: any) => void) = useContext(SendDataContext)
 
   useEffect(() => {
     const requestVisibleChannels = async () => {
       try {
-        const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, { withCredentials: true });
-        setVisibleChannels(response.data)
+        const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, {
+          withCredentials: true,
+        });
+        setVisibleChannels(response.data);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
+    };
 
     requestVisibleChannels()
   }, [/*visibleChannelsStore*/])
@@ -40,18 +42,21 @@ export default function ChannelListPopup() {
 
   const joinChannel = (channelName: string | null) => {
     if (sendData != null) {
-      channelName = channelName === null ? selectedChannelName : channelName
-      sendData(ChatSocketActionType.SWITCH_CHANNEL, { roomName: channelName, password: passwordValue })
+      channelName = channelName === null ? selectedChannelName : channelName;
+      sendData(ChatSocketActionType.SWITCH_CHANNEL, {
+        action: "joinRoom",
+        roomName: channelName,
+        password: passwordValue,
+      });
     }
 
-    setPasswordValue("")
-    setSelectedChannelName(null)
-  }
+    setPasswordValue("");
+    setSelectedChannelName(null);
+  };
 
   const handleEnterPressed = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter")
-      joinChannel(null)
-  }
+    if (e.key === "Enter") joinChannel(null);
+  };
 
   return (
     <>
@@ -94,12 +99,24 @@ export default function ChannelListPopup() {
                 <button className="validate" onClick={() => joinChannel(null)}>Rejoindre</button>
               </div>
 
+            <div className="buttons">
+              <button className="cancel" onClick={() => setSelectedChannelName(null)}>
+                Annuler
+              </button>
+              <button className="validate" onClick={() => joinChannel(null)}>
+                Rejoindre
+              </button>
             </div>
           </div>
+<<<<<<< HEAD
         )
         : (
           undefined
         )}
+=======
+        </div>
+      ) : undefined}
+>>>>>>> 3ed59749ac462ccad42a3a1227756c04fbd75d6d
     </>
-  )
+  );
 }

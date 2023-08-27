@@ -1,18 +1,18 @@
 export enum ChannelType {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
-  PROTECTED = "PROTECTED"
+  PROTECTED = "PROTECTED",
 }
 
 export const ChannelTypeDescription = {
   PUBLIC: { name: "Public", desc: "Canal accessible par tout le monde." },
   PRIVATE: { name: "Privé", desc: "Canal accessible sous invitation." },
-  PROTECTED: { name: "Protégé", desc: "Canal protégé par un mot de passe." }
-}
+  PROTECTED: { name: "Protégé", desc: "Canal protégé par un mot de passe." },
+};
 
 export enum PunishmentType {
   BAN,
-  MUTE
+  MUTE,
 }
 
 export interface PunishmentData {
@@ -24,11 +24,11 @@ export interface MuteData extends PunishmentData {
   expireAt: number;
 }
 
-export interface BanData extends PunishmentData { }
+export interface BanData extends PunishmentData {}
 
 export interface ChannelMessageData {
-  authorId: number,
-  text: string,
+  authorId: number;
+  text: string;
 }
 
 export interface ChannelData {
@@ -38,7 +38,7 @@ export interface ChannelData {
   usersId: number[];
   ownerId: number | null;
   adminsId: number[] | null;
-  punishments: PunishmentData[]
+  punishments: PunishmentData[];
   messages: ChannelMessageData[];
 }
 
@@ -52,20 +52,19 @@ export class Channel {
 
 // TODO Finish this type
 export function transformToChannelData(data: any): ChannelData {
-  if (data === null)
-    return {} as ChannelData
-    
+  if (data === null) return {} as ChannelData;
+
   const punishments: PunishmentData[] = data.punishments.map((punishment: any) => {
     if (punishment.type === PunishmentType.BAN) {
       return {
         type: PunishmentType.BAN,
-        userId: punishment.userId
+        userId: punishment.userId,
       } as BanData;
     } else if (punishment.type === PunishmentType.MUTE) {
       return {
         type: PunishmentType.MUTE,
         userId: punishment.userId,
-        expireAt: punishment.expireAt
+        expireAt: punishment.expireAt,
       } as MuteData;
     }
     return {} as PunishmentData;
@@ -74,7 +73,7 @@ export function transformToChannelData(data: any): ChannelData {
   const messages: ChannelMessageData[] = data.messages.map((message: any) => {
     return {
       authorId: message.authorId,
-      text: message.text
+      text: message.text,
     };
   });
 
@@ -87,5 +86,5 @@ export function transformToChannelData(data: any): ChannelData {
     adminsId: data.admins,
     punishments: punishments,
     messages: messages,
-  }
+  };
 }

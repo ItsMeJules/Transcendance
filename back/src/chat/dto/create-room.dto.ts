@@ -11,7 +11,7 @@ export class CreateRoomDto {
   type: string;
 
   @IsString()
-  password: string;
+  password?: string;
 
   server: Server;
 }
