@@ -2,39 +2,42 @@ import { useContext, useState } from "react";
 
 import Popup from "../../../utils/Popup";
 
-import PublicIcon from "../../../../../assets/globe.png"
-import PrivateIcon from "../../../../../assets/private.png"
-import ProtectedIcon from "../../../../../assets/padlock.png"
-
+import PublicIcon from "../../../../../assets/globe.png";
+import PrivateIcon from "../../../../../assets/private.png";
+import ProtectedIcon from "../../../../../assets/padlock.png";
+import PayloadAction from "../../../models/PayloadSocket";
 import { ChannelType, ChannelTypeDescription } from "../../../models/Channel";
 import { ChatSocketActionType, SendDataContext } from "../../../ChatBox";
+import { useAppSelector } from "../../../../../redux/Store";
 
 export default function ChannelCreationPopup() {
-  const [channelType, setChannelType] = useState(ChannelType.PUBLIC)
-  const [channelName, setChannelName] = useState("")
-  const [channelPassword, setChannelPassword] = useState("")
+  const [channelType, setChannelType] = useState(ChannelType.PUBLIC);
+  const [channelName, setChannelName] = useState("");
+  const [channelPassword, setChannelPassword] = useState("");
+  const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
 
-  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext)
+  const sendData: null | ((action: ChatSocketActionType, data: PayloadAction) => void) =
+    useContext(SendDataContext);
 
   const createChannel = () => {
-    if (sendData == null)
-      return
-    if (!channelName.trim())
-      return;
-    if (channelType === ChannelType.PROTECTED && !channelPassword.trim())
-      return;
+    if (sendData == null) return;
+    if (!channelName.trim()) return;
+    if (channelType === ChannelType.PROTECTED && !channelPassword.trim()) return;
 
-    const channelData = { type: channelType, roomName: channelName, password: channelPassword };
-    
-    sendData(ChatSocketActionType.CREATE_CHANNEL, channelData)
-    setChannelName("")
-    setChannelPassword("")
-  }
+    const channelData = {
+      type: channelType,
+      roomName: channelName,
+      password: channelPassword,
+    };
+
+    sendData(ChatSocketActionType.CREATE_CHANNEL, channelData as PayloadAction);
+    setChannelName("");
+    setChannelPassword("");
+  };
 
   return (
     <Popup className="channel-creation-popup">
       <div className="icons">
-
         <div className="selected-text">
           <p className="type">Type: {ChannelTypeDescription[channelType].name}</p>
           <p className="description">{ChannelTypeDescription[channelType].desc}</p>
@@ -60,7 +63,6 @@ export default function ChannelCreationPopup() {
             onClick={() => setChannelType(ChannelType.PROTECTED)}
           />
         </div>
-
       </div>
 
       <div className="channel-name">

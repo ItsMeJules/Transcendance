@@ -21,4 +21,7 @@ export class PayloadActionDto {
 
   @IsNotEmpty()
   action: string;
+
+  @IsString()
+  type?: string;
 }

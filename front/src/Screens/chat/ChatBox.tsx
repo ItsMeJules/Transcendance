@@ -9,12 +9,12 @@ import ChatBar from "./chatbar/ChatBar";
 import ChatMetadata from "./metadata/ChatMetadata";
 import { fetchActiveChannel } from "../../redux/reducers/ChannelSlice";
 import { setUserActiveChannel } from "../../redux/reducers/UserSlice";
-
+import PayloadAction from "./models/PayloadSocket";
 
 export enum ChatSocketEventType {
   JOIN_ROOM = "join-room",
   CHAT_ACTION = "chat-action",
-  MESSAGE = "message"
+  MESSAGE = "message",
 }
 
 export enum ChatSocketActionType {
@@ -23,60 +23,62 @@ export enum ChatSocketActionType {
   SEND_MESSAGE = "send-message",
 }
 
-export const SendDataContext = createContext<null | ((action: ChatSocketActionType, data: any) => void)>(null)
+export const SendDataContext = createContext<
+  null | ((action: ChatSocketActionType, data: PayloadAction) => void)
+>(null);
 
 export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const chatSocket = useWebsocketContext().chat;
-  const { currentRoom: activeChannelName } = useAppSelector(store => store.user.userData)
+  const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
 
   useEffect(() => {
     chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
       try {
-        dispatch(setUserActiveChannel(payload))
-        dispatch(fetchActiveChannel())
+        dispatch(setUserActiveChannel(payload));
+        dispatch(fetchActiveChannel());
       } catch (error) {
         console.log("There was an error fetching the data", error);
       }
-    })
+    });
 
     return () => {
-      chatSocket?.off(ChatSocketEventType.JOIN_ROOM)
-    }
-  }, [dispatch, chatSocket, activeChannelName])
+      chatSocket?.off(ChatSocketEventType.JOIN_ROOM);
+    };
+  }, [dispatch, chatSocket, activeChannelName]);
 
-  const sendData = (action: ChatSocketActionType, data: any) => {
+  const sendData = (action: ChatSocketActionType, data: PayloadAction) => {
     let eventType = ChatSocketEventType.MESSAGE;
 
     switch (action) {
       case ChatSocketActionType.CREATE_CHANNEL:
-        eventType = ChatSocketEventType.CHAT_ACTION
+        eventType = ChatSocketEventType.CHAT_ACTION;
         data = {
           ...data,
-          action: "createRoom"
-        }
+          action: "createRoom",
+        };
         break;
       case ChatSocketActionType.SWITCH_CHANNEL:
-        eventType = ChatSocketEventType.CHAT_ACTION
+        eventType = ChatSocketEventType.CHAT_ACTION;
         data = {
           ...data,
-          action: "joinRoom"
-        }
+          action: "joinRoom",
+        };
         break;
       case ChatSocketActionType.SEND_MESSAGE:
         data = {
           message: data,
-          roomName: activeChannelName
-        }
+          roomName: activeChannelName,
+        };
         break;
       default:
         break;
     }
 
-    console.log(data)
-    chatSocket?.emit(eventType, data)
+    console.log(data);
+    chatSocket?.emit(eventType, data);
   };
 
   const togglerTransition = {

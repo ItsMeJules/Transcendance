@@ -1,21 +1,26 @@
 import { useState, KeyboardEvent, useContext } from "react";
-
+import PayloadAction from "../models/PayloadSocket";
 import TextSend from "./TextSend";
 import { ChatSocketActionType, SendDataContext } from "../ChatBox";
+import { useAppSelector } from "../../../redux/Store";
 
 const TextInput = () => {
   const [value, setValue] = useState<string>("");
 
-  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext)
+  const sendData: null | ((action: ChatSocketActionType, data: PayloadAction) => void) =
+    useContext(SendDataContext);
+
+  const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
 
   const handleSend = () => {
-    if (sendData == null)
-      return
-      
-    if (!value.trim())
-      return;
+    if (sendData == null) return;
 
-    sendData(ChatSocketActionType.SEND_MESSAGE, value)
+    if (!value.trim()) return;
+
+    sendData(ChatSocketActionType.SEND_MESSAGE, {
+      message: value,
+      roomName: activeChannelName,
+    } as PayloadAction);
     setValue("");
   };
 

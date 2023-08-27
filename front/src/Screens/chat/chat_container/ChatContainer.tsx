@@ -12,10 +12,14 @@ const ChatContainer: React.FC = () => {
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const chatSocket = useWebsocketContext().chat;
-  const dispatch = useAppDispatch()
-  const { id: userId, currentRoom: activeChannelName } = useAppSelector(store => store.user.userData)
+  const dispatch = useAppDispatch();
+  const { id: userId, currentRoom: activeChannelName } = useAppSelector(
+    (store) => store.user.userData
+  );
 
-  const messages: ChannelMessageData[] | undefined = useAppSelector(store => store.channels.activeChannel?.messages)
+  const messages: ChannelMessageData[] | undefined = useAppSelector(
+    (store) => store.channels.activeChannel?.messages
+  );
   const chatMessages = messages?.reduce((chatMessages: ChatMessageData[], message: any) => {
     chatMessages.push({
       message: message.text,
@@ -23,25 +27,24 @@ const ChatContainer: React.FC = () => {
       authorId: message.authorId,
       profilePicture: message.profilePicture,
       userName: message.userName,
-    })
+    });
 
-    return chatMessages
-  }, [])
+    return chatMessages;
+  }, []);
 
   useEffect(() => {
     const onNewMessage = (payload: any) => {
-      if (activeChannelName === null)
-        return
+      if (activeChannelName === null) return;
 
-      dispatch(addMessageToActiveChannel(payload))
+      dispatch(addMessageToActiveChannel(payload));
     };
 
-    chatSocket?.on(ChatSocketEventType.MESSAGE, onNewMessage)
+    chatSocket?.on(ChatSocketEventType.MESSAGE, onNewMessage);
 
     return () => {
-      chatSocket?.off(ChatSocketEventType.MESSAGE)
-    }
-  }, [chatSocket, userId, activeChannelName, dispatch])
+      chatSocket?.off(ChatSocketEventType.MESSAGE);
+    };
+  }, [chatSocket, userId, activeChannelName, dispatch]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -49,9 +52,9 @@ const ChatContainer: React.FC = () => {
 
   return (
     <div className="messages-container">
-      {chatMessages !== undefined
-        ? <ChatMessage messagesReceived={chatMessages} />
-        : undefined}
+      {chatMessages !== undefined ? (
+        <ChatMessage messagesReceived={chatMessages} />
+      ) : undefined}
       <div ref={messagesEndRef} />
     </div>
   );

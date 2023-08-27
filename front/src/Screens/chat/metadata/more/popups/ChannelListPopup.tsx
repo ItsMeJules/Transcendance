@@ -12,44 +12,50 @@ import Popup from "../../../utils/Popup";
 export default function ChannelListPopup() {
   const [selectedChannelName, setSelectedChannelName] = useState<string | null>(null);
   const [passwordValue, setPasswordValue] = useState<string>("");
-  const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([])
+  const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([]);
   const [searchText, setSearchText] = useState("");
 
-  const visibleChannelsStore = useAppSelector(store => store.channels.visibleChannels)
-  const sendData: null | ((action: ChatSocketActionType, data: any) => void) = useContext(SendDataContext)
+  const visibleChannelsStore = useAppSelector((store) => store.channels.visibleChannels);
+  const sendData: null | ((action: ChatSocketActionType, data: any) => void) =
+    useContext(SendDataContext);
 
-  const shouldShowPopup = selectedChannelName !== null
-  && visibleChannels.find(
-    value => value.name === selectedChannelName)
-  ?.type === ChannelType.PROTECTED
+  const shouldShowPopup =
+    selectedChannelName !== null &&
+    visibleChannels.find((value) => value.name === selectedChannelName)?.type ===
+      ChannelType.PROTECTED;
 
   useEffect(() => {
     const requestVisibleChannels = async () => {
       try {
-        const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, { withCredentials: true });
-        setVisibleChannels(response.data)
+        const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, {
+          withCredentials: true,
+        });
+        setVisibleChannels(response.data);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
+    };
 
-    requestVisibleChannels()
-  }, [visibleChannelsStore]) // add dependencies
+    requestVisibleChannels();
+  }, [visibleChannelsStore]); // add dependencies
 
   const joinChannel = (channelName: string | null) => {
     if (sendData != null) {
-      channelName = channelName === null ? selectedChannelName : channelName
-      sendData(ChatSocketActionType.SWITCH_CHANNEL, { roomName: channelName, password: passwordValue })
+      channelName = channelName === null ? selectedChannelName : channelName;
+      sendData(ChatSocketActionType.SWITCH_CHANNEL, {
+        action: "joinRoom",
+        roomName: channelName,
+        password: passwordValue,
+      });
     }
 
-    setPasswordValue("")
-    setSelectedChannelName(null)
-  }
+    setPasswordValue("");
+    setSelectedChannelName(null);
+  };
 
   const handleEnterPressed = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter")
-      joinChannel(null)
-  }
+    if (e.key === "Enter") joinChannel(null);
+  };
 
   return (
     <>
@@ -64,38 +70,41 @@ export default function ChannelListPopup() {
         <ChannelsList
           channels={visibleChannels}
           onClickElement={(channelName: string) => {
-            joinChannel(channelName)
-            setSelectedChannelName(channelName)
+            joinChannel(channelName);
+            setSelectedChannelName(channelName);
           }}
           filter={(channelName) => channelName.includes(searchText)}
         />
       </Popup>
 
-      {shouldShowPopup
-        ? (
-          <div className="password-popup">
-            <div className="password-popup-content">
+      {shouldShowPopup ? (
+        <div className="password-popup">
+          <div className="password-popup-content">
+            <div className="infos">
+              <h3>
+                Rejoindre
+                <br />
+                {selectedChannelName}
+              </h3>
+              <input
+                placeholder="Entrez le mdp..."
+                onChange={(e) => setPasswordValue(e.target.value)}
+                value={passwordValue}
+                onKeyDown={(e) => handleEnterPressed(e)}
+              />
+            </div>
 
-              <div className="infos">
-                <h3>Rejoindre<br />{selectedChannelName}</h3>
-                <input placeholder="Entrez le mdp..."
-                  onChange={(e) => setPasswordValue(e.target.value)}
-                  value={passwordValue}
-                  onKeyDown={(e) => handleEnterPressed(e)}
-                />
-              </div>
-
-              <div className="buttons">
-                <button className="cancel" onClick={() => setSelectedChannelName(null)}>Annuler</button>
-                <button className="validate" onClick={() => joinChannel(null)}>Rejoindre</button>
-              </div>
-
+            <div className="buttons">
+              <button className="cancel" onClick={() => setSelectedChannelName(null)}>
+                Annuler
+              </button>
+              <button className="validate" onClick={() => joinChannel(null)}>
+                Rejoindre
+              </button>
             </div>
           </div>
-        )
-      : (
-        undefined
-      )}
+        </div>
+      ) : undefined}
     </>
-  )
+  );
 }
