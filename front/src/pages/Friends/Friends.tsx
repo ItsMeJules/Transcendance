@@ -15,7 +15,7 @@ import FriendsContainer from "./Components/FriendsContainer";
 
 import './css/friends.scss';
 
-const UserFriends = () => {
+const Friends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
@@ -125,4 +125,4 @@ const UserFriends = () => {
   );
 }
 
-export default UserFriends;
+export default Friends;
