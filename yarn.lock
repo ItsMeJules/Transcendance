@@ -223,6 +223,11 @@
   dependencies:
     "react-is" "^16.7.0"
 
+"immutable@^5.0.0-beta.2":
+  "integrity" "sha512-3v1xnTlom9D2ssrEvcfFHtipjXgmZeNtximyvNyuK2eAWKWWFtfh+9w+VOVujkBSbgpjrYsS55yuWE1E5ES7IA=="
+  "resolved" "https://registry.npmjs.org/immutable/-/immutable-5.0.0-beta.2.tgz"
+  "version" "5.0.0-beta.2"
+
 "iterare@1.2.1":
   "integrity" "sha512-RKYVTCjAnRthyJes037NX/IiqeidgN1xc3j1RjFfECFp28A1GVwK9nA+i0rJPaHqSZwygLzRnFlzUuHFoWWy+Q=="
   "resolved" "https://registry.npmjs.org/iterare/-/iterare-1.2.1.tgz"
