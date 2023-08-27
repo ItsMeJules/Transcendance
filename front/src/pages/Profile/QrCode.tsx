@@ -3,6 +3,8 @@ import { API_ROUTES } from "../../utils/routing/routing";
 import Popup from "./components/Popup";
 import { useAxios } from "../../utils/axiosConfig/axiosConfig";
 
+import '../Auth2factor/css/2faButton.scss';
+
 const QrCode: React.FC = () => {
   const popupRef = React.createRef<HTMLDivElement>();
   const axiosInstanceError = useAxios();

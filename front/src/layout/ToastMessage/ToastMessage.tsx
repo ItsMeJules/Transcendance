@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { MdOutlineNotificationImportant } from 'react-icons/md';
 import { IconContext } from 'react-icons';
 
+import './ToastMessage.scss';
+
 interface ToastMessageProps {
   notifMsg: string;
   resetNotifMsg: () => void; // New prop to reset errMsg in the parent component

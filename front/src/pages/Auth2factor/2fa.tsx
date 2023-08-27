@@ -4,6 +4,8 @@ import { useAxios } from "utils/axiosConfig/axiosConfig";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import { API_ROUTES } from "utils/routing/routing";
 
+import "./css/2faButton.scss";
+
 export const TwoFa = () => {
   const errRef = useRef<HTMLParagraphElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);

@@ -12,6 +12,8 @@ import LeaderBoardHeader from "./components/LeaderBoardHeader";
 import UserProfilesList from "./components/UserProfileList";
 import LeaderBoardContainer from "./components/LeaderBoardContainer"
 
+import './css/LeaderBoard.scss';
+
 const LeaderBoard: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
