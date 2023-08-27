@@ -3,7 +3,11 @@ import React, { useEffect, useRef } from "react";
 import { useWebsocketContext } from "../../../Wrappers/Websocket";
 import { useAppDispatch, useAppSelector } from "../../../redux/Store";
 import { addMessageToActiveChannel } from "../../../redux/reducers/ChannelSlice";
-import { ChatSocketEventType } from "../ChatBox";
+import {
+  ChatSocketActionType,
+  ChatSocketEventType,
+  RoomSocketActionType,
+} from "../models/TypesActionsEvents";
 import { ChannelMessageData } from "../models/Channel";
 import { ChatMessageData } from "../models/ChatMessageData";
 import ChatMessage from "./ChatMessage";

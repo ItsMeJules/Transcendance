@@ -7,8 +7,9 @@ import PrivateIcon from "../../../../../assets/private.png";
 import ProtectedIcon from "../../../../../assets/padlock.png";
 import PayloadAction from "../../../models/PayloadSocket";
 import { ChannelType, ChannelTypeDescription } from "../../../models/Channel";
-import { ChatSocketActionType, SendDataContext } from "../../../ChatBox";
+import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
 import { useAppSelector } from "../../../../../redux/Store";
+import { SendDataContext } from "../../../ChatBox";
 
 export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC);
@@ -28,6 +29,7 @@ export default function ChannelCreationPopup() {
       type: channelType,
       roomName: channelName,
       password: channelPassword,
+      action: ChatSocketActionType.CREATE_CHANNEL,
     };
 
     sendData(ChatSocketActionType.CREATE_CHANNEL, channelData as PayloadAction);

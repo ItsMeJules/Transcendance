@@ -10,21 +10,14 @@ import ChatMetadata from "./metadata/ChatMetadata";
 import { fetchActiveChannel } from "../../redux/reducers/ChannelSlice";
 import { setUserActiveChannel } from "../../redux/reducers/UserSlice";
 import PayloadAction from "./models/PayloadSocket";
-
-export enum ChatSocketEventType {
-  JOIN_ROOM = "join-room",
-  CHAT_ACTION = "chat-action",
-  MESSAGE = "message",
-}
-
-export enum ChatSocketActionType {
-  CREATE_CHANNEL = "create-channel",
-  SWITCH_CHANNEL = "switch-channel",
-  SEND_MESSAGE = "send-message",
-}
+import {
+  ChatSocketActionType,
+  ChatSocketEventType,
+  RoomSocketActionType,
+} from "./models/TypesActionsEvents";
 
 export const SendDataContext = createContext<
-  null | ((action: ChatSocketActionType, data: PayloadAction) => void)
+  null | ((action: string, data: PayloadAction) => void)
 >(null);
 
 export const ChatBox = () => {
@@ -49,35 +42,25 @@ export const ChatBox = () => {
     };
   }, [dispatch, chatSocket, activeChannelName]);
 
-  const sendData = (action: ChatSocketActionType, data: PayloadAction) => {
+  function isChatSocketActionType(action: string): action is ChatSocketActionType {
+    return Object.values(ChatSocketActionType).includes(action as ChatSocketActionType);
+  }
+
+  function isRoomSocketActionType(action: string): action is RoomSocketActionType {
+    return Object.values(RoomSocketActionType).includes(action as RoomSocketActionType);
+  }
+
+  const sendData = (action: string, data: PayloadAction) => {
     let eventType = ChatSocketEventType.MESSAGE;
 
-    switch (action) {
-      case ChatSocketActionType.CREATE_CHANNEL:
-        eventType = ChatSocketEventType.CHAT_ACTION;
-        data = {
-          ...data,
-          action: "createRoom",
-        };
-        break;
-      case ChatSocketActionType.SWITCH_CHANNEL:
-        eventType = ChatSocketEventType.CHAT_ACTION;
-        data = {
-          ...data,
-          action: "joinRoom",
-        };
-        break;
-      case ChatSocketActionType.SEND_MESSAGE:
-        data = {
-          message: data,
-          roomName: activeChannelName,
-        };
-        break;
-      default:
-        break;
+    if (isChatSocketActionType(action)) {
+      eventType = ChatSocketEventType.CHAT_ACTION;
+    }
+    if (isRoomSocketActionType(action)) {
+      eventType = ChatSocketEventType.ROOM_ACTION;
     }
 
-    console.log(data);
+    console.log("data is :", data, "on eventType :", eventType);
     chatSocket?.emit(eventType, data);
   };
 

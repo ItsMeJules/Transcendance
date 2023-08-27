@@ -3,9 +3,10 @@ import { KeyboardEvent, useContext, useEffect, useState } from "react";
 
 import { API_ROUTES } from "../../../../../Utils";
 import { useAppSelector } from "../../../../../redux/Store";
-import { ChatSocketActionType, SendDataContext } from "../../../ChatBox";
+import { SendDataContext } from "../../../ChatBox";
 import { ChannelType } from "../../../models/Channel";
 import { ChannelInfoInList } from "../../../models/partial/PartialModels";
+import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
 import ChannelsList from "../../../utils/ChannelsList";
 import Popup from "../../../utils/Popup";
 
