@@ -37,13 +37,11 @@ export default function ChannelListPopup() {
   }, [visibleChannelsStore]) // add dependencies
 
   const joinChannel = (channelName: string | null) => {
-    if (sendData == null)
-      return
+    if (sendData != null) {
+      channelName = channelName === null ? selectedChannelName : channelName
+      sendData(ChatSocketActionType.SWITCH_CHANNEL, { roomName: channelName, password: passwordValue })
+    }
 
-    channelName = channelName === null ? selectedChannelName : channelName
-
-    console.log(selectedChannelName)
-    sendData(ChatSocketActionType.SWITCH_CHANNEL, { roomName: channelName })
     setPasswordValue("")
     setSelectedChannelName(null)
   }
@@ -88,7 +86,7 @@ export default function ChannelListPopup() {
               </div>
 
               <div className="buttons">
-                <button className="cancel" onClick={() => setSelectedChannelName("")}>Annuler</button>
+                <button className="cancel" onClick={() => setSelectedChannelName(null)}>Annuler</button>
                 <button className="validate" onClick={() => joinChannel(null)}>Rejoindre</button>
               </div>
 

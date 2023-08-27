@@ -43,7 +43,7 @@ export class SocketEvents {
 
 
   handleDisconnect(client: Socket) {
-    console.log('> general Conection out');
+    console.log('> general Conection out', client.id);
     const socketId = client.handshake.query.userId;
     // console.log("users:", this.connectedUsers);
   }

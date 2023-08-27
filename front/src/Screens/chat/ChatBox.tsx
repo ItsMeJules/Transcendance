@@ -8,6 +8,7 @@ import ChatContainer from "./chat_container/ChatContainer";
 import ChatBar from "./chatbar/ChatBar";
 import ChatMetadata from "./metadata/ChatMetadata";
 import { fetchActiveChannel } from "../../redux/reducers/ChannelSlice";
+import { setUserActiveChannel } from "../../redux/reducers/UserSlice";
 
 
 export enum ChatSocketEventType {
@@ -32,11 +33,9 @@ export const ChatBox = () => {
   const { currentRoom: activeChannelName } = useAppSelector(store => store.user.userData)
 
   useEffect(() => {
-    if (chatSocket == null)
-      return
-
-    chatSocket.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
+    chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
       try {
+        dispatch(setUserActiveChannel(payload))
         dispatch(fetchActiveChannel())
       } catch (error) {
         console.log("There was an error fetching the data", error);
@@ -44,10 +43,7 @@ export const ChatBox = () => {
     })
 
     return () => {
-      if (chatSocket == null)
-        return
-
-      chatSocket.off(ChatSocketEventType.JOIN_ROOM)
+      chatSocket?.off(ChatSocketEventType.JOIN_ROOM)
     }
   }, [dispatch, chatSocket, activeChannelName])
 

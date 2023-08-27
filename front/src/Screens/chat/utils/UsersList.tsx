@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 import User, { UserData } from "../../../Services/User";
 import { API_ROUTES } from "../../../Utils";
