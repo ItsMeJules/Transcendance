@@ -107,8 +107,6 @@ export class ChatEventsGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
-    console.log(payload);
-
     const updatedPayload = { ...payload, server: this.server };
     await ActionChatHandlers[payload.action](
       this.chatService,
