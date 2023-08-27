@@ -33,20 +33,17 @@ interface GameParams {
 }
 
 export interface GameSocket {
-  gameParams: GameParams;
   gameStatus: string;
+  gameParams: GameParams;
   playerStatus: string;
   opponentStatus: string;
   time: number;
   countdown: string;
 }
 
-// export interface SocketPrepare {
-//   gameStatus: string;
-//   playerStatus: string;
-//   opponentStatus: string;
-//   countdown: string;
-// }
+interface noGame {
+  status: string;
+}
 
 const PlayBack = () => {
   const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
@@ -72,10 +69,8 @@ const PlayBack = () => {
   // Data parsing
   useEffect(() => {
     const userData = getParseLocalStorage('userData');
-    const gameData = getParseLocalStorage('gameData');
     const player1Data = getParseLocalStorage('player1');
     const player2Data = getParseLocalStorage('player2');
-    const gameVCannel = getParseLocalStorage('gameChannel');
     setPlayer1Data(player1Data);
     setPlayer2Data(player2Data);
     if (player1Data.id === userData.id)
@@ -96,39 +91,45 @@ const PlayBack = () => {
   // Sockets on
   useEffect(() => {
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
-    socket.game?.on('prepareToPlay', (data) => {
-      setGameState(data);
+    socket.game?.on('prepareToPlay', (data: GameSocket) => {
       console.log('DATA PREPARE', data);
+      setGameState(data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
       console.log('DATA game', data);
       setGameState(data);
     });
+    socket.game?.on('noGame', (data: noGame) => {
+      console.log('DATA no game', data);
+      if (data.status === 'noGame')
+        setGameStatus('noGame');
+    });
   }, [socket.game]);
 
   // Game useEffect
   useEffect(() => {
-    console.log('gamestate:', gameState);
+    // console.log('gamestate:', gameState);
     if (gameState?.gameStatus) {
+      // console.log('1111111111111');
       setGameStatus(gameState?.gameStatus);
       game.pl1.score = gameState.gameParams.pl1.score === -1 ? 0 : gameState.gameParams.pl1.score;
       game.pl2.score = gameState.gameParams.pl2.score === -1 ? 0 : gameState.gameParams.pl2.score;
       setGame({ ...game });
     }
     if (gameState?.gameStatus === 'giveUp') {
+      // console.log('222222222');
       game.isPlaying = false;
-      if (gameState.gameParams.pl1.status === 'givenUp') {
-        whichPlayer === 1 ? setCentralText('You gave up!') :
-          setCentralText('Your opponent gave up!');
-        game.isEnded = true;
-        setGame({ ...game, isEnded: true });
-      } else if (gameState.gameParams.pl2.status === 'givenUp') {
-        whichPlayer === 2 ? setCentralText('You gave up!') :
-          setCentralText('Your opponent gave up!');
-        game.isEnded = true;
+      if ((gameState.gameParams.pl1.status === 'givenUp' && whichPlayer === 2)
+        || (gameState.gameParams.pl2.status === 'givenUp' && whichPlayer === 1)) {
+        setCentralText('Your opponent gave up!');
+        setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
+      } else {
+        setCentralText('You gave up :(');
         setGame({ ...game, isEnded: true });
       }
-    } else if (gameState?.gameStatus === 'ended') {
+    }
+    else if (gameState?.gameStatus === 'ended') {
+      // console.log('33333333333');
       if ((gameState.gameParams.pl1.isWinner === true && whichPlayer === 1)
         || (gameState.gameParams.pl2.isWinner === true && whichPlayer === 2)) {
         setCentralText('You win!!');
@@ -139,6 +140,7 @@ const PlayBack = () => {
       }
     }
     else if (gameState) {
+      // console.log('444444444444444444');
       game.ball.updateBall(game.board, gameState.gameParams.ball);
       game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
       game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
@@ -147,7 +149,9 @@ const PlayBack = () => {
 
   // Prepare useEffect
   useEffect(() => {
-    console.log('socketDataPrepare:', gameState);
+    // console.log('socketDataPrepare:', gameState);
+    if (gameStatus === 'noGame')
+      history('/test');
     if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);
     if (gameState?.gameStatus === 'pending' || gameState?.playerStatus === 'pending') {
       setCentralText('Ready?');
@@ -158,12 +162,11 @@ const PlayBack = () => {
       setCentralText('Waiting for opponent');
     } else if (gameState?.gameStatus === 'countdown') {
       setIsOpponentReady(true);
+      setIsPlayerReady(true);
       if (gameState.countdown) {
         setCentralText(gameState.countdown);
       } else
         setCentralText('Get ready!');
-    } else if (gameState?.gameStatus === 'noGame') {
-      history('/test');
     } else if (gameState?.gameStatus === 'timeout') {
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
@@ -176,7 +179,7 @@ const PlayBack = () => {
       // socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'refreshInMotion' });
     }
     return;
-  }, [gameState]);
+  }, [gameState, gameStatus]);
 
   // Window resizing
   useEffect(() => {
@@ -203,7 +206,7 @@ const PlayBack = () => {
         <RightPlayerProfile player2Data={player2Data} />
       </article>
 
-    <ScoreBoard game={game}/>
+      <ScoreBoard game={game} />
 
 
       <div className="pong-sub-container text-white">

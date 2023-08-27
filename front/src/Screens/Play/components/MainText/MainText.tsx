@@ -32,12 +32,11 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
 
   return (
     <article className='main-text-container'
-      style={{
-        marginTop: `-${game.board.height / 2 - 20}px`,
-        maxWidth: `${game.board.width -100}px` }}>
+      style={{ marginTop: `-${game.board.height / 2 - 20}px`, maxWidth: `${game.board.width - 100}px` }}>
+
       {gameStatus === 'pending' && !finalPlayerReady &&
-        <button className="text-button-style" onClick={handleReadyClick} 
-        style={{ maxWidth: `${game.board.width -100}px` }}>
+        <button className="text-button-style" onClick={handleReadyClick}
+          style={{ maxWidth: `${game.board.width - 100}px` }}>
           {textToDisplay}
         </button>}
 

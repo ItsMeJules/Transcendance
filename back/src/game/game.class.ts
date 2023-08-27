@@ -47,16 +47,6 @@ export class GameStruct {
     this.winner = null;
     this.loser = null;
     this.board.updatePointsAndCollisionParameters(this.pl1.pad);
-    this.sendParametersOnCreation();
-  }
-
-  sendParametersOnCreation() {
-    const data = {
-      gamsStatus: this,
-      status: 'START',
-      player1: this.pl1, player2: this.pl2 };
-    this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
-    this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
   }
 
   async startGameLoop() {
@@ -75,10 +65,10 @@ export class GameStruct {
     if (!isStart)
       this.updateBallPosition(deltaTime);
     isStart = false;
-    this.sendUpdate();
+    this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
     const remainingTime = Math.max(this.frameDuration - (Date.now() - frameStartTime), 0);
     if (this.prop.status === 'ended') {
-      this.sendUpdate();
+      this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
       if (this.winner && this.loser)
         this.pongService.endGame(this, this.winner, this.loser);
       return;
@@ -542,7 +532,7 @@ export class GameStruct {
       this.pl1.score += 1;
       this.ball.randomService(this.board, 1, this.gameMode);
     }
-    this.sendUpdate();
+    this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
     if (this.pl1.score >= maxScore || this.pl2.score >= maxScore) {
       this.winner = this.pl1.score >= maxScore ? this.pl1 : this.pl2;
       this.loser = this.pl1.score >= maxScore ? this.pl2 : this.pl1;
@@ -559,8 +549,6 @@ export class GameStruct {
     // console.log('ball size:', this.ball.size, ' speed:', this.ball.speed);
     // console.log('pl1 ph:', this.pl1.pad.height, ' pw:', this.pl1.pad.width);
     // console.log('pl2 ph:', this.pl2.pad.height, ' pw:', this.pl2.pad.width);
-    // this.ball.pos = new Point(120, 190);
-    // this.ball.pos = new Point(300, 200);
     // this.ball.pos = new Point(this.board.width * 0.5, this.board.height * 0.5);
     // this.ball.pos = new Point(140, 80);
   }
@@ -581,10 +569,39 @@ export class GameStruct {
     });
   }
 
-  private sendUpdate() {
-    if (this.prop.status === 'playing' || this.prop.status === 'ended')
-      this.pongEvents.server.to(this.prop.room).emit('refreshGame',
-        { gameStatus: this.prop.status, gameParams: this.getState(), time: Date.now() });
+  sendUpdateToRoom(playerStatus: string, opponentStatus: string, countdown: number, channel: string) {
+    // if (this.prop.status === 'playing' || this.prop.status === 'ended')
+    let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
+
+    console.log('RO to send gstat:', this.prop.status, ' countdown:', countdown,
+    ' player status:', playerStatus);
+
+    this.pongEvents.server.to(this.prop.room).emit(channel,
+      {
+        gameStatus: this.prop.status,
+        gameParams: this.getState(),
+        playerStatus: playerStatus,
+        opponentStatus: opponentStatus,
+        time: Date.now(),
+        countdown: countdownStr,
+      });
+  }
+
+  sendUpdateToPlayer(player: Player, opponentStatus: string, countdown: number, channel:string) {
+    let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
+
+    console.log('PL to send gstat:', this.prop.status, ' countdown:', countdown,
+    ' player status:', player.status);
+
+    this.pongEvents.server.to(`user_${player.id}`).emit(channel,
+      {
+        gameStatus: this.prop.status,
+        gameParams: this.getState(),
+        playerStatus: player.status,
+        opponentStatus: opponentStatus,
+        time: Date.now(),
+        countdown: countdownStr,
+      });
   }
 
   setPlayerReady(id: number) {
