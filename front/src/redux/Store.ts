@@ -13,7 +13,7 @@ const appReducer = combineReducers({
 
 const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
   if (action.type === "user/unsetUser") {
-    storage.removeItem('persist:root')
+    storage.removeItem('persist:user')
 
     return appReducer(undefined, action)
   }

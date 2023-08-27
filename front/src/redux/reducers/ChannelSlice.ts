@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-import { ChannelMessageData, ChannelType } from "../../Screens/chat/models/Channel";
+import { ChannelMessageData, ChannelType, PunishmentType } from "../../Screens/chat/models/Channel";
 import { API_ROUTES } from "../../Utils";
 
 interface ChannelDataState {
@@ -83,8 +83,42 @@ const channelSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchActiveChannel.fulfilled, (state, action) => {
-      // state.activeChannel = ;
-    })
+        const payload = action.payload
+        const punishments = []
+
+        if (payload.bans.length !== 0) {
+          punishments.push(payload.bans.map((user: any) => {
+            return { type: PunishmentType.BAN, userId: user.id, expireAt: null }
+          }))
+        }
+
+        if (payload.mutes.length !== 0) {
+          punishments.push(payload.mutes.map((user: any) => {
+            const expireAt = payload.muteUntil.find(
+              (duration: any) => duration.id === user.id
+            );
+            
+            return {
+              type: PunishmentType.MUTE,
+              userId: user.id, 
+              expireAt: expireAt
+            }
+          }))
+        }
+
+        const newState = {
+          type: payload.type,
+          name: payload.name,
+          password: payload.password,
+          usersId: payload.users.map((user: any) => user.id),
+          ownerId: payload.ownerId,
+          adminsId: payload.admins.map((user: any) => user.id),
+          punishments: punishments,
+          messages: payload.messages,
+        }
+
+        state.activeChannel = newState
+      })
     // .addCase(fetchVisibleChannels.fulfilled, (state, action) => {
     //   state.visibleChannels = action.payload.reduce(
     //     (visibleChannels: ChannelData[], roomInfo: any) => {
