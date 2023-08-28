@@ -436,7 +436,7 @@ export class ChatService {
     try {
       console.log('begining kickUserRoom function');
       const actingUser = await this.prismaService.returnCompleteUser(
-        client.data.id,
+        client.data.id, // ok man
       );
       const targetUser = await this.prismaService.returnCompleteUser(
         kickDto.targetId, // add targetUserId
