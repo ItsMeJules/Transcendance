@@ -35,13 +35,19 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
     <article className='main-text-container'
       style={{ marginTop: `-${game.board.height / 2 - 20}px`, maxWidth: `${game.board.width - 100}px` }}>
 
-      {gameStatus === 'pending' && !finalPlayerReady &&
+      {gameStatus === 'pending' && !finalPlayerReady && whichPlayer !== 0 &&
         <button className="text-button-style" onClick={handleReadyClick}
           style={{ maxWidth: `${game.board.width - 100}px` }}>
           {textToDisplay}
         </button>}
+      {((!gameIsPlaying && finalPlayerReady && whichPlayer !== 0) || gameStatus === 'giveUp'
+        || gameStatus === 'timeout') &&
+        <section className="text-container-style">
+          {textToDisplay}
+        </section>}
 
-      {((!gameIsPlaying && finalPlayerReady) || gameStatus === 'giveUp') &&
+      {/* Spectators messages */}
+      {( gameStatus != 'playing' && whichPlayer === 0) &&
         <section className="text-container-style">
           {textToDisplay}
         </section>}

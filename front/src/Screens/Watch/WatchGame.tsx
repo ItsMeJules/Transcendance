@@ -63,7 +63,7 @@ const WatchGame = () => {
   const [gameStatus, setGameStatus] = useState('');
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
-  const [centralText, setCentralText] = useState('');
+  const [centralText, setCentralText] = useState('Waiting for players');
   const history = useNavigate();
 
   // Data parsing
@@ -126,7 +126,7 @@ const WatchGame = () => {
   // Prepare useEffect
   useEffect(() => {
     if (gameStatus === 'noGame')
-      history('/test');
+      history('/gamesonline');
     if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);
     if (gameState?.gameStatus === 'pending' || gameState?.gameStatus === 'pending') {
       setCentralText('Waiting for players');
@@ -138,7 +138,7 @@ const WatchGame = () => {
     } else if (gameState?.gameStatus === 'timeout') {
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
-        history('/test'); // or online games
+        history('/watch'); // or online games
       }, 3 * 1000);
     } else if (gameState?.gameStatus === 'playing') {
       socket.game?.off('prepareToPlay'); // dont off and use for status?
@@ -192,9 +192,6 @@ const WatchGame = () => {
         <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
         <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
       </div>
-
-      <GiveUp socket={socket.game} whichPlayer={whichPlayer} gameIsEnded={game.isEnded}></GiveUp>
-
     </div >
   );
 

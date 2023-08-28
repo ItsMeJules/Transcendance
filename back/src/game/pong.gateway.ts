@@ -37,6 +37,7 @@ export class PongEvents {
   }
 
   async handleConnection(client: Socket) {
+    console.log('1 connectin in');
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -73,20 +74,19 @@ export class PongEvents {
     this.idToSocketMap.set(user.id, client);
     // console.log('OUT client data:', client.data);
     // console.log('id to socket map:', this.idToSocketMap);
-
+    console.log('2 connectin out');
   }
 
   async handleDisconnect(client: Socket) {
-    // console.log('> game Connection out');
+    console.log('3 disconnect');
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     this.pongService.removeFromQueue(user.id);
     this.idToSocketMap.delete(user.id);
     const socketId = client.handshake.query.userId;
-    // console.log("users:", this.connectedUsers);
   }
 
-  @SubscribeMessage('joinGameQueue') // This decorator listens for messages with the event name 'message'
+  @SubscribeMessage('joinGameQueue')
   async joinQueue(
     @ConnectedSocket() client: Socket,
     @MessageBody() gameDto: GameDto) {
@@ -153,7 +153,7 @@ export class PongEvents {
     // console.log('online games data Map:', dataObject);
   }
 
-  @SubscribeMessage('onlineGames') // This decorator listens for messages with the event name 'message'
+  @SubscribeMessage('onlineGames')
   async getOnlineGames(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { action: string, gameId: string }) {
@@ -190,16 +190,16 @@ export class PongEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { player: string, action: string }) {
 
-    console.log('prepare client data:', client.data);
+    // console.log('prepare client data:', client.data);
 
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !client.data.gameId || !access_token) {
-      if (!client.data.gameId)
+      if (!client.data.gameId) {
         this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
+      }
       client.disconnect();
       return;
     }
-
     // check game id if in game room or not otherwise emit nogame:
     const gameId = parseInt(client.data.gameId);
     const user = await this.authService.validateJwtToken(access_token);
@@ -279,16 +279,22 @@ export class PongEvents {
   @SubscribeMessage('watchGame')
   async watchGame(@ConnectedSocket() client: Socket,
     @MessageBody() data: { gameId: string }) {
-    console.log('watch go');
+    // console.log('1 watch spectator:', this.spectatorsMap);
+    // console.log('Client entering dataspectator:', client.data);
     const access_token = extractAccessTokenFromCookie(client);
-    if (!client.data.id || !access_token || !data.gameId) {
+    if ((!client.data.id || !access_token || !data.gameId)
+      || (!client.data.watchGame && data.gameId && parseInt(data.gameId)) === -1) {
+      this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
       client.disconnect();
       return;
     }
     const clientId = parseInt(client.data.id);
     const gameId = parseInt(data.gameId);
-    const game = this.pongService.getGameStructById(gameId);
+    const game = gameId === -1 ?
+      this.pongService.getGameStructById(parseInt(client.data.watchGame)) :
+      this.pongService.getGameStructById(gameId);
     if (!game) {
+      // console.log('this one!!!!!!');
       this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
       return;
     }
@@ -302,31 +308,27 @@ export class PongEvents {
 
     const dataToSend = { status: 'OK', gameState: game.getState(), player1: player1, player2: player2 }
     this.server.to(`user_${client.data.id}`).emit('watchGame', dataToSend);
+    // console.log('2 watch spectator:', this.spectatorsMap);
   }
 
   @SubscribeMessage('giveUp')
   async giveUpGame(@ConnectedSocket() client: Socket,
     @MessageBody() data: { player: string, action: string }) {
-    console.log('give up entered');
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !client.data.gameId || !access_token) {
       if (!client.data.gameId && client.data.id)
         this.server.to(`user_${client.data.id}`).emit('prepareToPlay', { gameStatus: 'noGame' });
       client.disconnect();
-      console.log('Here 1');
       return;
     }
     if (data.action !== 'giveUp') return;
-    console.log('Here 2');
     const gameId = parseInt(client.data.gameId);
     const user = await this.authService.validateJwtToken(access_token);
     const gameStruct = this.pongService.getGameStructById(gameId);
     if (!gameStruct) return;
-    console.log('Here 3');
     let player: Player;
     let opponent: Player;
     const playerNum = await this.pongService.getPlayerById(gameStruct.prop.id, user.id); // error handling
-    console.log('Here 4');
     if (playerNum === 1) {
       player = gameStruct.pl1;
       opponent = gameStruct.pl2;
@@ -335,9 +337,7 @@ export class PongEvents {
       opponent = gameStruct.pl1;
     } else
       return;
-    console.log('Here 5');
     if (gameStruct.prop.status !== 'ended') {
-      console.log('Here 6');
       gameStruct.stopGameLoop();
       gameStruct.prop.status = 'giveUp';
       player.status = 'givenUp';
@@ -345,7 +345,6 @@ export class PongEvents {
 
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'refreshGame');
       this.updateEmitOnlineGames('toRoom', 0);
-      console.log('Here 7');
     }
   }
 
@@ -422,7 +421,6 @@ export class PongEvents {
   }
 
 }
-
 
 // const sockets = await this.server.in(gameStruct.prop.room).fetchSockets();
 // sockets.forEach((Socket) => {
