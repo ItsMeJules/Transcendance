@@ -4,10 +4,14 @@ import User, { UserData } from "../../../../../Services/User";
 import { API_ROUTES } from "../../../../../Utils";
 import Popup from "../../../utils/Popup";
 import UsersList from "../../../utils/UsersList";
+import { UserClickParameters } from "../../../utils/UserComponent";
+import UserActionPopup from "../../channel_manager/popups/users/UserActionPopup";
 
 export default function AllUsers() {
   const [searchText, setSearchText] = useState("");
   const [users, setUsers] = useState<User[]>([])
+
+  const [userClicked, setUserClicked] = useState<User | null>(null)
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -32,6 +36,10 @@ export default function AllUsers() {
     fetchAllUsers()
   }, []);
 
+  const onUserClick = ({ event, user }: UserClickParameters) => {
+    setUserClicked(user)
+  }
+
   return (
     <Popup className="all-users-popup">
       <input
@@ -41,7 +49,17 @@ export default function AllUsers() {
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
-    <UsersList users={users} filter={(userName: string) => userName.includes(searchText)}/>
+      <UsersList
+        users={users}
+        filter={(userName) => userName.includes(searchText)}
+        onUserClick={onUserClick}
+      />
+      {userClicked !== null
+        ? <UserActionPopup
+          user={userClicked}
+          buttonClicked={0}
+        />
+        : undefined}
     </Popup>
   );
 }

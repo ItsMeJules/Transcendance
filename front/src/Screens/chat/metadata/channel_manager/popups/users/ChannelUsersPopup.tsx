@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 
-import User, { UserData } from "../../../../../../Services/User";
+import User from "../../../../../../Services/User";
 import { useWebsocketContext } from "../../../../../../Wrappers/Websocket";
 import { SendDataContext } from "../../../../ChatBox";
 import PayloadAction from "../../../../models/PayloadSocket";
@@ -9,8 +9,6 @@ import Popup from "../../../../utils/Popup";
 import { UserClickParameters } from "../../../../utils/UserComponent";
 import UsersList from "../../../../utils/UsersList";
 import UserActionPopup from "./UserActionPopup";
-import { API_ROUTES } from "../../../../../../Utils";
-import axios from "axios";
 
 interface ChannelUsersPopupProps {
   roomName: string
@@ -20,7 +18,8 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
   const [searchText, setSearchText] = useState("");
 
   const sendData: null | ((action: string, data: PayloadAction) => void) =
-    useContext(SendDataContext); const chatSocket = useWebsocketContext().chat;
+    useContext(SendDataContext); 
+  const chatSocket = useWebsocketContext().chat;
   const [users, setUsers] = useState<User[]>([])
 
   const [userClicked, setUserClicked] = useState<User | null>(null)
@@ -72,7 +71,7 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
 
         <UsersList
           users={users}
-          filter={(text) => text.includes(searchText)}
+          filter={(userName) => userName.includes(searchText)}
           onUserClick={onUserClick}
         />
       </Popup>
