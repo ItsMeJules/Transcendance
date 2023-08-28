@@ -365,6 +365,7 @@
             left: 102%;
 
             height: max-content;
+            max-height: 20vw;
             width: 10vw;
 
             overflow-y: scroll;
@@ -542,19 +543,21 @@
 
             .popup-container {
               position: relative;
-              height: 50%;
+
+              top: 25%;
+              left: 100%;
+
+              height: 40vh;
+              width: 10vw;
 
               .channel-users-popup {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
 
-                position: absolute;
-                top: 25%;
-                left: 102%;
-
                 height: max-content;
-                width: 10vw;
+                max-height: 100%;
+                width: 100%;
 
                 overflow-y: scroll;
 
@@ -563,6 +566,7 @@
                 border: 1px solid lightgray;
 
                 .filter-users {
+                  height: 30px;
                   padding: 10px;
                   border: none;
                   outline: none;
@@ -574,8 +578,6 @@
                   justify-content: flex-start;
 
                   overflow-x: hidden;
-
-                  z-index: 10;
 
                   .user-container {
                     position: relative;
@@ -613,30 +615,49 @@
               }
 
               .user-actions {
-                position: fixed;
+                position: absolute;
 
+                top: 0%;
+                left: 100%;
+
+                width: 10rem;
                 background-color: white;
-                overflow-y: visible;
-                overflow-x: visible;
 
                 border-radius: 5px;
                 border: 1px solid lightgray;
 
                 text-align: center;
+                word-wrap: break-word;
+
+                h4 {
+                  text-transform: uppercase;
+                  margin: 0px;
+                  border-bottom: 1px solid lightgray;
+                }
+
+                .ban:hover,
+                .kick:hover,
+                .mute:hover,
+                .dm:hover,
+                .invite-to-play:hover {
+                  background-color: #c9c9c9;
+                }
 
                 .ban {
-                  height: 1/3;
                   border-bottom: 1px solid lightgray;
                 }
 
                 .kick {
-                  height: 1/3;
                   border-bottom: 1px solid lightgray;
                 }
 
-                .mute {
-                  height: 1/3;
+                .mute {}
+
+                .dm {
+                  border-bottom: 1px solid lightgray;
                 }
+
+                .invite-to-play {}
               }
             }
           }

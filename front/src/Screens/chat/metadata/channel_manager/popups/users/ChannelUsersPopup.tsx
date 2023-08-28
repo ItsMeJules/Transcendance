@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 
-import User from "../../../../../../Services/User";
+import User, { UserData } from "../../../../../../Services/User";
 import { useWebsocketContext } from "../../../../../../Wrappers/Websocket";
 import { SendDataContext } from "../../../../ChatBox";
 import PayloadAction from "../../../../models/PayloadSocket";
@@ -9,6 +9,8 @@ import Popup from "../../../../utils/Popup";
 import { UserClickParameters } from "../../../../utils/UserComponent";
 import UsersList from "../../../../utils/UsersList";
 import UserActionPopup from "./UserActionPopup";
+import { API_ROUTES } from "../../../../../../Utils";
+import axios from "axios";
 
 interface ChannelUsersPopupProps {
   roomName: string
@@ -22,7 +24,7 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
   const [users, setUsers] = useState<User[]>([])
 
   const [userClicked, setUserClicked] = useState<User | null>(null)
-  const [htmlElementRectangle, setHtmlElementRectangle] = useState<DOMRect | null>(null)
+  const [buttonClicked, setButtonClicked] = useState<number>(-1)
 
   useEffect(() => {
     chatSocket?.on(RoomSocketActionType.USERS_ON_ROOM, (payload: any) => {
@@ -53,8 +55,8 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
   }, [sendData, roomName])
 
   const onUserClick = ({ event, user }: UserClickParameters) => {
+    setButtonClicked(event.button)
     setUserClicked(user)
-    setHtmlElementRectangle(event.currentTarget.getBoundingClientRect())
   }
 
   return (
@@ -74,10 +76,11 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
           onUserClick={onUserClick}
         />
       </Popup>
-      {userClicked !== null && htmlElementRectangle !== null
+      {userClicked !== null
         ? <UserActionPopup
-          user={userClicked}
-          rect={htmlElementRectangle} />
+            user={userClicked}
+            buttonClicked={buttonClicked}
+          />
         : undefined}
 
     </div>
