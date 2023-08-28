@@ -24,15 +24,15 @@ export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);
 
   const chatSocket = useWebsocketContext().chat;
-  const dispatch = useAppDispatch()
-  const { currentRoom: activeChannelName } = useAppSelector(store => store.user.userData)
+  const dispatch = useAppDispatch();
+  const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
 
   useEffect(() => {
     chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
-      dispatch(setUserActiveChannel(payload))
-      
+      dispatch(setUserActiveChannel(payload));
+
       try {
-        dispatch(fetchActiveChannel())
+        dispatch(fetchActiveChannel());
       } catch (error) {
         console.log("There was an error fetching the data", error);
       }
