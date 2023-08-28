@@ -18,6 +18,7 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
   const [finalPlayerReady, setFinalPlayerReady] = useState(false);
 
   const handleReadyClick = () => {
+    if (whichPlayer === 0) return;
     if (!isPlayerReady) {
       setIsPlayerReadyComponent(true);
       if (socket)

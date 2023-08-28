@@ -50,14 +50,6 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       }
     };
 
-    const updatePaddlePosition = () => {
-      if (movingUp)
-        player.pad.pos.y -= player.pad.speed;
-      else if (movingDown)
-        player.pad.pos.y += player.pad.speed;
-      requestAnimationFrame(updatePaddlePosition);
-    };
-
     const animatePaddle = (timestamp: number) => {
       if (!game.isPlaying) return;
       if (!previousTimestamp) {
@@ -67,8 +59,6 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       previousTimestamp = timestamp;
       if (ctx) {
         ctx.clearRect(0, 0, game.board.width, game.board.height);
-        // let posX = player.num === 1 ? 0 : game.board.width - player.pad.width;
-        // console.log('posx:', player.pad.pos, ' posy:', ball.pos.y);
         ctx.fillStyle = 'white';
         ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height);
         ctx.setLineDash([]);
@@ -90,14 +80,17 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
 
     handleResize();
     requestAnimationFrame(animatePaddle);
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    if (whichPlayer !== 0) {
+      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keyup', handleKeyUp);
+    }
     window.addEventListener('resize', handleResize);
-    // if (whichPlayer === player.num)
-    //   updatePaddlePosition();
+
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      if (whichPlayer !== 0) {
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('keyup', handleKeyUp);
+      }
       window.removeEventListener('resize', handleResize);
     };
   }, [canvasRef, player, game.board.factor, game.isPlaying]);

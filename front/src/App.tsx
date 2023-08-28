@@ -35,6 +35,7 @@ import { render } from "@testing-library/react";
 import PlayBack from './Screens/Play/PlayBack';
 import { History } from './History';
 import OnlineGames from './Screens/OnlineGames/OnlineGames';
+import WatchGame from './Screens/Watch/WatchGame';
 
 const App: React.FC = () => {
 
@@ -55,7 +56,7 @@ const App: React.FC = () => {
             <Route path="/test" element={<Test />} />
             <Route path="/play" element={<PlayBack />} />
             <Route path="/gamesonline" element={<OnlineGames />} />
-            <Route path="/watch" element={<PlayBack />} />
+            <Route path="/watch" element={<WatchGame />} />
             {/* <Route path="/playback" element={<PlayBack />} /> */}
             <Route path={APP_ROUTES.LOG_2FA} element={<TwoFa />} />
           </Routes>

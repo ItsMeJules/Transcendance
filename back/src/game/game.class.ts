@@ -51,12 +51,7 @@ export class GameStruct {
 
   async startGameLoop() {
     let isStart = true;
-    // if (!this.gameLoopInterval) {
-    //   this.gameLoopInterval = setInterval(() => {
     await this.updateGame(isStart);
-
-    //   }, 0);
-    // }
   }
 
   private async updateGame(isStart: boolean) {
