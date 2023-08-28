@@ -4,24 +4,24 @@ import { useWebsocketContext } from "services/Websocket/Websocket";
 interface playButtonProps {
   gameMode: number,
   setSocketData: (data: any) => void;
+  buttonText: string;
 }
 
-const PlayButton: React.FC<playButtonProps> = ({ gameMode, setSocketData }) => {
+const PlayButton: React.FC<playButtonProps> = ({ gameMode, setSocketData, buttonText }) => {
   const socket = useWebsocketContext();
   const [isInQueue, setIsInQueue] = useState(false);
 
   const handleJoinGameQueue = async (gameMode: number) => {
     if (!isInQueue) {
-      socket.game?.emit('joinGameQueue', { gameMode: gameMode });
       socket.game?.on('joinGameQueue', (data: any) => {
-        // console.log('join game socket data:', data);
         setSocketData(data);
       });
+      socket.game?.emit('joinGameQueue', { gameMode: gameMode });
       setIsInQueue(true);
     } else {
       socket.game?.emit('leaveGameQueue');
       setIsInQueue(false);
-      setSocketData({ status: 'LEAVE'});
+      setSocketData({ status: 'LEAVE' });
     }
   }
 
@@ -30,7 +30,7 @@ const PlayButton: React.FC<playButtonProps> = ({ gameMode, setSocketData }) => {
       style={{ fontSize: '30px', zIndex: '1' }
       }
       onClick={() => handleJoinGameQueue(gameMode)}>
-      {isInQueue ? "Cancel - leave queue" : "Play - join queue"}
+      {isInQueue ? "Cancel - leave queue" : `${buttonText}`}
     </button >
   );
 }

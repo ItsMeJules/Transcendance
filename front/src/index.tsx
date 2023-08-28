@@ -5,7 +5,6 @@ import reportWebVitals from './utils/reportWebVitals/reportWebVitals';
 
 import './index.css';
 import AuthProvider from 'services/AuthProvider/AuthProvider';
-import Websocket from 'services/Websocket/Websocket';
 import App from './App';
 
 const root = ReactDOM.createRoot(
@@ -17,9 +16,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <Websocket>
-          <App />
-        </Websocket>
+        <App />
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

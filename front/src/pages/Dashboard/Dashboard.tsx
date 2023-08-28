@@ -5,45 +5,31 @@ import RightScreen from './components/RightScreen';
 import LeftNavFooter from './components/LeftNavFooter';
 import RightNavFooter from './components/RightNavFooter';
 import './css/Dashboard.css';
+import { APP_SCREENS } from 'utils/routing/routing';
 
 const Dashboard = () => {
-  const [leftContent, setLeftContent] = useState('');
-  const [rightContent, setRightContent] = useState('');
-
-  const handleOptionSelect = (option: string) => {
-    
-    if (option === 'game') {
-      setLeftContent('game');
-    } else if (option === 'spectate') {
-      setLeftContent('spectate');
-    } else if (option === 'chat') {
-      setRightContent('chat');
-    } else if (option === 'friends') {
-      setRightContent('friends');
-    } else if (option === 'leaderboard') {
-      setRightContent('leaderboard');
-    }
-  };
+  const [leftContent, setLeftContent] = useState<number>(APP_SCREENS.ME_PROFILE);
+  const [rightContent, setRightContent] = useState<number>(-1);
 
   return (
     <div className="dashboard">
 
-      <ProfileHeader />
+      <ProfileHeader setLeftContent={setLeftContent}/>
 
       <div className="screen-container">
 
         <div className="screen left-screen">
-          <LeftScreen content={leftContent} />
+          <LeftScreen leftContent={leftContent} />
         </div>
         <div className="screen right-screen">
-          <RightScreen content={rightContent} />
+          <RightScreen rightContent={rightContent} />
         </div>
 
       </div>
 
       <div className="nav-footer-container">
-        <LeftNavFooter onSelectOption={handleOptionSelect} />
-        <RightNavFooter onSelectOption={handleOptionSelect} />
+        <LeftNavFooter setLeftContent={setLeftContent} />
+        <RightNavFooter setRightContent={setRightContent} />
       </div>
 
     </div>

@@ -6,5 +6,6 @@ export {default as ProfileEdit} from './ProfileEdit/ProfileEdit';
 export {default as Friends} from './Friends/Friends';
 export {default as LeaderBoard} from './LeaderBoard/LeaderBoard';
 export {default as Play} from './Play/Play';
+export {default as Spectate} from './Spectate/Spectate';
 export {default as Auth2factor} from './Auth2factor/Auth2factor';
 export {default as Dashboard} from './Dashboard/Dashboard';

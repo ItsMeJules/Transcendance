@@ -7,19 +7,22 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
 import { match } from 'assert';
+import { PongEvents } from './pong.gateway';
+import { Player } from './models/player.model';
 
 export type UserQueue = Map<number, string>;
 export type OnlineGameMap = Map<number, GameStruct>;
 
 @Injectable()
 export class PongService {
+  private connectedSockets: Map<number, Socket> = new Map();
+  private maxQueuesize = 1000;
+  public userQueue: UserQueue = new Map<number, string>();
+  public onlineGames: OnlineGameMap = new Map<number, GameStruct>;
+
   constructor(
     private prismaService: PrismaService,
     private userService: UserService) { }
-  private connectedSockets: Map<number, Socket> = new Map();
-  private maxQueuesize = 1000;
-  userQueue: UserQueue = new Map<number, string>();
-  onlineGames: OnlineGameMap = new Map<number, GameStruct>;
 
   async gameCreate(gameMode: GameDto, server: Server) {
     let player1Id: number = 0;
@@ -43,13 +46,7 @@ export class PongService {
       this.userQueue.delete(player1Id);
       this.userQueue.delete(player2Id);
       const gameChannel = `game_${gameData.id}`;
-      const gameStructure = new GameStruct(gameData.id, player1Id, player2Id, gameChannel);
-      gameStructure.room = gameChannel;
-      this.onlineGames.set(gameData.id, gameStructure);
-      const player1 = await this.userService.findOneById(gameData.player1Id);
-      const player2 = await this.userService.findOneById(gameData.player2Id);
-      const data = { status: 'START', gameChannel: gameChannel, game: gameData, player1: player1, player2: player2 };
-      return data;
+      return { gameId: gameData.id, player1Id: player1Id, player2Id: player2Id, gameChannel: gameChannel };
     }
     return null;
   }
@@ -58,8 +55,7 @@ export class PongService {
     this.userQueue.delete(userId);
   }
 
-  // Get the queue
-  getQueue(): UserQueue {
+  getQueue(): UserQueue { 
     return this.userQueue;
   }
 
@@ -70,9 +66,8 @@ export class PongService {
   getUsersInQueueForGameMode(gameMode: string): number {
     let count = 0;
     for (const mode of this.userQueue.values()) {
-      if (mode === gameMode) {
+      if (mode === gameMode)
         count++;
-      }
     }
     return count;
   }
@@ -82,25 +77,14 @@ export class PongService {
     return (this.userQueue.size >= this.maxQueuesize);
   }
 
-  // Add user to the queue
   addToQueue(user: User, gameMode: GameDto): UserQueue {
-    // console.log(`User ${user.id} added to queue for game mode ${gameMode.gameMode}`);
     if (this.queueIsFull())
       return null;
-    // console.log('______QUEU BEFORE ADD______');
-    // this.userQueue.forEach((value, key) => {
-    //   console.log(`Qid ${key} and gameMode:${value}`);
-    // });
     this.userQueue.set(user.id, gameMode.gameMode);
-
-    // console.log('______QUEU AFTER ADD______');
-    // this.userQueue.forEach((value, key) => {
-    //   console.log(`Qid ${key} and gameMode:${value}`);
-    // });
     return this.userQueue;
   }
 
-  async deleteGame(gameId: number) {
+  async deleteGamePrisma(gameId: number) {
     // Protect prisma delete??
     await this.prismaService.game.delete({
       where: {
@@ -113,17 +97,114 @@ export class PongService {
   async getPlayerById(gameId: number, userId: number): Promise<number> {
     let match: number;
     this.onlineGames.forEach((value, key) => {
-      if (value.id === gameId) {
-        if (value.player1.id === userId) {
+      if (value.prop.id === gameId) {
+        if (value.pl1.id === userId) {
           match = 1;
           return match;
         }
-        else if (value.player2.id === userId) {
+        else if (value.pl2.id === userId) {
           match = 2
           return match;
         }
       }
     });
     return match;
+  }
+
+  async giveUpGame(gameStruct: GameStruct, winner: Player, loser: Player, giveUp: boolean) {
+    try {
+      loser.score = giveUp ? -1 : loser.score;
+      const game = await this.prismaService.game.findUnique({ where: { id: gameStruct.prop.id } });
+      if (!game) {
+        console.log('Game not found'); // set error accordingly
+        return;
+      }
+
+      await this.prismaService.game.update({
+        where: { id: gameStruct.prop.id },
+        data: {
+          winner: { connect: { id: winner.id } },
+          loser: { connect: { id: loser.id } },
+          player1Score: game.player1Id === winner.id ? winner.score : loser.score,
+          player2Score: game.player2Id === winner.id ? winner.score : loser.score,
+        },
+      });
+      const winnerPrisma = await this.prismaService.user.findUnique({ where: { id: winner.id } });
+      const loserPrisma = await this.prismaService.user.findUnique({ where: { id: loser.id } });
+      // Protect if not found
+      this.onlineGames.delete(gameStruct.prop.id);
+      this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
+      console.log('Game updated successfully');
+
+    } catch (error) {
+
+      console.error('Error updating game:', error);
+    }
+  }
+
+  async endGame(gameStruct: GameStruct, winner: Player, loser: Player) {
+    try {
+      const game = await this.prismaService.game.findUnique({ where: { id: gameStruct.prop.id } });
+      if (!game) {
+        console.log('Game not found'); // set error accordingly
+        return;
+      }
+      const winnerPrisma = await this.prismaService.user.findUnique({ where: { id: winner.id } });
+      const loserPrisma = await this.prismaService.user.findUnique({ where: { id: loser.id } });
+      await this.prismaService.game.update({
+        where: { id: gameStruct.prop.id },
+        data: {
+          winner: { connect: { id: winner.id } },
+          loser: { connect: { id: loser.id } },
+          player1Score: game.player1Id === winner.id ? winner.score : loser.score,
+          player2Score: game.player2Id === winner.id ? winner.score : loser.score,
+        },
+      });
+      
+      // Protect if not found
+      this.onlineGames.delete(gameStruct.prop.id);
+      this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
+      console.log('Game updated successfully');
+
+      // emit to front room
+    } catch (error) {
+      console.error('Error updating game:', error);
+    }
+  }
+
+  async updatePlayersAfterGame(winner: User, loser: User) {
+    const winnerLevel = Math.round(winner.userLevel.toNumber());
+    const loserLevel = Math.round(loser.userLevel.toNumber());
+
+    // Ladder logic
+    const points = Math.round(Math.sqrt(((11 - winnerLevel) * (1 + loserLevel) + 1)));
+    
+    let winnerPoints = winner.userPoints + points;
+    let loserPoints = loser.userPoints - points < 0 ? 0 : loser.userPoints - points;
+
+    const winnerNewLevel = winnerLevel >= 10 ? winnerLevel : winnerLevel +  winnerPoints * 0.01;
+    const loserNewLevel = loserLevel >= 10 ? loserLevel : loserLevel +  loserPoints * 0.0025;
+
+    const updateWinnerData = {
+      gamesPlayed: winner.gamesPlayed + 1,
+      gamesWon: winner.gamesWon + 1,
+      userPoints: winnerPoints,
+      userLevel: winnerNewLevel,
+    };
+
+    const updateLoserData = {
+      gamesPlayed: loser.gamesPlayed + 1,
+      userPoints:loserPoints,
+      userLevel: loserNewLevel,
+    };
+
+    try {
+      await this.prismaService.user.update({
+        where: { id: winner.id },
+        data: updateWinnerData,
+    });
+    } catch (error) {
+      console.error('Error updating game:', error);
+    }
   }
 }

@@ -15,7 +15,7 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
 
   return (
     <div style={{ position: "relative" }}>
-      <BackgroundLinking key={location.state?.key} style={{ position: "absolute", top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} />
+      <BackgroundLinking style={{ position: "absolute", top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} />
       <div style={{ position: 'relative', zIndex: 2 }}>
 {/*        <Header />*/}
         {children}

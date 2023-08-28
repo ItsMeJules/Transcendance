@@ -50,6 +50,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       });
       return user;
     } catch (error) {
+      // res.status(HttpStatus.BAD_REQUEST).json({
+      //   statusCode: HttpStatus.BAD_REQUEST,
+      //   message: 'Google authentication failed', // Provide a meaningful error message
+      // });
+      // return null;
       // return null;
       // res.redirect('http://localhost:4000/');
       throw new ForbiddenException('Username taken');

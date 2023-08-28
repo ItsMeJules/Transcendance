@@ -36,4 +36,18 @@ export const APP_ROUTES = {
   GENERIC_USER_PROFILE: "/profile/",
   LEADERBOARD: "/leaderboard",
   PLAY: "/play",
+  WATCH: "/watch",
 };
+
+export enum APP_SCREENS {
+  ME_PROFILE,
+  PROFILE_EDIT,
+  USER_PROFILE,
+  MATCHMAKING,
+  PLAY,
+  SPECTATE,
+  CHAT,
+  FRIENDS,
+  LEADERBOARD,
+  ONLINE_GAMES,
+}

@@ -1,0 +1,43 @@
+.main-text-container {
+  position: relative;
+  text-align: center;
+  font-weight: bold;
+  font-family: "dune", Arial, sans-serif;
+  background-color: black;
+  z-index: 10000;
+
+  .text-button-style {
+    font-size: clamp(24px, 10vw, 75px);
+    color: white;
+    -webkit-text-fill-color: transparent;
+    animation: glow-text-animation 2s infinite;
+  }
+
+  .text-container-style {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: clamp(12px, 5vw, 40px);
+    color: white;
+    -webkit-text-fill-color: transparent;
+    animation: glow-text-animation 2s infinite;
+    background-color: black;
+    background-position: center top;
+  }
+}
+
+@keyframes glow-text-animation {
+  0% {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
+  }
+
+  50% {
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+  }
+
+  100% {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
+  }
+}

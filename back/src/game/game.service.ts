@@ -1,43 +1,18 @@
+import { Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
+import { GetUser } from 'src/auth/decorator';
 import { GameDto } from './dto/game.dto';
-import { GameBoard } from './models/gameboard.model';
-import { Ball } from './models/ball.model';
-import { Paddle } from './models/paddle.model';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UserService } from 'src/user/user.service';
+import { GameStruct } from './game.class';
+import { match } from 'assert';
+import { PongEvents } from './pong.gateway';
 
-
-
+@Injectable()
 export class GameService {
-  private gameProperties: GameProperties; // Define GameProperties as needed
 
-  constructor() {
-    this.gameProperties = new GameProperties();
-  }
+  constructor(
+    private pongEvents: PongEvents) { }
 
-  // Initialize the game
-  initializeGame(gameDto: GameDto, server: Server): void {
-  }
-
-  // Update game state based on player actions
-  updateGameState(): void {
-    // Update ball position, paddle positions, check collisions, etc.
-  }
 }
-
-// Define GameProperties class and interfaces as needed
-class GameProperties {
-  // Define game properties and calculations here
-  public isPlayer1Ready: boolean;
-  public isPlayer2Ready: boolean;
-  public GameBoard: GameBoard;
-  public Ball: Ball;
-  public Paddle: Paddle;
-  
-  constructor() {
-	this.GameBoard = new GameBoard();
-	// this.Ball = new Ball();
-	this.Paddle = new Paddle();
-  this.isPlayer1Ready = false;
-  this.isPlayer2Ready = false;
-  }
-}
-
