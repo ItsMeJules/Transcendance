@@ -6,10 +6,14 @@ import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 import * as ChatDtos from './dto';
 import { BlockDto } from './dto/block.dto';
 import { ChatSocketEventType } from 'src/utils';
+import { UserSocketsService } from './user-sockets/user-sockets.service';
 
 @Injectable()
 export class ChatService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private userSocketsService: UserSocketsService,
+  ) {}
 
   async connectToRoom(client: Socket, targetRoom: string): Promise<void> {
     try {
@@ -403,11 +407,34 @@ export class ChatService {
     }
   }
 
+  async userJoinRoom(
+    userId: number,
+    roomName: string,
+    server: Server,
+  ): Promise<boolean> {
+    try {
+      console.log('userJoinRoom function beginning');
+      const user = await this.prismaService.user.findUnique({
+        where: { id: userId },
+      });
+      const userSocket = this.userSocketsService.getUserSocket(String(userId));
+      const room = await this.prismaService.returnCompleteRoom(roomName);
+      if (!room) throw new Error('no room');
+      console.log('socket id : ', userSocket);
+      server.to(userSocket.id).emit(ChatSocketEventType.JOIN_ROOM, roomName);
+      console.log('userJoinRoom function end');
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async kickUserRoom(
     client: Socket,
     kickDto: ChatDtos.KickDto,
   ): Promise<boolean> {
     try {
+      console.log('begining kickUserRoom function');
       const actingUser = await this.prismaService.returnCompleteUser(
         client.data.id,
       );
@@ -436,9 +463,11 @@ export class ChatService {
             id: targetUser.id,
           },
           data: {
-            // currentRoom: 'general',
+            currentRoom: 'general',
           },
         });
+        await this.userJoinRoom(targetUser.id, 'general', kickDto.server);
+        console.log('kicked');
         return true;
       } else throw new Error("You don't have permission");
     } catch (error) {

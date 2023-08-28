@@ -22,7 +22,7 @@ export const SendDataContext = createContext<
 
 export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);
-
+  
   const chatSocket = useWebsocketContext().chat;
   const dispatch = useAppDispatch();
   const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
@@ -58,6 +58,8 @@ export const ChatBox = () => {
       eventType = ChatSocketEventType.CHAT_ACTION;
     }
     if (isRoomSocketActionType(action)) {
+      if (!activeChannelName) return;
+      data = { ...data, roomName: activeChannelName };
       eventType = ChatSocketEventType.ROOM_ACTION;
     }
 
