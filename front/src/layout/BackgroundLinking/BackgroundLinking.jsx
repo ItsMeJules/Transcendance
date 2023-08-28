@@ -1,15 +1,11 @@
+import React from "react";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import { useCallback, useEffect} from "react";
 
-const BackgroundLinking = ({ style }) => {
-
-  useEffect(() => {
-    console.log("BackgroundLinking rendered");
- }, []);
+const BackgroundLinking = React.memo(({ style }) => {
 
     const particlesInit = useCallback(async engine => {
-        // console.log(engine);
         // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
         // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
         // starting from v2 you can add only the features you need reducing the bundle size
@@ -19,6 +15,7 @@ const BackgroundLinking = ({ style }) => {
     const particlesLoaded = useCallback(async container => {
         // await console.log(container);
     }, []);
+    
     return (
         <Particles
             style={{ zIndex: 1}}
@@ -217,6 +214,6 @@ const BackgroundLinking = ({ style }) => {
 
         />
     )
-};
+});
 
 export default BackgroundLinking;

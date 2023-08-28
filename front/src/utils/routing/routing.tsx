@@ -37,6 +37,7 @@ export const APP_ROUTES = {
   LEADERBOARD: "/leaderboard",
   PLAY: "/play",
   WATCH: "/watch",
+  DASHBOARD: "/dashboard",
 };
 
 export enum APP_SCREENS {

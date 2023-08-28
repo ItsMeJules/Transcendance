@@ -1,6 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
+import './Signup.scss'
 
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
@@ -20,7 +21,7 @@ export const Signup = () => {
 
   useEffect(() => {
     if (success) {
-      history('/profile/me')
+      history(APP_ROUTES.DASHBOARD);
     }
   }, [success, history]);
 
@@ -65,26 +66,18 @@ export const Signup = () => {
     }
   }
 
-
-
   return (
-    <div className="login-container">
-
-      <GlowTextSignin
-        className="signin-container"
-        style={{ fontSize: '2rem', zIndex: '1' }}>
-        sign up lololol
-      </GlowTextSignin>
+    <div className="signup-container">
+      <GlowTextSignin className="signup-header">sign up</GlowTextSignin>
 
       <div className="main-login-container">
         <div className="secondary-login-container">
           <div className="form-master-container">
 
-            <div className="flex"
-              style={{ height: '310px', width: 350, marginBottom: '10px' }}>
+            <div className="form-sub-container">
               <form onSubmit={handleSubmit}
                 action="POST"
-                className="login-form-container w-full h-full">
+                className="signup-form">
 
                 <label htmlFor="email" className="form-text-login">
                   Email address {errMsg}
@@ -129,23 +122,19 @@ export const Signup = () => {
                   maxLength={100}
                   required />
 
-                <div className="flex justify-center items-center" style={{ marginTop: '10px' }}>
-                  <button type="submit" className="flex signup-button w-full justify-center" style={{ marginTop: '10px' }}>
+                  <button type="submit" className="signup-submit-form-button" style={{ marginTop: '10px' }}>
                     Sign up
                   </button>
-                </div>
 
               </form>
             </div>
 
-            <div className="flex justify-center w-full items-center">
-              <p className="flex justify-center items-center text-white">
+              <article className="signup-switch-to-signin">
                 Already registered?&nbsp;
-                <Link to={APP_ROUTES.SIGN_IN} className="text-white">
+                <Link to={APP_ROUTES.SIGN_IN} className="link">
                   Sign in.
                 </Link>
-              </p>
-            </div>
+              </article>
 
           </div>
         </div>

@@ -1,12 +1,10 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
-
 import { APP_ROUTES, API_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import ToastError from "layout/ToastError/ToastError";
-
-import "./Signin.scss"
+import './Signin.scss'
 
 export const Signin = () => {
   const history = useNavigate();
@@ -43,7 +41,7 @@ export const Signin = () => {
 
   useEffect(() => {
     if (success) {
-      history('/profile/me')
+      history(APP_ROUTES.DASHBOARD);
     }
   }, [success, history]);
 
@@ -83,27 +81,19 @@ export const Signin = () => {
   return (
     <div className="login-container">
 
-      <GlowTextSignin
-        className="signin-container"
-        style={{ fontSize: '2rem', zIndex: '1', minWidth: '200px' }}>
-        sign in
-      </GlowTextSignin>
+      <GlowTextSignin className="signin-header">sign in</GlowTextSignin>
 
       <div className="main-login-container">
         <div className="secondary-login-container">
           <div className="form-master-container">
 
-            <div className="flex"
-              style={{ height: '230px', width: 350, marginBottom: '0px' }}>
-              <form onSubmit={handleSubmit}
-                action="POST"
-                className="login-form-container w-full h-full">
-
-                <label htmlFor="email" className="form-text-login">
+            <div className="form-sub-container">
+              <form onSubmit={handleSubmit} action="POST"className="signin-form">
+                <label htmlFor="email" className="form-text-login-first">
                   Email address
                 </label>
 
-                <input type="email"
+                <input type="email" // Max length?
                   placeholder="youremail@email.com"
                   id="emailaddress"
                   value={email}
@@ -114,8 +104,7 @@ export const Signin = () => {
 
                 <span className="cd-error-message">Error message here!</span>
 
-                <label htmlFor="password" className="form-text-login"
-                  style={{ marginTop: '10px' }}>
+                <label htmlFor="password" className="form-text-login-rest">
                   Password
                 </label>
 
@@ -130,32 +119,24 @@ export const Signin = () => {
                   required />
 
                 <div className="flex justify-center items-center" style={{ marginTop: '10px' }}>
-                  <button type="submit" className="flex signup-button w-full justify-center" style={{ marginTop: '10px' }}>
+                  <button type="submit" className=" signin-submit-form-button">
                     Sign in
                   </button>
                 </div>
               </form>
             </div>
 
-            <div className="flex items-center" style={{ flexDirection: "column" }}>
-              <div className="loginBtn loginBtn--42 text-white">
-                <button className="text-white" onClick={RequestURI42}>Continue with 42</button>
-
-              </div>
-              <div className="flex" style={{ marginTop: '15px' }}>
-                <button className="loginBtn loginBtn--google text-white" onClick={RequestURIGoogle}>Continue with Google</button>
-              </div>
-
+            <div className="signin-buttons-main">
+              <button className="loginBtn loginBtn--42" onClick={RequestURI42}>Continue with 42</button>
+              <button className="loginBtn loginBtn--google text-white" onClick={RequestURIGoogle}>Continue with Google</button>
             </div>
 
-            <div>
-              <p className="flex justify-center items-center text-white">
-                No account yet?&nbsp;
-                <Link to={APP_ROUTES.SIGN_UP} className="text-white">
-                  Create an account.
-                </Link>
-              </p>
-            </div>
+            <article className="signin-switch-to-signup">
+              No account yet?&nbsp;
+              <Link to={APP_ROUTES.SIGN_UP} className="link">
+                Create an account.
+              </Link>
+            </article>
 
           </div>
         </div>

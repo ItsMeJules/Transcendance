@@ -87,35 +87,12 @@
   font-family: dune, sans-serif;
 }
 
-.login-form-container {
-  display: flex;
-  flex-direction: column;
-}
-
 .edit-form-label {
   border-radius: 4px;
   text-align: left;
   padding: 5px 5px;
   margin: 0px 0px;
 }
-
-.signup-button {
-  color: black;
-  background-color: white;
-  /* border: 2px solid black; */
-  border-radius: 4px;
-  padding: 7px;
-  transition-duration: 0.4s;
-}
-
-.signup-button:hover {
-  background-color: #4CAF50;
-  /* Green */
-  color: white;
-  box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
-}
-
-
 
 .placeholder-black::placeholder {
   color: black;
