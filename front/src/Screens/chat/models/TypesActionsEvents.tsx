@@ -24,4 +24,5 @@ export enum RoomSocketActionType {
   KICK = "kick",
   CHANGE_PASSWORD = "change-password",
   INVITE = "invite",
+  USERS_ON_ROOM = "users-on-room",
 }

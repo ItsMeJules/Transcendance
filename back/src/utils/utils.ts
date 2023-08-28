@@ -7,6 +7,10 @@ export enum ChatSocketEventType {
   ROOM_ACTION = 'room-action',
 }
 
+export enum RoomSocketActionType {
+  USERS_ON_ROOM = `users-on-room`,
+}
+
 export const extractAccessTokenFromCookie = (client: Socket) => {
   const access_token_to_clean = client.handshake.headers.cookie;
   if (!access_token_to_clean) return null;

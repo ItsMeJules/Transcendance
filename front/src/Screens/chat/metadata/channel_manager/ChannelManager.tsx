@@ -3,10 +3,9 @@ import { useState } from "react";
 import SettingsIcon from "../../assets/settings.png";
 
 import { ChannelData } from "../../models/Channel";
-import ManageChannelPopup from "./popups/ManageChannelPopup";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
-import Popup from "../../utils/Popup";
-import UsersList from "../../utils/UsersList";
+import ManageChannelPopup from "./popups/ManageChannelPopup";
+import ChannelUsersPopup from "./popups/users/ChannelUsersPopup";
 
 interface ChannelManagerProps {
   channelData: ChannelData;
@@ -15,7 +14,6 @@ interface ChannelManagerProps {
 export default function ChannelManager(props: ChannelManagerProps) {
   const [manageChannel, setManageChannel] = useState<boolean>(false);
   const [channelUsersList, toggleChannelUsersList] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState("");
 
   const { channelData }: ChannelManagerProps = props;
   const usersSize = channelData?.usersId?.length || 0
@@ -40,20 +38,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
             {"Nombre d'utilisateur " + (usersSize > 1 ? "s" : "") + " : " + usersSize}
           </div>
 
-          {channelUsersList &&
-            <div className="popup-container">
-              <Popup className="channel-users-popup">
-                <input
-                  className="filter-users"
-                  type="search"
-                  placeholder="Chercher un utilisateur"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                />
-                <UsersList filter={(userName) => userName.includes(searchText)} />
-              </Popup>
-            </div>
-          }
+          {channelUsersList ? <ChannelUsersPopup roomName={channelData.name}/> : undefined}
         </OutsideClickHandler>
       </div>
 

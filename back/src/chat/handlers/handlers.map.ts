@@ -1,7 +1,7 @@
 import * as ChatDtos from '../dto';
 import { ChatService } from '../chat.service';
 import { Socket } from 'socket.io';
-import { Room, Message } from '@prisma/client';
+import { Room, Message, User } from '@prisma/client';
 
 export const ActionChatHandlers = {
   block: async (
@@ -88,4 +88,9 @@ export const ActionRoomHandlers = {
     client: Socket,
     inviteDto: ChatDtos.InviteDto,
   ): Promise<void> => chatService.inviteUser(client, inviteDto),
+  getRoomUsers: async (
+    chatService: ChatService,
+    client: Socket,
+    usersRoomDto: ChatDtos.UsersRoomDto,
+  ): Promise<void> => chatService.sendAllUsersOnRoom(client, usersRoomDto),
 };

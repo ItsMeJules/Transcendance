@@ -565,7 +565,6 @@
                 .filter-users {
                   padding: 10px;
                   border: none;
-                  border-bottom: 1px solid lightgray;
                   outline: none;
                 }
 
@@ -579,7 +578,8 @@
                   z-index: 10;
 
                   .user-container {
-                    border-bottom: 1px solid lightgray;
+                    position: relative;
+                    border-top: 1px solid lightgray;
 
                     cursor: pointer;
 
@@ -609,6 +609,33 @@
                       }
                     }
                   }
+                }
+              }
+
+              .user-actions {
+                position: fixed;
+
+                background-color: white;
+                overflow-y: visible;
+                overflow-x: visible;
+
+                border-radius: 5px;
+                border: 1px solid lightgray;
+
+                text-align: center;
+
+                .ban {
+                  height: 1/3;
+                  border-bottom: 1px solid lightgray;
+                }
+
+                .kick {
+                  height: 1/3;
+                  border-bottom: 1px solid lightgray;
+                }
+
+                .mute {
+                  height: 1/3;
                 }
               }
             }

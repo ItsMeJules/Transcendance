@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Message, Room, RoomType } from '@prisma/client';
+import { Message, Room, RoomType, User } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 import * as ChatDtos from './dto';
 import { BlockDto } from './dto/block.dto';
-import { ChatSocketEventType } from 'src/utils';
+import { ChatSocketEventType, RoomSocketActionType } from 'src/utils';
 
 @Injectable()
 export class ChatService {
@@ -159,6 +159,32 @@ export class ChatService {
       });
 
       return messagesWithClientId;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async sendAllUsersOnRoom(
+    client: Socket,
+    usersRoomDto: ChatDtos.UsersRoomDto,
+  ): Promise<void> {
+    try {
+      const users = await this.prismaService.allUsersFromRoom(
+        usersRoomDto.roomName,
+      );
+
+      const neededFields = users.map((user) => {
+        return {
+          id: user.id,
+          username: user.username,
+          profilePicture: user.profilePicture,
+          isOnline: user.isOnline,
+        };
+      });
+
+      usersRoomDto.server
+        .to(client.id)
+        .emit(RoomSocketActionType.USERS_ON_ROOM, { users: neededFields });
     } catch (error) {
       console.log(error);
     }
