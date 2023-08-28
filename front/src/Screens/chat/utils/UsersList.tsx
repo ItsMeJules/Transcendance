@@ -84,6 +84,7 @@ const UsersList = ({ filter = () => true }: UsersListProps) => {
         break;
       default:
     }
+    console.log("coquin");
     sendData && sendData(payload.action, payload);
     setInputValue("");
     setSelectedUser(null);
@@ -118,10 +119,17 @@ const UsersList = ({ filter = () => true }: UsersListProps) => {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Entrez du texte ici..."
-                onKeyPress={(e) => handleKeyPress(e, Number(user.getId()))} // Gestion de la touche Entrée
+                placeholder="commande"
+                onKeyPress={(e) => handleKeyPress(e, Number(user.getId()))}
               />
-              <button onClick={() => handleSubmit(Number(user.getId()))}>Valider</button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSubmit(Number(user.getId()));
+                }}
+              >
+                Valider
+              </button>
             </div>
           )}
         </div>
