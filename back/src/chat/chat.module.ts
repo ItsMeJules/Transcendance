@@ -6,6 +6,7 @@ import { SocketService } from '../websocket/websocket.service';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ChatEventsGateway } from './chat.gateway';
+import { UserSocketsService } from './user-sockets/user-sockets.service';
 
 @Module({
   imports: [],
@@ -17,6 +18,7 @@ import { ChatEventsGateway } from './chat.gateway';
     JwtService,
     AuthService,
     ChatService,
+    UserSocketsService,
   ],
   exports: [SocketService, SocketEvents],
 })

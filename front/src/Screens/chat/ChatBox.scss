@@ -919,6 +919,30 @@
       background-color: #f6f4eb;
       z-index: 1;
 
+      .denied {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        width: 10vw;
+        height: 10vh;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background-color: red;
+
+        border: 1px solid lightgray;
+        border-radius: 5px;
+
+        color: white;
+        text-align: center;
+        text-transform: uppercase;
+        word-wrap: break-word;
+      }
+
       .message-container {
         display: flex;
         flex-direction: column;

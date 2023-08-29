@@ -87,7 +87,6 @@ model Room {
   type        RoomType @default(PUBLIC)
   name        String   @unique
   password    String?
-  protected   Boolean @default(false) // or password != null
   createdAt   DateTime @default(now())
 
   usersOnRoom User[] @relation("userOnRoom")

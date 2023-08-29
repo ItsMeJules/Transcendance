@@ -1,4 +1,5 @@
 import { IsString, IsNumber } from 'class-validator';
+import { Server } from 'socket.io';
 
 export class BanDto {
   @IsNumber()
@@ -6,4 +7,6 @@ export class BanDto {
 
   @IsString()
   roomName: string;
+
+  server: Server;
 }

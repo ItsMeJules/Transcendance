@@ -15,16 +15,17 @@ import {
   ActionChatHandlers,
   ActionRoomHandlers,
 } from './handlers/handlers.map';
+import { UserSocketsService } from './user-sockets/user-sockets.service';
 
 // @UseGuards(JwtGuard) // add jwt guard for chat auth
 @WebSocketGateway({ namespace: 'chat' })
 export class ChatEventsGateway {
-  private userSockets: { [userId: string]: Socket } = {};
   @WebSocketServer() server: Server;
 
   constructor(
     private authService: AuthService,
     private chatService: ChatService,
+    private userSocketsService: UserSocketsService,
   ) {}
 
   private async setupConnection(client: Socket): Promise<User | null> {
@@ -41,10 +42,9 @@ export class ChatEventsGateway {
       client.disconnect();
       return Promise.reject('no user');
     }
-
     client.data = { id: user.id };
-    this.userSockets[user.id] = client;
-    console.log('socket of user assigned to const map');
+
+    this.userSocketsService.addUserSocket(client.data.id, client);
 
     return user;
   }
@@ -79,7 +79,8 @@ export class ChatEventsGateway {
   }
 
   handleDisconnect(client: Socket): void {
-    delete this.userSockets[client.data.id];
+    this.userSocketsService.removeUserSocket(client.data.id);
+    console.log('removed socket data of user id : ', client.data.id);
     client.off(ChatSocketEventType.MESSAGE, () => console.log('chat !'));
     client.off(ChatSocketEventType.CHAT_ACTION, () =>
       console.log('chat action !'),
@@ -107,11 +108,14 @@ export class ChatEventsGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
-    const updatedPayload = { ...payload, server: this.server };
+    const newPayload = { ...payload, server: this.server };
+    if (newPayload.action === 'createRoom' && newPayload.type === 'PROTECTED') {
+      newPayload.type = 'PUBLIC'; // careful
+    }
     await ActionChatHandlers[payload.action](
       this.chatService,
       client,
-      updatedPayload,
+      newPayload,
     );
   }
 
@@ -120,11 +124,12 @@ export class ChatEventsGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
-    const updatedPayload = { ...payload, server: this.server };
+    const newPayload = { ...payload, server: this.server };
+    console.log('room action payload: ', payload);
     await ActionRoomHandlers[payload.action](
       this.chatService,
       client,
-      updatedPayload,
+      newPayload,
     );
   }
 }

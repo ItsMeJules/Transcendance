@@ -3,14 +3,14 @@ import { useContext, useEffect, useState } from "react";
 import User from "../../../../../Services/User";
 import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
 import { SendDataContext } from "../../../ChatBox";
+import { ChannelData, PunishmentType } from "../../../models/Channel";
 import PayloadAction from "../../../models/PayloadSocket";
 import { RoomSocketActionType } from "../../../models/TypesActionsEvents";
 import Popup from "../../../utils/Popup";
+import UserActionPopup from "../../../utils/UserActionPopup";
 import { UserClickParameters } from "../../../utils/UserComponent";
 import UsersList from "../../../utils/UsersList";
-import UserActionPopup from "../../../utils/UserActionPopup";
 import { fetchAllUsers } from "../../more/popups/AllUsersPopup";
-import { ChannelData, BanData, PunishmentType } from "../../../models/Channel";
 
 interface ChannelUsersPopupProps {
   channelData: ChannelData;

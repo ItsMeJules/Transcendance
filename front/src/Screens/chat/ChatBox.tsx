@@ -24,14 +24,14 @@ export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);
 
   const chatSocket = useWebsocketContext().chat;
-  const dispatch = useAppDispatch()
-  const { currentRoom: activeChannelName } = useAppSelector(store => store.user.userData)
+  const dispatch = useAppDispatch();
+  const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
 
   useEffect(() => {
     chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
-      console.log(payload)
-      dispatch(setUserActiveChannel(payload.name))
-      dispatch(setActiveChannel(payload))
+      console.log(payload);
+      dispatch(setUserActiveChannel(payload.name));
+      dispatch(setActiveChannel(payload));
     });
 
     chatSocket?.on(ChatSocketEventType.FETCH_MESSAGES, (payload: any) => {
@@ -41,10 +41,10 @@ export const ChatBox = () => {
           text: message.text,
           userName: message.userName,
           profilePicture: message.profilePicture,
-        }
-      })
-      dispatch(setActiveChannelMessages(payload))
-    })
+        };
+      });
+      dispatch(setActiveChannelMessages(payload));
+    });
 
     return () => {
       chatSocket?.off(ChatSocketEventType.FETCH_MESSAGES);
@@ -67,6 +67,8 @@ export const ChatBox = () => {
       eventType = ChatSocketEventType.CHAT_ACTION;
     }
     if (isRoomSocketActionType(action)) {
+      if (!activeChannelName) return;
+      data = { ...data, roomName: activeChannelName };
       eventType = ChatSocketEventType.ROOM_ACTION;
     }
 
@@ -82,7 +84,7 @@ export const ChatBox = () => {
     <div className="chat-container">
       <SendDataContext.Provider value={sendData}>
         <div className="toggler" style={togglerTransition}>
-          <ChatMetadata chatToggled={chatToggled}/>
+          <ChatMetadata chatToggled={chatToggled} />
           <ChatContainer />
         </div>
 

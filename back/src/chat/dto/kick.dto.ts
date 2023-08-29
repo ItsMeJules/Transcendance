@@ -1,4 +1,5 @@
 import { IsString, IsNumber } from 'class-validator';
+import { Server } from 'socket.io';
 
 export class KickDto {
   @IsString()
@@ -6,4 +7,6 @@ export class KickDto {
 
   @IsNumber()
   targetId: number;
+
+  server: Server;
 }

@@ -10,7 +10,6 @@ import DisplayStats from "./components/DisplayStats";
 import ProfilePicContainer from "./components/ProfilePicContainer";
 import LogoutParent from "../../LogoutHook/logoutParent";
 import { Socket } from "socket.io-client";
-import { connectSocket, disconnectSocket, deregisterSocket } from "../../Websocket/Socket.io";
 import User from "../../Services/User";
 import { UserData } from "../../Services/User";
 import QRCode from "react-qr-code";
@@ -134,10 +133,14 @@ export const UserProfile: React.FC = () => {
       //   // dispatch(setUserData(parsedUserData));
       // }
 
-      const response = await axiosInstanceError.get(API_ROUTES.USER_PROFILE, {
-        withCredentials: true,
-      });
+      const response = await axiosInstanceError.get(
+        "http://localhost:8000/api/users/complete-user",
+        {
+          withCredentials: true,
+        }
+      );
       const userData = response.data;
+      console.log("response:", userData);
       dispatchUser(setUser(userData));
       localStorage.setItem("userData", JSON.stringify(userData));
       setUserDataHere(userData);

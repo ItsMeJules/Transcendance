@@ -104,4 +104,34 @@ export class AuthService {
       return null;
     }
   }
+
+  async connectUserToAllPublicRooms(userId: number): Promise<void> {
+    console.log(`Connecting user ${userId} to all public rooms...`);
+    try {
+      const publicRooms = await this.prisma.room.findMany({
+        where: {
+          type: 'PUBLIC',
+        },
+      });
+
+      const updates = publicRooms.map((room) => {
+        return this.prisma.room.update({
+          where: { id: room.id },
+          data: {
+            users: {
+              connect: {
+                id: userId,
+              },
+            },
+          },
+        });
+      });
+
+      await Promise.all(updates);
+
+      console.log(`User ${userId} connected to all public rooms.`);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }
