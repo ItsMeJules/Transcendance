@@ -108,11 +108,14 @@ export class ChatEventsGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
-    const updatedPayload = { ...payload, server: this.server };
+    const newPayload = { ...payload, server: this.server };
+    if (newPayload.action === 'createRoom' && newPayload.type === 'PROTECTED') {
+      newPayload.type = 'PUBLIC'; // careful
+    }
     await ActionChatHandlers[payload.action](
       this.chatService,
       client,
-      updatedPayload,
+      newPayload,
     );
   }
 
@@ -121,12 +124,12 @@ export class ChatEventsGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
-    const updatedPayload = { ...payload, server: this.server };
+    const newPayload = { ...payload, server: this.server };
     console.log('room action payload: ', payload);
     await ActionRoomHandlers[payload.action](
       this.chatService,
       client,
-      updatedPayload,
+      newPayload,
     );
   }
 }

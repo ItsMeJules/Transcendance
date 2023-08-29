@@ -12,19 +12,17 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
-// import { authenticator } from 'otplib';
 import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
 import { AuthDtoUp } from './dto/authup.dto';
 import { TwoFaService } from './two-fa/two-fa.service';
 import { GetUser } from './decorator';
 import { User } from '@prisma/client';
-import { Response as ExResponse } from 'express'; // Import Express.js Response
 import { UnauthorizedException } from '@nestjs/common';
-import { TwoFaCodeDto } from './dto/two-fa-auth-code';
 import { JwtService } from '@nestjs/jwt';
 import { NoTwoFaException } from './exceptions/no-two-fa.exception';
 import JwtTwoFactorGuard from './guard/jwt.two-fa.guard';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Controller('auth')
 export class AuthController {
@@ -33,6 +31,7 @@ export class AuthController {
     private userService: UserService,
     private twoFaService: TwoFaService,
     private jwtService: JwtService,
+    private prismaService: PrismaService,
   ) {}
 
   @Post('signup')
@@ -48,6 +47,7 @@ export class AuthController {
     });
     const user = await this.authService.validateJwtToken(access_token);
     delete user.hash;
+    await this.authService.connectUserToAllPublicRooms(user.id);
     return user;
   }
 
@@ -65,6 +65,7 @@ export class AuthController {
     });
     const user = await this.authService.validateJwtToken(access_token);
     delete user.hash;
+    await this.authService.connectUserToAllPublicRooms(user.id);
     return user;
   }
 
@@ -90,6 +91,8 @@ export class AuthController {
       maxAge: 60 * 60 * 24 * 15000,
       sameSite: 'lax',
     });
+    const user = await this.authService.validateJwtToken(access_token);
+    await this.authService.connectUserToAllPublicRooms(user.id);
     res.redirect('/profile/me');
   }
 
@@ -109,6 +112,8 @@ export class AuthController {
       maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
+    const user = await this.authService.validateJwtToken(access_token);
+    await this.authService.connectUserToAllPublicRooms(user.id);
     res.redirect('/profile/me');
   }
 

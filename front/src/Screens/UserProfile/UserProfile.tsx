@@ -134,10 +134,14 @@ export const UserProfile: React.FC = () => {
       //   // dispatch(setUserData(parsedUserData));
       // }
 
-      const response = await axiosInstanceError.get(API_ROUTES.USER_PROFILE, {
-        withCredentials: true,
-      });
+      const response = await axiosInstanceError.get(
+        "http://localhost:8000/api/users/complete-user",
+        {
+          withCredentials: true,
+        }
+      );
       const userData = response.data;
+      console.log("response:", userData);
       dispatchUser(setUser(userData));
       localStorage.setItem("userData", JSON.stringify(userData));
       setUserDataHere(userData);

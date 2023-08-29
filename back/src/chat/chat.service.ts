@@ -106,10 +106,19 @@ export class ChatService {
         where: { name: createRoomDto.roomName },
       });
 
-      if (room)
+      if (room && createRoomDto.type !== RoomType.DIRECT) {
         throw new Error(
           "room already exists with the name '" + createRoomDto.roomName + "'",
         );
+      }
+
+      if (room && createRoomDto.type === RoomType.DIRECT) {
+        await this.userJoinRoom(
+          client.data.id,
+          createRoomDto.roomName,
+          createRoomDto.server,
+        );
+      }
 
       room = await this.prismaService.room.create({
         data: {
@@ -121,6 +130,19 @@ export class ChatService {
           admins: { connect: { id: client.data.id } },
         },
       });
+
+      const allUsers = await this.prismaService.user.findMany();
+
+      if (createRoomDto.type === 'PUBLIC') {
+        await this.prismaService.room.update({
+          where: { id: room.id },
+          data: {
+            users: {
+              set: allUsers.map((user) => ({ id: user.id })),
+            },
+          },
+        });
+      }
 
       await this.joinRoom(client, {
         roomName: createRoomDto.roomName,
@@ -222,10 +244,22 @@ export class ChatService {
       const room = await this.prismaService.returnCompleteRoom(
         leaveDto.roomName,
       );
-      await this.prismaService.room.update({
-        where: { id: room.id },
-        data: { users: { disconnect: { id: client.data.id } } },
-      });
+      if (room.type === RoomType.PRIVATE) {
+        await this.prismaService.room.update({
+          where: { name: room.name },
+          data: { users: { disconnect: { id: client.data.id } } },
+        });
+      }
+      await this.userJoinRoom(client.data.id, 'general', leaveDto.server);
+      // if (client.data.id === room.ownerId) {
+      //   await this.prismaService.room.delete({ where: { id: room.id } });
+      // }
+      if (client.data.id === room.ownerId) {
+        await this.prismaService.room.update({
+          where: { name: room.name },
+          data: { ownerId: null },
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -436,13 +470,13 @@ export class ChatService {
       const room = await this.prismaService.returnCompleteRoom(roomName);
       if (!room) throw new Error('no room');
       console.log('user socket id : ', userSocket.id);
-      console.log('making him switch channel');
+      console.log('making him switch channel to ', roomName);
       await this.prismaService.user.update({
         where: {
           id: user.id,
         },
         data: {
-          currentRoom: 'general',
+          currentRoom: roomName,
         },
       });
       await userSocket.leave(user.currentRoom);
@@ -507,6 +541,9 @@ export class ChatService {
       const currentRoom = await this.prismaService.returnCompleteRoom(
         modifyPasswordDto.roomName,
       );
+      if (currentRoom.type === RoomType.DIRECT) {
+        throw new Error("You can't modify the password of dms channels");
+      }
       const password: string = client.data.password;
       if (currentRoom.ownerId !== client.data.id)
         throw new Error('Only the owner can interact with the password');
@@ -544,13 +581,15 @@ export class ChatService {
       const targetUser = await this.prismaService.returnCompleteUser(
         inviteDto.targetId,
       ); // careful target!
+      if (room.type !== RoomType.PRIVATE)
+        throw new Error('you cannot invite in ' + room.type + 'S rooms');
       if (room.users.some((active) => active.id === targetUser.id)) {
         throw new Error('user already in room');
       } else if (room.bans.some((banned) => banned.id === targetUser.id))
         throw new Error('user is banned from the room');
       else {
         await this.prismaService.room.update({
-          where: { id: targetUser.id },
+          where: { name: inviteDto.roomName },
           data: { users: { connect: { id: targetUser.id } } },
         });
         // code client.emit('code', 'You have been invited to the room : {roomName}')

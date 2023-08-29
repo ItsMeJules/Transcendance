@@ -28,7 +28,7 @@ import { Multer, multer, diskStorage } from 'multer';
 import { MulterModule } from '@nestjs/platform-express';
 import { editFileName, imageFileFilter } from './module';
 import { Response } from 'express';
-import { CompleteRoom } from 'src/utils/complete.type';
+import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -48,11 +48,16 @@ export class UserController {
 
   @Get('complete-room')
   getCompleteRoom(@GetUser() user: User): Promise<CompleteRoom> {
-    return this.prisma.returnCompleteRoom(user.currentRoom)
+    return this.prisma.returnCompleteRoom(user.currentRoom);
+  }
+
+  @Get('complete-user')
+  getCompleteUser(@GetUser() user: User): Promise<CompleteUser> {
+    return this.prisma.returnCompleteUser(user.id);
   }
 
   @Get('me')
-  getMe(@GetUser() user: User) {
+  getMe(@GetUser() user: User): User {
     return user;
   }
 
