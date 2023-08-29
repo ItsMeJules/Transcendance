@@ -1,5 +1,6 @@
 export enum ChatSocketEventType {
   JOIN_ROOM = "join-room",
+  FETCH_MESSAGES = "fetch-messages",
   MESSAGE = "message",
   CHAT_ACTION = "chat-action",
   ROOM_ACTION = "room-action",

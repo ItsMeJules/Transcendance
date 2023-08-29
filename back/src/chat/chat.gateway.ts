@@ -56,24 +56,24 @@ export class ChatEventsGateway {
       .then(async (user) => {
         await client.join(user.currentRoom);
 
-        const dto = { roomName: user.currentRoom, server: this.server };
-        // const messagesWithClientId =
-        // await this.chatService.fetchMessagesOnRoomForUser(client, dto);
+        const currentCompleteRoom = await this.chatService.getCompleteRoom(
+          user.currentRoom,
+        );
+        currentCompleteRoom.messages = [];
 
-        const payload = {
-          currentRoom: user.currentRoom,
-          // messages: messagesWithClientId,
-        };
+        const messagesWithClientId =
+          await this.chatService.fetchMessagesOnRoomForUser(client, {
+            roomName: user.currentRoom,
+            server: this.server,
+          });
+
         this.server
           .to(client.id)
-          .emit(ChatSocketEventType.JOIN_ROOM, dto.roomName);
+          .emit(ChatSocketEventType.JOIN_ROOM, currentCompleteRoom);
 
-        console.log(
-          'Emitting to client: ',
-          client.id,
-          '\n\tpayload: ',
-          payload,
-        );
+        this.server
+          .to(client.id)
+          .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
       })
       .catch((reason) => console.log(reason));
   }

@@ -3,6 +3,7 @@ import { Socket } from 'socket.io';
 export enum ChatSocketEventType {
   JOIN_ROOM = 'join-room',
   MESSAGE = 'message',
+  FETCH_MESSAGES = `fetch-messages`,
   CHAT_ACTION = 'chat-action',
   ROOM_ACTION = 'room-action',
 }

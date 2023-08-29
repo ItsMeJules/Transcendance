@@ -3,13 +3,11 @@ import React, { useEffect, useRef } from "react";
 import { useWebsocketContext } from "../../../Wrappers/Websocket";
 import { useAppDispatch, useAppSelector } from "../../../redux/Store";
 import { addMessageToActiveChannel } from "../../../redux/reducers/ChannelSlice";
-import {
-  ChatSocketActionType,
-  ChatSocketEventType,
-  RoomSocketActionType,
-} from "../models/TypesActionsEvents";
 import { ChannelMessageData } from "../models/Channel";
 import { ChatMessageData } from "../models/ChatMessageData";
+import {
+  ChatSocketEventType
+} from "../models/TypesActionsEvents";
 import ChatMessage from "./ChatMessage";
 
 const ChatContainer: React.FC = () => {
@@ -24,6 +22,7 @@ const ChatContainer: React.FC = () => {
   const messages: ChannelMessageData[] | undefined = useAppSelector(
     (store) => store.channels.activeChannel?.messages
   );
+
   const chatMessages = messages?.reduce((chatMessages: ChatMessageData[], message: any) => {
     chatMessages.push({
       message: message.text,
@@ -32,7 +31,6 @@ const ChatContainer: React.FC = () => {
       profilePicture: message.profilePicture,
       userName: message.userName,
     });
-
     return chatMessages;
   }, []);
 

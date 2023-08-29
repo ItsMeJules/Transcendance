@@ -2,9 +2,9 @@ import { useContext } from "react";
 
 import User from "../../../../../../Services/User";
 import { SendDataContext } from "../../../../ChatBox";
-import { RoomSocketActionType } from "../../../../models/TypesActionsEvents";
-import Popup from "../../../../utils/Popup";
 import PayloadAction from "../../../../models/PayloadSocket";
+import { ChatSocketActionType, RoomSocketActionType } from "../../../../models/TypesActionsEvents";
+import Popup from "../../../../utils/Popup";
 
 interface UserActionProps {
   user: User
@@ -38,6 +38,13 @@ export default function UserActionPopup(props: UserActionProps) {
     sendData(RoomSocketActionType.MUTE, {} as PayloadAction)
   }
 
+  const onPromote = () => {
+    if (sendData === null)
+      return
+
+    sendData(RoomSocketActionType.PROMOTE, {} as PayloadAction)
+  }
+
   const onDm = () => {
     if (sendData === null)
       return
@@ -50,6 +57,12 @@ export default function UserActionPopup(props: UserActionProps) {
     sendData(RoomSocketActionType.INVITE, {} as PayloadAction)
   }
 
+  const onBlock = () => {
+    if (sendData === null)
+      return
+
+    sendData(ChatSocketActionType.BLOCK, {} as PayloadAction)
+  }
 
   return (
     <Popup className="user-actions">
@@ -60,12 +73,14 @@ export default function UserActionPopup(props: UserActionProps) {
             <div className="ban" onClick={onBan}>Bannir</div>
             <div className="kick" onClick={onKick}>Expulser</div>
             <div className="mute" onClick={onMute}>Rendre muet</div>
+            <div className="promote" onClick={onMute}>Définir administrateur</div>
           </>
         )
         : buttonClicked === 0 ? (
           <>
             <div className="dm" onClick={onDm}>Envoyer un message privé</div>
             <div className="invite-to-play" onClick={onInvite}>Inviter à jouer</div>
+            <div className="block-user" onClick={onBlock}>Bloquer</div>
           </>
         ) : undefined}
     </Popup>

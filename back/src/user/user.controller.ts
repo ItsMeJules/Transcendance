@@ -48,7 +48,7 @@ export class UserController {
 
   @Get('complete-room')
   getCompleteRoom(@GetUser() user: User): Promise<CompleteRoom> {
-    return this.prisma.returnCompleteRoom(user.currentRoom)
+    return this.prisma.returnCompleteRoom(user.currentRoom);
   }
 
   @Get('me')

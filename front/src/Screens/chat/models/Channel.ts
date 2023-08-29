@@ -29,6 +29,8 @@ export interface BanData extends PunishmentData {}
 export interface ChannelMessageData {
   authorId: number;
   text: string;
+  userName: string;
+  profilePicture: string;
 }
 
 export interface ChannelData {
@@ -70,12 +72,12 @@ export function transformToChannelData(data: any): ChannelData {
     return {} as PunishmentData;
   });
 
-  const messages: ChannelMessageData[] = data.messages.map((message: any) => {
-    return {
-      authorId: message.authorId,
-      text: message.text,
-    };
-  });
+  // const messages: ChannelMessageData[] = data.messages.map((message: any) => {
+  //   return {
+  //     authorId: message.authorId,
+  //     text: message.text,
+  //   };
+  // });
 
   return {
     type: data.type,
@@ -85,6 +87,6 @@ export function transformToChannelData(data: any): ChannelData {
     ownerId: data.ownerId,
     adminsId: data.admins,
     punishments: punishments,
-    messages: messages,
+    messages: [],
   };
 }

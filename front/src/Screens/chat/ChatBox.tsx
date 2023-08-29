@@ -4,11 +4,11 @@ import "./ChatBox.scss";
 
 import { useWebsocketContext } from "../../Wrappers/Websocket";
 import { useAppDispatch, useAppSelector } from "../../redux/Store";
+import { setActiveChannel, setActiveChannelMessages } from "../../redux/reducers/ChannelSlice";
+import { setUserActiveChannel } from "../../redux/reducers/UserSlice";
 import ChatContainer from "./chat_container/ChatContainer";
 import ChatBar from "./chatbar/ChatBar";
 import ChatMetadata from "./metadata/ChatMetadata";
-import { fetchActiveChannel } from "../../redux/reducers/ChannelSlice";
-import { setUserActiveChannel } from "../../redux/reducers/UserSlice";
 import PayloadAction from "./models/PayloadSocket";
 import {
   ChatSocketActionType,
@@ -29,16 +29,24 @@ export const ChatBox = () => {
 
   useEffect(() => {
     chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
-      dispatch(setUserActiveChannel(payload))
-      
-      try {
-        dispatch(fetchActiveChannel())
-      } catch (error) {
-        console.log("There was an error fetching the data", error);
-      }
+      dispatch(setUserActiveChannel(payload.name))
+      dispatch(setActiveChannel(payload))
     });
 
+    chatSocket?.on(ChatSocketEventType.FETCH_MESSAGES, (payload: any) => {
+      payload = payload.map((message: any) => {
+        return {
+          authorId: message.authorId,
+          text: message.text,
+          userName: message.userName,
+          profilePicture: message.profilePicture,
+        }
+      })
+      dispatch(setActiveChannelMessages(payload))
+    })
+
     return () => {
+      chatSocket?.off(ChatSocketEventType.FETCH_MESSAGES);
       chatSocket?.off(ChatSocketEventType.JOIN_ROOM);
     };
   }, [dispatch, chatSocket, activeChannelName]);

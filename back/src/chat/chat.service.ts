@@ -73,6 +73,14 @@ export class ChatService {
     }
   }
 
+  async getCompleteRoom(roomName: string): Promise<CompleteRoom> {
+    try {
+      return this.prismaService.returnCompleteRoom(roomName);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async createOrReturnGeneralChat(): Promise<Room> {
     let generalChat = await this.prismaService.room.findUnique({
       where: { id: 1 },
