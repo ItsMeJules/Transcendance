@@ -8,6 +8,7 @@ import { ChannelInfoInList } from "../../../models/partial/PartialModels";
 import ChannelsList from "../../../utils/ChannelsList";
 import Popup from "../../../utils/Popup";
 import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
+import { useAppSelector } from "../../../../../redux/Store";
 
 export default function ChannelListPopup() {
   const [selectedChannelName, setSelectedChannelName] = useState<string | null>(null);
@@ -15,7 +16,7 @@ export default function ChannelListPopup() {
   const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([]);
   const [searchText, setSearchText] = useState("");
 
-  // const visibleChannelsStore = useAppSelector(store => store.channels.visibleChannels)
+  const { currentRoom: activeChannelName } = useAppSelector(store => store.user.userData)
   const sendData: null | ((action: string, data: any) => void) = useContext(SendDataContext)
 
   useEffect(() => {
@@ -24,14 +25,14 @@ export default function ChannelListPopup() {
         const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, {
           withCredentials: true,
         });
-        setVisibleChannels(response.data);
+        setVisibleChannels(response.data.filter((channel: ChannelInfoInList) => channel.name !== activeChannelName));
       } catch (error) {
         console.log(error);
       }
     };
 
     requestVisibleChannels()
-  }, [/*visibleChannelsStore*/])
+  }, [activeChannelName])
 
   const channelHasPassword = (name: string | null) => {
     if (name === null)
