@@ -1,13 +1,20 @@
 import { APP_SCREENS } from "utils/routing/routing";
 
-interface RightNavFooterProps {
+interface LeftNavFooterProps {
+  setLeftContent: (option: number) => void;
   setRightContent: (option: number) => void;
 }
 
-const RightNavFooter:React.FC<RightNavFooterProps> = ({ setRightContent }) => {
+const NavFooter:React.FC<LeftNavFooterProps> = ({ setLeftContent, setRightContent }) => {
 
 	return (
-		<div className="footer right-nav-footer">
+		<div className="icons">
+      <button onClick={() => setLeftContent(APP_SCREENS.PLAY)}>
+        <img src="/images/game.png" alt="game" />
+      </button>
+      <button onClick={() => setLeftContent(APP_SCREENS.SPECTATE)}>
+        <img src="/images/spectate.png" alt="spectate" />
+      </button>
       <button onClick={() => setRightContent(APP_SCREENS.CHAT)}>
         <img src="/images/chat.png" alt="chat" />
       </button>
@@ -24,4 +31,4 @@ const RightNavFooter:React.FC<RightNavFooterProps> = ({ setRightContent }) => {
 	);
 };
 
-export default RightNavFooter;
+export default NavFooter;

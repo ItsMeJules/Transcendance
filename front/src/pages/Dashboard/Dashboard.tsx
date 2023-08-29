@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import ProfileHeader from './components/ProfileHeader';
 import LeftScreen from './components/LeftScreen';
 import RightScreen from './components/RightScreen';
-import LeftNavFooter from './components/LeftNavFooter';
-import RightNavFooter from './components/RightNavFooter';
+import NavFooter from './components/NavFooter';
 import './css/Dashboard.scss';
-import { APP_SCREENS } from 'utils/routing/routing';
 
 const Dashboard = () => {
-  const [leftContent, setLeftContent] = useState<number>(APP_SCREENS.ME_PROFILE);
+  const [leftContent, setLeftContent] = useState<number>(-1);
   const [rightContent, setRightContent] = useState<number>(-1);
 
   useEffect(() => {
@@ -18,22 +16,21 @@ const Dashboard = () => {
   return (
     <div className="dashboard-main-container">
 
-      <ProfileHeader setLeftContent={setLeftContent}/>
+      <div className="profile-header-container">
+        <ProfileHeader setLeftContent={setLeftContent}/>
+      </div>
 
       <div className="screen-container">
-
-        <div className="screen left-screen">
-          <LeftScreen leftContent={leftContent} setLeftContent={setLeftContent}/>
+        <div className="left-screen-container">
+          <LeftScreen setLeftContent={setLeftContent} leftContent={leftContent} />
         </div>
-        <div className="right-screen">
+        <div className="right-screen-container">
           <RightScreen rightContent={rightContent} />
         </div>
-
       </div>
 
       <div className="nav-footer-container">
-        <LeftNavFooter setLeftContent={setLeftContent} />
-        <RightNavFooter setRightContent={setRightContent} />
+        <NavFooter setLeftContent={setLeftContent} setRightContent={setRightContent}/>
       </div>
 
     </div>
