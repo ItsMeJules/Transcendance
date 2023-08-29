@@ -509,7 +509,7 @@ export class ChatService {
       );
       const password: string = client.data.password;
       if (currentRoom.ownerId !== client.data.id)
-        throw new Error('No permission');
+        throw new Error('Only the owner can interact with the password');
       if (currentRoom.password === password) throw new Error('same password');
       if (password === '') {
         await this.prismaService.room.update({
@@ -549,11 +549,11 @@ export class ChatService {
       } else if (room.bans.some((banned) => banned.id === targetUser.id))
         throw new Error('user is banned from the room');
       else {
-        await this.joinRoom(client, {
-          roomName: room.name,
-          password: room.password,
-          server: inviteDto.server,
-        }); // behavior for private rooms?
+        await this.prismaService.room.update({
+          where: { id: targetUser.id },
+          data: { users: { connect: { id: targetUser.id } } },
+        });
+        // code client.emit('code', 'You have been invited to the room : {roomName}')
       }
     } catch (error) {
       console.log(error);
