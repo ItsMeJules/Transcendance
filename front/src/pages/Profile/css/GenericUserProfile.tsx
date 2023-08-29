@@ -7,8 +7,8 @@ import getProgressBarClass from 'utils/progressBar/ProgressBar';
 import ToastError from 'layout/ToastError/ToastError';
 import { UserData } from 'services/User/User';
 
-import UserProfileContainer from './components/UserProfileContainer';
-import ProfileCard from './components/ProfileCard';
+import UserProfileContainer from '../components/UserProfileContainer';
+import ProfileCard from '../components/ProfileCard';
 
 const GenericUserProfile = () => {
   const { id } = useParams();

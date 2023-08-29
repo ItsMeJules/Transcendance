@@ -1,0 +1,175 @@
+/* Include the SCSS styles you provided */
+
+.dashboard-container {
+  width: 100vw;
+  height: 100vh;
+  min-width: 900px;
+  min-height: 1000px;
+  padding-left: 50px;
+  padding-right: 50px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 100px;
+  display: inline-flex;
+
+  .profile-header-container {
+    background: rgba(169, 169, 169, 0.3);
+    border-radius: 50px;
+    height: 10%;
+    width: 50%;
+    max-width: 550px;
+    min-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+
+    .icons {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 20px;
+
+      button {
+        padding: 20px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+    
+        /* Glow transitions */
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: inherit;
+          opacity: 0;
+          transition: opacity 0.5s ease-in-out;
+          pointer-events: none;
+        }
+    
+        &::before {
+          top: 0;
+          left: 0;
+          filter: blur(20px);
+        }
+    
+        &::after {
+          bottom: 0;
+          right: 0;
+          filter: blur(20px);
+        }
+    
+        &:hover {
+          filter: invert(100%);
+    
+          &::before,
+          &::after {
+            opacity: 1;
+          }
+        }
+      }
+
+      .pic {
+        min-width: 100px;
+        padding: 20px 20px;
+      }
+
+      .stats {
+        padding: 20px 20px;
+        width: 200px;
+        
+      }
+
+      .settings {
+        min-width: 100px;
+        padding: 20px 20px;
+      }
+    }
+
+  }
+
+  .screen-container {
+    display: flex;
+    align-items: stretch;
+    gap: 50px;
+    height: 100%;
+    
+    .left-screen-container {
+      min-width: 800px;
+      background: rgba(169, 169, 169, 0.3);
+      border-radius: 50px;
+    }
+    
+    .right-screen-container {
+      min-width: 400px;
+      background: rgba(169, 169, 169, 0.3);
+      border-radius: 50px;
+    }
+  }
+    
+  .nav-footer-container {
+
+    background: rgba(169, 169, 169, 0.3);
+    border-radius: 50px;
+    height: 10%;
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+
+    .icons {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 20px 20px;
+
+        button {
+          padding: 20px 20px;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+      
+          /* Glow transitions */
+          &::before,
+          &::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+          }
+      
+          &::before {
+            top: 0;
+            left: 0;
+            filter: blur(20px);
+          }
+      
+          &::after {
+            bottom: 0;
+            right: 0;
+            filter: blur(20px);
+          }
+      
+          &:hover {
+            filter: invert(100%);
+      
+            &::before,
+            &::after {
+              opacity: 1;
+            }
+          }
+        }
+
+    }
+  }
+
+}
