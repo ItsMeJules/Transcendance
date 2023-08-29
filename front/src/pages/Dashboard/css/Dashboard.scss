@@ -1,47 +1,59 @@
-/* Include the SCSS styles you provided */
-
 .dashboard-main-container {
   width: 100vw;
   height: 100vh;
-  padding-left: 20px;
-  padding-right: 20px;
+  display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
-  display: inline-flex;
+  justify-content: space-between;
   overflow: hidden;
-  border: 1px solid white;
 
   .profile-header-container {
     background: rgba(169, 169, 169, 0.3);
-    border-radius: 50px;
-    height: 10%;
+    border-radius: 70px;
     width: 50%;
-    max-width: 500px;
+    height: 10vw;
+    max-width: 600px;
     min-width: 400px;
-    min-height: 100px;
-    margin: 0 auto;
+    max-height: 300px;
+    min-height: 200px;
+    margin: 20px auto 0;
     display: flex;
     justify-content: center;
-    border: 1px solid white;
+    align-items: flex-end;
+    transform: translateY(-50%);
 
     .icons {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      border: 1px solid red;
+
+      .pic {
+        padding: -10px 10px;
+        border-radius: 5px;
+        min-width: 100px;
+      }
+
+      .stats {
+        padding: -10px 10px;
+        width: 25vw;
+        max-width: 350px;
+      }
+
+      .settings {
+        padding: -10px 10px;
+        min-width: 100px;
+      }
 
       button {
         min-width: 100px;
-        max-width: 120px;
-        padding: 20px 20px;
-        border-radius: 5px;
+        max-width: 150px;
+        padding: 20px;
+        border-radius: 50px;
         cursor: pointer;
         transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
-    
-        /* Glow transitions */
+        position: relative;
+
         &::before,
         &::after {
           content: '';
@@ -53,260 +65,116 @@
           transition: opacity 0.5s ease-in-out;
           pointer-events: none;
         }
-    
+
         &::before {
           top: 0;
           left: 0;
           filter: blur(20px);
         }
-    
+
         &::after {
           bottom: 0;
           right: 0;
           filter: blur(20px);
         }
-    
+
         &:hover {
           filter: invert(100%);
-    
+
           &::before,
           &::after {
             opacity: 1;
           }
         }
       }
-
-      .pic {
-        min-width: 100px;
-        border: 1px solid red;
-      }
-
-      .stats {
-        padding: 20px 20px;
-        width: 150px;
-        border: 1px solid red;
-      }
-
-      .settings {
-        min-width: 100px;
-        border: 1px solid red;
-
-      }
     }
-
   }
 
   .screen-container {
+    flex: 1;
     display: flex;
-    align-items: stretch;
-    gap: 20px;
-    height: 100%;
-    min-height: 400px;
-    padding: 20px 20px;
-    border: 1px solid white;
+    align-items: center;
+    padding: 20px;
+    justify-content: space-between;
+    gap: 1px;
 
     .left-screen-container {
-      width: 70%;
-      min-width: 300px;
+      min-width: 350px;
       background: rgba(169, 169, 169, 0.3);
       border-radius: 20px;
-      border: 1px solid red;
+      margin-right: 20px;
     }
-    
+
     .right-screen-container {
       width: 300px;
       background: rgba(169, 169, 169, 0.3);
       border-radius: 20px;
-      border: 1px solid red;
     }
   }
-    
-  .nav-footer-container {
 
+  .nav-footer-container {
     background: rgba(169, 169, 169, 0.3);
-    border-radius: 50px;
+    border-radius: 100px;
     width: 80%;
-    max-width: 700px;
+    height: 30vw;
+    max-width: 900px;
     min-width: 650px;
-    min-height: 100px;
-    margin: 0 auto;
+    max-height: 320px;
+    min-height: 200px;
+    margin: 20px auto 0;
     display: flex;
     justify-content: center;
-    border: 1px solid white;
+    align-items: flex-start;
+    transform: translateY(50%);
 
     .icons {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 5px;
-      padding: 20px 20px;
-      border: 1px solid red;
+      gap: 1px;
+      padding: 10px 10px;
 
-        button {
-          max-width: 120px;
-          min-width: 100px;
-          padding: 20px 20px;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
-          border: 1px solid red;
+      button {
+        min-width: 100px;
+        max-width: 150px;
+        padding: 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+        position: relative;
 
-          /* Glow transitions */
-          &::before,
-          &::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: inherit;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            pointer-events: none;
-          }
-      
-          &::before {
-            top: 0;
-            left: 0;
-            filter: blur(20px);
-          }
-      
-          &::after {
-            bottom: 0;
-            right: 0;
-            filter: blur(20px);
-          }
-      
-          &:hover {
-            filter: invert(100%);
-      
-            &::before,
-            &::after {
-              opacity: 1;
-            }
-          }
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: inherit;
+          opacity: 0;
+          transition: opacity 0.5s ease-in-out;
+          pointer-events: none;
         }
 
+        &::before {
+          top: 0;
+          left: 0;
+          filter: blur(20px);
+        }
+
+        &::after {
+          bottom: 0;
+          right: 0;
+          filter: blur(20px);
+        }
+
+        &:hover {
+          filter: invert(100%);
+
+          &::before,
+          &::after {
+            opacity: 1;
+          }
+        }
+      }
     }
   }
-
 }
-
-// /* Dashboard.css ===================================================================== */
-
-// .dashboard-main-container {
-//   width: 100vw;
-//   height: 100vh;
-//   align-items: center;
-//   background: transparent;
-//   overflow: hidden;
-
-//   .header-main-container {
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     height: 40px;
-//     width: 100%;
-
-
-//     .header-sub-container-centered {
-//       width: 400px;
-//       background: rgba(169, 169, 169, 0.3);
-//       border-radius: 0px 0px 300px 300px;
-    
-
-//     }
-//   }
-
-//   .screen-container {
-//     margin: auto;
-//     display: flex;
-//     justify-content: space-between;
-//     width: 90%;
-//     height: 60%;
-//     margin-top: 40px;
-//     /* Add minimum padding between screen container and footer */
-//     margin-bottom: 40px;
-//     /* Add minimum padding between screen container and footer */
-//   }
-
-//   .left-screen {
-//     flex: 1;
-//     width: 60%;
-//     min-width: 600px;
-//     margin-right: 20px;
-//     background: rgba(169, 169, 169, 0.3);
-//     border-radius: 50px;
-//   }
-
-//   .right-screen {
-//     // flex: 1;
-//     width: 350px;
-//     min-width: 350px;
-//     margin-left: 20px;
-//     overflow: hidden;
-//     background: rgba(169, 169, 169, 0.3);
-//     border-radius: 50px;
-//   }
-
-//   .nav-footer-container {
-//     margin: auto;
-//     display: flex;
-//     justify-content: space-between;
-//     width: 90%;
-//     height: 60%;
-//     margin-bottom: 40px;
-//     /* Add minimum padding between screen container and footer */
-//   }
-
-//   .footer {
-//     background: rgba(169, 169, 169, 0.3);
-//     border-radius: 50px;
-//     height: 50%;
-//     /* Show only half of the footer */
-//     margin: 0 auto;
-//     /* Center the footer horizontally */
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//   }
-
-//   .footer button {
-//     padding: 10px 20px;
-//     border-radius: 5px;
-//     cursor: pointer;
-//     transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
-//   }
-
-//   .footer button::before,
-//   .footer button::after {
-//     content: '';
-//     position: absolute;
-//     width: 100%;
-//     height: 100%;
-//     border-radius: inherit;
-//     opacity: 0;
-//     transition: opacity 0.5s ease-in-out;
-//     pointer-events: none;
-//   }
-
-//   .footer button::before {
-//     top: 0;
-//     left: 0;
-//     filter: blur(20px);
-//   }
-
-//   .footer button::after {
-//     bottom: 0;
-//     right: 0;
-//     filter: blur(20px);
-//   }
-
-//   .footer button:hover {
-//     filter: invert(100%);
-//   }
-
-//   .footer button:hover::before,
-//   .footer button:hover::after {
-//     opacity: 1;
-//   }
-// }
