@@ -3,39 +3,42 @@
 .dashboard-container {
   width: 100vw;
   height: 100vh;
-  min-width: 900px;
-  min-height: 1000px;
-  padding-left: 50px;
-  padding-right: 50px;
+  padding-left: 20px;
+  padding-right: 20px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 100px;
+  gap: 20px;
   display: inline-flex;
-
+  overflow: hidden;
+  border: 1px solid white;
   .profile-header-container {
     background: rgba(169, 169, 169, 0.3);
     border-radius: 50px;
     height: 10%;
     width: 50%;
-    max-width: 550px;
+    max-width: 500px;
     min-width: 400px;
+    min-height: 100px;
     margin: 0 auto;
     display: flex;
     justify-content: center;
+    border: 1px solid red;
 
     .icons {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      padding: 10px 20px;
+      border: 1px solid red;
 
       button {
         padding: 20px 20px;
         border-radius: 5px;
         cursor: pointer;
         transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+        min-width: 100px;
+        max-width: 120px;
     
         /* Glow transitions */
         &::before,
@@ -75,17 +78,20 @@
       .pic {
         min-width: 100px;
         padding: 20px 20px;
+        border: 1px solid red;
       }
 
       .stats {
         padding: 20px 20px;
-        width: 200px;
-        
+        width: 150px;
+        border: 1px solid red;
       }
 
       .settings {
         min-width: 100px;
         padding: 20px 20px;
+        border: 1px solid red;
+
       }
     }
 
@@ -94,19 +100,23 @@
   .screen-container {
     display: flex;
     align-items: stretch;
-    gap: 50px;
+    gap: 20px;
     height: 100%;
-    
+    min-height: 200px;
+    padding: 20px 20px;
+    border: 1px solid red;
+
     .left-screen-container {
-      min-width: 800px;
+      aspect-ratio: 8 / 6;
       background: rgba(169, 169, 169, 0.3);
       border-radius: 50px;
+      border: 1px solid red;
     }
     
     .right-screen-container {
-      min-width: 400px;
+      aspect-ratio: 1 / 2;
       background: rgba(169, 169, 169, 0.3);
-      border-radius: 50px;
+      border-radius: 50px;border: 1px solid red;
     }
   }
     
@@ -116,24 +126,31 @@
     border-radius: 50px;
     height: 10%;
     width: 80%;
-    max-width: 800px;
+    max-width: 700px;
+    min-width: 500px;
+    min-height: 100px;
     margin: 0 auto;
     display: flex;
     justify-content: center;
+    border: 1px solid red;
 
     .icons {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 5px;
       padding: 20px 20px;
+      border: 1px solid red;
 
         button {
+          max-width: 120px;
+          min-width: 100px;
           padding: 20px 20px;
           border-radius: 5px;
           cursor: pointer;
           transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
-      
+          border: 1px solid red;
+
           /* Glow transitions */
           &::before,
           &::after {

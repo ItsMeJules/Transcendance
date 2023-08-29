@@ -18,7 +18,7 @@ const ProfileHeader:React.FC<ProfileHeaderProps> = ({ setLeftContent }) => {
 			</div>
 			<div className="settings">
 				<button onClick={() => setLeftContent(APP_SCREENS.ME_PROFILE)}>
-					<img src="/images/game.png" alt="game" />
+					<img src="/images/settings.png" alt="game" />
 				</button>
 			</div>
 		</div>
