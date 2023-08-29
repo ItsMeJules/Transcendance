@@ -4,7 +4,7 @@ import LeftScreen from './components/LeftScreen';
 import RightScreen from './components/RightScreen';
 import LeftNavFooter from './components/LeftNavFooter';
 import RightNavFooter from './components/RightNavFooter';
-import './css/Dashboard.css';
+import './css/Dashboard.scss';
 import { APP_SCREENS } from 'utils/routing/routing';
 
 const Dashboard = () => {
@@ -12,7 +12,7 @@ const Dashboard = () => {
   const [rightContent, setRightContent] = useState<number>(-1);
 
   return (
-    <div className="dashboard">
+    <div className="dashboard-main-container">
 
       <ProfileHeader setLeftContent={setLeftContent}/>
 

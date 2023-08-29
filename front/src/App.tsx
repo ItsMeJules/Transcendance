@@ -5,7 +5,7 @@ import 'App.css';
 import Websocket from 'services/Websocket/Websocket';
 import { APP_ROUTES } from 'utils/routing/routing';
 import LayoutWrapper from 'layout/LayoutWrapper';
-import { Home, Signin, Signup, Dashboard } from 'pages';
+import { Home, Signin, Signup, Dashboard, Profile } from 'pages';
 
 const App: React.FC = () => {
   return (
@@ -15,6 +15,7 @@ const App: React.FC = () => {
         <Route path={APP_ROUTES.SIGN_IN} element={<LayoutWrapper><Signin /></LayoutWrapper>} />
         <Route path={APP_ROUTES.SIGN_UP} element={<LayoutWrapper><Signup /></LayoutWrapper>} />
         <Route path={'/dashboard'} element={<Websocket><LayoutWrapper><Dashboard /></LayoutWrapper></Websocket>} />
+        <Route path={'/test'} element={<Websocket><LayoutWrapper><Profile /></LayoutWrapper></Websocket>} />
       </Routes>
     </ >
   );

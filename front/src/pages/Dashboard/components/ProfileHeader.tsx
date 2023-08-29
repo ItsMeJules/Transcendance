@@ -4,16 +4,17 @@ interface ProfileHeaderProps {
   setLeftContent: (option: number) => void;
 }
 
-const ProfileHeader:React.FC<ProfileHeaderProps> = ({ setLeftContent }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setLeftContent }) => {
 
-	return (
-		<div className="header">
-      <button onClick={() => setLeftContent(APP_SCREENS.ME_PROFILE)}>
-        <img src="/images/game.png" alt="game" />
-      </button>
-    
-		</div>
-	);
+  return (
+    <header className="header-main-container">
+      <header className="header-sub-container-centered">
+        <button onClick={() => setLeftContent(APP_SCREENS.ME_PROFILE)}>
+          <img src="/images/game.png" alt="game" />
+        </button>
+      </header>
+    </header>
+  );
 };
 
 export default ProfileHeader

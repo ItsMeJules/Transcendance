@@ -22,7 +22,7 @@ type ProfileCardProps = {
 const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = 'user', iconColor, onAddFriend, fetchUserProfile }) => {
   return (
     <>
-    {/* <MDBCard className="profile-board-card"> */}
+    <MDBCard className="profile-board-card">
       <ProfileHeader setErrMsg={setErrMsg} type={type} iconColor={iconColor} onAddFriend={onAddFriend} />
       {type != 'edit' && (
         <UserProfileContent userData={userData} />
@@ -36,7 +36,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = '
         </>
       )}
       {type === 'user' && <QrCode />}
-    {/* </MDBCard> */}
+    </MDBCard>
     </>
   );
 };
