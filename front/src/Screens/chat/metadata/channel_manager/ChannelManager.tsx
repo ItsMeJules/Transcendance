@@ -35,10 +35,9 @@ export default function ChannelManager(props: ChannelManagerProps) {
           onInsideClick={() => toggleChannelUsersList(!channelUsersList)}
         >
           <div className="channel-users-count">
-            {"Nombre d'utilisateur " + (usersSize > 1 ? "s" : "") + " : " + usersSize}
+            {"Membres : " + usersSize}
           </div>
-
-          {channelUsersList ? <ChannelUsersPopup roomName={channelData.name}/> : undefined}
+          {channelUsersList ? <ChannelUsersPopup roomName={channelData.name} /> : undefined}
         </OutsideClickHandler>
       </div>
 

@@ -58,6 +58,9 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
     setUserClicked(user)
   }
 
+  const handleClickInvite = () => {
+  }
+
   return (
     <div className="popup-container">
       <Popup className="channel-users-popup">
@@ -75,6 +78,9 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
           onUserClick={onUserClick}
         />
       </Popup>
+      <div onClick={handleClickInvite} className="invite-user">
+        Inviter quelqu'un
+      </div>
       {userClicked !== null
         ? <UserActionPopup
             user={userClicked}
