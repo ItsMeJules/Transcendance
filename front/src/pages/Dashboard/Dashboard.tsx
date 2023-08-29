@@ -22,7 +22,7 @@ const Dashboard = () => {
 
       <div className="screen-container">
         <div className="left-screen-container">
-          <LeftScreen leftContent={leftContent} />
+          <LeftScreen setLeftContent={setLeftContent} leftContent={leftContent} />
         </div>
         <div className="right-screen-container">
           <RightScreen rightContent={rightContent} />
