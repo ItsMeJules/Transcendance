@@ -29,6 +29,7 @@ export const ChatBox = () => {
 
   useEffect(() => {
     chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
+      console.log(payload)
       dispatch(setUserActiveChannel(payload.name))
       dispatch(setActiveChannel(payload))
     });

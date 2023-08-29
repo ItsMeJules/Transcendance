@@ -211,6 +211,13 @@ export class ChatService {
       const user = await this.prismaService.user.findUnique({
         where: { id: client.data.id },
       });
+      const messagesWithClientId = await this.fetchMessagesOnRoomForUser(
+        client,
+        {
+          roomName: user.currentRoom,
+          server: joinRoomDto.server,
+        },
+      );
 
       if (!room || !user) throw new Error('error name');
 
@@ -233,7 +240,10 @@ export class ChatService {
 
       joinRoomDto.server
         .to(client.id)
-        .emit(ChatSocketEventType.JOIN_ROOM, joinRoomDto.roomName);
+        .emit(ChatSocketEventType.JOIN_ROOM, room);
+      joinRoomDto.server
+        .to(client.id)
+        .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
 
       return room;
     } catch (error) {

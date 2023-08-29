@@ -444,29 +444,22 @@
                 border-bottom: 1px solid lightgray;
               }
 
-              .ban:hover,
-              .kick:hover,
-              .mute:hover,
               .dm:hover,
-              .invite-to-play:hover {
+              .invite-to-play:hover,
+              .block-user:hover {
                 background-color: #c9c9c9;
               }
 
-              .ban {
-                border-bottom: 1px solid lightgray;
-              }
-
-              .kick {
-                border-bottom: 1px solid lightgray;
-              }
-
-              .mute {}
 
               .dm {
                 border-bottom: 1px solid lightgray;
               }
 
-              .invite-to-play {}
+              .invite-to-play {
+                border-bottom: 1px solid lightgray;
+              }
+
+              .block-user {}
             }
           }
 
@@ -717,8 +710,10 @@
                 .ban:hover,
                 .kick:hover,
                 .mute:hover,
+                .promote:hover,
                 .dm:hover,
-                .invite-to-play:hover {
+                .invite-to-play:hover,
+                .block-user:hover {
                   background-color: #c9c9c9;
                 }
 
@@ -730,13 +725,23 @@
                   border-bottom: 1px solid lightgray;
                 }
 
-                .mute {}
+                .mute {
+                  border-bottom: 1px solid lightgray;
+                }
+
+                .promote {
+                  border-bottom: 1px solid lightgray;
+                }
 
                 .dm {
                   border-bottom: 1px solid lightgray;
                 }
 
-                .invite-to-play {}
+                .invite-to-play {
+                  border-bottom: 1px solid lightgray;
+                }
+
+                .block-user {}
               }
             }
           }
