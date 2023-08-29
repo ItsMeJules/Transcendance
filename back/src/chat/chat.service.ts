@@ -310,6 +310,7 @@ export class ChatService {
 
   async banUserToggle(client: Socket, banDto: ChatDtos.BanDto): Promise<void> {
     try {
+      console.log('banUserToggle function beginning');
       const actingUser = await this.prismaService.returnCompleteUser(
         client.data.id,
       );
@@ -321,7 +322,7 @@ export class ChatService {
         throw new Error('no room');
       }
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
-        if (room.bans.some((banned) => banned.id === targetUser.id)) {
+        if (!room.bans.some((banned) => banned.id === targetUser.id)) {
           await this.prismaService.room.update({
             where: { id: room.id },
             data: {
@@ -337,6 +338,10 @@ export class ChatService {
               },
             },
           });
+          if (targetUser.currentRoom === room.name)
+            await this.userJoinRoom(targetUser.id, 'general', banDto.server);
+          console.log('banned user:', targetUser.id);
+          // throw : You have been banned from the room : {roomName}
         } else {
           await this.prismaService.room.update({
             where: { id: room.id },
@@ -353,7 +358,9 @@ export class ChatService {
               },
             },
           });
+          console.log('unbanned user:', targetUser.id);
         }
+        console.log('banUserToggle function ending');
       } else throw new Error("You don't have permission");
     } catch (error) {
       console.log(error);
@@ -420,7 +427,19 @@ export class ChatService {
       const userSocket = this.userSocketsService.getUserSocket(String(userId));
       const room = await this.prismaService.returnCompleteRoom(roomName);
       if (!room) throw new Error('no room');
-      console.log('socket id : ', userSocket);
+      console.log('user socket id : ', userSocket.id);
+      console.log('making him switch channel');
+      await this.prismaService.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          currentRoom: 'general',
+        },
+      });
+      await userSocket.leave(user.currentRoom);
+      await userSocket.join(roomName);
+      console.log('infos : ', ChatSocketEventType.JOIN_ROOM, roomName);
       server.to(userSocket.id).emit(ChatSocketEventType.JOIN_ROOM, roomName);
       console.log('userJoinRoom function end');
       return true;
@@ -447,7 +466,11 @@ export class ChatService {
       if (!room) {
         throw new Error('no room');
       }
+      console.log(targetUser.currentRoom, room.name);
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
+        if (targetUser.currentRoom !== room.name) {
+          throw new Error('user is not the room you fkin golem');
+        }
         await this.prismaService.room.update({
           where: { name: room.name },
           data: {
@@ -456,14 +479,6 @@ export class ChatService {
                 id: targetUser.id,
               },
             },
-          },
-        });
-        await this.prismaService.user.update({
-          where: {
-            id: targetUser.id,
-          },
-          data: {
-            currentRoom: 'general',
           },
         });
         await this.userJoinRoom(targetUser.id, 'general', kickDto.server);
