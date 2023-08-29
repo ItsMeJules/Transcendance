@@ -101,21 +101,20 @@
     align-items: stretch;
     gap: 20px;
     height: 100%;
-    max-width: 100%;
-    min-height: 200px;
-    max-height: 100vh;
+    min-height: 400px;
     padding: 20px 20px;
     border: 1px solid white;
 
     .left-screen-container {
-      aspect-ratio: 8 / 6;
+      width: 70%;
+      min-width: 300px;
       background: rgba(169, 169, 169, 0.3);
       border-radius: 20px;
       border: 1px solid red;
     }
     
     .right-screen-container {
-      aspect-ratio: 1 / 2;
+      width: 300px;
       background: rgba(169, 169, 169, 0.3);
       border-radius: 20px;
       border: 1px solid red;

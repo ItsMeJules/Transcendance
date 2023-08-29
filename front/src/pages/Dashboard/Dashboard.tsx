@@ -4,7 +4,6 @@ import LeftScreen from './components/LeftScreen';
 import RightScreen from './components/RightScreen';
 import NavFooter from './components/NavFooter';
 import './css/Dashboard.scss';
-import { APP_SCREENS } from 'utils/routing/routing';
 
 const Dashboard = () => {
   const [leftContent, setLeftContent] = useState<number>(-1);
