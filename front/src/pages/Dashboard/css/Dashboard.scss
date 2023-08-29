@@ -11,10 +11,9 @@
     background: rgba(169, 169, 169, 0.3);
     border-radius: 70px;
     width: 50%;
-    height: 10vw;
+    height: 12vw;
     max-width: 600px;
-    min-width: 400px;
-    max-height: 300px;
+    max-height: 350px;
     min-height: 200px;
     margin: 20px auto 0;
     display: flex;
@@ -28,24 +27,14 @@
       justify-content: space-between;
       gap: 10px;
 
-      .pic {
-        padding: -10px 10px;
-        border-radius: 5px;
-        min-width: 100px;
-      }
-
       .stats {
         padding: -10px 10px;
-        width: 25vw;
-        max-width: 350px;
-      }
-
-      .settings {
-        padding: -10px 10px;
-        min-width: 100px;
+        width: 20vw;
+        max-width: 300px;
       }
 
       button {
+        width: 10vw;
         min-width: 100px;
         max-width: 150px;
         padding: 20px;
@@ -97,6 +86,7 @@
     padding: 20px;
     justify-content: space-between;
     gap: 1px;
+    max-height: 80vh;
 
     .left-screen-container {
       min-width: 350px;
@@ -118,9 +108,9 @@
     width: 80%;
     height: 30vw;
     max-width: 900px;
-    min-width: 650px;
-    max-height: 320px;
-    min-height: 250px;
+    min-width: 500px;
+    max-height: 400px;
+    min-height: 200px;
     margin: 20px auto 0;
     display: flex;
     justify-content: center;
@@ -134,9 +124,10 @@
       padding: 10px 10px;
 
       button {
-        min-width: 100px;
+        width: 12vw;
+        min-width: 80px;
         max-width: 150px;
-        padding: 20px;
+        padding: 10px;
         border-radius: 50px;
         cursor: pointer;
         transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
