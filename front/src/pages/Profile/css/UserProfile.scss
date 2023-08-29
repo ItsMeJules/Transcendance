@@ -26,7 +26,7 @@
       width: 100%;
       min-width: 100%;
       height: 100%;
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: transparent;
 
       .profile-board-header {
         display: flex;
@@ -69,10 +69,8 @@
         }
       }
 
-      
+
     }
-
-
 
     .profil-board-header-edit-profile {
       display: flex;
@@ -103,6 +101,10 @@
         min-width: 140px;
 
         @mixin data-fields-name-sub {
+          font-family: "dune", Arial, sans-serif;
+          font-size: 12px;
+          font-weight: bold;
+          color: white;
           display: flex;
           align-items: center;
           height: 35px;
@@ -121,6 +123,9 @@
       }
 
       .data-values-main {
+        font-family: "Reboto", Arial, sans-serif;
+        font-weight: bold;
+        color: white;
         display: flex;
         flex-direction: column;
         text-align: left;

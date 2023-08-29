@@ -9,7 +9,7 @@ const NavFooter:React.FC<LeftNavFooterProps> = ({ setLeftContent, setRightConten
 
 	return (
 		<div className="icons">
-      <button onClick={() => setLeftContent(APP_SCREENS.PLAY)}>
+      <button onClick={() => setLeftContent(APP_SCREENS.MATCHMAKING)}>
         <img src="/images/game.png" alt="game" />
       </button>
       <button onClick={() => setLeftContent(APP_SCREENS.SPECTATE)}>

@@ -10,7 +10,7 @@ const Dashboard = () => {
   const [rightContent, setRightContent] = useState<number>(-1);
 
   useEffect(() => {
-    console.log('rightcontent:', rightContent);
+    console.log('leftcntent:', leftContent);
   }, [leftContent]);
   
   return (
