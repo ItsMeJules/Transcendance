@@ -8,7 +8,7 @@ const LeftNavFooter:React.FC<LeftNavFooterProps> = ({ setLeftContent }) => {
 
 	return (
 		<div className="footer left-nav-footer">
-      <button onClick={() => setLeftContent(APP_SCREENS.PLAY)}>
+      <button onClick={() => setLeftContent(APP_SCREENS.MATCHMAKING)}>
         <img src="/images/game.png" alt="game" />
       </button>
       <button onClick={() => setLeftContent(APP_SCREENS.SPECTATE)}>

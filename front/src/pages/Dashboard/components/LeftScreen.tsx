@@ -1,13 +1,16 @@
-import { Play, Profile, Spectate } from 'pages';
+import { Play, Profile, Spectate, JoinGame } from 'pages';
 import { APP_SCREENS } from 'utils/routing/routing';
 
 interface LeftScreenProps {
   leftContent: number;
+  setLeftContent: (content: number) => void;
 }
 
-const LeftScreen: React.FC<LeftScreenProps> = ({ leftContent }) => {
+const LeftScreen: React.FC<LeftScreenProps> = ({ leftContent, setLeftContent }) => {
   
-  if (leftContent === APP_SCREENS.PLAY) {
+  if (leftContent === APP_SCREENS.MATCHMAKING) {
+    return <JoinGame setLeftContent={setLeftContent}/>;
+  } else if (leftContent === APP_SCREENS.PLAY) {
     return <Play />;
   } else if (leftContent === APP_SCREENS.SPECTATE) {
     return <Spectate />;
@@ -16,7 +19,6 @@ const LeftScreen: React.FC<LeftScreenProps> = ({ leftContent }) => {
   } else {
     return <div></div>; // Fallback content or initial state
   }
-
 };
 
 export default LeftScreen;

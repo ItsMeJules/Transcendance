@@ -15,6 +15,7 @@ import RightPlayerProfile from "./components/PlayersProfile/RightPlayerProfile";
 import MainText from "./components/MainText/MainText";
 import GiveUp from "./components/GiveUp/GiveUp";
 import ScoreBoard from "./components/ScoreBoard/ScoreBoard";
+import './css/Play.scss'
 
 interface PlayBackProps {
   whichPlayer: number,
@@ -198,7 +199,7 @@ const Play = () => {
       <ScoreBoard game={game} />
 
 
-      <div className="pong-sub-container text-white">
+      {/* <div className="pong-sub-container text-white">
         <div className="pong-game-canvas" id='pong-canvas-container' style={{ height: `${game.board.height + 80}px` }}>
           <MainText textToDisplay={centralText} socket={socket.game}
             whichPlayer={whichPlayer} gameIsPlaying={game.isPlaying}
@@ -213,7 +214,7 @@ const Play = () => {
         <BallCanvas whichPlayer={whichPlayer} game={game} ball={game.ball} canvasRef={ballCanvasRef as React.RefObject<HTMLCanvasElement>} />
         <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
         <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
-      </div>
+      </div> */}
 
       <GiveUp socket={socket.game} whichPlayer={whichPlayer} gameIsEnded={game.isEnded}></GiveUp>
 

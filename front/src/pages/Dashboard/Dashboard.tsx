@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProfileHeader from './components/ProfileHeader';
 import LeftScreen from './components/LeftScreen';
 import RightScreen from './components/RightScreen';
@@ -11,6 +11,10 @@ const Dashboard = () => {
   const [leftContent, setLeftContent] = useState<number>(APP_SCREENS.ME_PROFILE);
   const [rightContent, setRightContent] = useState<number>(-1);
 
+  useEffect(() => {
+    console.log('leftcontent:', leftContent);
+  }, [leftContent]);
+  
   return (
     <div className="dashboard-main-container">
 
@@ -19,7 +23,7 @@ const Dashboard = () => {
       <div className="screen-container">
 
         <div className="screen left-screen">
-          <LeftScreen leftContent={leftContent} />
+          <LeftScreen leftContent={leftContent} setLeftContent={setLeftContent}/>
         </div>
         <div className="screen right-screen">
           <RightScreen rightContent={rightContent} />
