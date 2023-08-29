@@ -48,6 +48,12 @@ export class ChatService {
         sendMsgRoomDto.roomName,
       );
 
+      console.log(
+        'room.mutes.ids : ',
+        room.mutes.map((muted) => muted.id),
+        'client.data.id : ',
+        client.data.id,
+      );
       if (room.mutes.some((muted) => client.data.id === muted.id))
         throw new Error('user is muted until :'); //time
 
@@ -372,11 +378,12 @@ export class ChatService {
     muteDto: ChatDtos.MuteDto,
   ): Promise<void> {
     try {
+      console.log('muteUserFromRoomToggle function beginning');
       const actingUser = await this.prismaService.returnCompleteUser(
         client.data.id,
       );
       const targetUser = await this.prismaService.returnCompleteUser(
-        muteDto.targetId, // add targetUserId !!
+        muteDto.targetId,
       );
       const room = await this.prismaService.returnCompleteRoom(
         muteDto.roomName,
@@ -385,12 +392,12 @@ export class ChatService {
         throw new Error('no room');
       }
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
-        if (room.mutes.some((muted) => muted.id === targetUser.id)) {
+        if (!room.mutes.some((muted) => muted.id === targetUser.id)) {
           await this.prismaService.room.update({
             where: { id: room.id },
             data: {
               mutes: {
-                disconnect: {
+                connect: {
                   id: targetUser.id,
                 },
               },
@@ -408,6 +415,7 @@ export class ChatService {
             },
           });
         }
+        console.log('muteUserFromRoomToggle function ending');
       } else throw new Error("You don't have permission");
     } catch (error) {
       console.log(error);
