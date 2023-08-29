@@ -8,9 +8,7 @@ interface FriendsContainerProps {
 const FriendsContainer: React.FC<FriendsContainerProps> = ({ children }) => {
   return (
     <MDBContainer className="friends-container">
-      <MDBCard className="friends-card">
-        {children}
-      </MDBCard>
+      {children}
     </MDBContainer>
   );
 };

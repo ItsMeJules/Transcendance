@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import axios, { } from "axios";
 import { useNavigate } from "react-router-dom";
-
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import ToastError from "layout/ToastError/ToastError";
 import ToastMessage from "layout/ToastMessage/ToastMessage";
 import { UserArray } from "services/User/UserArray";
 import { UserData } from "services/User/User";
 import User from "services/User/User";
+import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
+
 
 import FriendsHeader from "./Components/FriendsHeader";
 import UserProfileList from "./Components/UserProfileList";
 import FriendsContainer from "./Components/FriendsContainer";
 
-import './css/friends.scss';
+import './css/Friends.scss';
 
 const Friends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -112,16 +113,19 @@ const Friends = () => {
   }
 
   return (
-    <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
-      
-      <FriendsContainer>
-        <FriendsHeader setErrMsg={setErrMsg} />
-        <UserProfileList users={users} onRemoveClick={removeFriend} onProfileClick={handleProfileClick}/>
-      </FriendsContainer>
+    <main className="friends-main-container" style={{}}>
+
+      <header className="friends-header">
+        Friends
+      </header>
+
+      <MDBContainer className="friends-container">
+        <UserProfileList users={users} onRemoveClick={removeFriend} onProfileClick={handleProfileClick} />
+      </MDBContainer>
 
       <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
-      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
-    </div>
+      {/* <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} /> */}
+    </main>
   );
 }
 

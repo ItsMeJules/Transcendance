@@ -11,6 +11,7 @@ import { UserData } from "services/User/User";
 import LeaderBoardHeader from "./components/LeaderBoardHeader";
 import UserProfilesList from "./components/UserProfileList";
 import LeaderBoardContainer from "./components/LeaderBoardContainer"
+import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
 
 import './css/LeaderBoard.scss';
 
@@ -24,8 +25,6 @@ const LeaderBoard: React.FC = () => {
   const resetErrMsg = () => {
     setErrMsg(''); // Reset errMsg to an empty string
   };
-
-  
 
   const fetchLeaderboard = async () => {
     try {
@@ -84,15 +83,17 @@ const LeaderBoard: React.FC = () => {
   }, [history]);
 
   return (
-    <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px' }}>
-      
-      <LeaderBoardContainer>
-        <LeaderBoardHeader setErrMsg={setErrMsg} />
+    <body className="leaderboard-main-container">
+
+      <header className="leaderboard-header">
+        Leaderboard
+      </header>
+
+      <MDBContainer className="leaderboard-container">
         <UserProfilesList users={users} currentUserId={userData?.id} />
-      </LeaderBoardContainer>
-      
-      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
-    </div>
+      </MDBContainer>
+
+    </body>
   );
 }
 

@@ -23,7 +23,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, currentUserId }) => {
           className="leaderboard__picture"
         />
         <span className="leaderboard__name">{user.getUsername()}</span>
-        <span className="leaderboard__value">{user.getUserPoints()}</span>
+        <span className="leaderboard__value">{user.getUserPoints()} Pts</span>
       </article>
     </Link>
   );

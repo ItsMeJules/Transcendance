@@ -11,7 +11,10 @@ const UserProfilesList: React.FC<UserProfilesListProps> = ({ users, currentUserI
   return (
     <main className="leaderboard__profiles">
       {users.map((user) => (
-        <UserProfile key={user.getId()} user={user} currentUserId={currentUserId} />
+        <UserProfile
+        key={user.getId()}
+        user={user}
+        currentUserId={currentUserId} />
       ))}
     </main>
   );

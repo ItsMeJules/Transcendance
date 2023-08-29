@@ -12,7 +12,7 @@ const Dashboard = () => {
   const [rightContent, setRightContent] = useState<number>(-1);
 
   useEffect(() => {
-    console.log('leftcontent:', leftContent);
+    console.log('rightcontent:', rightContent);
   }, [leftContent]);
   
   return (
@@ -25,7 +25,7 @@ const Dashboard = () => {
         <div className="screen left-screen">
           <LeftScreen leftContent={leftContent} setLeftContent={setLeftContent}/>
         </div>
-        <div className="screen right-screen">
+        <div className="right-screen">
           <RightScreen rightContent={rightContent} />
         </div>
 
