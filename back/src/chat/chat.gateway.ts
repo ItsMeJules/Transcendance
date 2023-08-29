@@ -109,6 +109,7 @@ export class ChatEventsGateway {
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
     const newPayload = { ...payload, server: this.server };
+    console.log('chat action payload: ', payload);
     if (newPayload.action === 'createRoom' && newPayload.type === 'PROTECTED') {
       newPayload.type = 'PUBLIC'; // careful
     }

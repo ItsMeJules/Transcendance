@@ -258,6 +258,8 @@ export class ChatService {
 
       if (room.bans.some((banned) => banned.id === user.id))
         throw new Error('user is banned from the room');
+      if (!room.users.some((users) => users.id === user.id))
+        throw new Error("user hasn't been invite in this room");
 
       await client.leave(user.currentRoom);
       console.log('client id leaving room : ', user.currentRoom);
@@ -636,7 +638,7 @@ export class ChatService {
           where: { name: inviteDto.roomName },
           data: { users: { connect: { id: targetUser.id } } },
         });
-        // code client.emit('code', 'You have been invited to the room : {roomName}')
+        // code client.emit('code', 'You can now access to the room : {roomName}')
       }
     } catch (error) {
       console.log(error);

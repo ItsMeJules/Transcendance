@@ -5,6 +5,7 @@ import { SendDataContext } from "../ChatBox";
 import PayloadAction from "../models/PayloadSocket";
 import { ChatSocketActionType, RoomSocketActionType } from "../models/TypesActionsEvents";
 import Popup from "./Popup";
+import { useAppSelector } from "../../../redux/Store";
 
 interface UserActionProps {
   user: User;
@@ -16,6 +17,7 @@ interface UserActionProps {
 }
 
 export default function UserActionPopup(props: UserActionProps) {
+  const { id: currentIdUser } = useAppSelector((store) => store.user.userData);
   const {
     user,
     buttonClicked,
@@ -31,41 +33,72 @@ export default function UserActionPopup(props: UserActionProps) {
   const onBan = (ban: boolean) => {
     if (sendData === null) return;
 
-    sendData(RoomSocketActionType.BAN, {} as PayloadAction);
+    sendData(RoomSocketActionType.BAN, {
+      action: "ban",
+      targetId: Number(props.user.getId()),
+    } as PayloadAction);
   };
 
   const onKick = () => {
     if (sendData === null) return;
 
-    sendData(RoomSocketActionType.KICK, {} as PayloadAction);
+    sendData(RoomSocketActionType.KICK, {
+      action: "kick",
+      targetId: Number(props.user.getId()),
+    } as PayloadAction);
   };
 
   const onMute = (mute: boolean) => {
     if (sendData === null) return;
 
-    sendData(RoomSocketActionType.MUTE, {} as PayloadAction);
+    sendData(RoomSocketActionType.MUTE, {
+      action: "mute",
+      targetId: Number(props.user.getId()),
+    } as PayloadAction);
   };
 
   const onPromote = (promote: boolean) => {
     if (sendData === null) return;
 
-    sendData(RoomSocketActionType.PROMOTE, {} as PayloadAction);
+    sendData(RoomSocketActionType.PROMOTE, {
+      action: "promote",
+      targetId: Number(props.user.getId()),
+    } as PayloadAction);
   };
 
   const onDm = () => {
     if (sendData === null) return;
+    if (currentIdUser === undefined) return;
+    if (currentIdUser === props.user.getId()) return; // Can't send DM to yourself
+    const roomNameDm =
+      "dm-" +
+      (parseInt(currentIdUser!) > parseInt(props.user.getId())
+        ? currentIdUser + "-" + Number(props.user.getId())
+        : Number(props.user.getId()) + "-" + Number(currentIdUser));
+
+    sendData(ChatSocketActionType.CREATE_CHANNEL, {
+      action: ChatSocketActionType.CREATE_CHANNEL,
+      type: "DIRECT",
+      roomName: roomNameDm,
+    } as PayloadAction);
   };
 
   const onInvite = () => {
     if (sendData === null) return;
 
-    sendData(RoomSocketActionType.INVITE, {} as PayloadAction);
+    sendData(RoomSocketActionType.INVITE, {
+      action: "invite",
+      targetId: Number(props.user.getId()),
+    } as PayloadAction);
   };
 
   const onBlock = (block: boolean) => {
     if (sendData === null) return;
 
-    sendData(ChatSocketActionType.BLOCK, {} as PayloadAction);
+    sendData(ChatSocketActionType.BLOCK, {
+      action: "block",
+      targetId: Number(props.user.getId()),
+    } as PayloadAction);
   };
 
   return (
