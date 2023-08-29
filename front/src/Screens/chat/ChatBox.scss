@@ -597,6 +597,27 @@
               height: 40vh;
               width: 100%;
 
+              .invited {
+                position: absolute;
+                top: 0%;
+                left: 100%;
+                width: 10vw;
+                height: 10vh;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                background-color: white;
+
+                border: 1px solid lightgray;
+                border-radius: 5px;
+
+                text-align: center;
+                text-transform: uppercase;
+                word-wrap: break-word;
+              }
+
               .channel-users-popup {
                 display: flex;
                 flex-direction: column;
@@ -609,11 +630,9 @@
                 overflow-y: scroll;
 
                 background-color: white;
-                border-radius: 5px 5px 0 0px;
+                border-radius: 5px;
 
-                border-top: 1px solid lightgray;
-                border-right: 1px solid lightgray;
-                border-left: 1px solid lightgray;
+                border: 1px solid lightgray;
 
                 .filter-users {
                   height: 30px;
@@ -662,16 +681,15 @@
                     }
                   }
                 }
-              }
 
-              .invite-user {
-                text-align: center;
-                background-color: white;
-                border: 1px solid lightgray;
-                border-radius: 0 0 5px 5px;
+                .invite-user {
+                  text-align: center;
+                  background-color: white;
+                  border-top: 1px solid lightgray;
 
-                &:hover {
-                  background-color: #c9c9c9;
+                  &:hover {
+                    background-color: #c9c9c9;
+                  }
                 }
               }
 

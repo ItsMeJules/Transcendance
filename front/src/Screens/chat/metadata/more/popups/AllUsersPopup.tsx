@@ -4,41 +4,12 @@ import User, { UserData } from "../../../../../Services/User";
 import { API_ROUTES } from "../../../../../Utils";
 import Popup from "../../../utils/Popup";
 import UsersList from "../../../utils/UsersList";
-import { UserClickParameters } from "../../../utils/UserComponent";
 import UserActionPopup from "../../channel_manager/popups/users/UserActionPopup";
 
 export default function AllUsers() {
   const [searchText, setSearchText] = useState("");
-  const [users, setUsers] = useState<User[]>([])
-
   const [userClicked, setUserClicked] = useState<User | null>(null)
-
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      try {
-        const response = await axios.get(API_ROUTES.GET_ALL_USERS, { withCredentials: true })
-
-        const frontUsers: User[] = response.data.reduce((frontUsers: User[], data: UserData) => {
-          const frontUser: User = new User();
-
-          frontUser.setUserFromResponseData(data);
-          frontUsers.push(frontUser);
-
-          return frontUsers;
-        }, []);
-
-        setUsers(frontUsers);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des utilisateurs:", error);
-      }
-    }
-
-    fetchAllUsers()
-  }, []);
-
-  const onUserClick = ({ event, user }: UserClickParameters) => {
-    setUserClicked(user)
-  }
+  const users = useAllUsers()
 
   return (
     <Popup className="all-users-popup">
@@ -51,8 +22,8 @@ export default function AllUsers() {
       />
       <UsersList
         users={users}
-        filter={(userName) => userName.includes(searchText)}
-        onUserClick={onUserClick}
+        filter={(userName) => userName.toLowerCase().includes(searchText.toLowerCase())}
+        onUserClick={({ user }) => setUserClicked(user)}
       />
       {userClicked !== null
         ? <UserActionPopup
@@ -62,4 +33,35 @@ export default function AllUsers() {
         : undefined}
     </Popup>
   );
+}
+
+export const fetchAllUsers = async (): Promise<User[]> => {
+  try {
+    const response = await axios.get(API_ROUTES.GET_ALL_USERS, { withCredentials: true });
+    const frontUsers = response.data.map((data: UserData) => {
+      const frontUser = new User();
+
+      frontUser.setUserFromResponseData(data);
+
+      return frontUser;
+    });
+
+    return frontUsers
+  } catch (error) {
+    console.error("Erreur lors de la récupération des utilisateurs:", error);
+    return []
+  }
+};
+
+export function useAllUsers() {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      setUsers(await fetchAllUsers())
+    }
+    getUsers()
+  }, []);
+
+  return users;
 }
