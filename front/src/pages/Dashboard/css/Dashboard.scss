@@ -1,6 +1,6 @@
 /* Include the SCSS styles you provided */
 
-.dashboard-container {
+.dashboard-main-container {
   width: 100vw;
   height: 100vh;
   padding-left: 20px;
@@ -125,10 +125,9 @@
 
     background: rgba(169, 169, 169, 0.3);
     border-radius: 50px;
-    height: 10%;
     width: 80%;
     max-width: 700px;
-    min-width: 500px;
+    min-width: 650px;
     min-height: 100px;
     margin: 0 auto;
     display: flex;
