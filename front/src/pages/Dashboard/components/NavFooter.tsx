@@ -12,9 +12,6 @@ const NavFooter:React.FC<LeftNavFooterProps> = ({ setLeftContent, setRightConten
       <button onClick={() => setLeftContent(APP_SCREENS.MATCHMAKING)}>
         <img src="/images/game.png" alt="game" />
       </button>
-      <button onClick={() => setLeftContent(APP_SCREENS.SPECTATE)}>
-        <img src="/images/spectate.png" alt="spectate" />
-      </button>
       <button onClick={() => setRightContent(APP_SCREENS.CHAT)}>
         <img src="/images/chat.png" alt="chat" />
       </button>
