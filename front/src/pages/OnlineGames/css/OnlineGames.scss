@@ -1,232 +1,177 @@
 .online-games-main-container {
-  padding-top: 3rem;
-  max-width: 500px;
-  min-width: 400px;
-  width: 90%;
+  box-sizing: border-box;
   height: 100%;
-  overflow-y: auto;
+  width: 100%;
+  background-color: transparent;
+  overflow: hidden;
 
-  .online-games-card {
+  .online-games-header {
     display: flex;
-    border-radius: 15px;
-    text-align: center;
-    height: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 80px;
+    font-family: "dune", Arial, sans-serif;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.66);
   }
 
-  .online-title {
+  .online-games-container {
+    width: 100%;
+    height: 85%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    --start: 15%;
-    width: 100%;
-    height: 130px;
-    box-shadow: 0 0 0 1.3px black;
-    background-image: repeating-radial-gradient(circle at var(--start), transparent 0%, transparent 10%, rgba(0, 0, 0, 0.33) 10%, rgba(78, 78, 78, 0.33) 17%), linear-gradient(to right, #575757, #000000);
-    background-color: black;
-    position: relative;
-    border-radius: 15px 15px 0 0;
-    overflow: hidden;
 
-    .online-title-header {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
+    .games {
+      &__instance {
+        background-color: transparent;
+        box-sizing: border-box;
+        border-radius: 0 0 12px 12px;
+        padding: 15px 15px 20px;
+        display: grid;
+        row-gap: 6px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        flex: 1;
+      }
 
-      .online-title__title {
-        position: absolute;
-        z-index: 2;
-        top: 50%;
-        right: calc(var(--start) * .75);
-        transform: translateY(-50%);
-        text-transform: uppercase;
-        margin: 0;
-        color: white;
+      /* Customize the scrollbar track */
+      &__instance::-webkit-scrollbar {
+        width: 8px;
+      }
 
-        span {
-          display: block;
-        }
+      /* Customize the scrollbar thumb (draggable part) */
+      &__instance::-webkit-scrollbar-thumb {
+        background-color: #202020;
+        border-radius: 8px;
+        border: 2px solid #fff;
+        box-shadow: 0 0 5px rgba(53, 216, 172, 0.6);
+      }
 
-        &--top {
-          font-size: 20px;
-          font-weight: 700;
-          letter-spacing: 6.5px;
-        }
+      /* Change the appearance of the scrollbar thumb when hovering */
+      &__instance::-webkit-scrollbar-thumb:hover {
+        background-color: #000000;
+        border-color: #eaeaea;
+        box-shadow: 0 0 5px rgba(53, 216, 172, 0.9);
+      }
 
-        &--bottom {
-          font-size: 13px;
-          font-weight: 500;
-          letter-spacing: 3.55px;
-          opacity: .65;
-          transform: translateY(-2px);
+      /* Change the appearance of the scrollbar thumb when active (being dragged) */
+      &__instance::-webkit-scrollbar-thumb:active {
+        background-color: #818181;
+        box-shadow: 0 0 5px rgba(85, 85, 85, 0.9);
+      }
+
+      /* Customize the scrollbar track on the left side (if needed) */
+      &__instance::-webkit-scrollbar-track {
+        background-color: #ffffff;
+      }
+
+      /* Customize the scrollbar track on the right side (if needed) */
+      &__instance::-webkit-scrollbar-track-piece:end {
+        background-color: #ffffff;
+      }
+
+      /* Customize the scrollbar thumb on the top side (if needed) */
+      &__instance::-webkit-scrollbar-thumb:horizontal {
+        background-color: #000000;
+        border-color: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+      }
+
+      /* Customize the scrollbar thumb on the bottom side (if needed) */
+      &__instance::-webkit-scrollbar-thumb:horizontal:hover {
+        background-color: #000000;
+        border-color: #eaeaea;
+        box-shadow: 0 0 5px rgba(53, 216, 172, 0.9);
+      }
+
+      /* Customize the scrollbar thumb on the bottom side when active (if needed) */
+      &__instance::-webkit-scrollbar-thumb:horizontal:active {
+        background-color: #000000;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
+      }
+
+      &__instance_style {
+        display: grid;
+        grid-template-columns: 1fr 1fr 0.65fr 1fr 1fr;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0px 10px 10px;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 5px 7px -1px rgba(51, 51, 51, 0.23);
+        cursor: pointer;
+        transition: transform .25s cubic-bezier(.7, .98, .86, .98), box-shadow .25s cubic-bezier(.7, .98, .86, .98);
+        background-color: #fff;
+        height: 80px;
+
+        &:hover {
+          transform: scale(1.1);
+          box-shadow: 0 9px 47px 11px rgba(51, 51, 51, 0.18);
         }
       }
 
-    }
-  }
-
-  .games{
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    --start: 15%;
-    height: 130px;
-    box-shadow: 0 0 0 1.3px black;
-    background-image: repeating-radial-gradient(circle at var(--start), transparent 0%, transparent 10%, rgba(0, 0, 0, 0.33) 10%, rgba(78, 78, 78, 0.33) 17%), linear-gradient(to right, #575757, #000000);
-    background-color: black;
-    position: relative;
-    border-radius: 15px 15px 0 0;
-    overflow: hidden;
-
-    &__instance {
-      background-color: #fff;
-      border-radius: 0 0 12px 12px;
-      padding: 15px 15px 20px;
-      display: grid;
-      row-gap: 8px;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    /* Customize the scrollbar track */
-    &__instance::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    /* Customize the scrollbar thumb (draggable part) */
-    &__instance::-webkit-scrollbar-thumb {
-      background-color: #202020;
-      border-radius: 8px;
-      border: 2px solid #fff;
-      box-shadow: 0 0 5px rgba(53, 216, 172, 0.6);
-    }
-
-    /* Change the appearance of the scrollbar thumb when hovering */
-    &__instance::-webkit-scrollbar-thumb:hover {
-      background-color: #000000;
-      border-color: #eaeaea;
-      box-shadow: 0 0 5px rgba(53, 216, 172, 0.9);
-    }
-
-    /* Change the appearance of the scrollbar thumb when active (being dragged) */
-    &__instance::-webkit-scrollbar-thumb:active {
-      background-color: #818181;
-      box-shadow: 0 0 5px rgba(85, 85, 85, 0.9);
-    }
-
-    /* Customize the scrollbar track on the left side (if needed) */
-    &__instance::-webkit-scrollbar-track {
-      background-color: #ffffff;
-    }
-
-    /* Customize the scrollbar track on the right side (if needed) */
-    &__instance::-webkit-scrollbar-track-piece:end {
-      background-color: #ffffff;
-    }
-
-    /* Customize the scrollbar thumb on the top side (if needed) */
-    &__instance::-webkit-scrollbar-thumb:horizontal {
-      background-color: #000000;
-      border-color: #fff;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
-    }
-
-    /* Customize the scrollbar thumb on the bottom side (if needed) */
-    &__instance::-webkit-scrollbar-thumb:horizontal:hover {
-      background-color: #000000;
-      border-color: #eaeaea;
-      box-shadow: 0 0 5px rgba(53, 216, 172, 0.9);
-    }
-
-    /* Customize the scrollbar thumb on the bottom side when active (if needed) */
-    &__instance::-webkit-scrollbar-thumb:horizontal:active {
-      background-color: #000000;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
-    }
-
-    &__instance_style {
-      display: grid;
-      grid-template-columns: 1fr 1fr 0.65fr 1fr 1fr;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0px 10px 10px;
-      overflow: hidden;
-      border-radius: 10px;
-      box-shadow: 0 5px 7px -1px rgba(51, 51, 51, 0.23);
-      cursor: pointer;
-      transition: transform .25s cubic-bezier(.7, .98, .86, .98), box-shadow .25s cubic-bezier(.7, .98, .86, .98);
-      background-color: #fff;
-      height: 80px;
-
-      &:hover {
-        transform: scale(1.1);
-        box-shadow: 0 9px 47px 11px rgba(51, 51, 51, 0.18);
+      &__picture {
+        max-width: 100%;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        object-fit: cover;
+        box-shadow: 0 0 0 10px #ebeef3, 0 0 0 22px #f3f4f6;
       }
-    }
 
-    &__picture {
-      max-width: 100%;
-      height: 50px;
-      width: 50px;
-      border-radius: 50%;
-      overflow: hidden;
-      display: flex;
-      object-fit: cover;
-      box-shadow: 0 0 0 10px #ebeef3, 0 0 0 22px #f3f4f6;
-    }
+      &__pictureright {
+        margin-left: 20px;
+        max-width: 100%;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        object-fit: cover;
+        box-shadow: 0 0 0 10px #ebeef3, 0 0 0 22px #f3f4f6;
+      }
 
-    &__pictureright {
-      margin-left: 20px;
-      max-width: 100%;
-      height: 50px;
-      width: 50px;
-      border-radius: 50%;
-      overflow: hidden;
-      display: flex;
-      object-fit: cover;
-      box-shadow: 0 0 0 10px #ebeef3, 0 0 0 22px #f3f4f6;
-    }
+      &__nameleft {
+        text-align: left;
+        color: #979cb0;
+        font-weight: 550;
+        font-size: 18px;
+        letter-spacing: 0.3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
-    &__nameleft {
-      text-align: left;
-      color: #979cb0;
-      font-weight: 550;
-      font-size: 18px;
-      letter-spacing: 0.3px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+      &__nameright {
+        margin-right: 5px;
+        text-align: right;
+        color: #979cb0;
+        font-weight: 550;
+        font-size: 18px;
+        letter-spacing: 0.3px;
+        margin-left: 0px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
-    &__nameright {
-      margin-right: 5px;
-      text-align: right;
-      color: #979cb0;
-      font-weight: 550;
-      font-size: 18px;
-      letter-spacing: 0.3px;
-      margin-left: 0px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+      &__score {
+        text-align: center;
+        color: rgb(44, 41, 41);
+        font-weight: 550;
+        font-size: 18px;
+        letter-spacing: 0.3px;
+        margin-left: -0px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
-    &__score {
-      text-align: center;
-      color: rgb(44, 41, 41);
-      font-weight: 550;
-      font-size: 18px;
-      letter-spacing: 0.3px;
-      margin-left: -0px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
-
   }
 }

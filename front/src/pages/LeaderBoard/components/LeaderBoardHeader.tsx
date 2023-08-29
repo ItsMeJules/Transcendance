@@ -7,9 +7,8 @@ interface LeaderboardHeaderProps {
 
 const LeaderboardHeader: React.FC<LeaderboardHeaderProps> = ({ setErrMsg }) => {
   return (
-    <div className="leaderboard">
+    <body className="leaderboard">
       <header className="leaderboard-header">
-        <LogoutParent setErrMsg={setErrMsg} />
         <h1 className="leaderboard__title">
           <span className="leaderboard__title--top">
             Transcendance
@@ -19,7 +18,7 @@ const LeaderboardHeader: React.FC<LeaderboardHeaderProps> = ({ setErrMsg }) => {
           </span>
         </h1>
       </header>
-    </div>
+    </body>
   );
 };
 

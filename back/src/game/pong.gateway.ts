@@ -90,18 +90,19 @@ export class PongEvents {
   async joinQueue(
     @ConnectedSocket() client: Socket,
     @MessageBody() gameDto: GameDto) {
-    // console.log('Matchmaking - gameMode:', gameDto);
+    console.log('Matchmaking - gameMode:', gameDto);
 
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) {
       client.disconnect();
       return;
     }
-    const user = await this.userService.findOneById(client.data.id);
+    const user = await this.authService.validateJwtToken(access_token);
     if (!user) return;
     const gameQueue = this.pongService.addToQueue(user, gameDto);
+    console.log('queue:', this.pongService.userQueue);
     if (gameQueue != null) {
-      this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED' });
+      this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED', gameMode: gameDto.gameMode });
       const gameData = await this.pongService.gameCreate(gameDto, this.server);
       if (!gameData) return;
       let gameMode = parseInt(gameDto.gameMode);
@@ -127,7 +128,6 @@ export class PongEvents {
         player2socket.data.gameId = game.prop.id;
       }
       this.updateEmitOnlineGames('toRoom', 0);
-
     }
   }
 
@@ -178,9 +178,14 @@ export class PongEvents {
   @SubscribeMessage('leaveGameQueue')
   async leaveQueue(
     @ConnectedSocket() client: Socket) {
-    console.log('Leave queue');
-    const user = await this.userService.findOneById(client.data.id);
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!client.data.id || !access_token) {
+      client.disconnect();
+      return;
+    }
+    const user = await this.authService.validateJwtToken(access_token);
     if (!user) return;
+    this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'LEAVE', gameMode: 0 });
     this.pongService.removeFromQueue(user.id);
     // confirm leaving the queue?
   }

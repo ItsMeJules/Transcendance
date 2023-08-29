@@ -67,10 +67,10 @@ export const Profile: React.FC = () => {
 
   return (
     <>
-      {/* <UserProfileContainer> */}
+      <UserProfileContainer>
         <ProfileCard userData={userDataHere} setErrMsg={setErrMsg}/>
         <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
-      {/* </UserProfileContainer> */}
+      </UserProfileContainer>
     </>
   );
 }

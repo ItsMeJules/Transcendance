@@ -1,11 +1,11 @@
-.leaderboard-main-container {
+.friends-main-container {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
   background-color: transparent;
   overflow: hidden;
 
-  .leaderboard-header {
+  .friends-header {
     display: flex;
     box-sizing: border-box;
     align-items: center;
@@ -17,14 +17,14 @@
     background-color: rgba(0, 0, 0, 0.66);
   }
 
-  .leaderboard-container {
+  .friends-container {
     width: 100%;
     height: 85%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
 
-    .leaderboard {
+    .friends {
       &__profiles {
         background-color: transparent;
         box-sizing: border-box;
@@ -138,23 +138,64 @@
         white-space: nowrap;
       }
 
-      &__value {
-        color: #000000;
-        font-weight: 700;
-        font-size: 20px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        // text-align: right;
+      &__heart {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-right: 10px;
+      }
 
-        &>span {
-          opacity: .8;
-          font-weight: 600;
-          font-size: 13px;
-          margin-left: 3px;
-        }
+      &__status-circle {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 15px;
+
+
+      }
+
+      &__status-circle.online {
+        position: relative;
+        background-color: rgb(62, 219, 22);
+        animation: pulsate 1.5s infinite;
+      }
+
+
+
+      &__status-circle.offline {
+        background-color: rgb(255, 46, 46);
       }
     }
 
 
+  }
+}
+
+
+
+@keyframes pulsate {
+  0% {
+    transform: scale(0.9);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(0.9);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: scale(2);
+    opacity: 0;
   }
 }

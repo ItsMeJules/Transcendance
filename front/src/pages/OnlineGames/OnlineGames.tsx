@@ -5,6 +5,8 @@ import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
 import OnlineGamesHeader from "./Components/OnlineGamesHeader";
 import OnlineGameInstance from "./Components/OnlineGameInstance";
 
+import './css/OnlineGames.scss'
+
 const OnlineGames = () => {
   const socket = useWebsocketContext();
   const [gamesData, setGamesData] = useState<any>({})
@@ -31,15 +33,17 @@ const OnlineGames = () => {
   }, [gamesData]);
 
   return (
-    <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>
-      <MDBContainer className="online-games-main-container">
-        <MDBCard className="online-games-card">
-          <OnlineGamesHeader />
-          <OnlineGameInstance gamesList={gameList} />
-        </MDBCard>
+    <main className="online-games-main-container">
+
+      <header className="online-games-header">
+        Online games
+      </header>
+
+      <MDBContainer className="online-games-container">
+        <OnlineGameInstance gamesList={gameList} />
       </MDBContainer>
-      {/* <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} /> */}
-    </div>
+      
+    </main>
   );
 }
 

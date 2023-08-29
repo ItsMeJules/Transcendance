@@ -7,9 +7,8 @@ interface FriendsHeaderProps {
 
 const FriendsHeader: React.FC<FriendsHeaderProps> = ({ setErrMsg }) => {
   return (
-    <div className="friends">
+    <div className="friends border">
       <header className="friends-header">
-        <LogoutParent setErrMsg={setErrMsg} />
         <h1 className="friends__title">
           <span className="friends__title--top">Friends</span>
           <span className="friends__title--bottom">Pannel</span>

@@ -24,6 +24,9 @@ const NavFooter:React.FC<LeftNavFooterProps> = ({ setLeftContent, setRightConten
       <button onClick={() => setRightContent(APP_SCREENS.LEADERBOARD)}>
         <img src="/images/leaderboard.png" alt="leaderboard" />
       </button>
+      <button onClick={() => setRightContent(APP_SCREENS.ONLINE_GAMES)}>
+        <img src="/images/gamesonline.png" alt="leaderboard" />
+      </button>
 		</div>
 	);
 };

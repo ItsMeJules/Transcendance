@@ -5,7 +5,7 @@ import 'App.css';
 import Websocket from 'services/Websocket/Websocket';
 import { APP_ROUTES } from 'utils/routing/routing';
 import LayoutWrapper from 'layout/LayoutWrapper';
-import { Home, Signin, Signup, Dashboard } from 'pages';
+import { Home, Signin, Signup, Dashboard, Profile } from 'pages';
 
 const App: React.FC = () => {
   return (

@@ -4,7 +4,7 @@ interface ProfileHeaderProps {
   setLeftContent: (option: number) => void;
 }
 
-const ProfileHeader:React.FC<ProfileHeaderProps> = ({ setLeftContent }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setLeftContent }) => {
 
 	return (
 		<div className="icons">
