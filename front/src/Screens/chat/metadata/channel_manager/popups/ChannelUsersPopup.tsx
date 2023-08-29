@@ -1,21 +1,22 @@
 import { useContext, useEffect, useState } from "react";
 
-import User from "../../../../../../Services/User";
-import { useWebsocketContext } from "../../../../../../Wrappers/Websocket";
-import { SendDataContext } from "../../../../ChatBox";
-import PayloadAction from "../../../../models/PayloadSocket";
-import { RoomSocketActionType } from "../../../../models/TypesActionsEvents";
-import Popup from "../../../../utils/Popup";
-import { UserClickParameters } from "../../../../utils/UserComponent";
-import UsersList from "../../../../utils/UsersList";
-import UserActionPopup from "./UserActionPopup";
-import { fetchAllUsers } from "../../../more/popups/AllUsersPopup";
+import User from "../../../../../Services/User";
+import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
+import { SendDataContext } from "../../../ChatBox";
+import PayloadAction from "../../../models/PayloadSocket";
+import { RoomSocketActionType } from "../../../models/TypesActionsEvents";
+import Popup from "../../../utils/Popup";
+import { UserClickParameters } from "../../../utils/UserComponent";
+import UsersList from "../../../utils/UsersList";
+import UserActionPopup from "../../../utils/UserActionPopup";
+import { fetchAllUsers } from "../../more/popups/AllUsersPopup";
+import { ChannelData, BanData, PunishmentType } from "../../../models/Channel";
 
 interface ChannelUsersPopupProps {
-  roomName: string
+  channelData: ChannelData;
 }
 
-export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) {
+export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProps) {
   const [searchText, setSearchText] = useState("");
   const [invitedUsername, setInvitedUsername] = useState<string>("")
   const [allUsers, setAllUsers] = useState<User[]>([])
@@ -29,10 +30,16 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
   const [userClicked, setUserClicked] = useState<User | null>(null)
   const [buttonClicked, setButtonClicked] = useState<number>(-1)
 
+  let isUserClickedMuted = false;
+  let isUserClickedBanned = false;
+  let isUserClickedAdmin = false;
+  let isUserClickedBlocked = false;
+
   useEffect(() => {
     chatSocket?.on(RoomSocketActionType.USERS_ON_ROOM, (payload: any) => {
       const fetchedUsers = payload.users.map((userData: any) => {
         const frontUser = new User();
+        console.log(userData)
 
         frontUser.setUserFromResponseData(userData);
 
@@ -52,10 +59,10 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
       return
 
     sendData(RoomSocketActionType.USERS_ON_ROOM, {
-      roomName: roomName,
+      roomName: channelData.name,
       action: "getRoomUsers"
     } as PayloadAction)
-  }, [sendData, roomName])
+  }, [sendData, channelData.name])
 
   useEffect(() => {
     if (invited === false)
@@ -98,6 +105,14 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
       onUserInvite(user)
     }
 
+    const userId = parseInt(user.getId())
+    isUserClickedAdmin = channelData.adminsId?.find(id => userId) !== null
+    channelData.punishments.forEach(punishment => {
+      if (punishment.userId === userId) {
+        isUserClickedBanned = punishment.type === PunishmentType.BAN
+        isUserClickedMuted = punishment.type === PunishmentType.MUTE
+      }
+    })
     setUserClicked(user)
   }
 
@@ -130,9 +145,13 @@ export default function ChannelUsersPopup({ roomName }: ChannelUsersPopupProps) 
         ? invited !== false
           ? (<div className="invited">{userClicked.getUsername()} a été invité !</div>)
           : (<UserActionPopup
-            user={userClicked}
-            buttonClicked={buttonClicked}
-          />)
+              user={userClicked}
+              buttonClicked={buttonClicked}
+              isMuted={isUserClickedMuted}
+              isBanned={isUserClickedBanned}
+              isAdmin={isUserClickedAdmin}
+              isBlocked={isUserClickedBlocked}
+            />)
         : undefined}
     </div>
   )

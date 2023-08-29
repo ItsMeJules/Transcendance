@@ -5,7 +5,7 @@ import SettingsIcon from "../../assets/settings.png";
 import { ChannelData } from "../../models/Channel";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
 import ManageChannelPopup from "./popups/ManageChannelPopup";
-import ChannelUsersPopup from "./popups/users/ChannelUsersPopup";
+import ChannelUsersPopup from "./popups/ChannelUsersPopup";
 
 interface ChannelManagerProps {
   channelData: ChannelData;
@@ -37,7 +37,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
           <div className="channel-users-count">
             {"Membres : " + usersSize}
           </div>
-          {channelUsersList ? <ChannelUsersPopup roomName={channelData.name} /> : undefined}
+          {channelUsersList ? <ChannelUsersPopup channelData={channelData} /> : undefined}
         </OutsideClickHandler>
       </div>
 

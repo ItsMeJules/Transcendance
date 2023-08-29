@@ -214,7 +214,7 @@ export class ChatService {
       const messagesWithClientId = await this.fetchMessagesOnRoomForUser(
         client,
         {
-          roomName: user.currentRoom,
+          roomName: joinRoomDto.roomName,
           server: joinRoomDto.server,
         },
       );

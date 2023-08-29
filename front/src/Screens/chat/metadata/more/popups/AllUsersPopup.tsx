@@ -4,7 +4,7 @@ import User, { UserData } from "../../../../../Services/User";
 import { API_ROUTES } from "../../../../../Utils";
 import Popup from "../../../utils/Popup";
 import UsersList from "../../../utils/UsersList";
-import UserActionPopup from "../../channel_manager/popups/users/UserActionPopup";
+import UserActionPopup from "../../../utils/UserActionPopup";
 
 export default function AllUsers() {
   const [searchText, setSearchText] = useState("");

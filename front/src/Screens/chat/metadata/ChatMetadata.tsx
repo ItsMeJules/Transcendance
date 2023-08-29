@@ -16,7 +16,11 @@ export enum PopupType {
   CHANNEL_LIST = "channel list",
 }
 
-export default function ChatMetadata() {
+interface ChatMetadataProps {
+  chatToggled: boolean;
+}
+
+export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
   const [isMoreActive, setIsMoreActive] = useState(false)
   const [popupType, setPopupActive] = useState<PopupType | null>(null)
 
@@ -46,7 +50,7 @@ export default function ChatMetadata() {
   }
 
   return (
-    <div className="metadata-container">
+    <div className="metadata-container" style={{ zIndex: chatToggled ? 2 : 0 }}>
       <OutsideClickHandler className="more" onInsideClick={handleMoreClick} onOutsideClick={handleOutsideClick}>
         <div className="more-symbol-container">
           <div className={"more-symbol " + (isMoreActive ? "active" : "")}>

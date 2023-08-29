@@ -3,19 +3,17 @@ import { useContext, useState } from "react";
 import Popup from "../../../utils/Popup";
 
 import PublicIcon from "../../../../../assets/globe.png";
-import PrivateIcon from "../../../../../assets/private.png";
 import ProtectedIcon from "../../../../../assets/padlock.png";
-import PayloadAction from "../../../models/PayloadSocket";
-import { ChannelType, ChannelTypeDescription } from "../../../models/Channel";
-import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
-import { useAppSelector } from "../../../../../redux/Store";
+import PrivateIcon from "../../../../../assets/private.png";
 import { SendDataContext } from "../../../ChatBox";
+import { ChannelType, ChannelTypeDescription } from "../../../models/Channel";
+import PayloadAction from "../../../models/PayloadSocket";
+import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
 
 export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC);
   const [channelName, setChannelName] = useState("");
   const [channelPassword, setChannelPassword] = useState("");
-  const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
 
   const sendData: null | ((action: ChatSocketActionType, data: PayloadAction) => void) =
     useContext(SendDataContext);

@@ -82,7 +82,7 @@ export const ChatBox = () => {
     <div className="chat-container">
       <SendDataContext.Provider value={sendData}>
         <div className="toggler" style={togglerTransition}>
-          <ChatMetadata />
+          <ChatMetadata chatToggled={chatToggled}/>
           <ChatContainer />
         </div>
 

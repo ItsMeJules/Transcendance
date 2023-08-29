@@ -47,7 +47,10 @@ export const setUserActiveChannel = createAction<string>("user/setUserActiveChan
 
 export const userReducer = createReducer(initialState, (builder) => {
   builder
-    .addCase(setUser, (state, action) => { state.userData = action.payload })
+    .addCase(setUser, (state, action) => {
+      console.log(action.payload)
+      state.userData = action.payload
+    })
     .addCase(unsetUser, (state, action) => { state.userData = initialState.userData })
     .addCase(setUserActiveChannel, (state, action) => { state.userData.currentRoom = action.payload })
 })
