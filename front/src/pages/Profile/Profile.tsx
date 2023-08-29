@@ -6,6 +6,7 @@ import { useAxios } from "utils/axiosConfig/axiosConfig";
 import ToastError from "layout/ToastError/ToastError";
 import User from "services/User/User";
 import { UserData } from "services/User/User";
+import { MDBContainer } from 'mdb-react-ui-kit';
 
 import './css/UserProfile.scss';
 import './css/ProgressBar.scss';
@@ -66,12 +67,11 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <>
-      <UserProfileContainer>
-        <ProfileCard userData={userDataHere} setErrMsg={setErrMsg}/>
-        <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
-      </UserProfileContainer>
-    </>
+    <main className="profile-main-container">
+      <MDBContainer className="profile-board-container">
+        <ProfileCard userData={userDataHere} setErrMsg={setErrMsg} />
+      </MDBContainer>
+    </main>
   );
 }
 

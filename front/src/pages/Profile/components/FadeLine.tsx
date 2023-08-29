@@ -6,7 +6,7 @@ type FadeLineProps = {
 
 const FadeLine: React.FC<FadeLineProps> = ({ marginTop }) => {
     return (
-        <div className="fade-line" style={{ marginTop }}></div>
+        <div className="fade-line-black" style={{ marginTop }}></div>
     );
 };
 

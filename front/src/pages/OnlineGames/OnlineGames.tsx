@@ -3,7 +3,7 @@ import { useWebsocketContext } from "services/Websocket/Websocket";
 import User from "services/User/User";
 import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
 import OnlineGamesHeader from "./Components/OnlineGamesHeader";
-import OnlineGameInstance from "./Components/OnlineGameInstance";
+import OnlineGamesList from "./Components/OnlineGamesList";
 
 import './css/OnlineGames.scss'
 
@@ -40,9 +40,9 @@ const OnlineGames = () => {
       </header>
 
       <MDBContainer className="online-games-container">
-        <OnlineGameInstance gamesList={gameList} />
+        <OnlineGamesList gamesList={gameList} />
       </MDBContainer>
-      
+
     </main>
   );
 }

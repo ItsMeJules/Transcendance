@@ -105,7 +105,7 @@
         cursor: pointer;
         transition: transform .25s cubic-bezier(.7, .98, .86, .98), box-shadow .25s cubic-bezier(.7, .98, .86, .98);
         background-color: #fff;
-        height: 80px;
+        height: 70px;
 
         &:hover {
           transform: scale(1.1);
@@ -115,8 +115,10 @@
 
       &__picture {
         max-width: 100%;
-        height: 50px;
-        width: 50px;
+        height: 35px;
+        min-height: 35px;
+        width: 35px;
+        min-width: 35px;
         border-radius: 50%;
         overflow: hidden;
         display: flex;
@@ -126,9 +128,10 @@
 
       &__pictureright {
         margin-left: 20px;
-        max-width: 100%;
-        height: 50px;
-        width: 50px;
+        height: 35px;
+        min-height: 35px;
+        width: 35px;
+        min-width: 35px;
         border-radius: 50%;
         overflow: hidden;
         display: flex;
@@ -140,7 +143,7 @@
         text-align: left;
         color: #979cb0;
         font-weight: 550;
-        font-size: 18px;
+        font-size: 15px;
         letter-spacing: 0.3px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -148,11 +151,10 @@
       }
 
       &__nameright {
-        margin-right: 5px;
         text-align: right;
         color: #979cb0;
         font-weight: 550;
-        font-size: 18px;
+        font-size: 15px;
         letter-spacing: 0.3px;
         margin-left: 0px;
         overflow: hidden;
