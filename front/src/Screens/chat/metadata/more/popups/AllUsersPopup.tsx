@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import User, { UserData } from "../../../../../Services/User";
 import { API_ROUTES } from "../../../../../Utils";
 import Popup from "../../../utils/Popup";
-import UsersList from "../../../utils/UsersList";
-import UserActionPopup from "../../../utils/UserActionPopup";
+import UsersList from "../../../utils/users/UsersList";
+import UserActionPopup from "../../../utils/users/UserActionPopup";
 
 export default function AllUsers() {
   const [searchText, setSearchText] = useState("");
-  const [userClicked, setUserClicked] = useState<User | null>(null)
+  const [userDataClicked, setUserDataClicked] = useState<UserData | null>(null)
   const users = useAllUsers()
 
   return (
@@ -23,11 +23,11 @@ export default function AllUsers() {
       <UsersList
         users={users}
         filter={(userName) => userName.toLowerCase().includes(searchText.toLowerCase())}
-        onUserClick={({ user }) => setUserClicked(user)}
+        onUserClick={({ userData }) => setUserDataClicked(userData)}
       />
-      {userClicked !== null
+      {userDataClicked !== null
         ? <UserActionPopup
-          user={userClicked}
+          userData={userDataClicked}
           buttonClicked={0}
         />
         : undefined}

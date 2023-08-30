@@ -1,14 +1,13 @@
-import { useState, useEffect, useContext } from "react";
-
-import User from "../../../Services/User";
-import { SendDataContext } from "../ChatBox";
-import PayloadAction from "../models/PayloadSocket";
-import { ChatSocketActionType, RoomSocketActionType } from "../models/TypesActionsEvents";
-import Popup from "./Popup";
-import { useAppSelector } from "../../../redux/Store";
+import { useContext, useState } from "react";
+import User, { UserData } from "../../../../Services/User";
+import { useAppSelector } from "../../../../redux/Store";
+import { SendDataContext } from "../../ChatBox";
+import PayloadAction from "../../models/PayloadSocket";
+import { ChatSocketActionType, RoomSocketActionType } from "../../models/TypesActionsEvents";
+import Popup from "../Popup";
 
 interface UserActionProps {
-  user: User;
+  userData: UserData;
   buttonClicked: number;
   isMuted?: boolean;
   isBanned?: boolean;
@@ -40,7 +39,7 @@ export default function UserActionPopup(props: UserActionProps) {
 
     sendData(RoomSocketActionType.BAN, {
       action: "ban",
-      targetId: Number(props.user.getId()),
+      targetId: Number(props.userData.id),
     } as PayloadAction);
   };
 
@@ -49,7 +48,7 @@ export default function UserActionPopup(props: UserActionProps) {
 
     sendData(RoomSocketActionType.KICK, {
       action: "kick",
-      targetId: Number(props.user.getId()),
+      targetId: Number(props.userData.id),
     } as PayloadAction);
   };
 
@@ -59,7 +58,7 @@ export default function UserActionPopup(props: UserActionProps) {
 
     sendData(RoomSocketActionType.MUTE, {
       action: "mute",
-      targetId: Number(props.user.getId()),
+      targetId: Number(props.userData.id),
     } as PayloadAction);
   };
 
@@ -72,19 +71,21 @@ export default function UserActionPopup(props: UserActionProps) {
 
     sendData(RoomSocketActionType.PROMOTE, {
       action: "promote",
-      targetId: Number(props.user.getId()),
+      targetId: Number(props.userData.id),
     } as PayloadAction);
   };
 
   const onDm = () => {
     if (sendData === null) return;
     if (currentIdUser === undefined) return;
-    if (currentIdUser === props.user.getId()) return; // Can't send DM to yourself
+    if (currentIdUser === props.userData.id) return; // Can't send DM to yourself
+    if (props.userData.id === null) return;
+
     const roomNameDm =
       "dm-" +
-      (parseInt(currentIdUser!) > parseInt(props.user.getId())
-        ? currentIdUser + "-" + Number(props.user.getId())
-        : Number(props.user.getId()) + "-" + Number(currentIdUser));
+      (parseInt(currentIdUser!) > parseInt(props.userData.id)
+        ? currentIdUser + "-" + Number(props.userData.id)
+        : Number(props.userData.id) + "-" + Number(currentIdUser));
 
     sendData(ChatSocketActionType.CREATE_CHANNEL, {
       action: ChatSocketActionType.CREATE_CHANNEL,
@@ -98,7 +99,7 @@ export default function UserActionPopup(props: UserActionProps) {
 
     sendData(RoomSocketActionType.INVITE, {
       action: "invite",
-      targetId: Number(props.user.getId()),
+      targetId: Number(props.userData.id),
     } as PayloadAction);
   };
 
@@ -108,13 +109,13 @@ export default function UserActionPopup(props: UserActionProps) {
 
     sendData(ChatSocketActionType.BLOCK, {
       action: "block",
-      targetId: Number(props.user.getId()),
+      targetId: Number(props.userData.id),
     } as PayloadAction);
   };
 
   return (
     <Popup className="user-actions">
-      <h4>{props.user.getUsername()}</h4>
+      <h4>{props.userData.username}</h4>
       {props.buttonClicked === 1 ? (
         <>
           {localIsBanned === true ? (

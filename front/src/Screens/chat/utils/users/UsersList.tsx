@@ -1,4 +1,4 @@
-import User from "../../../Services/User";
+import User from "../../../../Services/User";
 import UserComponent, { UserClickParameters } from "./UserComponent";
 
 interface UsersListProps {
@@ -61,9 +61,12 @@ export default function UsersList(props: UsersListProps) {
   return (
     <div className="users-list">
       {users.map((user, key) => {
+        const userData = user.getData()
+        
+        if (userData === null) return undefined;
         if (!filter(user.getUsername())) return undefined;
-
-        return <UserComponent user={user} onUserClick={onUserClick} />;
+        
+        return <UserComponent userData={userData} onUserClick={onUserClick} />;
       })}
     </div>
   );

@@ -48,6 +48,7 @@ const channelSlice = createSlice({
   reducers: {
     setActiveChannel: (state, action: PayloadAction<any>) => {
       const payload = action.payload
+      const channelType = payload.type === ChannelType.PUBLIC && payload.password !== null && payload.password.length !== 0 ? ChannelType.PROTECTED : payload.type
       const punishments = []
 
       if (payload.bans.length !== 0) {
@@ -71,7 +72,7 @@ const channelSlice = createSlice({
       }
 
       const newState = {
-        type: payload.type,
+        type: channelType,
         name: payload.name,
         password: payload.password,
         usersId: payload.users.map((user: any) => user.id),
