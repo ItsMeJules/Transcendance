@@ -1,0 +1,70 @@
+services:
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./front
+      dockerfile: ./Dockerfile
+    env_file:
+      - ./front/.env
+    volumes:
+      - ./front:/workspace/front
+      - ./front/node_modules:/workspace/front/node_modules
+    networks:
+      - app
+    depends_on:
+      - backend
+    restart: always
+
+  backend:
+    container_name: backend
+    build:
+      context: ./back
+      dockerfile: ./Dockerfile
+    env_file:
+    - ./back/.env
+    ports:
+      - 5555:5555
+    volumes:
+      - ./back:/workspace/back
+    networks:
+      - app
+    depends_on:
+      - bdd
+    restart: always
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app
+    restart: always
+    # volumes:
+    #   - ./front/build:/usr/share/nginx/html
+
+  bdd:
+    container_name: bdd
+    image: postgres:latest
+    env_file:
+    - ./bdd.env
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - app
+    restart: always
+
+volumes:
+  # back:
+  # front:
+  data:
+
+networks:
+  app:

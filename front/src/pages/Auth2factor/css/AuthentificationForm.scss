@@ -1,0 +1,32 @@
+.auth-container {
+  height: 500px;
+  width: 400px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-column {
+  flex-direction: column;
+  top: 25px;
+  height: 300px;
+  width: 350px;
+  position: relative;
+}
+
+.auth-border {
+  height: 250px;
+  width: 350px;
+  margin-bottom: 10px;
+}
+
+.auth-label {
+  z-index: 1;
+}
+
+.input-field {
+  margin-top: 10px;
+}
+
+.button-container {
+  margin-top: 10px;
+}
