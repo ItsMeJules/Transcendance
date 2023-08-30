@@ -35,13 +35,11 @@ const ChatContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const onNewMessage = (payload: any) => {
+    chatSocket?.on(ChatSocketEventType.MESSAGE, (payload: any) => {
       if (activeChannelName === null) return;
 
       dispatch(addMessageToActiveChannel(payload));
-    };
-
-    chatSocket?.on(ChatSocketEventType.MESSAGE, onNewMessage);
+    });
 
     return () => {
       chatSocket?.off(ChatSocketEventType.MESSAGE);

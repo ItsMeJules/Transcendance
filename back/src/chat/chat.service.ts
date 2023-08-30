@@ -44,14 +44,20 @@ export class ChatService {
         data: { ...messageData, roomId: room.id },
       });
 
+      const picturePayload = {
+        ...messageData,
+        profilePicture:
+          'https://cdn.intra.42.fr/users/d97b6212aaf900daa3e64abff472b7b8/jpeyron.jpg', //TODO Change my picture.
+        userName: 'jpeyron',
+      };
       // implement the "block" feature.
       server
         .to(sendMsgRoomDto.roomName)
-        .emit(ChatSocketEventType.MESSAGE, messageData);
+        .emit(ChatSocketEventType.MESSAGE, picturePayload);
 
       console.log(
         'message sent : ',
-        messageData,
+        picturePayload,
         'to room : ',
         sendMsgRoomDto.roomName,
       );

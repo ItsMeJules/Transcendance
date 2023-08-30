@@ -19,7 +19,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ messagesReceived }) => {
 
         return (
           <div className="message-container">
-            {!isSameSender && !message.self ? <img src={message.profilePicture} /> : null}
+            {!isSameSender && !message.self ? <img src={message.profilePicture} /> : undefined}
             <div className={messageClassName} key={index}>
               <p>{message.message}</p>
             </div>
