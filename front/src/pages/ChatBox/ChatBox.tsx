@@ -2,12 +2,10 @@ import { createContext, useEffect, useState } from "react";
 
 import "./ChatBox.scss";
 
-import { useWebsocketContext } from "../../Wrappers/Websocket";
-import { useAppDispatch, useAppSelector } from 
-
-"../../redux/Store";
-import { setActiveChannel, setActiveChannelMessages } from "../../redux/reducers/ChannelSlice";
-import { setUserActiveChannel } from "../../redux/reducers/UserSlice";
+import { useWebsocketContext } from "services/Websocket/Websocket";
+import { useAppDispatch, useAppSelector } from "utils/redux/Store";
+import { setActiveChannel, setActiveChannelMessages } from "utils/redux/reducers/ChannelSlice";
+import { setUserActiveChannel } from "utils/redux/reducers/UserSlice";
 import ChatContainer from "./chat_container/ChatContainer";
 import ChatBar from "./chatbar/ChatBar";
 import ChatMetadata from "./metadata/ChatMetadata";

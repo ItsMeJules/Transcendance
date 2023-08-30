@@ -21,7 +21,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src"
-, "src/pages/ChatBox/models/Channel.ts"  ]
+  "include": ["src"]
 }

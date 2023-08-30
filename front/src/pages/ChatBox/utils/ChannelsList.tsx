@@ -1,7 +1,7 @@
 import { ChannelType } from "pages/ChatBox/models/Channel";
 import { ChannelInfoInList } from "pages/ChatBox/models/partial/PartialModels";
 
-import PublicIcon from "pages/ChatBox/assets/globe.png";
+import PublicIcon from 'pages/ChatBox/assets/globe.png';
 import ProtectedIcon from "pages/ChatBox/assets/padlock.png";
 import PrivateIcon from "pages/ChatBox/assets/private.png";
 

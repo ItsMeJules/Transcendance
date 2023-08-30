@@ -2,7 +2,7 @@ import { useState, KeyboardEvent, useContext } from "react";
 import PayloadAction from "../models/PayloadSocket";
 import TextSend from "./TextSend";
 import { ChatSocketEventType } from "../models/TypesActionsEvents";
-import { useAppSelector } from "../../../redux/Store";
+import { useAppSelector } from "utils/redux/Store";
 import { SendDataContext } from "../ChatBox";
 
 const TextInput = () => {

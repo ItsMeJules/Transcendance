@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Provider } from "react-redux";
 import { PersistGate } from 'redux-persist/integration/react';
-import { persistor, store } from "./redux/Store";
+import { persistor, store } from "utils/redux/Store";
 
 import { ChatBox } from "./pages/ChatBox/ChatBox";
 
@@ -11,7 +11,7 @@ import 'App.css';
 import Websocket from 'services/Websocket/Websocket';
 import { APP_ROUTES } from 'utils/routing/routing';
 import LayoutWrapper from 'layout/LayoutWrapper';
-import { Home, Signin, Signup, Dashboard, Profile } from 'pages';
+import { Home, Signin, Signup, Dashboard } from 'pages';
 
 const App: React.FC = () => {
   return (

@@ -23,7 +23,7 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
   const [isMoreActive, setIsMoreActive] = useState(false)
   const [popupType, setPopupActive] = useState<PopupType | null>(null)
 
-  const activeChannel = transformToChannelData(useAppSelector(store: any => store.channels.activeChannel))
+  const activeChannel = transformToChannelData(useAppSelector(store => store.channels.activeChannel))
 
   const handleMoreClick = () => {
     if (!isMoreActive)
