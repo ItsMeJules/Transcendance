@@ -1,22 +1,22 @@
 all: node_modules build
 
 build:
-	docker-compose -f docker-compose.yml up --build --attach backend --attach frontend --attach bdd
+	docker compose -f docker-compose.yml up --build --attach backend --attach frontend --attach bdd
 
 stop:
-	docker-compose -f docker-compose.yml stop
+	docker compose -f docker-compose.yml stop
 
 start:
-	docker-compose -f docker-compose.yml start
+	docker compose -f docker-compose.yml start
 
 restart:
-	docker-compose -f docker-compose.yml restart
+	docker compose -f docker-compose.yml restart
 
 down:
-	docker-compose -f docker-compose.yml down
+	docker compose -f docker-compose.yml down
 
 prod:
-	docker-compose -f docker-compose.prod.yml up --build --attach backend --attach frontend --attach bdd
+	docker compose -f docker-compose.prod.yml up --build --attach backend --attach frontend --attach bdd
 
 clean: down
 	docker system prune -af
@@ -28,7 +28,7 @@ fclean : clean
 re: fclean all
 
 log :
-	docker-compose -f docker-compose.yml logs
+	docker compose -f docker-compose.yml logs
 
 node_modules:
 	@if [ ! -d "./front/node_modules" ]; then \
