@@ -5,6 +5,10 @@ import RightScreen from './components/RightScreen';
 import NavFooter from './components/NavFooter';
 import './css/Dashboard.scss';
 
+interface DashboardProps {
+
+}
+
 const Dashboard = () => {
   const [leftContent, setLeftContent] = useState<number>(-1);
   const [rightContent, setRightContent] = useState<number>(-1);
@@ -17,12 +21,13 @@ const Dashboard = () => {
     <div className="dashboard-main-container">
 
       <div className="profile-header-container">
-        <ProfileHeader setLeftContent={setLeftContent}/>
+        {/* <ProfileHeader setLeftContent={setLeftContent}/> */}
       </div>
 
       <div className="screen-container">
         <div className="left-screen-container">
-          <LeftScreen setLeftContent={setLeftContent} leftContent={leftContent} />
+
+          {/* <LeftScreen setLeftContent={setLeftContent} leftContent={leftContent} /> */}
         </div>
         <div className="right-screen-container">
           <RightScreen rightContent={rightContent} />
@@ -30,7 +35,7 @@ const Dashboard = () => {
       </div>
 
       <div className="nav-footer-container">
-        <NavFooter setLeftContent={setLeftContent} setRightContent={setRightContent}/>
+        {/* <NavFooter setLeftContent={setLeftContent} setRightContent={setRightContent}/> */}
       </div>
 
     </div>

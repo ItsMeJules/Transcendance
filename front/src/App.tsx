@@ -14,7 +14,7 @@ const App: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path={APP_ROUTES.SIGN_IN} element={<LayoutWrapper><Signin /></LayoutWrapper>} />
         <Route path={APP_ROUTES.SIGN_UP} element={<LayoutWrapper><Signup /></LayoutWrapper>} />
-        <Route path={'/dashboard'} element={<Websocket><LayoutWrapper><Dashboard /></LayoutWrapper></Websocket>} />
+        <Route path={APP_ROUTES.USER_PROFILE} element={<Websocket><LayoutWrapper><Profile /></LayoutWrapper></Websocket>} />
       </Routes>
     </ >
   );
