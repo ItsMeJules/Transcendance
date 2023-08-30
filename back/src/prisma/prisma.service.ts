@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaClient, User, Room, Message, RoomType } from '@prisma/client';
+import { Message, PrismaClient, Room, RoomType, User } from '@prisma/client';
 import { RoomInfo } from 'src/chat/partial_types/partial.types';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
@@ -87,6 +87,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         select: {
           name: true,
           type: true,
+          password: true,
           usersOnRoom: true,
         },
         orderBy: { createdAt: 'asc' },
@@ -94,7 +95,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
       const roomsInfo = rooms.map((room) => ({
         name: room.name,
-        type: room.type,
+        type:
+          room.type === RoomType.PUBLIC &&
+          room.password !== null &&
+          room.password.length !== 0
+            ? RoomType.PROTECTED
+            : room.type,
         userCount: room.usersOnRoom.length,
       }));
 

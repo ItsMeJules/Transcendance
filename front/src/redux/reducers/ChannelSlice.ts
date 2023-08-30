@@ -51,13 +51,13 @@ const channelSlice = createSlice({
       const channelType = payload.type === ChannelType.PUBLIC && payload.password !== null && payload.password.length !== 0 ? ChannelType.PROTECTED : payload.type
       const punishments = []
 
-      if (payload.bans.length !== 0) {
+      if (payload.bans !== null && payload.bans.length !== 0) {
         punishments.push(payload.bans.map((user: any) => {
           return { type: PunishmentType.BAN, userId: user.id, expireAt: null }
         }))
       }
 
-      if (payload.mutes.length !== 0) {
+      if (payload.mutes !== null && payload.mutes.length !== 0) {
         punishments.push(payload.mutes.map((user: any) => {
           const expireAt = payload.muteUntil.find(
             (duration: any) => duration.id === user.id
@@ -75,9 +75,9 @@ const channelSlice = createSlice({
         type: channelType,
         name: payload.name,
         password: payload.password,
-        usersId: payload.users.map((user: any) => user.id),
+        usersId: payload.users !== null ? payload.users.map((user: any) => user.id) : [],
         ownerId: payload.ownerId,
-        adminsId: payload.admins.map((user: any) => user.id),
+        adminsId: payload.admins !== null ? payload.admins.map((user: any) => user.id) : [],
         punishments: punishments,
         messages: payload.messages,
       }

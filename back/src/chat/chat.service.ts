@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Message, Room, RoomType, User } from '@prisma/client';
+import { Message, Room, RoomType } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ChatSocketEventType, RoomSocketActionType } from 'src/utils';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 import * as ChatDtos from './dto';
 import { BlockDto } from './dto/block.dto';
-import { ChatSocketEventType, RoomSocketActionType } from 'src/utils';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
 
 @Injectable()
