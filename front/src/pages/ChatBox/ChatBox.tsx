@@ -93,3 +93,5 @@ export const ChatBox = () => {
     </div>
   );
 };
+
+export default ChatBox;

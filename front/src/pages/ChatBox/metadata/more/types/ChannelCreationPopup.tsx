@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-
-import Popup from "../../../utils/Popup";
-
-import PublicIcon from "../../../../../assets/globe.png"
-import PrivateIcon from "../../../../../assets/private.png"
-import ProtectedIcon from "../../../../../assets/padlock.png"
-
-import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
-import { ChannelType, ChannelTypeDescription } from "../../../models/Channel";
+import { useWebsocketContext } from "services/Websocket/Websocket";
+import Popup from "pages/ChatBox/utils/Popup";
+import { ChannelType, ChannelTypeDescription } from "pages/ChatBox/models/Channel";
 
 export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC)
@@ -47,19 +41,19 @@ export default function ChannelCreationPopup() {
         <div className="images">
         <img
           className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
-          src={PublicIcon}
+          src="images/globe.png"
           alt="Public"
           onClick={() => setChannelType(ChannelType.PUBLIC)}
         />
         <img
           className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
-          src={PrivateIcon}
+          src="images/private.png"
           alt="Private"
           onClick={() => setChannelType(ChannelType.PRIVATE)}
         />
         <img
           className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
-          src={ProtectedIcon}
+          src="images/padlock.png"
           alt="Protected"
           onClick={() => setChannelType(ChannelType.PROTECTED)}
         />

@@ -8,6 +8,8 @@
   overflow: hidden;
 
   .profile-header-container {
+    flex: 1;
+    display: flex;
     background: rgba(169, 169, 169, 0.3);
     border-radius: 70px;
     width: 50%;
@@ -16,7 +18,6 @@
     max-height: 350px;
     min-height: 200px;
     margin: 20px auto 0;
-    display: flex;
     justify-content: center;
     align-items: flex-end;
     transform: translateY(-50%);

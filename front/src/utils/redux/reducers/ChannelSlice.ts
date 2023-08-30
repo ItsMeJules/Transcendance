@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-import { ChannelMessageData, ChannelType, PunishmentType } from "../../Screens/chat/models/Channel";
+import { ChannelMessageData, ChannelType, PunishmentType } from "pages/ChatBox/models/Channel";
 
 interface ChannelDataState {
   activeChannel: {

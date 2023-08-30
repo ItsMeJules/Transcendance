@@ -1,11 +1,11 @@
 import { io, Socket } from "socket.io-client";
-import { APP_URL, SOCKET_GENERAL } from "../Utils";
+import { APP_URL, SOCKET_GENERAL } from "utils/routing/routing";
 import { ReactElement, createContext, useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import User from "../Services/User";
-import { UserData } from "../Services/User";
+import User from "services/User/User";
+import { UserData } from "services/User/User";
 import { getNameOfJSDocTypedef } from "typescript";
-import { useAppSelector } from "../redux/Store";
+import { useAppSelector } from "utils/redux/Store";
 
 interface WebsocketProps {
   children: ReactElement;

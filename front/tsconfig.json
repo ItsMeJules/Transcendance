@@ -23,5 +23,5 @@
   },
   "include": [
     "src"
-, "src/Screens/chat/models/Channel.ts"  ]
+, "src/pages/ChatBox/models/Channel.ts"  ]
 }

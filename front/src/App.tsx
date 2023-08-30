@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from "./redux/Store";
 
-import { ChatBox } from "./Screens/chat/ChatBox";
+import { ChatBox } from "./pages/ChatBox/ChatBox";
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'App.css';
