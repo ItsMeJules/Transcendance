@@ -17,15 +17,15 @@ const DisplayStats: React.FC<DisplayStatsProps> = ({ userData }) => {
           <MDBCardText className="mb-1 h5">
             {userData?.gamesPlayed}
           </MDBCardText>
-          <MDBCardText className="small text-muted mb-0">
+          <MDBCardText className="small text-muted mb-0 custom-text-color">
             Games played
           </MDBCardText>
         </div>
-        <div className="stats-first-sub-container">
+        <div className="stats-first-sub-container custom-text-color">
           <MDBCardText className="mb-1 h5">
             {userData?.gamesWon}
           </MDBCardText>
-          <MDBCardText className="small text-muted mb-0">
+          <MDBCardText className="small text-muted mb-0 custom-text-color">
             Games won
           </MDBCardText>
         </div>
@@ -35,13 +35,13 @@ const DisplayStats: React.FC<DisplayStatsProps> = ({ userData }) => {
           <MDBCardText className="mb-1 h5">
             {userData?.userPoints}
           </MDBCardText>
-          <MDBCardText className="small text-muted mb-0">
+          <MDBCardText className="small text-muted mb-0 custom-text-color">
             Points won
           </MDBCardText>
         </div>
         <div className="stats-second-sub-container">
           <div className={`progress-bar ${progressBarClass}`}></div>
-          <MDBCardText className="small mt-0.5 text-muted mb-0">
+          <MDBCardText className="small mt-0.5 text-muted mb-0 custom-text-color"> 
             Level {userData?.userLevel}
           </MDBCardText>
         </div>
