@@ -49,10 +49,13 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
     chat: null,
     game: null,
   });
-  const { id: userId } = useAppSelector(state => state.user.userData)
+  const { id: userId } = useAppSelector(state => state.user.userData);
   
   useEffect((): (() => void) => {
+    console.log(userId);
     if (userId) {
+      console.log("yo")
+      console.log("yo" , OpenSocket("http://localhost:8000/chat"));
       const general =
         socketInstances.general?.connected !== true
           ? OpenSocket("http://localhost:8000/general")
@@ -70,6 +73,7 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
     } else {
       closeOpenSockets(socketInstances);
       setSocketInstances({ general: null, chat: null, game: null });
+      console.log()
     }
 
     return (): void => {

@@ -74,6 +74,7 @@ export class ChatEventsGateway {
         this.server
           .to(client.id)
           .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
+        console.log('just emitted' ,  currentCompleteRoom, messagesWithClientId)
       })
       .catch((reason) => console.log(reason));
   }

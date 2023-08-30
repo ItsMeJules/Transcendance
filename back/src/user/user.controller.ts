@@ -11,6 +11,7 @@ import {
   Param,
   UseFilters,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';

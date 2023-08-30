@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "RoomType" AS ENUM ('PUBLIC', 'PRIVATE', 'DIRECT');
+CREATE TYPE "RoomType" AS ENUM ('PUBLIC', 'PROTECTED', 'PRIVATE', 'DIRECT');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -56,7 +56,6 @@ CREATE TABLE "Room" (
     "type" "RoomType" NOT NULL DEFAULT 'PUBLIC',
     "name" TEXT NOT NULL,
     "password" TEXT,
-    "protected" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "muteUntil" INTEGER[],
     "ownerId" INTEGER,
