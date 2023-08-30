@@ -30,7 +30,7 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
         localStorage.setItem('gameDataWatch', JSON.stringify(dataJSON.gameState));
         localStorage.setItem('player1Watch', JSON.stringify(dataJSON.player1));
         localStorage.setItem('player2Watch', JSON.stringify(dataJSON.player2));
-        history(APP_ROUTES.WATCH);
+        history(APP_ROUTES.SPECTATE);
       }
     }
     console.log('gameData:', gameData);
