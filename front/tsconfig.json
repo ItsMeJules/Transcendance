@@ -21,5 +21,7 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": [
+    "src"
+, "src/Screens/chat/models/Channel.ts"  ]
 }

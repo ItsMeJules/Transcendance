@@ -9,21 +9,21 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PayloadDto } from './dto/payload.dto';
 import { AuthDtoUp } from './dto/authup.dto';
 import { Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly jwtService: JwtService,
     private prisma: PrismaService,
-    private jwtService: JwtService,
     private config: ConfigService,
-  ) { }
+  ) {}
 
   async login(user: any): Promise<any> {
     const payload: PayloadDto = {
@@ -102,6 +102,36 @@ export class AuthService {
       return user;
     } catch (err) {
       return null;
+    }
+  }
+
+  async connectUserToAllPublicRooms(userId: number): Promise<void> {
+    console.log(`Connecting user ${userId} to all public rooms...`);
+    try {
+      const publicRooms = await this.prisma.room.findMany({
+        where: {
+          type: 'PUBLIC',
+        },
+      });
+
+      const updates = publicRooms.map((room) => {
+        return this.prisma.room.update({
+          where: { id: room.id },
+          data: {
+            users: {
+              connect: {
+                id: userId,
+              },
+            },
+          },
+        });
+      });
+
+      await Promise.all(updates);
+
+      console.log(`User ${userId} connected to all public rooms.`);
+    } catch (e) {
+      console.log(e);
     }
   }
 }

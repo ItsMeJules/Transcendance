@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -20,6 +21,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { TwoFaModule } from './auth/two-fa/two-fa.module';
 import { TwoFaService } from './auth/two-fa/two-fa.service';
 import { WebSocketGateway } from '@nestjs/websockets';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -41,6 +43,7 @@ import { WebSocketGateway } from '@nestjs/websockets';
     SocketModule,
     PongModule,
     TwoFaModule,
+    ChatModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
