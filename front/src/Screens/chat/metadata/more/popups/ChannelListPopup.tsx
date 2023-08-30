@@ -78,7 +78,7 @@ export default function ChannelListPopup() {
             else
               setSelectedChannelName(channelName)
           }}
-          filter={(channelName) => channelName.includes(searchText)}
+          filter={(channelName) => channelName.toLowerCase().includes(searchText.toLowerCase())}
         />
       </Popup>
 
