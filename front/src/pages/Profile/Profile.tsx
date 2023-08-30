@@ -71,24 +71,14 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <main className="dashboard-main-container">
-
-
-      <ProfileHeader />
-
-      <article className="screen-container">
-        <section className="left-screen-container">
-          <body className="profile-main-container">
-            <MDBContainer className="profile-board-container">
-              <ProfileCard userData={userDataHere} setErrMsg={setErrMsg} />
-            </MDBContainer>
-          </body>
+    <main className="screen-container">
+      <section className="left-screen-container">
+        <section className="profile-main-container">
+          <MDBContainer className="profile-board-container">
+            <ProfileCard userData={userDataHere} setErrMsg={setErrMsg} />
+          </MDBContainer>
         </section>
-
-        <RightScreen rightContent={rightContent} />
-      </article>
-
-      <NavFooter setRightContent={setRightContent} />
+      </section>
 
     </main>
   );

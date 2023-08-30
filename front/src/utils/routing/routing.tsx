@@ -29,7 +29,7 @@ export const APP_ROUTES = {
   SIGN_IN: "/login",
   SIGN_UP: "/signup",
   LOG_OUT: "/logout",
-  USER_PROFILE: "/profile/me",
+  USER_PROFILE: ":profile/me",
   USER_PROFILE_EDIT: "/profile/me/edit",
   USER_FRIENDS: "/profile/me/friends",
   AUTH_2FA: "/profile/me/two-fa",
@@ -37,7 +37,7 @@ export const APP_ROUTES = {
   LEADERBOARD: "/leaderboard",
   PLAY: "/play",
   WATCH: "/watch",
-  DASHBOARD: "/dashboard",
+  DASHBOARD: "/dashboard/*",
 };
 
 export enum APP_SCREENS {

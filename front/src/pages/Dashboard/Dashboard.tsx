@@ -4,39 +4,34 @@ import LeftScreen from './components/LeftScreen';
 import RightScreen from './components/RightScreen';
 import NavFooter from './components/NavFooter';
 import './css/Dashboard.scss';
-
-interface DashboardProps {
-
-}
+import { Route, Routes } from 'react-router-dom';
+import { APP_ROUTES } from 'utils/routing/routing';
+import UserProfile from 'pages/Friends/Components/UserProfile';
+import Profile from 'pages/Profile/Profile';
 
 const Dashboard = () => {
-  const [leftContent, setLeftContent] = useState<number>(-1);
   const [rightContent, setRightContent] = useState<number>(-1);
 
   useEffect(() => {
-    console.log('leftcntent:', leftContent);
-  }, [leftContent]);
-  
+    console.log('leftcntent:', rightContent);
+  }, [rightContent]);
+
   return (
     <div className="dashboard-main-container">
 
-      <div className="profile-header-container">
-        {/* <ProfileHeader setLeftContent={setLeftContent}/> */}
-      </div>
+      <ProfileHeader />
 
-      <div className="screen-container">
-        <div className="left-screen-container">
+      <article className="screen-container">
+      <Routes>
+        <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
+      </Routes>
 
-          {/* <LeftScreen setLeftContent={setLeftContent} leftContent={leftContent} /> */}
-        </div>
-        <div className="right-screen-container">
-          <RightScreen rightContent={rightContent} />
-        </div>
+      <div className="right-screen-container">
+        <RightScreen rightContent={rightContent} />
       </div>
+      </article>
 
-      <div className="nav-footer-container">
-        {/* <NavFooter setLeftContent={setLeftContent} setRightContent={setRightContent}/> */}
-      </div>
+      <NavFooter setRightContent={setRightContent} />
 
     </div>
   );

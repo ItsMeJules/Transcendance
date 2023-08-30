@@ -34,7 +34,7 @@ const OnlineGames = () => {
 
   return (
     <main className="right-screen-container">
-      <body className="online-games-main-container">
+      <article className="online-games-main-container">
 
         <header className="online-games-header">
           Online games
@@ -44,7 +44,7 @@ const OnlineGames = () => {
           <OnlineGamesList gamesList={gameList} />
         </MDBContainer>
 
-      </body>
+      </article>
     </main>
   );
 }

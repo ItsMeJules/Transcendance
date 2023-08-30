@@ -114,7 +114,7 @@ const Friends = () => {
 
   return (
     <main className="right-screen-container">
-      <body className="friends-main-container" style={{}}>
+      <article className="friends-main-container" style={{}}>
 
         <header className="friends-header">
           Friends
@@ -126,7 +126,7 @@ const Friends = () => {
 
         <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
         {/* <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} /> */}
-      </body>
+      </article>
     </main>
   );
 }

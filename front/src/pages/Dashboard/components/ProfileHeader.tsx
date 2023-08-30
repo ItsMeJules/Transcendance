@@ -1,9 +1,11 @@
-import { APP_SCREENS } from "utils/routing/routing";
+import { useNavigate } from "react-router-dom";
+import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
 
 const ProfileHeader = () => {
+  const history = useNavigate();
 
   const handleProfileClick = (() => {
-
+    history(APP_ROUTES.USER_PROFILE)
   });
 
   return (

@@ -84,7 +84,7 @@ const LeaderBoard: React.FC = () => {
 
   return (
     <main className="right-screen-container">
-      <body className="leaderboard-main-container">
+      <article className="leaderboard-main-container">
 
         <header className="leaderboard-header">
           Leaderboard
@@ -94,7 +94,7 @@ const LeaderBoard: React.FC = () => {
           <UserProfilesList users={users} currentUserId={userData?.id} />
         </MDBContainer>
 
-      </body>
+      </article>
     </main>
   );
 }
