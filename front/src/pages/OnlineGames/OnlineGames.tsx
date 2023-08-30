@@ -33,16 +33,18 @@ const OnlineGames = () => {
   }, [gamesData]);
 
   return (
-    <main className="online-games-main-container">
+    <main className="right-screen-container">
+      <article className="online-games-main-container">
 
-      <header className="online-games-header">
-        Online games
-      </header>
+        <header className="online-games-header">
+          Online games
+        </header>
 
-      <MDBContainer className="online-games-container">
-        <OnlineGamesList gamesList={gameList} />
-      </MDBContainer>
+        <MDBContainer className="online-games-container">
+          <OnlineGamesList gamesList={gameList} />
+        </MDBContainer>
 
+      </article>
     </main>
   );
 }

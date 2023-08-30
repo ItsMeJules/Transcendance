@@ -208,23 +208,37 @@
     }
 
     .stats-first-container {
+      @mixin fields-name-sub-font-color {
+        font-family: "dune", Arial, sans-serif;
+        font-weight: bold;
+        color: white;
+      }
+
       display: flex;
       text-align: center;
       margin-top: 15px;
 
       .stats-first-sub-container {
+        @include fields-name-sub-font-color;
         justify-content: center;
         width: 100%;
       }
     }
 
     .stats-second-container {
+      @mixin fields-name-sub-font-color {
+        font-family: "dune", Arial, sans-serif;
+        font-weight: bold;
+        color: white;
+      }
+
       display: flex;
       text-align: center;
       margin-top: 20px;
       margin-bottom: 20px;
 
       .stats-second-sub-container {
+        @include fields-name-sub-font-color;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -240,14 +254,4 @@
       }
     }
   }
-
-
-
-
-}
-
-.custom-mdb-container {
-  width: 100%;
-  height: 100%;
-  /* Add any other custom styles you need */
 }

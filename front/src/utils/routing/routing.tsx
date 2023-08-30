@@ -33,15 +33,15 @@ export const APP_ROUTES = {
   SIGN_IN: "/login",
   SIGN_UP: "/signup",
   LOG_OUT: "/logout",
-  USER_PROFILE: "/profile/me",
-  USER_PROFILE_EDIT: "/profile/me/edit",
+  DASHBOARD: "/dashboard/*",
+  USER_PROFILE: "profile/me",
+  USER_PROFILE_EDIT: "profile/me/edit",
+  GENERIC_USER_PROFILE: "profile/",
+  PLAY: "play",
+  SPECTATE: "spectate",
   USER_FRIENDS: "/profile/me/friends",
   AUTH_2FA: "/profile/me/two-fa",
-  GENERIC_USER_PROFILE: "/profile/",
   LEADERBOARD: "/leaderboard",
-  PLAY: "/play",
-  WATCH: "/watch",
-  DASHBOARD: "/dashboard",
 };
 
 export enum APP_SCREENS {

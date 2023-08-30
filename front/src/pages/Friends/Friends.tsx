@@ -113,18 +113,20 @@ const Friends = () => {
   }
 
   return (
-    <main className="friends-main-container" style={{}}>
+    <main className="right-screen-container">
+      <article className="friends-main-container" style={{}}>
 
-      <header className="friends-header">
-        Friends
-      </header>
+        <header className="friends-header">
+          Friends
+        </header>
 
-      <MDBContainer className="friends-container">
-        <UserProfileList users={users} onRemoveClick={removeFriend} onProfileClick={handleProfileClick} />
-      </MDBContainer>
+        <MDBContainer className="friends-container">
+          <UserProfileList users={users} onRemoveClick={removeFriend} onProfileClick={handleProfileClick} />
+        </MDBContainer>
 
-      <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
-      {/* <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} /> */}
+        <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
+        {/* <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} /> */}
+      </article>
     </main>
   );
 }

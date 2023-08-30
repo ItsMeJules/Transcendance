@@ -13,8 +13,12 @@ import './css/ProgressBar.scss';
 
 import ProfileCard from "./components/ProfileCard";
 import UserProfileContainer from "./components/UserProfileContainer";
+import ProfileHeader from "pages/Dashboard/components/ProfileHeader";
+import NavFooter from "pages/Dashboard/components/NavFooter";
+import RightScreen from "pages/Dashboard/components/RightScreen";
 
 export const Profile: React.FC = () => {
+  const [rightContent, setRightContent] = useState<number>(-1);
   const [userDataHere, setUserDataHere] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
   const [level, setLevel] = useState(0);
@@ -67,10 +71,15 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <main className="profile-main-container">
-      <MDBContainer className="profile-board-container">
-        <ProfileCard userData={userDataHere} setErrMsg={setErrMsg} />
-      </MDBContainer>
+    <main className="screen-container">
+      <section className="left-screen-container">
+        <section className="profile-main-container">
+          <MDBContainer className="profile-board-container">
+            <ProfileCard userData={userDataHere} setErrMsg={setErrMsg} />
+          </MDBContainer>
+        </section>
+      </section>
+
     </main>
   );
 }

@@ -83,17 +83,19 @@ const LeaderBoard: React.FC = () => {
   }, [history]);
 
   return (
-    <body className="leaderboard-main-container">
+    <main className="right-screen-container">
+      <article className="leaderboard-main-container">
 
-      <header className="leaderboard-header">
-        Leaderboard
-      </header>
+        <header className="leaderboard-header">
+          Leaderboard
+        </header>
 
-      <MDBContainer className="leaderboard-container">
-        <UserProfilesList users={users} currentUserId={userData?.id} />
-      </MDBContainer>
+        <MDBContainer className="leaderboard-container">
+          <UserProfilesList users={users} currentUserId={userData?.id} />
+        </MDBContainer>
 
-    </body>
+      </article>
+    </main>
   );
 }
 
