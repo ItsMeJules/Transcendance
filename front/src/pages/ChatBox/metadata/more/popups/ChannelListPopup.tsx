@@ -1,14 +1,14 @@
 import axios from "axios";
 import { KeyboardEvent, useContext, useEffect, useState } from "react";
 
-import { API_ROUTES } from "../../../../../Utils";
-import { SendDataContext } from "../../../ChatBox";
-import { ChannelType } from "../../../models/Channel";
-import { ChannelInfoInList } from "../../../models/partial/PartialModels";
-import ChannelsList from "../../../utils/ChannelsList";
-import Popup from "../../../utils/Popup";
-import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
-import { useAppSelector } from "../../../../../redux/Store";
+import { API_ROUTES } from "utils/routing/routing";
+import { SendDataContext } from "pages/ChatBox/ChatBox";
+import { ChannelType } from "pages/ChatBox/models/Channel";
+import { ChannelInfoInList } from "pages/ChatBox/models/partial/PartialModels";
+import ChannelsList from "pages/ChatBox/utils/ChannelsList";
+import Popup from "pages/ChatBox/utils/Popup";
+import { ChatSocketActionType } from "pages/ChatBox/models/TypesActionsEvents";
+import { useAppSelector } from "utils/redux/Store";
 
 export default function ChannelListPopup() {
   const [selectedChannelName, setSelectedChannelName] = useState<string | null>(null);

@@ -1,4 +1,4 @@
-import { Channel } from "../Screens/chat/models/Channel";
+import { Channel } from "pages/ChatBox/models/Channel";
 
 export interface UserData {
     id:  string | null;

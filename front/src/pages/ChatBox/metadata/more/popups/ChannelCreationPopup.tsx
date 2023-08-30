@@ -1,14 +1,12 @@
 import { useContext, useState } from "react";
 
-import Popup from "../../../utils/Popup";
+import Popup from "pages/ChatBox/utils/Popup";
 
-import PublicIcon from "../../../../../assets/globe.png";
-import ProtectedIcon from "../../../../../assets/padlock.png";
-import PrivateIcon from "../../../../../assets/private.png";
-import { SendDataContext } from "../../../ChatBox";
-import { ChannelType, ChannelTypeDescription } from "../../../models/Channel";
-import PayloadAction from "../../../models/PayloadSocket";
-import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
+
+import { SendDataContext } from "pages/ChatBox/ChatBox";
+import { ChannelType, ChannelTypeDescription } from "pages/ChatBox/models/Channel";
+import PayloadAction from "pages/ChatBox/models/PayloadSocket";
+import { ChatSocketActionType } from "pages/ChatBox/models/TypesActionsEvents";
 
 export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC);
@@ -47,19 +45,19 @@ export default function ChannelCreationPopup() {
         <div className="images">
           <img
             className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
-            src={PublicIcon}
+            src="images/globe.png"
             alt="Public"
             onClick={() => setChannelType(ChannelType.PUBLIC)}
           />
           <img
             className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
-            src={PrivateIcon}
+            src="images/private.png"
             alt="Private"
             onClick={() => setChannelType(ChannelType.PRIVATE)}
           />
           <img
             className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
-            src={ProtectedIcon}
+            src="images/padlock.png"
             alt="Protected"
             onClick={() => setChannelType(ChannelType.PROTECTED)}
           />

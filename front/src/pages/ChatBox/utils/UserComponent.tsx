@@ -1,4 +1,4 @@
-import User from "../../../Services/User";
+import User from "services/User/User";
 
 export type UserClickParameters = {
   event: React.MouseEvent<HTMLDivElement, MouseEvent>,

@@ -1,4 +1,4 @@
-import User from "../../../Services/User";
+import User from "services/User/User";
 import UserComponent, { UserClickParameters } from "./UserComponent";
 
 interface UsersListProps {
