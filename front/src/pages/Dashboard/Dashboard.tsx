@@ -13,12 +13,13 @@ import Play from 'pages/Play/Play';
 import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
 import GenericUserProfile from 'pages/Profile/GenericUserProfile';
 import JoinGame from 'pages/JoinGame/JoinGame';
+import Websocket from 'services/Websocket/Websocket';
 
 const Dashboard = () => {
   const [rightContent, setRightContent] = useState<number>(-1);
 
   useEffect(() => {
-    console.log('leftcntent:', rightContent);
+    // console.log('leftcntent:', rightContent);
   }, [rightContent]);
 
   return (
@@ -28,11 +29,11 @@ const Dashboard = () => {
 
       <article className="screen-container">
         <Routes>
-          <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
-          <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
+          <Route path={APP_ROUTES.USER_PROFILE} element={<Websocket><Profile/></Websocket>} />
+          <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<Websocket><ProfileEdit /></Websocket>} />
           <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
-          <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
-          <Route path={APP_ROUTES.PLAY} element={<Play />} />
+          <Route path={APP_ROUTES.MATCHMAKING} element={<Websocket><JoinGame /></Websocket>} />
+          <Route path={APP_ROUTES.PLAY} element={<Websocket><Play /></Websocket>} />
           <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
         </Routes>
 

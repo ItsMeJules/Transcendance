@@ -16,6 +16,7 @@ import MainText from "./components/MainText/MainText";
 import GiveUp from "./components/GiveUp/GiveUp";
 import ScoreBoard from "./components/ScoreBoard/ScoreBoard";
 import './css/Play.scss'
+import { APP_ROUTES } from "utils/routing/routing";
 
 interface PlayBackProps {
   whichPlayer: number,
@@ -84,7 +85,7 @@ const Play = () => {
       console.log('DATA PREPARE', data);
       setGameState(data);
     });
-    socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
+
     socket.game?.on('refreshGame', (data: GameSocket) => {
       console.log('DATA game', data);
       setGameState(data);
@@ -94,6 +95,7 @@ const Play = () => {
       if (data.status === 'noGame')
         setGameStatus('noGame');
     });
+    socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
   }, [socket.game]);
 
   // Game useEffect
@@ -139,18 +141,24 @@ const Play = () => {
 
   // Prepare useEffect
   useEffect(() => {
-    // console.log('socketDataPrepare:', gameState);
-    if (gameStatus === 'noGame')
-      history('/test');
+    console.log('socketDataPrepare:', gameState);
+    if (gameStatus === 'noGame') {
+      console.log("NO GAME NO GOOD :(");
+      history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
+    }
     if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);
-    if (gameState?.gameStatus === 'pending' || gameState?.playerStatus === 'pending') {
+    if (gameState?.gameStatus === 'pending'
+      || (gameState?.playerStatus === 'pending' && gameState.gameStatus !== 'timeout')) {
+      console.log('Ready<<<<<');
       setCentralText('Ready?');
     } else if (gameState?.gameStatus === 'waiting'
       && gameState.playerStatus === 'ready'
       && gameState.opponentStatus === 'pending') {
+      console.log('waiting opponent<<<<<');
       setIsPlayerReady(true);
       setCentralText('Waiting for opponent');
     } else if (gameState?.gameStatus === 'countdown') {
+      console.log('countdown<<<<<');
       setIsOpponentReady(true);
       setIsPlayerReady(true);
       if (gameState.countdown) {
@@ -158,12 +166,13 @@ const Play = () => {
       } else
         setCentralText('Get ready!');
     } else if (gameState?.gameStatus === 'timeout') {
+      console.log('timeout<<<<<');
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
-        history('/test');
+        history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
       }, 3 * 1000);
     } else if (gameState?.gameStatus === 'playing') {
-      socket.game?.off('prepareToPlay'); // dont off and use for status?
+      // socket.game?.off('prepareToPlay'); // dont off and use for status?
       game.isPlaying = true;
       setGame({ ...game, isPlaying: true });
       // socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'refreshInMotion' });

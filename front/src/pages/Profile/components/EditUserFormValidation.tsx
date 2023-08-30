@@ -40,7 +40,7 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
       localStorage.setItem('userData', JSON.stringify(userData));
       setUserDataNew(response.data);
       // window.location.href = APP_ROUTES.USER_PROFILE;
-      history(APP_ROUTES.USER_PROFILE_FROM_OUTSIDE);
+      history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     } catch (err: any) {
       console.log(err.response?.data.message);
       if (!err?.response) {

@@ -30,8 +30,9 @@ const JoinGame = () => {
         localStorage.setItem('player2', JSON.stringify(dataJSON.player2));
         localStorage.setItem('gameChannel', JSON.stringify(dataJSON.gameChannel));
         setInQueue(0);
+        console.log("OKKKKKKKKKKK GOOOODDDDD"); 
         // setLeftContent(APP_SCREENS.PLAY);
-        // history(APP_ROUTES.PLAY);
+        history(APP_ROUTES.PLAY_ABSOLUTE);
       }
     }
   }, [socketData]);
@@ -40,7 +41,7 @@ const JoinGame = () => {
     socket.game?.on('joinGameQueue', (data: any) => {
       setSocketData(data);
     });
-  }, []);
+  }, [socket.game]);
 
 
   return (

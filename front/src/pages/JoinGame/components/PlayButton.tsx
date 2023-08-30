@@ -11,6 +11,7 @@ const PlayButton: React.FC<playButtonProps> = ({ gameMode, inQueue, buttonText }
   const socket = useWebsocketContext();
 
   const handleJoinGameQueue = async (gameMode: number) => {
+    console.log("gamemode:", gameMode, " inQueue:", inQueue);
     if (inQueue !== gameMode) {
       socket.game?.emit('joinGameQueue', { gameMode: gameMode });
     } else if (inQueue === gameMode)
