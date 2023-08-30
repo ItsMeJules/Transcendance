@@ -8,6 +8,10 @@ import { Route, Routes } from 'react-router-dom';
 import { APP_ROUTES } from 'utils/routing/routing';
 import UserProfile from 'pages/Friends/Components/UserProfile';
 import Profile from 'pages/Profile/Profile';
+import Spectate from 'pages/Spectate/Spectate';
+import Play from 'pages/Play/Play';
+import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
+import GenericUserProfile from 'pages/Profile/css/GenericUserProfile';
 
 const Dashboard = () => {
   const [rightContent, setRightContent] = useState<number>(-1);
@@ -24,6 +28,10 @@ const Dashboard = () => {
       <article className="screen-container">
       <Routes>
         <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
+        <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
+        <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
+        <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
+        <Route path={APP_ROUTES.PLAY} element={<Play />} />
       </Routes>
 
       <div className="right-screen-container">
