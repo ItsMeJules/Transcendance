@@ -53,9 +53,18 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         where: {
           OR: [
             {
-              id: {
-                in: activeRoomsId,
-              },
+              AND: [
+                {
+                  id: {
+                    in: activeRoomsId,
+                  },
+                },
+                {
+                  type: {
+                    not: RoomType.DIRECT,
+                  },
+                },
+              ],
             },
             {
               AND: [
@@ -88,6 +97,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         type: room.type,
         userCount: room.usersOnRoom.length,
       }));
+
+      console.log(roomsInfo);
 
       return roomsInfo;
     } catch (error) {
