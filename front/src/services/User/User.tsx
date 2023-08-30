@@ -1,4 +1,3 @@
-import { Channel } from "pages/ChatBox/models/Channel";
 
 export interface UserData {
     id:  string | null;
