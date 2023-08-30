@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
-import PublicIcon from "../../../../../assets/globe.png"
-import PrivateIcon from "../../../../../assets/private.png"
-import ProtectedIcon from "../../../../../assets/padlock.png"
+import PublicIcon from "../../../../../assets/globe.png";
+import ProtectedIcon from "../../../../../assets/padlock.png";
+import PrivateIcon from "../../../../../assets/private.png";
 
-import Popup from "../../../utils/Popup";
+import { useAppSelector } from "../../../../../redux/Store";
+import { SendDataContext } from "../../../ChatBox";
 import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
+import PayloadAction from "../../../models/PayloadSocket";
+import { RoomSocketActionType } from "../../../models/TypesActionsEvents";
+import Popup from "../../../utils/Popup";
 
 interface ChannelPopupProps {
   channelData: ChannelData
@@ -14,6 +18,10 @@ interface ChannelPopupProps {
 const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProps) => {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC);
   const [channelPassword, setChannelPassword] = useState("");
+
+  const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
+  const sendData: null | ((action: string, data: PayloadAction) => void) =
+  useContext(SendDataContext);
 
   const changeChannel = () => {
     const { channelData } = props;
@@ -29,7 +37,11 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
   }
 
   const quitChannel = () => {
+    if (sendData === null) return
 
+    sendData(RoomSocketActionType.LEAVE_ROOM, {
+      roomName: activeChannelName,
+    } as PayloadAction);
   }
 
   return (

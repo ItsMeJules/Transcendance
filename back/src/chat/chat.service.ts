@@ -263,7 +263,12 @@ export class ChatService {
 
       if (!room || !user) throw new Error('error name');
 
-      if (room.password && room.password !== joinRoomDto.password)
+      if (
+        room.ownerId !== user.id &&
+        room.admins.find((admin) => admin.id === user.id) === null &&
+        room.password &&
+        room.password !== joinRoomDto.password
+      )
         throw new Error('wrong password'); // change this
       if (room.bans.some((banned) => banned.id === user.id))
         throw new Error('user is banned from the room');
