@@ -1,9 +1,4 @@
 import React, { useState } from "react";
-
-import PublicIcon from "pages/ChatBox/assets/globe.png"
-import PrivateIcon from "pages/ChatBox/assets/private.png"
-import ProtectedIcon from "pages/ChatBox/assets/padlock.png"
-
 import Popup from "../../../utils/Popup";
 import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
 
@@ -41,19 +36,19 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
       <div className="images">
         <img
           className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
-          src={PublicIcon}
+          src="/images/globe.png"
           alt="Public"
           onClick={() => setChannelType(ChannelType.PUBLIC)}
         />
         <img
           className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
-          src={PrivateIcon}
+          src="/images/private.png"
           alt="Private"
           onClick={() => setChannelType(ChannelType.PRIVATE)}
         />
         <img
           className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
-          src={ProtectedIcon}
+          src="/images/padlock.png"
           alt="Protected"
           onClick={() => setChannelType(ChannelType.PROTECTED)}
         />

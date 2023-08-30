@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
-import User from "../../../../../Services/User";
-import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
+import User from "services/User/User";
+import { useWebsocketContext } from "services/Websocket/Websocket";
 import { SendDataContext } from "../../../ChatBox";
 import { ChannelData, PunishmentType } from "../../../models/Channel";
 import PayloadAction from "../../../models/PayloadSocket";

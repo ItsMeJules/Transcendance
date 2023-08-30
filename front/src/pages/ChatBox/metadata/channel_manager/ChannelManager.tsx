@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import SettingsIcon from "../../assets/settings.png";
-
 import { ChannelData } from "../../models/Channel";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
 import ManageChannelPopup from "./popups/ManageChannelPopup";
@@ -43,7 +41,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
         onOutsideClick={() => setManageChannel(false)}
         onInsideClick={() => setManageChannel(!manageChannel)}
       >
-        <img alt="Settings" src={SettingsIcon} style={manageStyle} />
+        <img alt="Settings" src="images/settings.png" style={manageStyle} />
 
         {manageChannel && <ManageChannelPopup channelData={channelData} />}
       </OutsideClickHandler>

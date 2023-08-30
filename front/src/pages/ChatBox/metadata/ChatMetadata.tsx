@@ -1,8 +1,5 @@
 import { useState } from "react";
 
-import PublicIcon from "pages/ChatBox/assets/globe.png";
-import ProtectedIcon from "pages/ChatBox/assets/padlock.png";
-import PrivateIcon from "pages/ChatBox/assets/private.png";
 import { useAppSelector } from "utils/redux/Store";
 import { ChannelType, transformToChannelData } from "../models/Channel";
 import OutsideClickHandler from "../utils/OutsideClickHandler";
@@ -38,11 +35,11 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
   }
 
   const getIconFromType = (type: ChannelType) => {
-    let iconSrc = PublicIcon;
+    let iconSrc = "images/globe.png";
     if (type === ChannelType.PROTECTED)
-      iconSrc = ProtectedIcon;
+      iconSrc = "images/padlock.png";
     else if (type === ChannelType.PRIVATE)
-      iconSrc = PrivateIcon;
+      iconSrc = "images/private.png";
 
     return (<img alt="Channel Type" src={iconSrc} />)
   }

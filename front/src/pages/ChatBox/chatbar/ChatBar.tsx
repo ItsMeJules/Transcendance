@@ -1,6 +1,5 @@
 import React from "react";
 
-import UpArrow from "../assets/up-arrow.png";
 import TextInput from "./TextInput";
 
 interface ChatBarProps {
@@ -22,7 +21,7 @@ const ChatBar: React.FC<ChatBarProps> = ({ setChatToggled, chatToggled }) => {
         <img
           className="arrow-img"
           alt="Up-Arrow"
-          src={UpArrow}
+          src="/images/up-arrow.png"
           style={arrowStyle}
           onClick={() => setChatToggled(!chatToggled)}
         />

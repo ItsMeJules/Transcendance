@@ -1,7 +1,5 @@
 import React, { MouseEvent } from "react";
 
-import RightArrow from "../assets/arrow-right.png";
-
 interface TextSendProps {
   hasText: boolean;
   handleSend: () => void;
@@ -25,7 +23,7 @@ const TextSend: React.FC<TextSendProps> = ({ hasText, handleSend }) => {
       <img
         className="arrow-img"
         alt="Send"
-        src={RightArrow}
+        src="/images/arrow-right.png"
         style={sendStyle}
         onMouseEnter={hasText ? handleHover : undefined}
         onMouseLeave={hasText ? handleHoverOut : undefined}
