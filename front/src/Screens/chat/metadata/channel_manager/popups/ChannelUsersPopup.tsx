@@ -12,6 +12,7 @@ import { UserClickParameters } from "../../../utils/users/UserComponent";
 import { fetchAllUsers } from "../../more/popups/AllUsersPopup";
 import UsersList from "../../../utils/users/UsersList";
 import ChannelUsersList from "../../../utils/users/ChannelUsersList";
+import { useAppSelector } from "../../../../../redux/Store";
 
 interface ChannelUsersPopupProps {
   channelData: ChannelData;
@@ -22,6 +23,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
   const [invitedUsername, setInvitedUsername] = useState<string>("");
   const [invited, setInvited] = useState(false);
   const [allUsers, setAllUsers] = useState<User[]>([]);
+  const { username: activeUserName } = useAppSelector(store => store.user.userData)
 
   const sendData: null | ((action: string, data: PayloadAction) => void) =
     useContext(SendDataContext);
@@ -91,7 +93,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
   };
 
   const filter = (userName: string, searchText: string): boolean => {
-    return userName.includes(searchText)
+    return activeUserName !== userName && userName.includes(searchText)
   }
 
   return (

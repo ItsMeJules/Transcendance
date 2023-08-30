@@ -5,11 +5,18 @@ import { API_ROUTES } from "../../../../../Utils";
 import Popup from "../../../utils/Popup";
 import UsersList from "../../../utils/users/UsersList";
 import UserActionPopup from "../../../utils/users/UserActionPopup";
+import { useAppSelector } from "../../../../../redux/Store";
 
 export default function AllUsers() {
   const [searchText, setSearchText] = useState("");
   const [userDataClicked, setUserDataClicked] = useState<UserData | null>(null)
+  const { username: activeUserName } = useAppSelector(store => store.user.userData)
   const users = useAllUsers()
+
+  const filter = (userName: string) => {
+    return activeUserName !== userName
+      && userName.toLowerCase().includes(searchText.toLowerCase())
+  }
 
   return (
     <Popup className="all-users-popup">
@@ -22,7 +29,7 @@ export default function AllUsers() {
       />
       <UsersList
         users={users}
-        filter={(userName) => userName.toLowerCase().includes(searchText.toLowerCase())}
+        filter={filter}
         onUserClick={({ userData }) => setUserDataClicked(userData)}
       />
       {userDataClicked !== null
