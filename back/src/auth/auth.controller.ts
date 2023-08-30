@@ -93,7 +93,7 @@ export class AuthController {
       // maxAge: 60 * 60 * 24 * 7,
       sameSite: 'lax',
     });
-    res.redirect('/profile/me');
+    res.redirect('/dashboard/profile/me');
   }
 
   @Get('google/login')
@@ -113,7 +113,7 @@ export class AuthController {
       // maxAge: 60 * 60 * 24 * 7,
       sameSite: 'lax',
     });
-    res.redirect('/profile/me');
+    res.redirect('/dashboard/profile/me');
   }
 
   // // // // // // // // // // 2FA \\ \\ \\ \\ \\ \\ \\ \\ \\ \\

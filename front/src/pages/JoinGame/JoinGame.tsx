@@ -8,11 +8,7 @@ import { useWebsocketContext } from "services/Websocket/Websocket";
 import './css/JoinGame.scss'
 import LoadingAnimation from "./components/LoadingAnimation";
 
-interface JoinGameProps {
-  setLeftContent: (content: number) => void;
-}
-
-const JoinGame:React.FC<JoinGameProps> = ({ setLeftContent}) => {
+const JoinGame = () => {
   const [socketData, setSocketData] = useState('');
   const [inQueue, setInQueue] = useState(0);
   const [errMsg, setErrMsg] = useState('');
@@ -34,7 +30,7 @@ const JoinGame:React.FC<JoinGameProps> = ({ setLeftContent}) => {
         localStorage.setItem('player2', JSON.stringify(dataJSON.player2));
         localStorage.setItem('gameChannel', JSON.stringify(dataJSON.gameChannel));
         setInQueue(0);
-        setLeftContent(APP_SCREENS.PLAY);
+        // setLeftContent(APP_SCREENS.PLAY);
         // history(APP_ROUTES.PLAY);
       }
     }
@@ -48,7 +44,7 @@ const JoinGame:React.FC<JoinGameProps> = ({ setLeftContent}) => {
 
 
   return (
-    <div className="join-game-main-container">
+    <main className="join-game-main-container">
 
       <header className="join-game-header-title">
         Choose your mode
@@ -62,7 +58,7 @@ const JoinGame:React.FC<JoinGameProps> = ({ setLeftContent}) => {
       <LoadingAnimation inQueue={inQueue} />
 
 
-    </div>
+    </main>
   );
 }
 

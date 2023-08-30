@@ -8,7 +8,7 @@ interface LoadingAnimationProps {
 const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ inQueue }) => {
 
   return (
-    <body>
+    <main>
       {(inQueue === 1 || inQueue === 2) &&
         <section className="loading-container">
           <p className="loading"></p>
@@ -16,7 +16,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ inQueue }) => {
             Searching for opponent
           </p>
         </section>}
-    </body>
+    </main>
   );
 }
 export default LoadingAnimation;

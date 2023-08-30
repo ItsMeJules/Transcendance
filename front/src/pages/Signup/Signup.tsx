@@ -21,7 +21,7 @@ export const Signup = () => {
 
   useEffect(() => {
     if (success) {
-      history(APP_ROUTES.DASHBOARD);
+      history(APP_ROUTES.USER_PROFILE_FROM_OUTSIDE);
     }
   }, [success, history]);
 

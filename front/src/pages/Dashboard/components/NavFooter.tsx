@@ -1,12 +1,16 @@
-import { APP_SCREENS } from "utils/routing/routing";
+import { useNavigate } from "react-router-dom";
+import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
 
 interface LeftNavFooterProps {
   setRightContent: (option: number) => void;
 }
 
 const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
+  const history = useNavigate();
 
-  const handleMatchMakingClick = (() => { });
+  const handleMatchMakingClick = (() => {
+    history(APP_ROUTES.MATCHMAKING)
+  });
   const handleSpectateClick = (() => { })
 
   return (

@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { UserData } from 'services/User/User';
 import { API_ROUTES, APP_ROUTES } from 'utils/routing/routing';
+import { useNavigate } from 'react-router-dom';
 
 interface EditUserFormValidationProps {
   setErrMsg: (error: string) => void;
@@ -16,6 +17,7 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
   const [username, setUsername] = useState<string>('');
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
+  const history = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -37,8 +39,8 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
         });
       localStorage.setItem('userData', JSON.stringify(userData));
       setUserDataNew(response.data);
-      window.location.href = APP_ROUTES.USER_PROFILE;
-      // history(APP_ROUTES.USER_PROFILE);
+      // window.location.href = APP_ROUTES.USER_PROFILE;
+      history(APP_ROUTES.USER_PROFILE_FROM_OUTSIDE);
     } catch (err: any) {
       console.log(err.response?.data.message);
       if (!err?.response) {
