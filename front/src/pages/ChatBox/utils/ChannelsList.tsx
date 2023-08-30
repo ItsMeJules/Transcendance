@@ -1,6 +1,10 @@
 import { ChannelType } from "pages/ChatBox/models/Channel";
 import { ChannelInfoInList } from "pages/ChatBox/models/partial/PartialModels";
 
+import PublicIcon from "pages/ChatBox/assets/globe.png";
+import ProtectedIcon from "pages/ChatBox/assets/padlock.png";
+import PrivateIcon from "pages/ChatBox/assets/private.png";
+
 interface ChannelListProps {
   channels: ChannelInfoInList[];
   onClickElement: (channel: string) => void
@@ -9,11 +13,11 @@ interface ChannelListProps {
 
 const ChannelsList: React.FC<ChannelListProps> = ({ channels, onClickElement, filter = () => true }) => {
   const getIconFromType = (type: ChannelType) => {
-    let iconSrc = "images/globe.png";
+    let iconSrc = PublicIcon;
     if (type === ChannelType.PROTECTED)
-      iconSrc = "images/padlock.png";
+      iconSrc = ProtectedIcon;
     else if (type === ChannelType.PRIVATE)
-      iconSrc = "images/private.png";
+      iconSrc = PrivateIcon;
 
     return (<img alt="Channel Type" src={iconSrc} />)
   }

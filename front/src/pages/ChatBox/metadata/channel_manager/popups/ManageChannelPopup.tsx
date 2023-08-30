@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import PublicIcon from "../../../../../assets/globe.png"
-import PrivateIcon from "../../../../../assets/private.png"
-import ProtectedIcon from "../../../../../assets/padlock.png"
+import PublicIcon from "pages/ChatBox/assets/globe.png"
+import PrivateIcon from "pages/ChatBox/assets/private.png"
+import ProtectedIcon from "pages/ChatBox/assets/padlock.png"
 
 import Popup from "../../../utils/Popup";
 import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";

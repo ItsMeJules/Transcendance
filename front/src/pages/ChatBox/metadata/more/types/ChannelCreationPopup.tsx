@@ -3,6 +3,10 @@ import { useWebsocketContext } from "services/Websocket/Websocket";
 import Popup from "pages/ChatBox/utils/Popup";
 import { ChannelType, ChannelTypeDescription } from "pages/ChatBox/models/Channel";
 
+import PublicIcon from "pages/ChatBox/assets/globe.png";
+import PrivateIcon from "pages/ChatBox/assets/private.png";
+import ProtectedIcon from "pages/ChatBox/assets/padlock.png";
+
 export default function ChannelCreationPopup() {
   const [channelType, setChannelType] = useState(ChannelType.PUBLIC)
   const [channelName, setChannelName] = useState("")
@@ -41,19 +45,19 @@ export default function ChannelCreationPopup() {
         <div className="images">
         <img
           className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
-          src="images/globe.png"
+          src={PublicIcon}
           alt="Public"
           onClick={() => setChannelType(ChannelType.PUBLIC)}
         />
         <img
           className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
-          src="images/private.png"
+          src={PrivateIcon}
           alt="Private"
           onClick={() => setChannelType(ChannelType.PRIVATE)}
         />
         <img
           className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
-          src="images/padlock.png"
+          src={ProtectedIcon}
           alt="Protected"
           onClick={() => setChannelType(ChannelType.PROTECTED)}
         />

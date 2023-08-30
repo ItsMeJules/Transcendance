@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import User, { UserData } from "../../../../../Services/User";
-import { API_ROUTES } from "../../../../../Utils";
+import User, { UserData } from "services/User/User";
+import { API_ROUTES } from "utils/routing/routing";
 import Popup from "../../../utils/Popup";
 import UsersList from "../../../utils/UsersList";
 import UserActionPopup from "../../../utils/UserActionPopup";
