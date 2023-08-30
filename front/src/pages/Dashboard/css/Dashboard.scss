@@ -1,11 +1,16 @@
 .dashboard-main-container {
   width: 100vw;
   height: 100vh;
+  min-height: 856px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
+
+  .custom-text-color{
+    color: white !important;
+  }
 
   .profile-header-container {
     background: rgba(169, 169, 169, 0.3);
@@ -13,7 +18,7 @@
     width: 50%;
     height: 12vw;
     max-width: 600px;
-    max-height: 350px;
+    max-height: 300px;
     min-height: 200px;
     margin: 20px auto 0;
     display: flex;
@@ -83,16 +88,18 @@
     flex: 1;
     display: flex;
     align-items: center;
+    margin: 20px;
     padding: 20px;
-    justify-content: space-between;
+    justify-content: center;
     gap: 1px;
+    height: calc(100vh - 500px);
     max-height: 80vh;
 
     .left-screen-container {
       min-width: 350px;
       background: rgba(169, 169, 169, 0.3);
       border-radius: 20px;
-      margin-right: 20px;
+      margin: 20px;
     }
 
     .right-screen-container {
@@ -109,7 +116,7 @@
     height: 30vw;
     max-width: 900px;
     min-width: 500px;
-    max-height: 400px;
+    max-height: 300px;
     min-height: 200px;
     margin: 20px auto 0;
     display: flex;
