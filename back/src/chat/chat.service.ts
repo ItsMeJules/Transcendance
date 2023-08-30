@@ -15,28 +15,6 @@ export class ChatService {
     private userSocketsService: UserSocketsService,
   ) {}
 
-  async connectToRoom(client: Socket, targetRoom: string): Promise<void> {
-    try {
-      const user = await this.prismaService.returnCompleteUser(client.data.id);
-      const room = await this.prismaService.returnCompleteRoom(targetRoom);
-
-      if (!room || !user) throw new Error('error name');
-
-      await client.leave(user.currentRoom);
-      console.log('client id leaving room : ', client.data.id);
-
-      await client.join(targetRoom);
-      await this.prismaService.user.update({
-        where: { id: user.id },
-        data: {
-          // currentRoom: targetRoom,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   async sendMessageToRoom(
     client: Socket,
     sendMsgRoomDto: ChatDtos.SendMsgRoomDto,
@@ -120,12 +98,37 @@ export class ChatService {
         );
       }
 
+      // Make user join the room if its a DM
       if (room && createRoomDto.type === RoomType.DIRECT) {
         await this.userJoinRoom(
           client.data.id,
           createRoomDto.roomName,
           createRoomDto.server,
         );
+      }
+
+      if (createRoomDto.type === 'DIRECT') {
+        const parts = createRoomDto.roomName.split('-');
+        const firstUser = parseInt(parts[1]);
+        const secondUser = parseInt(parts[2]);
+        console.log('first & second: ', firstUser, secondUser);
+        room = await this.prismaService.room.create({
+          data: {
+            type: RoomType[createRoomDto.type],
+            name: createRoomDto.roomName,
+            users: {
+              connect: [{ id: firstUser }, { id: secondUser }],
+            },
+            admins: { connect: { id: client.data.id } },
+          },
+        });
+        await this.joinRoom(client, {
+          roomName: createRoomDto.roomName,
+          password: createRoomDto.password,
+          server: createRoomDto.server,
+        });
+        console.log('createRoom for DMs function ending');
+        return room;
       }
 
       room = await this.prismaService.room.create({
@@ -139,9 +142,8 @@ export class ChatService {
         },
       });
 
-      const allUsers = await this.prismaService.user.findMany();
-
       if (createRoomDto.type === 'PUBLIC') {
+        const allUsers = await this.prismaService.user.findMany();
         await this.prismaService.room.update({
           where: { id: room.id },
           data: {
@@ -349,14 +351,18 @@ export class ChatService {
     actingUser: CompleteUser,
     target: CompleteUser,
   ): boolean {
-    if (target.id === room.ownerId) return false;
-    if (actingUser.id === room.ownerId) return true;
+    console.log('hierarchyCheck function beginning');
+    console.log('target.id : ', target.id);
+    console.log('roomOwner.id : ', room.ownerId);
+    if (target.id === room.ownerId) return true;
+    if (actingUser.id === room.ownerId) return false;
     if (
       room.admins.some((admin) => admin.id === actingUser.id) &&
       room.admins.some((admin) => admin.id === target.id)
     )
-      return false;
-    if (room.admins.some((admin) => admin.id === actingUser.id)) return true;
+      return true;
+    if (room.admins.some((admin) => admin.id === actingUser.id)) return false;
+    console.log('hierarchyCheck function end');
     return false;
   }
 
@@ -375,6 +381,9 @@ export class ChatService {
         promoteDto.roomName,
       );
 
+      if (actingUser.id === targetUser.id)
+        throw new Error("You can't use actions on yourself");
+
       if (this.hierarchyCheck(room, actingUser, targetUser))
         throw new Error("You don't have permission");
 
@@ -383,11 +392,13 @@ export class ChatService {
           where: { name: promoteDto.roomName },
           data: { admins: { disconnect: { id: targetUser.id } } },
         });
+        console.log(targetUser.username + ' is demoted');
       } else {
         await this.prismaService.room.update({
           where: { name: promoteDto.roomName },
           data: { admins: { connect: { id: targetUser.id } } },
         });
+        console.log(targetUser.username + ' is promoted');
       }
     } catch (error) {
       console.log(error);
@@ -407,47 +418,50 @@ export class ChatService {
       if (!room) {
         throw new Error('no room');
       }
+      if (actingUser.id === targetUser.id)
+        throw new Error("You can't use actions on yourself");
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
-        if (!room.bans.some((banned) => banned.id === targetUser.id)) {
-          await this.prismaService.room.update({
-            where: { id: room.id },
-            data: {
-              users: {
-                disconnect: {
-                  id: targetUser.id,
-                },
-              },
-              bans: {
-                connect: {
-                  id: targetUser.id,
-                },
+        throw new Error("You don't have permission");
+      }
+      if (!room.bans.some((banned) => banned.id === targetUser.id)) {
+        await this.prismaService.room.update({
+          where: { id: room.id },
+          data: {
+            users: {
+              disconnect: {
+                id: targetUser.id,
               },
             },
-          });
-          if (targetUser.currentRoom === room.name)
-            await this.userJoinRoom(targetUser.id, 'general', banDto.server);
-          console.log('banned user:', targetUser.id);
-          // throw : You have been banned from the room : {roomName}
-        } else {
-          await this.prismaService.room.update({
-            where: { id: room.id },
-            data: {
-              users: {
-                connect: {
-                  id: targetUser.id,
-                },
-              },
-              bans: {
-                disconnect: {
-                  id: targetUser.id,
-                },
+            bans: {
+              connect: {
+                id: targetUser.id,
               },
             },
-          });
-          console.log('unbanned user:', targetUser.id);
-        }
-        console.log('banUserToggle function ending');
-      } else throw new Error("You don't have permission");
+          },
+        });
+        if (targetUser.currentRoom === room.name)
+          await this.userJoinRoom(targetUser.id, 'general', banDto.server);
+        console.log('banned user:', targetUser.id);
+        // throw : You have been banned from the room : {roomName}
+      } else {
+        await this.prismaService.room.update({
+          where: { id: room.id },
+          data: {
+            users: {
+              connect: {
+                id: targetUser.id,
+              },
+            },
+            bans: {
+              disconnect: {
+                id: targetUser.id,
+              },
+            },
+          },
+        });
+        console.log('unbanned user:', targetUser.id);
+      }
+      console.log('banUserToggle function ending');
     } catch (error) {
       console.log(error);
     }
@@ -468,35 +482,38 @@ export class ChatService {
       const room = await this.prismaService.returnCompleteRoom(
         muteDto.roomName,
       );
+      if (actingUser.id === targetUser.id)
+        throw new Error("You can't use actions on yourself");
       if (!room) {
         throw new Error('no room');
       }
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
-        if (!room.mutes.some((muted) => muted.id === targetUser.id)) {
-          await this.prismaService.room.update({
-            where: { id: room.id },
-            data: {
-              mutes: {
-                connect: {
-                  id: targetUser.id,
-                },
+        throw new Error("You don't have permission");
+      }
+      if (!room.mutes.some((muted) => muted.id === targetUser.id)) {
+        await this.prismaService.room.update({
+          where: { id: room.id },
+          data: {
+            mutes: {
+              connect: {
+                id: targetUser.id,
               },
             },
-          });
-        } else {
-          await this.prismaService.room.update({
-            where: { id: room.id },
-            data: {
-              mutes: {
-                disconnect: {
-                  id: targetUser.id,
-                },
+          },
+        });
+      } else {
+        await this.prismaService.room.update({
+          where: { id: room.id },
+          data: {
+            mutes: {
+              disconnect: {
+                id: targetUser.id,
               },
             },
-          });
-        }
-        console.log('muteUserFromRoomToggle function ending');
-      } else throw new Error("You don't have permission");
+          },
+        });
+      }
+      console.log('muteUserFromRoomToggle function ending');
     } catch (error) {
       console.log(error);
     }
@@ -551,28 +568,31 @@ export class ChatService {
       const room = await this.prismaService.returnCompleteRoom(
         kickDto.roomName,
       );
+      if (actingUser.id === targetUser.id)
+        throw new Error("You can't use actions on yourself");
       if (!room) {
         throw new Error('no room');
       }
       console.log(targetUser.currentRoom, room.name);
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
-        if (targetUser.currentRoom !== room.name) {
-          throw new Error('user is not the room you fkin golem');
-        }
-        await this.prismaService.room.update({
-          where: { name: room.name },
-          data: {
-            users: {
-              disconnect: {
-                id: targetUser.id,
-              },
+        throw new Error("You don't have permission");
+      }
+      if (targetUser.currentRoom !== room.name) {
+        throw new Error('user is not the room you fkin golem');
+      }
+      await this.prismaService.room.update({
+        where: { name: room.name },
+        data: {
+          users: {
+            disconnect: {
+              id: targetUser.id,
             },
           },
-        });
-        await this.userJoinRoom(targetUser.id, 'general', kickDto.server);
-        console.log('kicked');
-        return true;
-      } else throw new Error("You don't have permission");
+        },
+      });
+      await this.userJoinRoom(targetUser.id, 'general', kickDto.server);
+      console.log('kicked');
+      return true;
     } catch (error) {
       console.log(error);
     }
@@ -592,8 +612,8 @@ export class ChatService {
       }
       const password: string = client.data.password;
       if (currentRoom.ownerId !== client.data.id)
-        throw new Error('Only the owner can interact with the password');
-      if (currentRoom.password === password) throw new Error('same password');
+        throw new Error('you are not the owner');
+      if (currentRoom.password === password) throw new Error('Same password');
       if (password === '') {
         await this.prismaService.room.update({
           where: { name: currentRoom.name },

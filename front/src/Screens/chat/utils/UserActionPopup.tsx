@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import User from "../../../Services/User";
 import { SendDataContext } from "../ChatBox";
@@ -18,19 +18,24 @@ interface UserActionProps {
 
 export default function UserActionPopup(props: UserActionProps) {
   const { id: currentIdUser } = useAppSelector((store) => store.user.userData);
-  const {
-    user,
-    buttonClicked,
-    isMuted = false,
-    isBanned = false,
-    isAdmin = false,
-    isBlocked = false,
-  } = props;
+  // const {
+  //   user,
+  //   buttonClicked,
+  //   isMuted = false,
+  //   isBanned = false,
+  //   isAdmin = false,
+  //   isBlocked = false,
+  // } = props; // ???
+  const [localIsBanned, setLocalIsBanned] = useState(props.isBanned);
+  const [localIsMuted, setLocalIsMuted] = useState(props.isMuted);
+  const [localIsAdmin, setLocalIsAdmin] = useState(props.isAdmin);
+  const [localIsBlocked, setLocalIsBlocked] = useState(props.isBlocked);
 
   const sendData: null | ((action: string, data: PayloadAction) => void) =
     useContext(SendDataContext);
 
   const onBan = (ban: boolean) => {
+    setLocalIsBanned(ban);
     if (sendData === null) return;
 
     sendData(RoomSocketActionType.BAN, {
@@ -49,6 +54,7 @@ export default function UserActionPopup(props: UserActionProps) {
   };
 
   const onMute = (mute: boolean) => {
+    setLocalIsMuted(mute);
     if (sendData === null) return;
 
     sendData(RoomSocketActionType.MUTE, {
@@ -58,6 +64,10 @@ export default function UserActionPopup(props: UserActionProps) {
   };
 
   const onPromote = (promote: boolean) => {
+    console.log("isAdmin ==", localIsAdmin);
+    console.log("promote ==", promote);
+    setLocalIsAdmin(promote);
+    console.log("isAdmin is now == ", localIsAdmin);
     if (sendData === null) return;
 
     sendData(RoomSocketActionType.PROMOTE, {
@@ -93,6 +103,7 @@ export default function UserActionPopup(props: UserActionProps) {
   };
 
   const onBlock = (block: boolean) => {
+    setLocalIsBlocked(block);
     if (sendData === null) return;
 
     sendData(ChatSocketActionType.BLOCK, {
@@ -103,44 +114,44 @@ export default function UserActionPopup(props: UserActionProps) {
 
   return (
     <Popup className="user-actions">
-      <h4>{user.getUsername()}</h4>
-      {buttonClicked === 1 ? (
+      <h4>{props.user.getUsername()}</h4>
+      {props.buttonClicked === 1 ? (
         <>
-          {isBanned === true ? (
-            <div className="ban" onClick={() => onBan(true)}>
+          {localIsBanned === true ? (
+            <div className="ban" onClick={() => onBan(!localIsBanned)}>
               Bannir
             </div>
           ) : (
-            <div className="unban" onClick={() => onBan(false)}>
+            <div className="unban" onClick={() => onBan(!localIsBanned)}>
               Débannir
             </div>
           )}
 
-          <div className="kick" onClick={() => onKick}>
+          <div className="kick" onClick={() => onKick()}>
             Expulser
           </div>
 
-          {isMuted === true ? (
-            <div className="mute" onClick={() => onMute(true)}>
+          {localIsMuted === true ? (
+            <div className="mute" onClick={() => onMute(!localIsMuted)}>
               Rendre muet
             </div>
           ) : (
-            <div className="unmute" onClick={() => onMute(false)}>
+            <div className="unmute" onClick={() => onMute(!localIsMuted)}>
               Rendre la parole
             </div>
           )}
 
-          {isAdmin === true ? (
-            <div className="promote" onClick={() => onPromote(true)}>
+          {localIsAdmin === true ? (
+            <div className="promote" onClick={() => onPromote(!localIsAdmin)}>
               Définir administrateur
             </div>
           ) : (
-            <div className="demote" onClick={() => onPromote(false)}>
+            <div className="demote" onClick={() => onPromote(!localIsAdmin)}>
               Supprimer des administrateurs
             </div>
           )}
         </>
-      ) : buttonClicked === 0 ? (
+      ) : props.buttonClicked === 0 ? (
         <>
           <div className="dm" onClick={onDm}>
             Envoyer un message privé
@@ -148,12 +159,12 @@ export default function UserActionPopup(props: UserActionProps) {
           <div className="invite-to-play" onClick={onInvite}>
             Inviter à jouer
           </div>
-          {isBlocked === true ? (
-            <div className="block-user" onClick={() => onBlock(true)}>
+          {localIsBlocked === true ? (
+            <div className="block-user" onClick={() => onBlock(!localIsBlocked)}>
               Bloquer
             </div>
           ) : (
-            <div className="unblock-user" onClick={() => onBlock(false)}>
+            <div className="unblock-user" onClick={() => onBlock(!localIsBlocked)}>
               Débloquer
             </div>
           )}

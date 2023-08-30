@@ -135,6 +135,8 @@
 
               height: 4vh;
               width: 9vw;
+              min-width: 80px;
+              min-height: 50px;
 
               background-color: white;
               border: 1px solid gray;
@@ -369,6 +371,8 @@
             height: max-content;
             max-height: 20vw;
             width: 10vw;
+            min-width: 130px;
+            min-height: 180px;
 
             background-color: white;
             border-radius: 5px;
@@ -450,7 +454,6 @@
                 background-color: #c9c9c9;
               }
 
-
               .dm {
                 border-bottom: 1px solid lightgray;
               }
@@ -459,7 +462,8 @@
                 border-bottom: 1px solid lightgray;
               }
 
-              .block-user {}
+              .block-user {
+              }
             }
           }
 
@@ -702,15 +706,19 @@
                 word-wrap: break-word;
 
                 h4 {
-                  text-transform: uppercase;
+                  text-transform: uppercase; //?
                   margin: 0px;
                   border-bottom: 1px solid lightgray;
+                  cursor: default;
                 }
 
-                .ban:hover,
                 .kick:hover,
+                .ban:hover,
                 .mute:hover,
                 .promote:hover,
+                .unban:hover,
+                .unmute:hover,
+                .demote:hover,
                 .dm:hover,
                 .invite-to-play:hover,
                 .block-user:hover {
@@ -718,6 +726,10 @@
                 }
 
                 .ban {
+                  border-bottom: 1px solid lightgray;
+                }
+
+                .unban {
                   border-bottom: 1px solid lightgray;
                 }
 
@@ -729,7 +741,15 @@
                   border-bottom: 1px solid lightgray;
                 }
 
+                .unmute {
+                  border-bottom: 1px solid lightgray;
+                }
+
                 .promote {
+                  border-bottom: 1px solid lightgray;
+                }
+
+                .demote {
                   border-bottom: 1px solid lightgray;
                 }
 
@@ -741,11 +761,11 @@
                   border-bottom: 1px solid lightgray;
                 }
 
-                .block-user {}
+                .block-user {
+                }
               }
             }
           }
-
         }
 
         .manage {

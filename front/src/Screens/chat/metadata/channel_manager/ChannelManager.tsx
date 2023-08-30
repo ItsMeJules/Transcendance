@@ -16,7 +16,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
   const [channelUsersList, toggleChannelUsersList] = useState<boolean>(false);
 
   const { channelData }: ChannelManagerProps = props;
-  const usersSize = channelData?.usersId?.length || 0
+  const usersSize = channelData?.usersId?.length || 0;
 
   const manageStyle = {
     transition: "transform 1s ease",
@@ -26,32 +26,27 @@ export default function ChannelManager(props: ChannelManagerProps) {
   return (
     <>
       <div className="channel-infos">
-        <div className="channel-name">
-          {channelData?.name}
-        </div>
+        <div className="channel-name">{channelData?.name}</div>
 
-        <OutsideClickHandler className="channel-users-container"
+        <OutsideClickHandler
+          className="channel-users-container"
           onOutsideClick={() => toggleChannelUsersList(false)}
           onInsideClick={() => toggleChannelUsersList(!channelUsersList)}
         >
-          <div className="channel-users-count">
-            {"Membres : " + usersSize}
-          </div>
+          <div className="channel-users-count">{"Membres : " + usersSize}</div>
           {channelUsersList ? <ChannelUsersPopup channelData={channelData} /> : undefined}
         </OutsideClickHandler>
       </div>
 
-      <OutsideClickHandler className="manage"
+      <OutsideClickHandler
+        className="manage"
         onOutsideClick={() => setManageChannel(false)}
-        onInsideClick={() => setManageChannel(!manageChannel)} >
-        <img
-          alt="Settings"
-          src={SettingsIcon}
-          style={manageStyle}
-        />
+        onInsideClick={() => setManageChannel(!manageChannel)}
+      >
+        <img alt="Settings" src={SettingsIcon} style={manageStyle} />
 
         {manageChannel && <ManageChannelPopup channelData={channelData} />}
       </OutsideClickHandler>
     </>
-  )
+  );
 }

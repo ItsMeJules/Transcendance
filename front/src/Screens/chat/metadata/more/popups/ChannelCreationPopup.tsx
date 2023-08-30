@@ -19,6 +19,7 @@ export default function ChannelCreationPopup() {
     useContext(SendDataContext);
 
   const createChannel = () => {
+    if (channelName.substr(0, 3) === "dm-") return; // error message0,0,
     if (sendData == null) return;
     if (!channelName.trim()) return;
     if (channelType === ChannelType.PROTECTED && !channelPassword.trim()) return;
