@@ -97,6 +97,7 @@ export const ChatBox = () => {
     chatSocket?.on(ChatSocketEventType.ACKNOWLEDGEMENTS, (payload: SocketAcknowledgements) =>
       displayAcknowledgements(payload)
     );
+    
     chatSocket?.on(ChatSocketEventType.FETCH_MESSAGES, (payload: any) => {
       payload = payload.map((message: any) => {
         return {
