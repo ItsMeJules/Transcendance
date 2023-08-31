@@ -37,7 +37,7 @@ export class TwoFaService {
       'salut petit correcteur',
       secret,
     );
-
+    console.log('otpAuthUrl :', otpAuthUrl);
     await this.userService.setTwoFactorAuthenticationSecret(secret, user.id);
 
     return {

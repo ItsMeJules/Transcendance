@@ -6,6 +6,7 @@ export enum ChatSocketEventType {
   FETCH_MESSAGES = `fetch-messages`,
   CHAT_ACTION = 'chat-action',
   ROOM_ACTION = 'room-action',
+  ACKNOWLEDGEMENTS = 'acknowledgements',
 }
 
 export enum RoomSocketActionType {

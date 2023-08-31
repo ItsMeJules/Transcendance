@@ -1,3 +1,8 @@
+import {
+  AcknowledgementType,
+  RoomInfo,
+  AcknowledgementPayload,
+} from './partial_types/partial.types';
 import { Injectable } from '@nestjs/common';
 import { Message, Room, RoomType } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
@@ -8,12 +13,33 @@ import * as ChatDtos from './dto';
 import { BlockDto } from './dto/block.dto';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
 
+// Optis if time:
+// dont return complete tables, only relation fields needed for checks.
+// add a global check for room actions but not invite because of banned users.
+// refacto all function especially create room.
+
 @Injectable()
 export class ChatService {
   constructor(
     private prismaService: PrismaService,
     private userSocketsService: UserSocketsService,
   ) {}
+
+  sendError(client: Socket, error: Error): void {
+    const payload: AcknowledgementPayload = {
+      message: error.message,
+      type: AcknowledgementType.ERROR,
+    };
+    console.log('payload :', payload);
+    client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+  }
+  // async sendAcknowledgement(
+  //   type: string,
+  //   message: string,
+  //   server: Server,
+  //   clients: Socket[],
+  //   room:
+  // ) {}
 
   async sendMessageToRoom(
     client: Socket,
@@ -26,12 +52,6 @@ export class ChatService {
         sendMsgRoomDto.roomName,
       );
 
-      console.log(
-        'room.mutes.ids : ',
-        room.mutes.map((muted) => muted.id),
-        'client.data.id : ',
-        client.data.id,
-      );
       if (room.mutes.some((muted) => client.data.id === muted.id))
         throw new Error('user is muted until :'); //time
 
@@ -45,7 +65,9 @@ export class ChatService {
       });
 
       const picturePayload = {
-        ...messageData,
+        text: sendMsgRoomDto.message,
+        authorId: client.data.id,
+        clientId: client.id,
         profilePicture:
           'https://cdn.intra.42.fr/users/d97b6212aaf900daa3e64abff472b7b8/jpeyron.jpg', //TODO Change my picture.
         userName: 'jpeyron',
@@ -63,7 +85,7 @@ export class ChatService {
       );
       console.log('sendMessageToRoom function end');
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -171,7 +193,7 @@ export class ChatService {
       console.log('createRoom function ending');
       return room;
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -210,7 +232,7 @@ export class ChatService {
 
       return messagesWithClientId;
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -236,7 +258,7 @@ export class ChatService {
         .to(client.id)
         .emit(RoomSocketActionType.USERS_ON_ROOM, { users: neededFields });
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -292,10 +314,16 @@ export class ChatService {
       joinRoomDto.server
         .to(client.id)
         .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
-
+      const message = 'You joined "' + joinRoomDto.roomName + '"';
+      joinRoomDto.server
+        .to(client.id)
+        .emit(ChatSocketEventType.ACKNOWLEDGEMENTS, {
+          message: message,
+          type: 'info',
+        });
       return room;
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -322,7 +350,7 @@ export class ChatService {
         });
       }
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -354,31 +382,36 @@ export class ChatService {
       }
       console.log('blockUserToggle function end');
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
-  ///////////////////////////// ROOM FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  ////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  ////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  /////////////////////////////                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  /////////////////////////////                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  //||||||||||||||||||||||||||| ROOM FUNCTIONS |||||||||||||||||||||||||||\\
+  //\\\\\\\\\\\\\\\\\\\\\\\\\\\                ///////////////////////////\\
+  //\\\\\\\\\\\\\\\\\\\\\\\\\\\                ///////////////////////////\\
+  //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\////////////////////////////////////\\
+  //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\////////////////////////////////////\\
+  //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\////////////////////////////////////\\
 
   hierarchyCheck(
     room: CompleteRoom,
     actingUser: CompleteUser,
     target: CompleteUser,
   ): boolean {
-    console.log('hierarchyCheck function beginning');
-    console.log('target.id : ', target.id);
-    console.log('roomOwner.id : ', room.ownerId);
-    if (target.id === room.ownerId) return true;
+    if (target.id === room.ownerId)
+      throw new Error(`${target.username} is the owner of ${room.name}`);
     if (actingUser.id === room.ownerId) return false;
     if (
       room.admins.some((admin) => admin.id === actingUser.id) &&
       room.admins.some((admin) => admin.id === target.id)
     )
-      // admin to admin check
-      return true;
+      throw new Error(`${target.username} also is an admin of "${room.name}"`);
     if (room.admins.some((admin) => admin.id === actingUser.id)) return false;
-    console.log('hierarchyCheck function end');
-    return true;
+    throw new Error(`Your social status is too low on this channel :(`);
   }
 
   async promoteToAdminToggle(
@@ -400,7 +433,7 @@ export class ChatService {
       );
 
       if (actingUser.id === targetUser.id)
-        throw new Error("You can't use actions on yourself");
+        throw new Error("You can't promote yourself...");
 
       if (this.hierarchyCheck(room, actingUser, targetUser))
         throw new Error("You don't have permission");
@@ -419,9 +452,11 @@ export class ChatService {
         console.log(targetUser.username + ' is promoted');
       }
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
+
+  // roomActionsCheck();
 
   async banUserToggle(client: Socket, banDto: ChatDtos.BanDto): Promise<void> {
     try {
@@ -440,7 +475,7 @@ export class ChatService {
         throw new Error('no room');
       }
       if (actingUser.id === targetUser.id)
-        throw new Error("You can't use actions on yourself");
+        throw new Error("You can't ban yourself");
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
         throw new Error("You don't have permission");
       }
@@ -487,7 +522,7 @@ export class ChatService {
       }
       console.log('banUserToggle function ending');
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -510,9 +545,9 @@ export class ChatService {
         muteDto.targetId,
       );
       if (actingUser.id === targetUser.id)
-        throw new Error("You can't use actions on yourself");
+        throw new Error("You can't mute yourself");
       if (!room) {
-        throw new Error('no room');
+        throw new Error('No room');
       }
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
         throw new Error("You don't have permission");
@@ -542,7 +577,7 @@ export class ChatService {
       }
       console.log('muteUserFromRoomToggle function ending');
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -558,7 +593,6 @@ export class ChatService {
       });
       const userSocket = this.userSocketsService.getUserSocket(String(userId));
       const room = await this.prismaService.returnCompleteRoom(roomName);
-      if (!room) throw new Error('no room');
       console.log('user socket id : ', userSocket.id);
       console.log('making him switch channel to ', roomName);
       // VVVV Change currentRoom VVVV
@@ -597,7 +631,10 @@ export class ChatService {
       console.log('userJoinRoom function end');
       return true;
     } catch (error) {
-      console.log(error);
+      this.sendError(
+        this.userSocketsService.getUserSocket(String(userId)),
+        error,
+      );
     }
   }
 
@@ -623,7 +660,7 @@ export class ChatService {
         throw new Error('no room');
       }
       if (actingUser.id === targetUser.id)
-        throw new Error("You can't use actions on yourself");
+        throw new Error("You can't kick yourself");
       console.log(targetUser.currentRoom, room.name);
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
         throw new Error("You don't have permission");
@@ -635,7 +672,7 @@ export class ChatService {
       console.log('kicked');
       return true;
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -653,8 +690,9 @@ export class ChatService {
       }
       const password: string = client.data.password;
       if (currentRoom.ownerId !== client.data.id)
-        throw new Error('you are not the owner');
-      if (currentRoom.password === password) throw new Error('Same password');
+        throw new Error('You need to own the channel to modify the password');
+      if (currentRoom.password === password)
+        throw new Error('You need a different password');
       if (password === '') {
         await this.prismaService.room.update({
           where: { name: currentRoom.name },
@@ -672,7 +710,7 @@ export class ChatService {
       }
       return password;
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 
@@ -718,10 +756,9 @@ export class ChatService {
           where: { name: inviteDto.roomName },
           data: { users: { connect: { id: targetUser.id } } },
         });
-        // code client.emit('code', 'You can now access to the room : {roomName}')
       }
     } catch (error) {
-      console.log(error);
+      this.sendError(client, error);
     }
   }
 }
