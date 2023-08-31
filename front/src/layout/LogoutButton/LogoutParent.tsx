@@ -3,6 +3,8 @@ import handleLogout from "./useLogout";
 import { FaArrowRightFromBracket } from 'react-icons/fa6'
 import { IconContext } from 'react-icons';
 
+import "../../pages/Dashboard/css/Dashboard.scss";
+
 interface LogoutParentProps {
   setErrMsg: (error: string) => void; // Callback function to set errMsg in UserProfile component
 }
