@@ -4,7 +4,7 @@ import User, { UserData } from "../../../../../Services/User";
 import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
 import { useAppSelector } from "../../../../../redux/Store";
 import { SendDataContext } from "../../../ChatBox";
-import { ChannelData, ChannelUser, ChannelUserRole, createChannelUser } from "../../../models/Channel";
+import { ChannelData, ChannelType, ChannelUser, ChannelUserRole, createChannelUser } from "../../../models/Channel";
 import PayloadAction from "../../../models/PayloadSocket";
 import { RoomSocketActionType } from "../../../models/TypesActionsEvents";
 import Popup from "../../../utils/Popup";
@@ -20,7 +20,7 @@ interface ChannelUsersPopupProps {
 
 export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProps) {
   const [searchText, setSearchText] = useState("");
-  const [invitedUsername, setInvitedUsername] = useState<string>("");
+  const [invitedUsername, setInvitedUsername] = useState<string | null>(null);
   const [invited, setInvited] = useState(false);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const { username: activeUserName, id: activeId } = useAppSelector(store => store.user.userData)
@@ -66,12 +66,15 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
 
   const onSearching = async (text: string, inputId: number) => {
     if (inputId === 0) {
-      if (invitedUsername.length !== 0) setInvitedUsername("");
+      if (invitedUsername !== null) setInvitedUsername(null);
 
       setSearchText(text);
     } else {
       if (searchText.length !== 0) setSearchText("");
-      if (allUsers.length === 0) setAllUsers(await fetchAllUsers())
+      if (allUsers.length === 0) {
+        const allUsers = await fetchAllUsers();
+        setAllUsers(allUsers)
+      }
 
       setInvitedUsername(text);
     }
@@ -85,7 +88,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
   };
 
   const onUserClick = ({ event, userData }: UserClickParameters) => {
-    if (invitedUsername.length === 0) {
+    if (invitedUsername === null) {
       setButtonClicked(event.button);
     } else {
       onUserInvite(userData);
@@ -106,11 +109,12 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
           type="search"
           placeholder="Chercher un utilisateur"
           value={searchText}
+          onFocus={(e) => onSearching("", 0)}
           onChange={(e) => onSearching(e.target.value, 0)}
         />
-        {invitedUsername.length !== 0
+        {invitedUsername !== null
           ? <UsersList
-            users={allUsers.filter(user => channelData.usersId.find(userId => parseInt(user.getId()) === null))}
+            users={allUsers.filter(user => channelData.usersId.find(userId => parseInt(user.getId()) === userId) === undefined)}
             filter={(userName) => filter(userName.toLowerCase(), invitedUsername.toLowerCase())}
             onUserClick={onUserClick}
           />
@@ -120,14 +124,18 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
             onUserClick={onUserClick}
           />
         }
-        <input
-          className="invite-user"
-          type="search"
-          placeholder="Inviter quelqu'un"
-          value={invitedUsername}
-          onChange={(e) => onSearching(e.target.value, 1)}
-          required
-        />
+        {channelData.type === ChannelType.PRIVATE
+        ?
+          <input
+            className="invite-user"
+            type="search"
+            placeholder="Inviter quelqu'un"
+            value={invitedUsername === null ? "" : invitedUsername}
+            onFocus={(e) => onSearching("", 1)}
+            onChange={(e) => onSearching(e.target.value, 1)}
+            required
+          />
+        : undefined}
       </Popup>
 
       {channelUserClicked !== null ? (
