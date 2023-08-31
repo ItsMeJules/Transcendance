@@ -123,8 +123,6 @@ export function transformSliceToChannelData(data: any): ChannelData {
     };
   });
 
-  console.log(data)
-
   return {
     type: data.type,
     name: data.name,

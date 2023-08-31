@@ -13,7 +13,7 @@ type ChannelUserComponentProps = {
 
 export default function ChannelUserComponent(
   { channelUser, onUserClick = (params: UserClickParameters) => { } }: ChannelUserComponentProps) {
-  console.log(channelUser)
+    
   const badgeImgSrc = channelUser.role === ChannelUserRole.OWNER
     ? OwnerBadge
     : channelUser.role === ChannelUserRole.ADMIN

@@ -16,7 +16,6 @@ export default function ChannelManager(props: ChannelManagerProps) {
   const [channelUsersList, toggleChannelUsersList] = useState<boolean>(false);
 
   const { channelData }: ChannelManagerProps = props;
-  console.log("channeldata ", channelData)
   const usersSize = channelData?.usersId?.length || 0;
 
   const manageStyle = {
