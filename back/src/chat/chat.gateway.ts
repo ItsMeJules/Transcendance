@@ -29,7 +29,7 @@ export class ChatEventsGateway {
   ) {}
 
   private async setupConnection(client: Socket): Promise<User | null> {
-    console.log('> chat connection in');
+    // console.log('> chat connection in');
 
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
@@ -74,7 +74,7 @@ export class ChatEventsGateway {
         this.server
           .to(client.id)
           .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
-        console.log('just emitted' ,  currentCompleteRoom, messagesWithClientId)
+        // console.log('just emitted' ,  currentCompleteRoom, messagesWithClientId)
       })
       .catch((reason) => console.log(reason));
   }

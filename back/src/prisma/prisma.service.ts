@@ -29,7 +29,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         },
       });
     }
-    console.log('generalChat:', generalChat);
     return generalChat;
   }
 

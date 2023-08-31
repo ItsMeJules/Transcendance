@@ -33,7 +33,6 @@ export class PongEvents {
   ) { }
 
   async handleConnection(client: Socket) {
-    console.log('1 connectin in');
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();

@@ -29,9 +29,9 @@
 }
 	
 .myBtn {
-    background-color: #4CAF50; /* Green */
+    background-color: rgba(0, 128, 0, 0.3); /* Green */
     border: none;
-    color: white; /* Text color */
+    color: rgba(255, 255, 255, 0.7); /* Text color */
     padding: 15px 32px; /* Padding around text */
     text-align: center; /* Center the text */
     text-decoration: none;
@@ -50,7 +50,7 @@
 .deactivate {
     background-color: #da243c;
     border: none;
-    color: white; /* Text color */
+    color: rgba(255, 255, 255, 0.7); /* Text color */
     padding: 15px 32px; /* Padding around text */
     text-align: center; /* Center the text */
     text-decoration: none;

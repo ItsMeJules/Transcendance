@@ -4,7 +4,7 @@ import RightScreen from './components/RightScreen';
 import NavFooter from './components/NavFooter';
 import './css/Dashboard.scss';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { APP_ROUTES } from 'utils/routing/routing';
+import { APP_ROUTES, APP_SCREENS } from 'utils/routing/routing';
 import Profile from 'pages/Profile/Profile';
 import Spectate from 'pages/Spectate/Spectate';
 import Play from 'pages/Play/Play';
@@ -14,7 +14,7 @@ import JoinGame from 'pages/JoinGame/JoinGame';
 import Websocket from 'services/Websocket/Websocket';
 
 const Dashboard = () => {
-  const [rightContent, setRightContent] = useState<number>(-1);
+  const [rightContent, setRightContent] = useState<number>(APP_SCREENS.CHAT);
   const location = useLocation();
 
   useEffect(() => {
