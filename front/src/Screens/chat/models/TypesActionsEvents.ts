@@ -12,10 +12,11 @@ export enum ChatSocketActionType {
   CREATE_CHANNEL = "createRoom",
   FETCH_HISTORY = "fetchHistory",
   SWITCH_CHANNEL = "joinRoom",
+  LEAVE_ROOM = "leaveRoom",
+  CHANGE_PASSWORD = "changePassword",
 }
 
 export enum RoomSocketActionType {
-  LEAVE_ROOM = "leaveRoom",
   BAN = "ban",
   UNBAN = "unban",
   PROMOTE = "promote",
@@ -23,7 +24,6 @@ export enum RoomSocketActionType {
   MUTE = "mute",
   UNMUTE = "unmute",
   KICK = "kick",
-  CHANGE_PASSWORD = "change-password",
   INVITE = "invite",
   USERS_ON_ROOM = "users-on-room",
 }

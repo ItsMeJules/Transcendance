@@ -8,11 +8,14 @@ import { useAppSelector } from "../../../../../redux/Store";
 import { SendDataContext } from "../../../ChatBox";
 import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
 import PayloadAction from "../../../models/PayloadSocket";
-import { RoomSocketActionType } from "../../../models/TypesActionsEvents";
+import {
+  RoomSocketActionType,
+  ChatSocketActionType,
+} from "../../../models/TypesActionsEvents";
 import Popup from "../../../utils/Popup";
 
 interface ChannelPopupProps {
-  channelData: ChannelData
+  channelData: ChannelData;
 }
 
 const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProps) => {
@@ -21,34 +24,35 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
 
   const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
   const sendData: null | ((action: string, data: PayloadAction) => void) =
-  useContext(SendDataContext);
+    useContext(SendDataContext);
 
   const changeChannel = () => {
     const { channelData } = props;
 
-    if (!channelData || channelType === channelData.type)
-      return;
+    if (!channelData || channelType === channelData.type) return;
 
-    if (channelType === ChannelType.PROTECTED)
-      channelData.password = channelPassword;
+    if (channelType === ChannelType.PROTECTED) channelData.password = channelPassword;
 
+    sendData?.(ChatSocketActionType.CHANGE_PASSWORD, {
+      action: ChatSocketActionType.CHANGE_PASSWORD,
+      password: channelPassword,
+    });
     channelData.type = channelType;
     setChannelPassword("");
-  }
+  };
 
   const quitChannel = () => {
-    if (sendData === null) return
+    if (sendData === null) return;
 
-    sendData(RoomSocketActionType.LEAVE_ROOM, {
+    sendData(ChatSocketActionType.LEAVE_ROOM, {
+      action: ChatSocketActionType.LEAVE_ROOM,
       roomName: activeChannelName,
     } as PayloadAction);
-  }
+  };
 
   return (
     <Popup className="channel-popup">
-      <div className="channel-description">
-        {ChannelTypeDescription[channelType].desc}
-      </div>
+      <div className="channel-description">{ChannelTypeDescription[channelType].desc}</div>
 
       <div className="images">
         <img
@@ -86,11 +90,11 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
         <p onClick={changeChannel}>Modifier le channel</p>
       </div>
 
-        <div className="quit-channel">
-          <p onClick={quitChannel}>Quitter le channel</p>
-        </div>
+      <div className="quit-channel">
+        <p onClick={quitChannel}>Quitter le channel</p>
+      </div>
     </Popup>
   );
-}
+};
 
 export default ManageChannelPopup;

@@ -301,6 +301,7 @@ export class ChatService {
 
   async leaveRoom(client: Socket, leaveDto: ChatDtos.LeaveDto): Promise<void> {
     try {
+      console.log('hello');
       const room = await this.prismaService.returnCompleteRoom(
         leaveDto.roomName,
       );
