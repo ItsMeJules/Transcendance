@@ -397,7 +397,6 @@ export class GameStruct {
   /* Functions to update the front on the game state */
   sendUpdateToRoom(playerStatus: string, opponentStatus: string, countdown: number, channel: string) {
     let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
-    console.log('update sent to room:', this.prop.room, ' and channel:', channel);
     this.pongEvents.server.to(this.prop.room).emit(channel,
       {
         gameStatus: this.prop.status,

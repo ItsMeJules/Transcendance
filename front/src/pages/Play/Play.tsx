@@ -86,16 +86,12 @@ const Play = () => {
   // Sockets on
   useEffect(() => {
     socket.game?.on('prepareToPlay', (data: GameSocket) => {
-      console.log('DATA PREPARE', data);
       setGameState(data);
     });
-
     socket.game?.on('refreshGame', (data: GameSocket) => {
-      console.log('DATA game', data);
       setGameState(data);
     });
     socket.game?.on('noGame', (data: noGame) => {
-      console.log('DATA no game', data);
       if (data.status === 'noGame')
         setGameStatus('noGame');
     });
@@ -110,16 +106,14 @@ const Play = () => {
 
   // Game useEffect
   useEffect(() => {
-    // console.log('gamestate:', gameState);
+    console.log('gamestate:', gameState);
     if (gameState?.gameStatus) {
-      // console.log('1111111111111');
       setGameStatus(gameState?.gameStatus);
       game.pl1.score = gameState.gameParams.pl1.score === -1 ? 0 : gameState.gameParams.pl1.score;
       game.pl2.score = gameState.gameParams.pl2.score === -1 ? 0 : gameState.gameParams.pl2.score;
       setGame({ ...game });
     }
     if (gameState?.gameStatus === 'giveUp') {
-      // console.log('222222222');
       game.isPlaying = false;
       if ((gameState.gameParams.pl1.status === 'givenUp' && whichPlayer === 2)
         || (gameState.gameParams.pl2.status === 'givenUp' && whichPlayer === 1)) {
@@ -131,7 +125,6 @@ const Play = () => {
       }
     }
     else if (gameState?.gameStatus === 'ended') {
-      // console.log('33333333333');
       if ((gameState.gameParams.pl1.isWinner === true && whichPlayer === 1)
         || (gameState.gameParams.pl2.isWinner === true && whichPlayer === 2)) {
         setCentralText('You win!!');
@@ -142,7 +135,6 @@ const Play = () => {
       }
     }
     else if (gameState) {
-      // console.log('444444444444444444');
       game.ball.updateBall(game.board, gameState.gameParams.ball);
       game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
       game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
@@ -151,24 +143,19 @@ const Play = () => {
 
   // Prepare useEffect
   useEffect(() => {
-    console.log('socketDataPrepare:', gameState);
-    if (gameStatus === 'noGame') {
-      console.log("NO GAME NO GOOD :(");
+    console.log('socketDataPrepare:', gameState?.countdown);
+    if (gameStatus === 'noGame')
       history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
-    }
     if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);
     if (gameState?.gameStatus === 'pending'
       || (gameState?.playerStatus === 'pending' && gameState.gameStatus !== 'timeout')) {
-      console.log('Ready<<<<<');
       setCentralText('Ready?');
     } else if (gameState?.gameStatus === 'waiting'
       && gameState.playerStatus === 'ready'
       && gameState.opponentStatus === 'pending') {
-      console.log('waiting opponent<<<<<');
       setIsPlayerReady(true);
       setCentralText('Waiting for opponent');
     } else if (gameState?.gameStatus === 'countdown') {
-      console.log('countdown<<<<<');
       setIsOpponentReady(true);
       setIsPlayerReady(true);
       if (gameState.countdown) {
@@ -176,19 +163,15 @@ const Play = () => {
       } else
         setCentralText('Get ready!');
     } else if (gameState?.gameStatus === 'timeout') {
-      console.log('timeout<<<<<');
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
         socket.game?.disconnect();
         history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
       }, 3 * 1000);
     } else if (gameState?.gameStatus === 'playing') {
-      // socket.game?.off('prepareToPlay'); // dont off and use for status?
       game.isPlaying = true;
       setGame({ ...game, isPlaying: true });
-      // socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'refreshInMotion' });
     }
-    return;
   }, [gameState, gameStatus]);
 
   // Window resizing
