@@ -60,9 +60,5 @@ export enum APP_SCREENS {
   FRIENDS,
   LEADERBOARD,
   ONLINE_GAMES,
-<<<<<<< HEAD
   ALL_USERS,
 }
-=======
-}
->>>>>>> origin/dashboard

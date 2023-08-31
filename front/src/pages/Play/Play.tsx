@@ -146,8 +146,10 @@ const Play = () => {
 
   // Prepare useEffect
   useEffect(() => {
-    if (gameStatePlay?.gameStatus === 'ended') return;
     console.log('Prepare:', gameStatePrepare);
+    if (gameStatePlay?.gameStatus === 'ended'
+    || gameStatePlay?.gameStatus === 'giveUp') return;
+    
     if (gameStatus === 'noGame') {
       console.log('thhhhhhhhhhhhhhhhhhhhhhhhhis')
 

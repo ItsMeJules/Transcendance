@@ -43,46 +43,38 @@ export class SocketEvents {
     client.join('general_online');
   }
 
-<<<<<<< HEAD
   async handleDisconnect(client: Socket) {
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     this.idToSocketMap.delete(user.id);
-=======
-  handleDisconnect(client: Socket) {
-    console.log('> general Conection out', client.id);
-
-    const socketId = client.handshake.query.userId;
-    // console.log("users:", this.connectedUsers);
->>>>>>> origin/dashboard
   }
 
-  @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
-  async allUsersHandler(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { action: string }) {
-    console.log('All users and status:', data.action);
+  // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
+  // async allUsersHandler(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody() data: { action: string }) {
+  //   console.log('All users and status:', data.action);
 
-    // if (!client.data.id) {
-    //   client.disconnect();
-    //   return;
-    // }
-    // const userId = parseInt(client.data.id);
-    // // protect and manage errors
-    // const allUsers = await this.prismaService.user.findMany({
-    //   orderBy: {
-    //     username: 'asc',
-    //   }
-    // });
-    // console.log('playersMap:', this.pongStoreService.playersMap);
-    // allUsers.forEach((user) => {
-    //   delete user.hash;
-    //   const isPlaying = this.pongStoreService.playersMap.get(user.id);
-    //   user.isPlaying = isPlaying !== undefined ? true : false;
-    //   const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
-    //   user.isOnline = isOnline !== undefined ? true : false;
-    // });
-    // console.log('all users list:', allUsers);
-    // this.server.to(`user_${userId}`).emit('allUsers', allUsers);
-  }
+  //   if (!client.data.id) {
+  //     client.disconnect();
+  //     return;
+  //   }
+  //   const userId = parseInt(client.data.id);
+  //   // protect and manage errors
+  //   const allUsers = await this.prismaService.user.findMany({
+  //     orderBy: {
+  //       username: 'asc',
+  //     }
+  //   });
+  //   console.log('playersMap:', this.pongEvents.playersMap);
+  //   allUsers.forEach((user) => {
+  //     delete user.hash;
+  //     const isPlaying = this.pongEvents.playersMap.get(user.id);
+  //     user.isPlaying = isPlaying !== undefined ? true : false;
+  //     const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
+  //     user.isOnline = isOnline !== undefined ? true : false;
+  //   });
+  //   console.log('all users list:', allUsers);
+  //   this.server.to(`user_${userId}`).emit('allUsers', allUsers);
+  // }
 }

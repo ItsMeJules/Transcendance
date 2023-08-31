@@ -15,6 +15,7 @@ CREATE TABLE "users" (
     "isOnline" BOOLEAN NOT NULL DEFAULT false,
     "isTwoFactorAuthenticationEnabled" BOOLEAN NOT NULL DEFAULT false,
     "twoFactorAuthenticationSecret" TEXT,
+    "isPlaying" BOOLEAN NOT NULL DEFAULT false,
     "gamesPlayed" INTEGER DEFAULT 0,
     "gamesWon" INTEGER DEFAULT 0,
     "userPoints" INTEGER DEFAULT 0,

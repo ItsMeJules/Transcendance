@@ -71,7 +71,7 @@ export class PongEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() gameDto: GameDto) {
 
-    // console.log('Matchmaking - gameMode:', gameDto);
+    console.log('Matchmaking - gameMode:', gameDto);
 
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) {
@@ -333,6 +333,7 @@ export class PongEvents {
     } else
       return;
     if (gameStruct.prop.status !== 'ended') {
+      console.log('HEREEEEEEEEEEEEEEEEEEEEE give up');
       gameStruct.stopGameLoop();
       gameStruct.prop.status = 'giveUp';
       player.status = 'givenUp';
@@ -340,6 +341,7 @@ export class PongEvents {
       this.playersMap.delete(player.id);
       this.playersMap.delete(opponent.id);
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'refreshGame');
+      gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
       this.updateEmitOnlineGames('toRoom', 0);
       // this.allUsersUpdater();
     }
@@ -446,6 +448,35 @@ export class PongEvents {
       return false;
     return true;
   }
+
+  // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
+  // async allUsersHandler(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody() data: { action: string }) {
+  //   console.log('All users and status:', data.action);
+
+  //   if (!client.data.id) {
+  //     client.disconnect();
+  //     return;
+  //   }
+  //   const userId = parseInt(client.data.id);
+  //   // protect and manage errors
+  //   const allUsers = await this.prismaService.user.findMany({
+  //     orderBy: {
+  //       username: 'asc',
+  //     }
+  //   });
+  //   console.log('playersMap:', this.pongEvents.playersMap);
+  //   allUsers.forEach((user) => {
+  //     delete user.hash;
+  //     const isPlaying = this.pongEvents.playersMap.get(user.id);
+  //     user.isPlaying = isPlaying !== undefined ? true : false;
+  //     const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
+  //     user.isOnline = isOnline !== undefined ? true : false;
+  //   });
+  //   console.log('all users list:', allUsers);
+  //   this.server.to(`user_${userId}`).emit('allUsers', allUsers);
+  // }
 
   // Update all users
   // async allUsersUpdater() {

@@ -81,7 +81,7 @@ export class ChatEventsGateway {
 
   handleDisconnect(client: Socket): void {
     this.userSocketsService.removeUserSocket(client.data.id);
-    console.log('removed socket data of user id : ', client.data.id);
+    // console.log('removed socket data of user id : ', client.data.id);
     client.off(ChatSocketEventType.MESSAGE, () => console.log('chat !'));
     client.off(ChatSocketEventType.CHAT_ACTION, () =>
       console.log('chat action !'),

@@ -47,10 +47,10 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
   const { id: userId } = useAppSelector(state => state.user.userData);
   
   useEffect((): (() => void) => {
-    console.log(userId);
+    // console.log(userId);
     if (userId) {
-      console.log("yo")
-      console.log("yo" , OpenSocket("http://localhost:8000/chat"));
+      // console.log("yo")
+      // console.log("yo" , OpenSocket("http://localhost:8000/chat"));
       const general =
         socketInstances.general?.connected !== true
           ? OpenSocket("http://localhost:8000/general")
