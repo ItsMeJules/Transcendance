@@ -462,6 +462,7 @@ export class ChatService {
 
   ////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   ////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  ////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   /////////////////////////////                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   /////////////////////////////                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   //||||||||||||||||||||||||||| ROOM FUNCTIONS |||||||||||||||||||||||||||\\
@@ -859,13 +860,14 @@ export class ChatService {
   ): Promise<string> {
     // encode pw later
     try {
+      console.log('modifyPassword function beginning');
       const currentRoom = await this.prismaService.returnCompleteRoom(
         modifyPasswordDto.roomName,
       );
       if (currentRoom.type === RoomType.DIRECT) {
         throw new Error("You can't modify the password of dms channels");
       }
-      const password: string = client.data.password;
+      const password = modifyPasswordDto.password;
       if (currentRoom.ownerId !== client.data.id)
         throw new Error('You need to own the channel to modify the password');
       if (currentRoom.password === password)
@@ -887,7 +889,8 @@ export class ChatService {
         });
         this.sendSuccess(client, 'You modified the password');
       }
-      return password;
+      console.log('modifyPassword function beginning');
+      return 'euuuuh';
     } catch (error) {
       this.sendError(client, error);
     }
