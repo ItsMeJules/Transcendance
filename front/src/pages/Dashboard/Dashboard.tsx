@@ -22,31 +22,34 @@ const Dashboard = () => {
   }, [rightContent]);
 
   return (
-    <Websocket key={location.pathname}>
-      <div className="dashboard-main-container">
+    <main className="dashboard-main-container">
 
         <ProfileHeader />
 
         <article className="screen-container">
 
-          <Routes>
-            <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
-            <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
-            <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
-            <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
-            <Route path={APP_ROUTES.PLAY} element={<Play />} />
-            <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
-          </Routes>
+          <Websocket key={location.pathname}>
+            <Routes>
+              <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
+              <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
+              <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
+              <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
+              <Route path={APP_ROUTES.PLAY} element={<Play />} />
+              <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
+            </Routes>
+          </Websocket>
 
-          <div className="right-screen-container">
-            <RightScreen rightContent={rightContent} />
-          </div>
+          <Websocket key={rightContent}>
+            <div className="right-screen-container">
+              <RightScreen rightContent={rightContent} />
+            </div>
+          </Websocket>
+
         </article>
 
         <NavFooter setRightContent={setRightContent} />
 
-      </div>
-    </Websocket>
+      </main>
   );
 };
 

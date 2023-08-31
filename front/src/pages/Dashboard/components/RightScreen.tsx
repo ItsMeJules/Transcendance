@@ -1,4 +1,4 @@
-import { Profile, LeaderBoard, Friends, OnlineGames } from 'pages';
+import { ChatBox, LeaderBoard, Friends, OnlineGames } from 'pages';
 import { APP_SCREENS } from 'utils/routing/routing';
 
 interface RightScreenProps {
@@ -8,7 +8,7 @@ interface RightScreenProps {
 const RightScreen: React.FC<RightScreenProps> = ({ rightContent }) => {
   
   if (rightContent === APP_SCREENS.CHAT) {
-    return <Profile />;
+    return <ChatBox />;
   } else if (rightContent === APP_SCREENS.FRIENDS) {
     return <Friends />;
   } else if (rightContent === APP_SCREENS.LEADERBOARD) {

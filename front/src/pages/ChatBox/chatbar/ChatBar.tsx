@@ -16,16 +16,6 @@ const ChatBar: React.FC<ChatBarProps> = ({ setChatToggled, chatToggled }) => {
   return (
     <div className="chatbar-container">
       <div className="text">{chatToggled && <TextInput />}</div>
-
-      <div className="toggler">
-        <img
-          className="arrow-img"
-          alt="Up-Arrow"
-          src="/images/up-arrow.png"
-          style={arrowStyle}
-          onClick={() => setChatToggled(!chatToggled)}
-        />
-      </div>
     </div>
   );
 };

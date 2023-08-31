@@ -21,7 +21,7 @@ const App: React.FC = () => {
                 <Route path={APP_ROUTES.SIGN_IN} element={<LayoutWrapper><Signin /></LayoutWrapper>} />
                 <Route path={APP_ROUTES.SIGN_UP} element={<LayoutWrapper><Signup /></LayoutWrapper>} />
                 <Route path={APP_ROUTES.DASHBOARD} element={<LayoutWrapper><Dashboard /></LayoutWrapper>} />
-                <Route path={'/testchat'} element={<Websocket><LayoutWrapper><ChatBox /></LayoutWrapper></Websocket>} />
+                <Route path={'/test'} element={<Websocket><LayoutWrapper><ChatBox /></LayoutWrapper></Websocket>} />
               </Routes>
         </PersistGate>
       </Provider>
