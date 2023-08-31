@@ -54,7 +54,8 @@ const Play = () => {
   const [isOpponentReady, setIsOpponentReady] = useState(false);
 
   // const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
-  const [gameState, setGameState] = useState<GameSocket>();
+  const [gameStatePrepare, setGameStatePrepare] = useState<GameSocket>();
+  const [gameStatePlay, setGameStatePlay] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
   const [gameStatus, setGameStatus] = useState('');
 
@@ -86,14 +87,16 @@ const Play = () => {
   // Sockets on
   useEffect(() => {
     socket.game?.on('prepareToPlay', (data: GameSocket) => {
-      setGameState(data);
+      setGameStatePrepare(data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
-      setGameState(data);
+      setGameStatePlay(data);
     });
     socket.game?.on('noGame', (data: noGame) => {
-      if (data.status === 'noGame')
+      if (data.status === 'noGame') {
         setGameStatus('noGame');
+        console.log('NO GAME HITTTED');
+      }
     });
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
 
@@ -106,17 +109,17 @@ const Play = () => {
 
   // Game useEffect
   useEffect(() => {
-    console.log('gamestate:', gameState);
-    if (gameState?.gameStatus) {
-      setGameStatus(gameState?.gameStatus);
-      game.pl1.score = gameState.gameParams.pl1.score === -1 ? 0 : gameState.gameParams.pl1.score;
-      game.pl2.score = gameState.gameParams.pl2.score === -1 ? 0 : gameState.gameParams.pl2.score;
+    console.log('Play:', gameStatePlay);
+    if (gameStatePlay?.gameStatus) {
+      setGameStatus(gameStatePlay?.gameStatus);
+      game.pl1.score = gameStatePlay.gameParams.pl1.score === -1 ? 0 : gameStatePlay.gameParams.pl1.score;
+      game.pl2.score = gameStatePlay.gameParams.pl2.score === -1 ? 0 : gameStatePlay.gameParams.pl2.score;
       setGame({ ...game });
     }
-    if (gameState?.gameStatus === 'giveUp') {
+    if (gameStatePlay?.gameStatus === 'giveUp') {
       game.isPlaying = false;
-      if ((gameState.gameParams.pl1.status === 'givenUp' && whichPlayer === 2)
-        || (gameState.gameParams.pl2.status === 'givenUp' && whichPlayer === 1)) {
+      if ((gameStatePlay.gameParams.pl1.status === 'givenUp' && whichPlayer === 2)
+        || (gameStatePlay.gameParams.pl2.status === 'givenUp' && whichPlayer === 1)) {
         setCentralText('Your opponent gave up!');
         setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
       } else {
@@ -124,9 +127,9 @@ const Play = () => {
         setGame({ ...game, isEnded: true });
       }
     }
-    else if (gameState?.gameStatus === 'ended') {
-      if ((gameState.gameParams.pl1.isWinner === true && whichPlayer === 1)
-        || (gameState.gameParams.pl2.isWinner === true && whichPlayer === 2)) {
+    else if (gameStatePlay?.gameStatus === 'ended') {
+      if ((gameStatePlay.gameParams.pl1.isWinner === true && whichPlayer === 1)
+        || (gameStatePlay.gameParams.pl2.isWinner === true && whichPlayer === 2)) {
         setCentralText('You win!!');
         setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
       } else {
@@ -134,44 +137,51 @@ const Play = () => {
         setGame({ ...game, isEnded: true, isPlaying: false });
       }
     }
-    else if (gameState) {
-      game.ball.updateBall(game.board, gameState.gameParams.ball);
-      game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
-      game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
+    else if (gameStatePlay) {
+      game.ball.updateBall(game.board, gameStatePlay.gameParams.ball);
+      game.pl1.updatePlayer(game.board, gameStatePlay.gameParams.pl1);
+      game.pl2.updatePlayer(game.board, gameStatePlay.gameParams.pl2);
     }
-  }, [gameState]);
+  }, [gameStatePlay]);
 
   // Prepare useEffect
   useEffect(() => {
-    if (gameStatus === 'noGame')
+    if (gameStatePlay?.gameStatus === 'ended') return;
+    console.log('Prepare:', gameStatePrepare);
+    if (gameStatus === 'noGame') {
+      console.log('thhhhhhhhhhhhhhhhhhhhhhhhhis')
+
       history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
-    if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);
-    if (gameState?.gameStatus === 'pending'
-      || (gameState?.playerStatus === 'pending' && gameState.gameStatus !== 'timeout')) {
+    }
+    if (gameStatePrepare?.gameStatus) setGameStatus(gameStatePrepare?.gameStatus);
+    if (gameStatePrepare?.gameStatus === 'pending'
+      || (gameStatePrepare?.playerStatus === 'pending' && gameStatePrepare.gameStatus !== 'timeout')) {
       setCentralText('Ready?');
-    } else if (gameState?.gameStatus === 'waiting'
-      && gameState.playerStatus === 'ready'
-      && gameState.opponentStatus === 'pending') {
+    } else if (gameStatePrepare?.gameStatus === 'waiting'
+      && gameStatePrepare.playerStatus === 'ready'
+      && gameStatePrepare.opponentStatus === 'pending') {
       setIsPlayerReady(true);
       setCentralText('Waiting for opponent');
-    } else if (gameState?.gameStatus === 'countdown') {
+    } else if (gameStatePrepare?.gameStatus === 'countdown') {
       setIsOpponentReady(true);
       setIsPlayerReady(true);
-      if (gameState.countdown) {
-        setCentralText(gameState.countdown);
+      if (gameStatePrepare.countdown) {
+        setCentralText(gameStatePrepare.countdown);
       } else
         setCentralText('Get ready!');
-    } else if (gameState?.gameStatus === 'timeout') {
+    } else if (gameStatePrepare?.gameStatus === 'timeout') {
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
+        console.log('thhhhhhhhhhhhhhhhhhhhhhhhhaaaaaaaaaaaaaaaaaaaats')
         socket.game?.disconnect();
         history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
       }, 3 * 1000);
-    } else if (gameState?.gameStatus === 'playing') {
+    } else if (gameStatePrepare?.gameStatus === 'playing') {
       game.isPlaying = true;
+      if (socket.game) socket.game.off('prepareToPlay');
       setGame({ ...game, isPlaying: true });
     }
-  }, [gameState, gameStatus]);
+  }, [gameStatePrepare, gameStatus]);
 
   // Window resizing
   useEffect(() => {

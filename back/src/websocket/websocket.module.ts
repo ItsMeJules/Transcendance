@@ -12,7 +12,7 @@ import { PongService } from 'src/game/pong.service';
 import { PongStoreModule } from 'src/utils/pong-store/pong-store.module';
 
 @Module({
-  imports: [PongStoreModule],
+  imports: [],
   controllers: [],
   providers: [PrismaService, SocketEvents, UserService, JwtService, AuthService, PongService],
   exports: [ SocketEvents], 

@@ -24,6 +24,7 @@ export class GameStruct {
   public pl2: Player;
   public winner: Player | null;
   public loser: Player | null;
+  public firstStep = true;
   public prevFrameTime = 0;
   private readonly frameRate: number = 60; // [1 / ms]
   private readonly frameDuration: number = 1000 / this.frameRate; // [s]
@@ -52,7 +53,9 @@ export class GameStruct {
   async startGameLoop() {
     const frameStartTime = Date.now();
     const deltaTime = frameStartTime - this.prevFrameTime;
-    this.updateBallAndPaddles(deltaTime);
+    if (!this.firstStep)
+      this.updateBallAndPaddles(deltaTime);
+    this.firstStep = false;
     const remainingTime = Math.max(this.frameDuration - (Date.now() - frameStartTime), 0);
     if (this.prop.status === 'ended') {
       this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
@@ -286,8 +289,6 @@ export class GameStruct {
     return true;
   }
 
-
-
   private ballAndPaddleUnionUp(pos: Point, pad: Paddle) {
     if ((this.isPointInBall(pos)
       || this.isPointInBall(new Point(pos.x + pad.width, pos.y)))
@@ -369,11 +370,13 @@ export class GameStruct {
 
   /* Function to score a point and end game if max points is reached by a player */
   private scorePoint(winner: number) {
-    let maxScore = 11;
+    let maxScore = 1;//11;
     if (winner === 2) {
+      console.log('SCORE 2');
       this.pl2.score += 1;
       this.ball.randomService(this.board, 2, this.gameMode);
     } else if (winner === 1) {
+      console.log('SCORE 1');
       this.pl1.score += 1;
       this.ball.randomService(this.board, 1, this.gameMode);
     }

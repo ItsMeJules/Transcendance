@@ -24,8 +24,7 @@ export class SocketEvents {
   constructor(
     private prismaService: PrismaService,
     private authService: AuthService,
-    private userService: UserService,
-    private pongStoreService: PongStoreService) { }
+    private userService: UserService,) { }
 
   async handleConnection(client: Socket) {
     const access_token = extractAccessTokenFromCookie(client);
@@ -56,26 +55,26 @@ export class SocketEvents {
     @MessageBody() data: { action: string }) {
     console.log('All users and status:', data.action);
 
-    if (!client.data.id) {
-      client.disconnect();
-      return;
-    }
-    const userId = parseInt(client.data.id);
-    // protect and manage errors
-    const allUsers = await this.prismaService.user.findMany({
-      orderBy: {
-        username: 'asc',
-      }
-    });
-    console.log('playersMap:', this.pongStoreService.playersMap);
-    allUsers.forEach((user) => {
-      delete user.hash;
-      const isPlaying = this.pongStoreService.playersMap.get(user.id);
-      user.isPlaying = isPlaying !== undefined ? true : false;
-      const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
-      user.isOnline = isOnline !== undefined ? true : false;
-    });
-    console.log('all users list:', allUsers);
-    this.server.to(`user_${userId}`).emit('allUsers', allUsers);
+    // if (!client.data.id) {
+    //   client.disconnect();
+    //   return;
+    // }
+    // const userId = parseInt(client.data.id);
+    // // protect and manage errors
+    // const allUsers = await this.prismaService.user.findMany({
+    //   orderBy: {
+    //     username: 'asc',
+    //   }
+    // });
+    // console.log('playersMap:', this.pongStoreService.playersMap);
+    // allUsers.forEach((user) => {
+    //   delete user.hash;
+    //   const isPlaying = this.pongStoreService.playersMap.get(user.id);
+    //   user.isPlaying = isPlaying !== undefined ? true : false;
+    //   const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
+    //   user.isOnline = isOnline !== undefined ? true : false;
+    // });
+    // console.log('all users list:', allUsers);
+    // this.server.to(`user_${userId}`).emit('allUsers', allUsers);
   }
 }

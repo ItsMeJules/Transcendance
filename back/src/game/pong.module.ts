@@ -10,7 +10,7 @@ import { SocketEvents } from 'src/websocket/websocket.gateway';
 import { PongStoreModule } from 'src/utils/pong-store/pong-store.module';
 
 @Module({
-  imports: [PongStoreModule],
+  imports: [],
   controllers: [],
   providers: [PongEvents, JwtService, AuthService, UserService, PongService, PrismaService, SocketEvents],
   exports: [PongEvents], 
