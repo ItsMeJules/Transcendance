@@ -28,9 +28,9 @@ export default function MorePopup({ popupType, setPopupActive }: MorePopupProps)
   return (
     <Popup className="more-popup">
       <div className="contents">
-        <p onClick={channelCreation}>Créer un channel</p>
-        <p onClick={allUsersList}>Liste de tous les utilisateurs</p>
-        <p onClick={channelList}>Liste des channels</p>
+        <p onClick={channelCreation}>Create Channel</p>
+        <p onClick={allUsersList}>All Users</p>
+        <p onClick={channelList}>Channel List</p>
       </div>
 
       {popupType === PopupType.CHANNEL && <ChannelCreationPopup />}

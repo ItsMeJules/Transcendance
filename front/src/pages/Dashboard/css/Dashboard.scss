@@ -91,10 +91,11 @@
     align-items: center;
     margin: 20px;
     padding: 20px;
-    justify-content: center;
-    gap: 1px;
+    justify-content: space-between;
+    gap: 40px;
+
     height: calc(100vh - 500px);
-    max-height: 80vh;
+    // max-height: 80vh;
 
     .left-screen-container {
       min-width: 350px;
@@ -104,7 +105,7 @@
     }
 
     .right-screen-container {
-      width: 300px;
+      width: 350px;
       height:100%;
       // border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
