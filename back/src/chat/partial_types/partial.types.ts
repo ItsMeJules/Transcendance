@@ -4,6 +4,7 @@ export enum AcknowledgementType {
   INFO = 'info',
   SUCCESS = 'success',
   ERROR = 'error',
+  WARNING = 'warning',
 }
 
 export type RoomInfo = {

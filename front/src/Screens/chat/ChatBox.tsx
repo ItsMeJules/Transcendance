@@ -37,7 +37,7 @@ export const ChatBox = () => {
       case "info":
         toast(`${payload.message}`, {
           position: "bottom-center",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -49,7 +49,7 @@ export const ChatBox = () => {
       case "error":
         toast.error(`Error: ${payload.message}`, {
           position: "bottom-center",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -59,9 +59,21 @@ export const ChatBox = () => {
         }); //information
         break;
       case "success":
-        toast.success(`Success: ${payload.message}`, {
+        toast.success(`${payload.message}`, {
           position: "bottom-center",
-          autoClose: 5000,
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }); //information
+        break;
+      case "warning":
+        toast.warning(`${payload.message}`, {
+          position: "bottom-center",
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,

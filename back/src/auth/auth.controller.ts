@@ -1,4 +1,4 @@
-you joinedimport { FortyTwoAuthGuard, JwtGuard, GoogleAuthGuard } from './guard';
+import { FortyTwoAuthGuard, JwtGuard, GoogleAuthGuard } from './guard';
 import {
   Body,
   Controller,

@@ -30,10 +30,12 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
 
     if (channelType === ChannelType.PROTECTED) channelData.password = channelPassword;
 
-    sendData?.(ChatSocketActionType.CHANGE_PASSWORD, {
+    if (sendData === null) return;
+    sendData(ChatSocketActionType.CHANGE_PASSWORD, {
       action: ChatSocketActionType.CHANGE_PASSWORD,
       password: channelPassword,
-    });
+      roomName: activeChannelName,
+    } as PayloadAction);
     channelData.type = channelType;
     setChannelPassword("");
   };

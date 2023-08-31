@@ -17,7 +17,8 @@ import { UserSocketsService } from './user-sockets/user-sockets.service';
 // dont return complete tables, only relation fields needed for checks.
 // add a global check for room actions but not invite because of banned users.
 // refacto all function especially create room.
-
+// ? add time mutes ?
+// move sends to other service
 @Injectable()
 export class ChatService {
   constructor(
@@ -33,13 +34,60 @@ export class ChatService {
     console.log('payload :', payload);
     client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
   }
-  // async sendAcknowledgement(
-  //   type: string,
-  //   message: string,
-  //   server: Server,
-  //   clients: Socket[],
-  //   room:
-  // ) {}
+
+  sendWarning(client: Socket, message: string): void {
+    const payload: AcknowledgementPayload = {
+      message: message,
+      type: AcknowledgementType.WARNING,
+    };
+    console.log('payload :', payload);
+    client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+  }
+
+  sendSuccess(client: Socket, message: string): void {
+    const payload: AcknowledgementPayload = {
+      message: message,
+      type: AcknowledgementType.SUCCESS,
+    };
+    console.log('payload :', payload);
+    client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+  }
+
+  sendInfoToUser(client: Socket, message: string): void {
+    const payload: AcknowledgementPayload = {
+      message: message,
+      type: AcknowledgementType.INFO,
+    };
+    console.log('payload :', payload);
+    client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+  }
+
+  sendInformationToRoom(
+    message: string,
+    server: Server,
+    roomName: string,
+    except?: Socket | Socket[],
+  ): void {
+    const payload: AcknowledgementPayload = {
+      message: message,
+      type: AcknowledgementType.INFO,
+    };
+    let sockets: string[] = [];
+
+    if (Array.isArray(except)) {
+      sockets = except.map((socket) => socket.id);
+      server
+        .to(roomName)
+        .except(sockets)
+        .emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload); // if multiple non targeted sockets
+    } else if (except) {
+      server
+        .to(roomName)
+        .except(except.id)
+        .emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload); // only one non targeted
+    } else
+      server.to(roomName).emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload); // everyone targeted
+  }
 
   async sendMessageToRoom(
     client: Socket,
@@ -53,7 +101,7 @@ export class ChatService {
       );
 
       if (room.mutes.some((muted) => client.data.id === muted.id))
-        throw new Error('user is muted until :'); //time
+        throw new Error('You are muted'); //time
 
       const messageData = {
         text: sendMsgRoomDto.message,
@@ -149,7 +197,6 @@ export class ChatService {
             users: {
               connect: [{ id: firstUser }, { id: secondUser }],
             },
-            admins: { connect: { id: client.data.id } },
           },
         });
         await this.joinRoom(client, {
@@ -184,13 +231,19 @@ export class ChatService {
         });
       }
 
-      await this.joinRoom(client, {
-        roomName: createRoomDto.roomName,
-        password: createRoomDto.password,
-        server: createRoomDto.server,
-      });
+      if (createRoomDto.type === 'PRIVATE') {
+        await this.joinRoom(client, {
+          roomName: createRoomDto.roomName,
+          password: createRoomDto.password,
+          server: createRoomDto.server,
+        });
+      }
 
       console.log('createRoom function ending');
+      this.sendSuccess(
+        client,
+        `${room.type} room "${room.name}" has been created`,
+      );
       return room;
     } catch (error) {
       this.sendError(client, error);
@@ -314,13 +367,15 @@ export class ChatService {
       joinRoomDto.server
         .to(client.id)
         .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
-      const message = 'You joined "' + joinRoomDto.roomName + '"';
-      joinRoomDto.server
-        .to(client.id)
-        .emit(ChatSocketEventType.ACKNOWLEDGEMENTS, {
-          message: message,
-          type: 'info',
-        });
+      this.sendInfoToUser(client, 'You joined "' + joinRoomDto.roomName + '"');
+
+      this.sendInformationToRoom(
+        `${user.username} joined the room`,
+        joinRoomDto.server,
+        room.name,
+        client,
+      );
+
       return room;
     } catch (error) {
       this.sendError(client, error);
@@ -361,23 +416,42 @@ export class ChatService {
       const blockedUsers = await this.prismaService.allBlockedUsersFromUser(
         client.data.id,
       );
-
-      if (client.data.id === blockDto.targetId)
+      const actingUser = await this.prismaService.user.findUnique({
+        where: { id: client.data.id },
+      });
+      const targetUser = await this.prismaService.user.findUnique({
+        where: { id: blockDto.targetId },
+      });
+      if (actingUser.id === targetUser.id)
         throw new Error("you can't block yourself");
 
-      if (blockedUsers.some((banned) => banned.id === blockDto.targetId)) {
+      if (blockedUsers.some((banned) => banned.id === targetUser.id)) {
         await this.prismaService.user.update({
-          where: { id: client.data.id },
-          data: { blockedUsers: { disconnect: { id: blockDto.targetId } } },
+          where: { id: actingUser.id },
+          data: { blockedUsers: { disconnect: { id: targetUser.id } } },
         });
-
+        const messageActor = `You unblocked ${targetUser.username} ! You can now see his messages`;
+        this.sendSuccess(client, messageActor);
+        this.sendWarning(
+          this.userSocketsService.getUserSocket(String(targetUser.id)),
+          `You have been unblocked by ${actingUser.username}`,
+        );
         console.log('unblocking');
       } else {
         await this.prismaService.user.update({
-          where: { id: client.data.id },
-          data: { blockedUsers: { connect: { id: blockDto.targetId } } },
+          where: { id: actingUser.id },
+          data: { blockedUsers: { connect: { id: targetUser.id } } },
         });
-
+        this.sendSuccess(
+          client,
+          'You blocked ' +
+            targetUser.username +
+            '! You cant see his messages now',
+        );
+        this.sendWarning(
+          this.userSocketsService.getUserSocket(String(targetUser.id)),
+          'You have been blocked by ' + actingUser.username,
+        );
         console.log('blocking');
       }
       console.log('blockUserToggle function end');
@@ -414,6 +488,7 @@ export class ChatService {
     throw new Error(`Your social status is too low on this channel :(`);
   }
 
+  // create promote and demote toggle is shitty
   async promoteToAdminToggle(
     client: Socket,
     promoteDto: ChatDtos.PromoteDto,
@@ -443,12 +518,44 @@ export class ChatService {
           where: { name: promoteDto.roomName },
           data: { admins: { disconnect: { id: targetUser.id } } },
         });
+        //////////////// NOTIFICATIONS BEGIN \\\\\\\\\\\\\\\\
+        this.sendSuccess(client, 'You demoted ' + targetUser.username);
+        this.sendWarning(
+          this.userSocketsService.getUserSocket(String(targetUser.id)),
+          'You have been demoted by ' + actingUser.username,
+        );
+        this.sendInformationToRoom(
+          `${targetUser.username} has been demoted`,
+          promoteDto.server,
+          room.name,
+          this.userSocketsService.getArrayUserSockets([
+            actingUser.id,
+            targetUser.id,
+          ]),
+        );
+        //////////////// NOTIFICATIONS END \\\\\\\\\\\\\\\\
         console.log(targetUser.username + ' is demoted');
       } else {
         await this.prismaService.room.update({
           where: { name: promoteDto.roomName },
           data: { admins: { connect: { id: targetUser.id } } },
         });
+        //////////////// NOTIFICATIONS BEGIN \\\\\\\\\\\\\\\\
+        this.sendSuccess(client, 'You promoted ' + targetUser.username);
+        this.sendWarning(
+          this.userSocketsService.getUserSocket(String(targetUser.id)),
+          'You have been promoted by ' + actingUser.username,
+        );
+        this.sendInformationToRoom(
+          `${targetUser.username} has been promoted`,
+          promoteDto.server,
+          room.name,
+          this.userSocketsService.getArrayUserSockets([
+            actingUser.id,
+            targetUser.id,
+          ]),
+        );
+        //////////////// NOTIFICATIONS END \\\\\\\\\\\\\\\\
         console.log(targetUser.username + ' is promoted');
       }
     } catch (error) {
@@ -499,6 +606,20 @@ export class ChatService {
         // VVVV if user is in the room, he is also kicked VVVV
         if (targetUser.currentRoom === room.name)
           await this.userJoinRoom(targetUser.id, 'general', banDto.server);
+        this.sendSuccess(client, 'You banned ' + targetUser.username);
+        this.sendWarning(
+          this.userSocketsService.getUserSocket(String(targetUser.id)),
+          'You have been banned by ' + actingUser.username,
+        );
+        this.sendInformationToRoom(
+          `${targetUser.username} has been banned`,
+          banDto.server,
+          room.name,
+          this.userSocketsService.getArrayUserSockets([
+            actingUser.id,
+            targetUser.id,
+          ]),
+        );
         console.log('banned user:', targetUser.id);
         // throw : You have been banned from the room : {roomName}
       } else {
@@ -518,6 +639,20 @@ export class ChatService {
             },
           },
         });
+        this.sendSuccess(client, 'You unbanned ' + targetUser.username);
+        this.sendWarning(
+          this.userSocketsService.getUserSocket(String(targetUser.id)),
+          'You have been unbanned by ' + actingUser.username,
+        );
+        this.sendInformationToRoom(
+          `${targetUser.username} has been unbanned`,
+          banDto.server,
+          room.name,
+          this.userSocketsService.getArrayUserSockets([
+            actingUser.id,
+            targetUser.id,
+          ]),
+        );
         console.log('unbanned user:', targetUser.id);
       }
       console.log('banUserToggle function ending');
@@ -563,6 +698,20 @@ export class ChatService {
             },
           },
         });
+        this.sendSuccess(client, 'You muted ' + targetUser.username);
+        this.sendWarning(
+          this.userSocketsService.getUserSocket(String(targetUser.id)),
+          'You have been muted by ' + actingUser.username,
+        );
+        this.sendInformationToRoom(
+          `${targetUser.username} has been muted`,
+          muteDto.server,
+          room.name,
+          this.userSocketsService.getArrayUserSockets([
+            actingUser.id,
+            targetUser.id,
+          ]),
+        );
       } else {
         await this.prismaService.room.update({
           where: { id: room.id },
@@ -574,6 +723,20 @@ export class ChatService {
             },
           },
         });
+        this.sendSuccess(client, 'You unmuted ' + targetUser.username);
+        this.sendWarning(
+          this.userSocketsService.getUserSocket(String(targetUser.id)),
+          'You have been unmuted by ' + actingUser.username,
+        );
+        this.sendInformationToRoom(
+          `${targetUser.username} has been unmuted`,
+          muteDto.server,
+          room.name,
+          this.userSocketsService.getArrayUserSockets([
+            actingUser.id,
+            targetUser.id,
+          ]),
+        );
       }
       console.log('muteUserFromRoomToggle function ending');
     } catch (error) {
@@ -668,6 +831,20 @@ export class ChatService {
       if (targetUser.currentRoom !== room.name) {
         throw new Error('user is not the room you fkin golem');
       }
+      this.sendSuccess(client, 'You kicked ' + targetUser.username);
+      this.sendWarning(
+        this.userSocketsService.getUserSocket(String(targetUser.id)),
+        'You have been kicked by ' + actingUser.username,
+      );
+      this.sendInformationToRoom(
+        `${targetUser.username} has been kicked`,
+        kickDto.server,
+        room.name,
+        this.userSocketsService.getArrayUserSockets([
+          actingUser.id,
+          targetUser.id,
+        ]),
+      );
       await this.userJoinRoom(targetUser.id, 'general', kickDto.server);
       console.log('kicked');
       return true;
@@ -700,6 +877,7 @@ export class ChatService {
             password: null,
           },
         });
+        this.sendSuccess(client, 'You removed the password');
       } else {
         await this.prismaService.room.update({
           where: { name: currentRoom.name },
@@ -707,6 +885,7 @@ export class ChatService {
             password: password,
           },
         });
+        this.sendSuccess(client, 'You modified the password');
       }
       return password;
     } catch (error) {
@@ -726,6 +905,9 @@ export class ChatService {
         throw new Error("You can't invite in dms channels");
       }
       // Permission check behavior?
+      const actingUser = await this.prismaService.user.findUnique({
+        where: { id: client.data.id },
+      });
       const targetUser = await this.prismaService.returnCompleteUser(
         inviteDto.targetId,
       ); // careful target!
@@ -757,6 +939,15 @@ export class ChatService {
           data: { users: { connect: { id: targetUser.id } } },
         });
       }
+      this.sendSuccess(client, 'You invited ' + targetUser.username);
+      this.sendSuccess(
+        this.userSocketsService.getUserSocket(String(targetUser.id)),
+        'You have been invited by ' +
+          actingUser.username +
+          ' to "' +
+          room.name +
+          '"',
+      );
     } catch (error) {
       this.sendError(client, error);
     }
