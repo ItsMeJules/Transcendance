@@ -75,9 +75,9 @@ const channelSlice = createSlice({
         type: channelType,
         name: payload.name,
         password: payload.password,
-        usersId: payload.users !== null ? payload.users.map((user: any) => user.id) : [],
+        usersId: payload.users !== undefined ? payload.users.map((user: any) => user.id) : [],
         ownerId: payload.ownerId,
-        adminsId: payload.admins !== null ? payload.admins.map((user: any) => user.id) : [],
+        adminsId: payload.admins !== undefined ? payload.admins.map((user: any) => user.id) : [],
         punishments: punishments,
         messages: payload.messages,
       }

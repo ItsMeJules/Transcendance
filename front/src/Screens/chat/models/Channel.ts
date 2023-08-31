@@ -74,15 +74,17 @@ export function createChannelUser(userData: UserData, channelData: ChannelData):
 
   if (channelData.ownerId === userId)
     role = ChannelUserRole.OWNER
-  else if (channelData.adminsId?.find(adminId => adminId === userId) !== null)
+  else if (channelData.adminsId?.find(adminId => adminId === userId) !== undefined)
     role =  ChannelUserRole.ADMIN
 
-  channelData.punishments.forEach((punishment) => {
-    if (punishment.userId === userId) {
-      banned = punishment.type === PunishmentType.BAN;
-      muted = punishment.type === PunishmentType.MUTE;
-    }
-  });
+  if (channelData.punishments !== undefined) {
+    channelData.punishments.forEach((punishment) => {
+      if (punishment.userId === userId) {
+        banned = punishment.type === PunishmentType.BAN;
+        muted = punishment.type === PunishmentType.MUTE;
+      }
+    });
+  }
 
   return {
     ...userData,
@@ -93,7 +95,7 @@ export function createChannelUser(userData: UserData, channelData: ChannelData):
 }
 
 // TODO Finish this type
-export function transformToChannelData(data: any): ChannelData {
+export function transformSliceToChannelData(data: any): ChannelData {
   if (data === null) return {} as ChannelData;
 
   const punishments: PunishmentData[] = data.punishments.map((punishment: any) => {
@@ -112,21 +114,25 @@ export function transformToChannelData(data: any): ChannelData {
     return {} as PunishmentData;
   });
 
-  // const messages: ChannelMessageData[] = data.messages.map((message: any) => {
-  //   return {
-  //     authorId: message.authorId,
-  //     text: message.text,
-  //   };
-  // });
+  const messages: ChannelMessageData[] = data.messages.map((message: any) => {
+    return {
+      authorId: message.authorId,
+      text: message.text,
+      userName: message.userName,
+      profilePicture: message.profilePicture,
+    };
+  });
+
+  console.log(data)
 
   return {
     type: data.type,
     name: data.name,
     password: data.password,
-    usersId: data.users,
+    usersId: data.usersId,
     ownerId: data.ownerId,
-    adminsId: data.admins,
+    adminsId: data.adminsId,
     punishments: punishments,
-    messages: [],
+    messages: messages,
   };
 }

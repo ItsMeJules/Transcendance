@@ -265,7 +265,7 @@ export class ChatService {
 
       if (
         room.ownerId !== user.id &&
-        room.admins.find((admin) => admin.id === user.id) === null &&
+        room.admins.find((admin) => admin.id === user.id) === undefined &&
         room.password &&
         room.password !== joinRoomDto.password
       )

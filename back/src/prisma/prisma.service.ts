@@ -88,6 +88,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
           name: true,
           type: true,
           password: true,
+          ownerId: true,
+          admins: true,
+          bans: true,
           usersOnRoom: true,
         },
         orderBy: { createdAt: 'asc' },
@@ -102,6 +105,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
             ? RoomType.PROTECTED
             : room.type,
         userCount: room.usersOnRoom.length,
+        ownerId: room.ownerId,
+        adminsId: room.admins.map((admin) => admin.id),
+        bannedId: room.bans.map((bans) => bans.id),
       }));
 
       console.log(roomsInfo);

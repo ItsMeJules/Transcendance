@@ -5,7 +5,7 @@ import ProtectedIcon from "../assets/padlock.png";
 import PrivateIcon from "../assets/private.png";
 
 import { useAppSelector } from "../../../redux/Store";
-import { ChannelType, transformToChannelData } from "../models/Channel";
+import { ChannelType, transformSliceToChannelData } from "../models/Channel";
 import OutsideClickHandler from "../utils/OutsideClickHandler";
 import ChannelManager from "./channel_manager/ChannelManager";
 import MorePopup from "./more/MorePopup";
@@ -24,7 +24,7 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
   const [isMoreActive, setIsMoreActive] = useState(false)
   const [popupType, setPopupActive] = useState<PopupType | null>(null)
 
-  const activeChannel = transformToChannelData(useAppSelector(store => store.channels.activeChannel))
+  const activeChannel = transformSliceToChannelData(useAppSelector(store => store.channels.activeChannel))
 
   const handleMoreClick = () => {
     if (!isMoreActive)

@@ -29,7 +29,6 @@ export const ChatBox = () => {
 
   useEffect(() => {
     chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
-      console.log(payload);
       dispatch(setUserActiveChannel(payload.name));
       dispatch(setActiveChannel(payload));
     });
@@ -72,7 +71,7 @@ export const ChatBox = () => {
       eventType = ChatSocketEventType.ROOM_ACTION;
     }
 
-    console.log("data is :", data, "on eventType :", eventType);
+    // console.log("data is :", data, "on eventType :", eventType);
     chatSocket?.emit(eventType, data);
   };
 

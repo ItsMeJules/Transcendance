@@ -2,8 +2,9 @@ import { ChannelUser, ChannelUserRole } from "../../models/Channel"
 
 import AdminBadge from "../../assets/admin-badge.png"
 import OwnerBadge from "../../assets/owner.png"
-import { UserClickParameters } from "./UserComponent"
+
 import { UserData } from "../../../../Services/User"
+import { UserClickParameters } from "./UserComponent"
 
 type ChannelUserComponentProps = {
   channelUser: ChannelUser
@@ -12,6 +13,7 @@ type ChannelUserComponentProps = {
 
 export default function ChannelUserComponent(
   { channelUser, onUserClick = (params: UserClickParameters) => { } }: ChannelUserComponentProps) {
+  console.log(channelUser)
   const badgeImgSrc = channelUser.role === ChannelUserRole.OWNER
     ? OwnerBadge
     : channelUser.role === ChannelUserRole.ADMIN

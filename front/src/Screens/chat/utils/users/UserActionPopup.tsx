@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import User, { UserData } from "../../../../Services/User";
+import { UserData } from "../../../../Services/User";
 import { useAppSelector } from "../../../../redux/Store";
 import { SendDataContext } from "../../ChatBox";
 import PayloadAction from "../../models/PayloadSocket";

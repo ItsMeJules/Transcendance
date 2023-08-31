@@ -16,7 +16,7 @@ export default function ChannelListPopup() {
   const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([]);
   const [searchText, setSearchText] = useState("");
 
-  const { currentRoom: activeChannelName } = useAppSelector(store => store.user.userData)
+  const { currentRoom: activeChannelName, id: userId } = useAppSelector(store => store.user.userData)
   const sendData: null | ((action: string, data: any) => void) = useContext(SendDataContext)
 
   useEffect(() => {
@@ -34,12 +34,16 @@ export default function ChannelListPopup() {
     requestVisibleChannels()
   }, [activeChannelName])
 
-  const channelHasPassword = (name: string | null) => {
-    if (name === null)
-      return false
+  const userRequirePassword = (userId: number, channelName: string): boolean => {
+    const channel: ChannelInfoInList | undefined = visibleChannels.find(value => value.name === channelName)
 
-    return visibleChannels.find(value => value.name === name)
-      ?.type === ChannelType.PROTECTED
+    if (channel?.type !== ChannelType.PROTECTED)
+      return false
+    if (channel?.ownerId === userId)
+      return false
+    if (channel?.adminsId.find(adminId => adminId === userId) !== undefined)
+      return false
+    return true
   }
 
   const joinChannel = (channelName: string | null) => {
@@ -73,7 +77,7 @@ export default function ChannelListPopup() {
         <ChannelsList
           channels={visibleChannels}
           onClickElement={(channelName: string) => {
-            if (!channelHasPassword(channelName))
+            if (userId !== null && !userRequirePassword(parseInt(userId), channelName))
               joinChannel(channelName)
             else
               setSelectedChannelName(channelName)
@@ -82,7 +86,7 @@ export default function ChannelListPopup() {
         />
       </Popup>
 
-      {channelHasPassword(selectedChannelName)
+      {selectedChannelName !== null
         ? (
           <div className="password-popup">
             <div className="password-popup-content">

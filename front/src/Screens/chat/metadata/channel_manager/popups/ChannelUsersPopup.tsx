@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import User, { UserData } from "../../../../../Services/User";
 import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
 import { SendDataContext } from "../../../ChatBox";
-import { ChannelData, ChannelUser, createChannelUser } from "../../../models/Channel";
+import { ChannelData, ChannelUser, ChannelUserRole, createChannelUser } from "../../../models/Channel";
 import PayloadAction from "../../../models/PayloadSocket";
 import { RoomSocketActionType } from "../../../models/TypesActionsEvents";
 import Popup from "../../../utils/Popup";
@@ -135,6 +135,9 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
           <UserActionPopup
             userData={channelUserClicked}
             buttonClicked={buttonClicked}
+            isAdmin={channelUserClicked.role === ChannelUserRole.ADMIN}
+            isBanned={channelUserClicked.banned}
+            isMuted={channelUserClicked.muted}
           />
         )
       ) : undefined}
