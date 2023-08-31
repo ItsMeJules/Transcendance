@@ -13,6 +13,7 @@ import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { all } from 'axios';
 import { PongEvents } from 'src/game/pong.gateway';
+import { PongStoreService } from 'src/utils/pong-store/pong-store.service';
 
 @WebSocketGateway({ namespace: 'general' })
 export class SocketEvents {
@@ -24,7 +25,7 @@ export class SocketEvents {
     private prismaService: PrismaService,
     private authService: AuthService,
     private userService: UserService,
-    private pongEvents: PongEvents,) { }
+    private pongStoreService: PongStoreService) { }
 
   async handleConnection(client: Socket) {
     const access_token = extractAccessTokenFromCookie(client);
@@ -66,10 +67,10 @@ export class SocketEvents {
         username: 'asc',
       }
     });
-    console.log('playersMap:', this.pongEvents.playersMap);
+    console.log('playersMap:', this.pongStoreService.playersMap);
     allUsers.forEach((user) => {
       delete user.hash;
-      const isPlaying = this.pongEvents.playersMap.get(user.id);
+      const isPlaying = this.pongStoreService.playersMap.get(user.id);
       user.isPlaying = isPlaying !== undefined ? true : false;
       const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
       user.isOnline = isOnline !== undefined ? true : false;
@@ -77,5 +78,4 @@ export class SocketEvents {
     console.log('all users list:', allUsers);
     this.server.to(`user_${userId}`).emit('allUsers', allUsers);
   }
-
 }

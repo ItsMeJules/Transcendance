@@ -12,11 +12,9 @@ const UserProfileList: React.FC<UserProfileListProps> = ({ users, onRemoveClick,
   return (
     <main className="friends__profiles">
       {users.map(user =>
-      <UserProfile
-      key={user.getId()}
-      user={user}
-      onRemoveClick={onRemoveClick}
-      onProfileClick={onProfileClick} />)}
+        <UserProfile key={user.getId()} user={user}
+          onRemoveClick={onRemoveClick}
+          onProfileClick={onProfileClick} />)}
     </main>
   );
 };

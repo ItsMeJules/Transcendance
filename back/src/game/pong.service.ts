@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
 import { Player } from './models/player.model';
+import { SocketEvents } from 'src/websocket/websocket.gateway';
 
 export type UserQueue = Map<number, string>;
 export type OnlineGameMap = Map<number, GameStruct>;
@@ -18,7 +19,7 @@ export class PongService {
   public onlineGames: OnlineGameMap = new Map<number, GameStruct>;
 
   constructor(
-    private prismaService: PrismaService,
+    public prismaService: PrismaService,
     private userService: UserService) { }
 
   async gameCreate(gameMode: GameDto, server: Server) {
@@ -134,7 +135,6 @@ export class PongService {
       this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
       console.log('Game updated successfully');
     } catch (error) {
-
       console.error('Error updating game:', error);
     }
   }
@@ -204,4 +204,5 @@ export class PongService {
       console.error('Error updating game:', error);
     }
   }
+
 }

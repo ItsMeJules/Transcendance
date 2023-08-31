@@ -23,7 +23,7 @@ const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
           <img src="/images/spectate.png" alt="spectate" />
         </button>
         <button onClick={() => setRightContent(APP_SCREENS.ALL_USERS)}>
-          <img src="/images/chat.png" alt="chat" />
+          <img src="/images/allusers.png" alt="allusers" />
         </button>
         <button onClick={() => setRightContent(APP_SCREENS.CHAT)}>
           <img src="/images/chat.png" alt="chat" />

@@ -6,11 +6,13 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SocketEvents } from 'src/websocket/websocket.gateway';
+import { PongStoreModule } from 'src/utils/pong-store/pong-store.module';
 
 @Module({
-  imports: [],
+  imports: [PongStoreModule],
   controllers: [],
-  providers: [PongEvents, JwtService, AuthService, UserService, PongService, PrismaService],
+  providers: [PongEvents, JwtService, AuthService, UserService, PongService, PrismaService, SocketEvents],
   exports: [PongEvents], 
 })
 export class PongModule {}

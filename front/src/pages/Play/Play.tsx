@@ -143,7 +143,6 @@ const Play = () => {
 
   // Prepare useEffect
   useEffect(() => {
-    console.log('socketDataPrepare:', gameState?.countdown);
     if (gameStatus === 'noGame')
       history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
     if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);

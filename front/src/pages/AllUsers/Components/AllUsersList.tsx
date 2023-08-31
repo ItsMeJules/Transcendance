@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "utils/routing/routing";
 import { useWebsocketContext } from "services/Websocket/Websocket";
-import { useEffect, useState } from "react";
-// import OnlineGameInstance from "./OnlineGameInstance";
+import { useState } from "react";
+import User from "services/User/User";
+import AllUsersInstance from "./AllUsersInstance";
 
 interface AllUsersListProps {
   usersList: any[];
@@ -11,14 +10,11 @@ interface AllUsersListProps {
 const AllUsersList: React.FC<AllUsersListProps> = ({ usersList }) => {
   const [userData, setUserData] = useState<any | null>(null);
   const socket = useWebsocketContext();
-  const history = useNavigate();
 
   return (
-    <main className="all-users-list">
+    <main className="allusers__profiles">
       {usersList.map((user) =>
-        <AllUsersInstance
-          key={user.userId}
-          user={user} />
+        <AllUsersInstance key={user.id} user={user} />
       )}
     </main>
   );

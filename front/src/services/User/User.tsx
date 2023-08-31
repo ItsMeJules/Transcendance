@@ -16,21 +16,21 @@ export interface UserData {
 }
 
 class User {
-    private static instance: User;
-    private id: string | null = null;
-    private createdAt: string | null = null;
-    private updatedAt: string | null = null;
-    private email: string | null = null;
-    private firstName: string | null = null;
-    private lastName: string | null = null;
-    private username: string | null = null;
-    private profilePicture: string | null = null;
-    private gamesPlayed: number | null = null;
-    private gamesWon: number | null = null;
-    private userPoints: number | null = null;
-    private userLevel: number | null = null;
-    private isOnline: boolean | null = null;
-    private isPlaying: boolean | null = null;
+    public static instance: User;
+    public id: string | null = null;
+    public createdAt: string | null = null;
+    public updatedAt: string | null = null;
+    public email: string | null = null;
+    public firstName: string | null = null;
+    public lastName: string | null = null;
+    public username: string | null = null;
+    public profilePicture: string | null = null;
+    public gamesPlayed: number | null = null;
+    public gamesWon: number | null = null;
+    public userPoints: number | null = null;
+    public userLevel: number | null = null;
+    public isOnline: boolean | null = null;
+    public isPlaying: boolean | null = null;
 
     static getInstance() {
         if (!User.instance) {

@@ -1,11 +1,16 @@
-.friends-main-container {
+:root {
+  --online-color: rgb(141, 223, 255);
+  --online-color-light: rgb(183, 235, 255);
+}
+
+.all-users-main-container {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
   background-color: transparent;
   overflow: hidden;
 
-  .friends-header {
+  .all-users-header {
     display: flex;
     box-sizing: border-box;
     align-items: center;
@@ -17,14 +22,14 @@
     background-color: rgba(0, 0, 0, 0.66);
   }
 
-  .friends-container {
+  .allusers-container {
     width: 100%;
     height: 85%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
 
-    .friends {
+    .allusers {
       &__profiles {
         background-color: transparent;
         box-sizing: border-box;
@@ -95,7 +100,7 @@
 
       &__profile {
         display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
+        grid-template-columns: 10fr 30fr 13fr;
         align-items: center;
         padding: 10px 0px 10px 10px;
         overflow: hidden;
@@ -123,27 +128,69 @@
         overflow: hidden;
         display: flex;
         object-fit: cover;
-        box-shadow: 0 0 0 10px #cfcdcd, 0 0 0 22px #dcdddf;
+        // box-shadow: 0 0 0 10px #cfcdcd, 0 0 0 22px #dcdddf;
+      }
+
+      &__picture.online {
+        box-shadow: 0 0 0 5px var(--online-color);
+        animation: pulsateShadow 1.5s infinite;
+      }
+
+      &__picture.offline {
+        box-shadow: 0 0 0 8px  #cfcdcd;
+      }
+
+      @keyframes pulsateShadow {
+        0% {
+          box-shadow: 0 0 0 6px var(--online-color);
+        }
+        50% {
+          box-shadow: 0 0 0 10px var(--online-color-light);
+        }
+        100% {
+          box-shadow: 0 0 0 6px var(--online-color);
+        }
       }
 
       &__name {
         text-align: left;
         color: #979cb0;
         font-weight: 550;
-        font-size: 18px;
+        font-size: 15px;
         letter-spacing: 0.6px;
-        margin-left: 20px;
+        min-width: 110px;
+        max-width: 110px;
+        margin-left: 15px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+      }
+
+      &__isplaying {
+        width:      40px;
+        min-width:  40px;
+        height:     40px;
+        min-height: 40px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
       }
 
       &__heart {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        margin-right: 10px;
+        margin-left: 7px;
       }
+
+      &__heart.friend {
+        color: red;
+        animation: pulsate 1.5s infinite;
+      }
+
+      &__heart.notfriend {
+        color: rgb(0, 0, 0);
+      }      
 
       &__status-circle {
         display: inline-block;
@@ -151,8 +198,6 @@
         height: 10px;
         border-radius: 50%;
         margin-right: 15px;
-
-
       }
 
       &__status-circle.online {
@@ -179,5 +224,17 @@
 
   100% {
     transform: scale(0.9);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: scale(2);
+    opacity: 0;
   }
 }
