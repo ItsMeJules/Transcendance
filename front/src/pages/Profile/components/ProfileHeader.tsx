@@ -5,7 +5,7 @@ import { MDBCardImage } from 'mdb-react-ui-kit';
 import LogoutParent from "../../../layout/LogoutButton/LogoutParent";
 import { IconContext } from 'react-icons';
 import { FaHeart } from 'react-icons/fa6';
-import { FaUser } from 'react-icons/fa6';
+import { FaLeftLong } from 'react-icons/fa6';
 import { FaUserPen } from 'react-icons/fa6';
 
 type ProfileType = 'user' | 'generic' | 'edit';
@@ -37,9 +37,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, iconColo
       )}
 
       {type === 'edit' && (
-        <Link title="Back to profile" to={APP_ROUTES.USER_PROFILE} style={{ padding: '0px' }}>
+        <Link title="Back to profile" to={APP_ROUTES.USER_PROFILE_ABSOLUTE} style={{ padding: '0px' }}>
           <IconContext.Provider value={{ color: iconColor || 'black', size: '30px' }}>
-            <FaUser />
+            <FaLeftLong />
           </IconContext.Provider>
         </Link>
       )}

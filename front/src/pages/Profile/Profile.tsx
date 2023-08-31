@@ -76,6 +76,7 @@ export const Profile: React.FC = () => {
         <section className="profile-main-container">
           <MDBContainer className="profile-board-container">
             <ProfileCard userData={userDataHere} setErrMsg={setErrMsg} />
+            <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
           </MDBContainer>
         </section>
       </section>

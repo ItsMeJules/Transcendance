@@ -1,8 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
+import React, { useState, useEffect } from 'react';
 
 const ProfileHeader = () => {
   const history = useNavigate();
+    const [profilePicture, setProfilePicture] = useState('/images/game.png');  // Set default picture
+
+  useEffect(() => {
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+      const parsedUserData = JSON.parse(storedUserData);
+      if (parsedUserData.profilePicture) {
+        setProfilePicture(parsedUserData.profilePicture);
+      }
+    }
+  }, []);
 
   const handleProfileClick = (() => {
     history(APP_ROUTES.USER_PROFILE)
@@ -13,8 +25,8 @@ const ProfileHeader = () => {
 
       <div className="icons">
         <div className="pic">
-          <button onClick={handleProfileClick}>
-            <img src="/images/game.png" alt="game" />
+         <button className="profile-pic-button" onClick={handleProfileClick}>
+          <img className="profile-pic-image" src={profilePicture} alt="Profile" />
           </button>
         </div>
 
