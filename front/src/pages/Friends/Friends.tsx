@@ -7,7 +7,7 @@ import ToastMessage from "layout/ToastMessage/ToastMessage";
 import { UserArray } from "services/User/UserArray";
 import { UserData } from "services/User/User";
 import User from "services/User/User";
-import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
+import { MDBContainer } from 'mdb-react-ui-kit';
 
 
 import FriendsHeader from "./Components/FriendsHeader";
@@ -26,11 +26,11 @@ const Friends = () => {
   const [idToRemove, setIdToRemove] = useState<string | undefined>('none');
 
   const resetErrMsg = () => {
-    setErrMsg(''); // Reset errMsg to an empty string
+    setErrMsg('');
   };
 
   const truRemoveFlag = () => {
-    setRemoveFlag(true); // Reset errMsg to an empty string
+    setRemoveFlag(true);
   };
 
   useEffect(() => {

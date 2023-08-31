@@ -20,7 +20,6 @@ import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SocketEvents } from 'src/websocket/websocket.gateway';
-import { SocketService } from 'src/websocket/websocket.service';
 import { CustomExceptionFilter } from './module/CustomExceptionFilter';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Multer, multer, diskStorage } from 'multer';
@@ -35,7 +34,6 @@ export class UserController {
   constructor(
     private userService: UserService,
     private prisma: PrismaService,
-    private socketService: SocketService,
     private socketEvents: SocketEvents,
   ) {}
 

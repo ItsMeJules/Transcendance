@@ -56,4 +56,5 @@ export enum APP_SCREENS {
   FRIENDS,
   LEADERBOARD,
   ONLINE_GAMES,
+  ALL_USERS,
 }

@@ -12,6 +12,7 @@ export interface UserData {
     userPoints: number | null;
     userLevel: number | null;
     isOnline: boolean | null;
+    isPlaying: boolean | null;
 }
 
 class User {
@@ -29,6 +30,7 @@ class User {
     private userPoints: number | null = null;
     private userLevel: number | null = null;
     private isOnline: boolean | null = null;
+    private isPlaying: boolean | null = null;
 
     static getInstance() {
         if (!User.instance) {
@@ -55,6 +57,7 @@ class User {
         this.userPoints = data.userPoints;
         this.userLevel = data.userLevel;
         this.isOnline = data.isOnline;
+        this.isOnline = data.isPlaying;
     }
 
     getDataFromStorage(userData: string) {
@@ -76,6 +79,7 @@ class User {
             userPoints: this.userPoints,
             userLevel: this.userLevel,
             isOnline: this.isOnline,
+            isPlaying: this.isPlaying,
         });
     }
 
@@ -161,6 +165,13 @@ class User {
         else
             return false;
     }
+
+    getIsPlaying(): boolean {
+      if (this.isPlaying)
+          return this.isPlaying;
+      else
+          return false;
+  }
 }
 
 export default User;

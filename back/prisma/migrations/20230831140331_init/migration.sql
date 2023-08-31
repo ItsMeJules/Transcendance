@@ -10,6 +10,7 @@ CREATE TABLE "users" (
     "profilePicture" TEXT,
     "hash" TEXT NOT NULL,
     "isOnline" BOOLEAN NOT NULL DEFAULT false,
+    "isPlaying" BOOLEAN NOT NULL DEFAULT false,
     "gamesPlayed" INTEGER DEFAULT 0,
     "gamesWon" INTEGER DEFAULT 0,
     "userPoints" INTEGER DEFAULT 0,
@@ -24,6 +25,7 @@ CREATE TABLE "users" (
 CREATE TABLE "Game" (
     "id" SERIAL NOT NULL,
     "gameMode" INTEGER NOT NULL,
+    "dateGame" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "player1Id" INTEGER NOT NULL,
     "player2Id" INTEGER NOT NULL,
     "winnerId" INTEGER,

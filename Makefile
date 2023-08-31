@@ -23,7 +23,7 @@ clean: down
 
 fclean : clean
 	docker volume ls -q | xargs --no-run-if-empty docker volume rm
-	docker volume prune -f
+	docker volume prune -af
 
 re: fclean all
 

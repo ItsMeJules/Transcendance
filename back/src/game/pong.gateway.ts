@@ -29,11 +29,9 @@ export class PongEvents {
   constructor(
     public pongService: PongService,
     private authService: AuthService,
-    private userService: UserService,
-  ) { }
+    private userService: UserService) { }
 
   async handleConnection(client: Socket) {
-    console.log('1 connectin in');
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -57,17 +55,14 @@ export class PongEvents {
       if (gameWatchId)
         client.join(`game_${gameWatchId}`);
     }
-    // console.log('2 connectin out');
   }
 
   async handleDisconnect(client: Socket) {
-    console.log('3 disconnect');
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     this.pongService.removeFromQueue(user.id);
     this.spectatorsMap.delete(user.id);
     this.idToSocketMap.delete(user.id);
-    const socketId = client.handshake.query.userId;
   }
 
   @SubscribeMessage('joinGameQueue')
@@ -231,8 +226,6 @@ export class PongEvents {
           && gameStruct.prop.status === 'waiting') {
           console.log('TIMEOUT');
           gameStruct.prop.status = 'timeout';
-          // gameStruct.sendUpdateToPlayer(player, opponent.status, 21, 'prepareToPlay');
-          // gameStruct.sendUpdateToPlayer(opponent, player.status, 21, 'prepareToPlay');
           gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
           this.pongService.deleteGamePrismaAndList(gameStruct.prop.id);
         }
@@ -335,7 +328,8 @@ export class PongEvents {
       gameStruct.prop.status = 'giveUp';
       player.status = 'givenUp';
       await this.pongService.giveUpGame(gameStruct, opponent, player, true);
-
+      this.playersMap.delete(player.id);
+      this.playersMap.delete(opponent.id);
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'refreshGame');
       this.updateEmitOnlineGames('toRoom', 0);
     }
@@ -411,7 +405,7 @@ export class PongEvents {
       return;
     }
   }
- 
+
   @SubscribeMessage('unpressDown')
   async stopMoveDown(@ConnectedSocket() client: Socket) {
     if (!client.data.id) return;

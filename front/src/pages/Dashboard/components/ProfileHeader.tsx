@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 const ProfileHeader = () => {
   const history = useNavigate();
-    const [profilePicture, setProfilePicture] = useState('/images/game.png');  // Set default picture
+  const [profilePicture, setProfilePicture] = useState('/images/game.png');  // Set default picture
 
   useEffect(() => {
     const storedUserData = localStorage.getItem('userData');
@@ -25,8 +25,8 @@ const ProfileHeader = () => {
 
       <div className="icons">
         <div className="pic">
-         <button className="profile-pic-button" onClick={handleProfileClick}>
-          <img className="profile-pic-image" src={profilePicture} alt="Profile" />
+          <button className="profile-pic-button" onClick={handleProfileClick}>
+            <img className="profile-pic-image" src={profilePicture} alt="Profile" />
           </button>
         </div>
 
@@ -35,12 +35,10 @@ const ProfileHeader = () => {
         </div>
 
         <div className="settings">
-          {/* <button onClick={() => setLeftContent(APP_SCREENS.ME_PROFILE)}> */}
           <img src="/images/settings.png" alt="game" />
-          {/* </button> */}
         </div>
       </div>
-      
+
     </main>
   );
 };

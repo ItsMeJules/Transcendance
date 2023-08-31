@@ -24,6 +24,7 @@ model User {
   profilePicture String?
   hash           String
   isOnline       Boolean @default(false)
+  isPlaying      Boolean @default(false)
 
   gamesPlayed Int?     @default(0)
   gamesWon    Int?     @default(0)

@@ -81,6 +81,7 @@
           }
         }
       }
+
       button.profile-pic-button {
         background: none;
         border: none;
@@ -100,14 +101,17 @@
             filter: none !important; // to ensure that the image itself doesn't apply a filter
           }
         }
+
+        .profile-pic-image {
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
       }
 
-    .profile-pic-image {
-      border-radius: 50%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-      filter: none !important; // to ensure that the image itself doesn't apply a filter
-    }
+    
     }
   }
 
