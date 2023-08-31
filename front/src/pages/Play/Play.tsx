@@ -62,6 +62,10 @@ const Play = () => {
   const [centralText, setCentralText] = useState('');
   const history = useNavigate();
 
+  useEffect(() => {
+    socket.game?.connect();
+  }, []);
+
   // Data parsing
   useEffect(() => {
     const userData = getParseLocalStorage('userData');
@@ -96,6 +100,12 @@ const Play = () => {
         setGameStatus('noGame');
     });
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
+
+    return () => {
+      socket.game?.off('prepareToPlay');
+      socket.game?.off('refreshGame');
+      socket.game?.off('noGame');
+    };
   }, [socket.game]);
 
   // Game useEffect
@@ -169,6 +179,7 @@ const Play = () => {
       console.log('timeout<<<<<');
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
+        socket.game?.disconnect();
         history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
       }, 3 * 1000);
     } else if (gameState?.gameStatus === 'playing') {

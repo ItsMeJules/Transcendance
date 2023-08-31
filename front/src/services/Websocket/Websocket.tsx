@@ -49,8 +49,8 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
   useEffect((): (() => void) => {
     const storedUserData = localStorage.getItem('userData');
 
-    if (storedUserData) {
-      userDataRef.current = JSON.parse(storedUserData); // Assign to userDataRef
+    // if (storedUserData) {
+      // userDataRef.current = JSON.parse(storedUserData); // Assign to userDataRef
       const general =
         socketInstances.general?.connected !== true
           ? OpenSocket("http://localhost:8000/general")
@@ -62,10 +62,10 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
 
       setSocketInstances({ general: general, game: game });
 
-    } else {
-      closeOpenSockets(socketInstances);
-      setSocketInstances({ general: null, game: null });
-    }
+    // } else {
+    //   closeOpenSockets(socketInstances);
+    //   setSocketInstances({ general: null, game: null });
+    // }
 
     return (): void => {
       closeOpenSockets(socketInstances);

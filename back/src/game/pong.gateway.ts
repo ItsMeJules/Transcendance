@@ -231,7 +231,7 @@ export class PongEvents {
       gameStruct.prop.status = 'waiting';
       gameStruct.sendUpdateToPlayer(player, opponent.status, -10, 'prepareToPlay');
       const timeoutInSeconds = 2; //10
-      console.log('wait for opponent');
+      console.log('wait for opponent'); 
       setTimeout(() => {
         if (opponent.status === 'pending'
           && gameStruct.prop.status === 'waiting') {
@@ -241,7 +241,7 @@ export class PongEvents {
  
           gameStruct.sendUpdateToPlayer(player, opponent.status, 21, 'prepareToPlay');
           gameStruct.sendUpdateToPlayer(opponent, player.status, 21, 'prepareToPlay');
-          gameStruct.sendUpdateToRoom(player.status, opponent.status, -999, 'prepareToPlay');
+          gameStruct.sendUpdateToRoom(player.status, opponent.status, 50, 'prepareToPlay');
           this.pongService.deleteGamePrismaAndList(gameStruct.prop.id);
         }
       }, timeoutInSeconds * 1000);
