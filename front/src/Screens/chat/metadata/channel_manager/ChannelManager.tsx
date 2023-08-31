@@ -28,14 +28,17 @@ export default function ChannelManager(props: ChannelManagerProps) {
       <div className="channel-infos">
         <div className="channel-name">{channelData?.displayname}</div>
 
-        <OutsideClickHandler
-          className="channel-users-container"
-          onOutsideClick={() => toggleChannelUsersList(false)}
-          onInsideClick={() => toggleChannelUsersList(!channelUsersList)}
-        >
-          {channelData.type !== ChannelType.DIRECT ? <div className="channel-users-count">{"Membres total: " + usersSize}</div> : undefined}
-          {channelUsersList ? <ChannelUsersPopup channelData={channelData} /> : undefined}
-        </OutsideClickHandler>
+        {channelData.type !== ChannelType.DIRECT
+          ?
+            <OutsideClickHandler
+              className="channel-users-container"
+              onOutsideClick={() => toggleChannelUsersList(false)}
+              onInsideClick={() => toggleChannelUsersList(!channelUsersList)}
+            >
+              <div className="channel-users-count">{"Membres total: " + usersSize}</div>
+              {channelUsersList ? <ChannelUsersPopup channelData={channelData} /> : undefined}
+            </OutsideClickHandler>
+          : undefined}
       </div>
 
       <OutsideClickHandler
