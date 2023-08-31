@@ -81,6 +81,33 @@
           }
         }
       }
+      button.profile-pic-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+          filter: none; // to ensure the button itself doesn't apply a filter
+        }
+
+        &:hover {
+          filter: none; // to ensure the button itself doesn't apply a filter
+
+          .profile-pic-image {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+            filter: none !important; // to ensure that the image itself doesn't apply a filter
+          }
+        }
+      }
+
+    .profile-pic-image {
+      border-radius: 50%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      filter: none !important; // to ensure that the image itself doesn't apply a filter
+    }
     }
   }
 
