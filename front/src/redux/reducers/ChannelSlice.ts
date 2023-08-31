@@ -6,6 +6,7 @@ interface ChannelDataState {
   activeChannel: {
     type: string | null;
     name: string | null;
+    displayname: string | null;
     password: string | null;
     usersId: number[];
     ownerId: number | null;
@@ -74,6 +75,7 @@ const channelSlice = createSlice({
       const newState = {
         type: channelType,
         name: payload.name,
+        displayname: channelType === ChannelType.DIRECT ? payload.displayname : payload.name,
         password: payload.password,
         usersId: payload.users !== undefined ? payload.users.map((user: any) => user.id) : [],
         ownerId: payload.ownerId,

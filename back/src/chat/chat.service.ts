@@ -294,11 +294,15 @@ export class ChatService {
     usersRoomDto: ChatDtos.UsersRoomDto,
   ): Promise<void> {
     try {
-      const users = await this.prismaService.allUsersFromRoom(
+      const room = await this.prismaService.returnCompleteRoom(
         usersRoomDto.roomName,
       );
 
-      const neededFields = users.map((user) => {
+      if (!room) {
+        throw new Error('no room named' + usersRoomDto.roomName);
+      }
+
+      const neededFields = room.users.map((user) => {
         return {
           id: user.id,
           username: user.username,
@@ -361,9 +365,19 @@ export class ChatService {
         data: { currentRoom: joinRoomDto.roomName },
       });
 
-      joinRoomDto.server
-        .to(client.id)
-        .emit(ChatSocketEventType.JOIN_ROOM, room);
+      let roomDisplayname = room.name;
+      if (room.type === RoomType.DIRECT) {
+        const [_, topId, lowId] = room.name.split('-').map(Number);
+        const targetId = topId === user.id ? lowId : topId;
+        roomDisplayname = room.users.find(
+          (user) => user.id === targetId,
+        )?.username;
+      }
+
+      joinRoomDto.server.to(client.id).emit(ChatSocketEventType.JOIN_ROOM, {
+        ...room,
+        displayname: roomDisplayname,
+      });
       joinRoomDto.server
         .to(client.id)
         .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
@@ -779,7 +793,20 @@ export class ChatService {
         roomName,
       );
       // VVVV Emitting to the user joinRoom VVVV
-      server.to(userSocket.id).emit(ChatSocketEventType.JOIN_ROOM, room);
+      let roomDisplayname = room.name;
+      if (room.type === RoomType.DIRECT) {
+        const [_, topId, lowId] = room.name.split('-').map(Number);
+        const targetId = topId === user.id ? lowId : topId;
+        roomDisplayname = room.users.find(
+          (user) => user.id === targetId,
+        )?.username;
+      }
+
+      server.to(userSocket.id).emit(ChatSocketEventType.JOIN_ROOM, {
+        ...room,
+        displayname: roomDisplayname,
+      });
+
       const messagesWithClientId = await this.fetchMessagesOnRoomForUser(
         userSocket,
         {

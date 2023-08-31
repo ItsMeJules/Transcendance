@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import SettingsIcon from "../../assets/settings.png";
 
-import { ChannelData } from "../../models/Channel";
+import { ChannelData, ChannelType } from "../../models/Channel";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
 import ManageChannelPopup from "./popups/ManageChannelPopup";
 import ChannelUsersPopup from "./popups/ChannelUsersPopup";
@@ -26,14 +26,14 @@ export default function ChannelManager(props: ChannelManagerProps) {
   return (
     <>
       <div className="channel-infos">
-        <div className="channel-name">{channelData?.name}</div>
+        <div className="channel-name">{channelData?.displayname}</div>
 
         <OutsideClickHandler
           className="channel-users-container"
           onOutsideClick={() => toggleChannelUsersList(false)}
           onInsideClick={() => toggleChannelUsersList(!channelUsersList)}
         >
-          <div className="channel-users-count">{"Membres : " + usersSize}</div>
+          {channelData.type !== ChannelType.DIRECT ? <div className="channel-users-count">{"Membres total: " + usersSize}</div> : undefined}
           {channelUsersList ? <ChannelUsersPopup channelData={channelData} /> : undefined}
         </OutsideClickHandler>
       </div>

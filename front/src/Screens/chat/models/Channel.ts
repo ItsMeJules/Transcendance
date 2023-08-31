@@ -4,12 +4,14 @@ export enum ChannelType {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
   PROTECTED = "PROTECTED",
+  DIRECT = "DIRECT",
 }
 
 export const ChannelTypeDescription = {
   PUBLIC: { name: "Public", desc: "Canal accessible par tout le monde." },
   PRIVATE: { name: "Privé", desc: "Canal accessible sous invitation." },
   PROTECTED: { name: "Protégé", desc: "Canal protégé par un mot de passe." },
+  DIRECT: { name: undefined, desc: undefined },
 };
 
 export enum PunishmentType {
@@ -38,6 +40,7 @@ export interface ChannelMessageData {
 export interface ChannelData {
   type: ChannelType;
   name: string;
+  displayname: string;
   password: string | null;
   usersId: number[];
   ownerId: number | null;
@@ -126,6 +129,7 @@ export function transformSliceToChannelData(data: any): ChannelData {
   return {
     type: data.type,
     name: data.name,
+    displayname: data.displayname,
     password: data.password,
     usersId: data.usersId,
     ownerId: data.ownerId,

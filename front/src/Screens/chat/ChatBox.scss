@@ -166,6 +166,7 @@
             background-color: white;
 
             border-radius: 5px;
+            z-index: 10;
 
             .password-popup-content {
               display: flex;
@@ -415,12 +416,14 @@
                     width: 30%;
                     height: auto;
                     margin: 5px 0px 5px 5px;
+                    object-fit: cover;
 
                     border-radius: 50%;
                     box-shadow: 7px 10px 10px -6px rgba(0, 0, 0, 0.72);
                   }
 
                   .username {
+                    width: 70%;
                     margin: 0px 0px 0px 10px;
                   }
                 }
@@ -567,6 +570,7 @@
 
           .channel-name {
             height: 50%;
+            overflow: hidden;
           }
 
           .channel-users-container {

@@ -3,6 +3,7 @@ import { useState } from "react";
 import PublicIcon from "../assets/globe.png";
 import ProtectedIcon from "../assets/padlock.png";
 import PrivateIcon from "../assets/private.png";
+import DmIcon from "../assets/dm.png";
 
 import { useAppSelector } from "../../../redux/Store";
 import { ChannelType, transformSliceToChannelData } from "../models/Channel";
@@ -45,6 +46,8 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
       iconSrc = ProtectedIcon;
     else if (type === ChannelType.PRIVATE)
       iconSrc = PrivateIcon;
+    else if (type === ChannelType.DIRECT)
+      iconSrc = DmIcon;
 
     return (<img alt="Channel Type" src={iconSrc} />)
   }

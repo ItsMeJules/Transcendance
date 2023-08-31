@@ -38,7 +38,7 @@ const ChannelsList: React.FC<ChannelListProps> = ({ channels, onClickElement, fi
 
               <div className="channel-info">
                 <p>{channel.name}</p>
-                <p>Utiliasteurs: {channel.userCount || 0}</p>
+                <p>Membres : {channel.userCount || 0}</p>
               </div>
             </div>
 

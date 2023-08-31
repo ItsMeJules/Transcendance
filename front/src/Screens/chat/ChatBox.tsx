@@ -16,6 +16,7 @@ import {
   ChatSocketEventType,
   RoomSocketActionType,
 } from "./models/TypesActionsEvents";
+import { ChannelMessageData } from "./models/Channel";
 
 export const SendDataContext = createContext<
   null | ((action: string, data: PayloadAction) => void)
@@ -90,7 +91,7 @@ export const ChatBox = () => {
   useEffect(() => {
     // create payloads not any, create functions not callback in parameter
     chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
-      dispatch(setUserActiveChannel(payload.name));
+      dispatch(setUserActiveChannel(payload.name))
       dispatch(setActiveChannel(payload));
     });
 
@@ -98,15 +99,7 @@ export const ChatBox = () => {
       displayAcknowledgements(payload)
     );
     
-    chatSocket?.on(ChatSocketEventType.FETCH_MESSAGES, (payload: any) => {
-      payload = payload.map((message: any) => {
-        return {
-          authorId: message.authorId,
-          text: message.text,
-          userName: message.userName,
-          profilePicture: message.profilePicture,
-        };
-      });
+    chatSocket?.on(ChatSocketEventType.FETCH_MESSAGES, (payload: ChannelMessageData[]) => {
       dispatch(setActiveChannelMessages(payload)); // faire fonction
     });
 

@@ -25,7 +25,12 @@ export default function ChannelListPopup() {
         const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, {
           withCredentials: true,
         });
-        setVisibleChannels(response.data.filter((channel: ChannelInfoInList) => channel.name !== activeChannelName));
+        const filteredChannels = response.data.filter(
+          (channel: ChannelInfoInList) =>
+            channel.name !== activeChannelName &&
+            channel.type !== ChannelType.DIRECT)
+            
+        setVisibleChannels(filteredChannels);
       } catch (error) {
         console.log(error);
       }

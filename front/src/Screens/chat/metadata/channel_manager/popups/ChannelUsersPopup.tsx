@@ -2,17 +2,17 @@ import { useContext, useEffect, useState } from "react";
 
 import User, { UserData } from "../../../../../Services/User";
 import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
+import { useAppSelector } from "../../../../../redux/Store";
 import { SendDataContext } from "../../../ChatBox";
 import { ChannelData, ChannelUser, ChannelUserRole, createChannelUser } from "../../../models/Channel";
 import PayloadAction from "../../../models/PayloadSocket";
 import { RoomSocketActionType } from "../../../models/TypesActionsEvents";
 import Popup from "../../../utils/Popup";
+import ChannelUsersList from "../../../utils/users/ChannelUsersList";
 import UserActionPopup from "../../../utils/users/UserActionPopup";
 import { UserClickParameters } from "../../../utils/users/UserComponent";
-import { fetchAllUsers } from "../../more/popups/AllUsersPopup";
 import UsersList from "../../../utils/users/UsersList";
-import ChannelUsersList from "../../../utils/users/ChannelUsersList";
-import { useAppSelector } from "../../../../../redux/Store";
+import { fetchAllUsers } from "../../more/popups/AllUsersPopup";
 
 interface ChannelUsersPopupProps {
   channelData: ChannelData;
@@ -23,7 +23,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
   const [invitedUsername, setInvitedUsername] = useState<string>("");
   const [invited, setInvited] = useState(false);
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const { username: activeUserName } = useAppSelector(store => store.user.userData)
+  const { username: activeUserName, id: activeId } = useAppSelector(store => store.user.userData)
 
   const sendData: null | ((action: string, data: PayloadAction) => void) =
     useContext(SendDataContext);
@@ -35,14 +35,16 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
 
   useEffect(() => {
     chatSocket?.on(RoomSocketActionType.USERS_ON_ROOM, (payload: any) => {
-      setChannelUsers(
-        payload.users.map((userData: UserData) => createChannelUser(userData, channelData)));
+      const channelusers = payload.users
+        .filter((userData: UserData) => userData.id !== activeId)
+        .map((userData: UserData) => createChannelUser(userData, channelData))
+      setChannelUsers(channelusers);
     });
 
     return () => {
       chatSocket?.off(RoomSocketActionType.USERS_ON_ROOM);
     };
-  }, [chatSocket, channelData]);
+  }, [chatSocket, channelData, activeId]);
 
   useEffect(() => {
     if (sendData === null) return;
@@ -69,7 +71,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
       setSearchText(text);
     } else {
       if (searchText.length !== 0) setSearchText("");
-      if (allUsers.length === 0) setAllUsers(await fetchAllUsers());
+      if (allUsers.length === 0) setAllUsers(await fetchAllUsers())
 
       setInvitedUsername(text);
     }
@@ -108,15 +110,15 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
         />
         {invitedUsername.length !== 0
           ? <UsersList
-              users={allUsers}
-              filter={(userName) => filter(userName, invitedUsername.toLowerCase())}
-              onUserClick={onUserClick}
-            />
+            users={allUsers.filter(user => channelData.usersId.find(userId => parseInt(user.getId()) === null))}
+            filter={(userName) => filter(userName.toLowerCase(), invitedUsername.toLowerCase())}
+            onUserClick={onUserClick}
+          />
           : <ChannelUsersList
-              users={channelUsers}
-              filter={(userName) => filter(userName, searchText.toLowerCase())}
-              onUserClick={onUserClick}
-            />
+            users={channelUsers}
+            filter={(userName) => filter(userName.toLowerCase(), searchText.toLowerCase())}
+            onUserClick={onUserClick}
+          />
         }
         <input
           className="invite-user"
