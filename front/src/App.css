@@ -165,12 +165,19 @@
   overflow: hidden;
   cursor: pointer;
   text-align: center;
-  font-size: small;
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f0f0f0;
-  color: #333;
+  font-size: 16px;
+  padding: 15px 32px;
+  border-radius: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  text-decoration: none;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+}
+
+.custom-file-input:hover {
+    background-color: #45a049;
 }
 
 .custom-file-input input[type="file"] {

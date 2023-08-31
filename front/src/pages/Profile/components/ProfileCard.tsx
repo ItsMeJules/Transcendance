@@ -33,7 +33,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = '
         <>
           <ProfilePicContainer userData={userData} />
           <ImageChange setErrMsg={setErrMsg} fetchUserProfile={fetchUserProfile!} />
-          <div className="fade-line" style={{ marginTop: '20px' }}></div>
+          <div className="fade-line-black" style={{ marginTop: '20px' }}></div>
           <EditUserFormValidation setErrMsg={setErrMsg} userData={userData} />
         </>
       )}
