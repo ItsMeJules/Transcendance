@@ -28,6 +28,7 @@ export class PongService {
     let player1Id: number = 0;
     let player2Id: number = 0;
     const gameModeInt = parseInt(gameMode.gameMode, 10);
+    if (gameModeInt !== 1 && gameModeInt !== 2) return null;
     this.userQueue.forEach((value, key) => {
       if (!player1Id && value === gameMode.gameMode)
         player1Id = key;
@@ -84,7 +85,7 @@ export class PongService {
     return this.userQueue;
   }
 
-  async deleteGamePrisma(gameId: number) {
+  async deleteGamePrismaAndList(gameId: number) {
     // Protect prisma delete??
     await this.prismaService.game.delete({
       where: {

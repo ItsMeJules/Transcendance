@@ -101,7 +101,7 @@ export class GameStruct {
         else
           this.ball.accelerateBall(this.gameMode);
       }
-      if (this.update ===2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
     } else if (this.pl1.isMoving && this.pl1.movingDir === 'down') {
       let pad = this.pl1.pad;
       let newPos = new Point(pad.pos.x, pad.pos.y + pad.speed * (deltaTime / 1000));
@@ -118,7 +118,7 @@ export class GameStruct {
         else
           this.ball.accelerateBall(this.gameMode);
       }
-      if (this.update ===2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
     }
     // Player 2
     if (this.pl2.isMoving && this.pl2.movingDir === 'up') {
@@ -137,7 +137,7 @@ export class GameStruct {
         else
           this.ball.accelerateBall(this.gameMode);
       }
-      if (this.update ===2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
     } else if (this.pl2.isMoving && this.pl2.movingDir === 'down') {
       let pad = this.pl2.pad;
       let newPos = new Point(pad.pos.x, pad.pos.y + pad.speed * (deltaTime / 1000));
@@ -154,9 +154,9 @@ export class GameStruct {
         else
           this.ball.accelerateBall(this.gameMode);
       }
-      if (this.update ===2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
     }
-    if (this.update ===1) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+    if (this.update === 1) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
   }
 
   private updateBall(newPos: Point) {
@@ -175,7 +175,7 @@ export class GameStruct {
       || (newPos.y + this.ball.halfSize >= this.board.height && this.ball.dir.y > 0)) {
       this.ball.dir.y *= -1;
       this.ball.accelerateBall(1);
-      if (this.update ===2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
     }
     // Paddles
     else {
@@ -240,7 +240,7 @@ export class GameStruct {
     );
     this.ball.pos = tmpBall2;
     this.ball.accelerateBall(this.gameMode);
-    if (this.update ===2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+    if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
     return -1;
   }
 
@@ -263,7 +263,7 @@ export class GameStruct {
     );
     this.ball.pos = tmpBall2;
     this.ball.accelerateBall(this.gameMode);
-    if (this.update ===2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+    if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
     return -1;
   }
   /* */
@@ -286,7 +286,7 @@ export class GameStruct {
     return true;
   }
 
-  
+
 
   private ballAndPaddleUnionUp(pos: Point, pad: Paddle) {
     if ((this.isPointInBall(pos)

@@ -20,7 +20,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, iconColo
   return (
     <div className="profile-board-header">
       {type === 'user' && (
-        <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT} style={{ padding: '0px' }}>
+        <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT_ABSOLUTE} style={{ padding: '0px' }}>
           <IconContext.Provider value={{ color: iconColor || 'black', size: '36px' }}>
             <FaUserPen />
           </IconContext.Provider>

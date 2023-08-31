@@ -16,18 +16,13 @@ const App: React.FC = () => {
     <>
       <Provider store={store}>
         <PersistGate persistor={persistor}>
-          <Websocket>
-            <LayoutWrapper>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path={APP_ROUTES.SIGN_IN} element={<LayoutWrapper><Signin /></LayoutWrapper>} />
                 <Route path={APP_ROUTES.SIGN_UP} element={<LayoutWrapper><Signup /></LayoutWrapper>} />
-                  <Route path={'/dashboard/*'} element={<Dashboard />} />
-                  <Route path={'/testchat'} element={<ChatBox />} />
-                <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
+                <Route path={APP_ROUTES.DASHBOARD} element={<LayoutWrapper><Dashboard /></LayoutWrapper>} />
+                <Route path={'/testchat'} element={<Websocket><LayoutWrapper><ChatBox /></LayoutWrapper></Websocket>} />
               </Routes>
-            </LayoutWrapper>
-          </Websocket>
         </PersistGate>
       </Provider>
     </ >

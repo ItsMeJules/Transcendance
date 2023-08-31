@@ -41,7 +41,7 @@ export const Signin = () => {
 
   useEffect(() => {
     if (success) {
-      history(APP_ROUTES.DASHBOARD);
+      history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
   }, [success, history]);
 

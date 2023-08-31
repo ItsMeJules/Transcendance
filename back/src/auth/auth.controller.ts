@@ -93,7 +93,7 @@ export class AuthController {
     });
     const user = await this.authService.validateJwtToken(access_token);
     await this.authService.connectUserToAllPublicRooms(user.id);
-    res.redirect('/profile/me');
+    res.redirect('/dashboard/profile/me');
   }
 
   @Get('google/login')
@@ -114,7 +114,7 @@ export class AuthController {
     });
     const user = await this.authService.validateJwtToken(access_token);
     await this.authService.connectUserToAllPublicRooms(user.id);
-    res.redirect('/profile/me');
+    res.redirect('/dashboard/profile/me');
   }
 
   // // // // // // // // // // 2FA \\ \\ \\ \\ \\ \\ \\ \\ \\ \\

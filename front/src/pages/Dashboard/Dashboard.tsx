@@ -3,43 +3,50 @@ import ProfileHeader from './components/ProfileHeader';
 import RightScreen from './components/RightScreen';
 import NavFooter from './components/NavFooter';
 import './css/Dashboard.scss';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { APP_ROUTES } from 'utils/routing/routing';
 import Profile from 'pages/Profile/Profile';
 import Spectate from 'pages/Spectate/Spectate';
 import Play from 'pages/Play/Play';
 import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
-import GenericUserProfile from 'pages/Profile/css/GenericUserProfile';
+import GenericUserProfile from 'pages/Profile/GenericUserProfile';
+import JoinGame from 'pages/JoinGame/JoinGame';
+import Websocket from 'services/Websocket/Websocket';
 
 const Dashboard = () => {
   const [rightContent, setRightContent] = useState<number>(-1);
+  const location = useLocation();
 
   useEffect(() => {
-    console.log('leftcontent:', rightContent);
+    // console.log('leftcntent:', rightContent);
   }, [rightContent]);
 
   return (
-    <div className="dashboard-main-container">
+    <Websocket key={location.pathname}>
+      <div className="dashboard-main-container">
 
-      <ProfileHeader />
+        <ProfileHeader />
 
-      <article className="screen-container">
-      <Routes>
-        <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
-        <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
-        <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
-        <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
-        <Route path={APP_ROUTES.PLAY} element={<Play />} />
-      </Routes>
+        <article className="screen-container">
 
-      <div className="right-screen-container">
-        <RightScreen rightContent={rightContent} />
+          <Routes>
+            <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
+            <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
+            <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
+            <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
+            <Route path={APP_ROUTES.PLAY} element={<Play />} />
+            <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
+          </Routes>
+
+          <div className="right-screen-container">
+            <RightScreen rightContent={rightContent} />
+          </div>
+        </article>
+
+        <NavFooter setRightContent={setRightContent} />
+
       </div>
-      </article>
-
-      <NavFooter setRightContent={setRightContent} />
-
-    </div>
+    </Websocket>
   );
 };
 

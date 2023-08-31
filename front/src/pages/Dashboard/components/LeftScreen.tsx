@@ -9,7 +9,7 @@ interface LeftScreenProps {
 const LeftScreen: React.FC<LeftScreenProps> = ({ leftContent, setLeftContent }) => {
   
   if (leftContent === APP_SCREENS.MATCHMAKING) {
-    return <JoinGame setLeftContent={setLeftContent}/>;
+    return <JoinGame/>;
   } else if (leftContent === APP_SCREENS.PLAY) {
     return <Play />;
   } else if (leftContent === APP_SCREENS.SPECTATE) {
