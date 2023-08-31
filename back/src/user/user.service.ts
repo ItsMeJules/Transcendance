@@ -23,8 +23,7 @@ const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as ne
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService,
-    private config: ConfigService,) { }
+  constructor(private prisma: PrismaService, private config: ConfigService) {}
 
 
   async editUser(userId: number, dto: EditUserDto) {
@@ -111,13 +110,11 @@ export class UserService {
     try {
       const pathToDelete =
         '/workspace/back/public' + oldPictureObj.replace('/api', '');
-      if (
-        pathToDelete !== '/workspace/back/public/images/logo.png'
-      ) {
+      if (pathToDelete !== '/workspace/back/public/images/logo.png') {
         // console.log('path to delete:',pathToDelete);
         fs.unlinkSync(pathToDelete);
       }
-    } catch (err: any) { }
+    } catch (err: any) {}
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
@@ -168,8 +165,7 @@ export class UserService {
   }
 
   async findOneById(id: number): Promise<User | null> {
-    if (!id)
-      return null;
+    if (!id) return null;
     const user = await this.prisma.user.findUnique({
       where: { id: id },
     });

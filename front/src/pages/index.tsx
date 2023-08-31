@@ -11,6 +11,8 @@ export {default as OnlineGames} from './OnlineGames/OnlineGames';
 export {default as Spectate} from './Spectate/Spectate';
 export {default as Auth2factor} from './Auth2factor/Auth2factor';
 export {default as Dashboard} from './Dashboard/Dashboard';
+export {default as ChatBox} from './ChatBox/ChatBox';
+
 export {default as ProfileHeader} from './Dashboard/components/ProfileHeader'
 export {default as NavFooter} from './Dashboard/components/NavFooter'
 export {default as AllUsers} from './AllUsers/AllUsers'

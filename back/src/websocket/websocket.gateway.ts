@@ -43,10 +43,18 @@ export class SocketEvents {
     client.join('general_online');
   }
 
+<<<<<<< HEAD
   async handleDisconnect(client: Socket) {
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     this.idToSocketMap.delete(user.id);
+=======
+  handleDisconnect(client: Socket) {
+    console.log('> general Conection out', client.id);
+
+    const socketId = client.handshake.query.userId;
+    // console.log("users:", this.connectedUsers);
+>>>>>>> origin/dashboard
   }
 
   @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'

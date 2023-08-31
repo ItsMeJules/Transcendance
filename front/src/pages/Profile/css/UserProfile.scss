@@ -104,7 +104,7 @@
           font-family: "dune", Arial, sans-serif;
           font-size: 12px;
           font-weight: bold;
-          color: white;
+          color: rgba(255, 255, 255, 0.7);
           display: flex;
           align-items: center;
           height: 35px;
@@ -125,7 +125,7 @@
       .data-values-main {
         font-family: "Reboto", Arial, sans-serif;
         font-weight: bold;
-        color: white;
+        color: rgba(255, 255, 255, 0.7);
         display: flex;
         flex-direction: column;
         text-align: left;
@@ -190,8 +190,8 @@
         margin-top: 5px;
 
         .save-changes-button {
-          color: white;
-          background-color: #4db650;
+          color: rgba(255, 255, 255, 0.7);
+          background-color: rgba(0, 128, 0, 0.3);
           /* border: 2px solid black; */
           border-radius: 4px;
           padding: 7px;
@@ -199,9 +199,9 @@
         }
 
         .save-changes-button:hover {
-          background-color: #52d157;
+          background-color: rgba(0, 128, 0, 0.3);
           /* Green */
-          color: white;
+          color: rgba(255, 255, 255, 0.7);
           box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
         }
       }
@@ -212,7 +212,7 @@
       @mixin fields-name-sub-font-color {
         font-family: "dune", Arial, sans-serif;
         font-weight: bold;
-        color: white;
+        color: rgba(255, 255, 255, 0.7);
       }
 
       display: flex;
@@ -230,7 +230,7 @@
       @mixin fields-name-sub-font-color {
         font-family: "dune", Arial, sans-serif;
         font-weight: bold;
-        color: white;
+        color: rgba(255, 255, 255, 0.7);
       }
 
       display: flex;

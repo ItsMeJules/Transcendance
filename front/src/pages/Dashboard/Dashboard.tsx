@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ProfileHeader from './components/ProfileHeader';
-import LeftScreen from './components/LeftScreen';
 import RightScreen from './components/RightScreen';
 import NavFooter from './components/NavFooter';
 import './css/Dashboard.scss';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { APP_ROUTES } from 'utils/routing/routing';
-import UserProfile from 'pages/Friends/Components/UserProfile';
+import { APP_ROUTES, APP_SCREENS } from 'utils/routing/routing';
 import Profile from 'pages/Profile/Profile';
 import Spectate from 'pages/Spectate/Spectate';
 import Play from 'pages/Play/Play';
@@ -16,7 +14,7 @@ import JoinGame from 'pages/JoinGame/JoinGame';
 import Websocket from 'services/Websocket/Websocket';
 
 const Dashboard = () => {
-  const [rightContent, setRightContent] = useState<number>(-1);
+  const [rightContent, setRightContent] = useState<number>(APP_SCREENS.CHAT);
   const location = useLocation();
 
   useEffect(() => {
@@ -24,8 +22,8 @@ const Dashboard = () => {
   }, [rightContent]);
 
   return (
+    <main className="dashboard-main-container">
 
-    <div className="dashboard-main-container">
 
       <ProfileHeader />
 
@@ -46,12 +44,13 @@ const Dashboard = () => {
             <RightScreen rightContent={rightContent} />
           </div>
         </Websocket>
+
       </article>
 
       <NavFooter setRightContent={setRightContent} />
 
-    </div>
 
+    </main>
   );
 };
 

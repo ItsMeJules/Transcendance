@@ -33,6 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
 
     if (!user) {
+      console.log('User not found');
       throw new UnauthorizedException('User not found');
     }
 
@@ -44,7 +45,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new TwoFactorException();
     }
 
-    // console.log('User authenticated');
     delete user.hash;
     return user;
   }

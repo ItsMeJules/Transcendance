@@ -9,11 +9,13 @@
   overflow: hidden;
 
   .custom-text-color{
-    color: white !important;
+    color: rgba(255, 255, 255, 0.7) !important;
   }
 
   .profile-header-container {
-    background: rgba(169, 169, 169, 0.3);
+    flex: 1;
+    display: flex;
+    background: rgba(0, 128, 0, 0.25);
     border-radius: 70px;
     width: 50%;
     height: 12vw;
@@ -21,7 +23,6 @@
     max-height: 300px;
     min-height: 200px;
     margin: 20px auto 0;
-    display: flex;
     justify-content: center;
     align-items: flex-end;
     transform: translateY(-50%);
@@ -121,28 +122,29 @@
     align-items: center;
     margin: 20px;
     padding: 20px;
-    justify-content: center;
-    gap: 1px;
+    justify-content: space-between;
+    gap: 40px;
+
     height: calc(100vh - 500px);
-    max-height: 80vh;
-    max-width: 900px;
+    // max-height: 80vh;
 
     .left-screen-container {
       min-width: 350px;
-      background: rgba(169, 169, 169, 0.3);
+      // background: rgba(169, 169, 169, 0.3);
       border-radius: 20px;
       margin: 20px;
     }
 
     .right-screen-container {
-      width: 300px;
-      background: rgba(169, 169, 169, 0.3);
+      width: 350px;
+      height:100%;
+      // border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
     }
   }
 
   .nav-footer-container {
-    background: rgba(169, 169, 169, 0.3);
+    background: rgba(0, 128, 0, 0.25);
     border-radius: 100px;
     width: 80%;
     height: 30vw;

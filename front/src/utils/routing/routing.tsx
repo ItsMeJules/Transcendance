@@ -12,10 +12,14 @@ export const API_ROUTES = {
   UPLOAD_PROFILE_PIC: `${API_URL}/users/upload-profile-picture`,
   ADD_FRIEND: `${API_URL}/users/add-friend/`,
   GET_LEADERBOARD: `${API_URL}/users/leaderboard`,
+  GET_ALL_USERS: `${API_URL}/users/all`,
   ACTIVATE_2FA: `${API_URL}/auth/turn-on`,
   DEACTIVATE_2FA: `${API_URL}/auth/turn-off`,
   AUTHENTICATE_2FA: `${API_URL}/auth/authenticate`,
   STATE_2FA: `${API_URL}/users/me/2fa-state`,
+  CURRENT_CHAT: `${API_URL}/users/current-chat`,
+  COMPLETE_ROOM: `${API_URL}/users/complete-room`,
+  VISIBLE_CHANNELS: `${API_URL}/chat/visible-rooms`
 };
 
 export const APP_URL = "http://localhost:8000";
@@ -56,5 +60,9 @@ export enum APP_SCREENS {
   FRIENDS,
   LEADERBOARD,
   ONLINE_GAMES,
+<<<<<<< HEAD
   ALL_USERS,
 }
+=======
+}
+>>>>>>> origin/dashboard

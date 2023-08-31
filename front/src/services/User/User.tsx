@@ -1,3 +1,4 @@
+
 export interface UserData {
     id:  string | null;
     createdAt: string | null;
@@ -39,10 +40,6 @@ class User {
         return User.instance;
     }
 
-    storeUserData(data: UserData) {
-        localStorage.setItem('userData', JSON.stringify(data));
-    }
-
     setUserFromResponseData(data: UserData) {
         this.id = data.id || null;
         this.createdAt = data.createdAt || null;
@@ -58,10 +55,6 @@ class User {
         this.userLevel = data.userLevel;
         this.isOnline = data.isOnline;
         this.isOnline = data.isPlaying;
-    }
-
-    getDataFromStorage(userData: string) {
-        return localStorage.getItem('userData');
     }
 
     getData(): UserData | null {

@@ -1,6 +1,6 @@
-import { io, Socket } from 'socket.io-client';
-import { ReactElement, createContext, useEffect, useState, useContext, useRef } from 'react';
-import { UserData } from "services/User/User";
+import { io, Socket } from "socket.io-client";
+import { ReactElement, createContext, useEffect, useState, useContext } from "react";
+import { useAppSelector } from "utils/redux/Store";
 
 interface WebsocketProps {
   children: ReactElement;
@@ -8,26 +8,26 @@ interface WebsocketProps {
 
 interface OpenedSockets {
   general: Socket | null;
-  // chat: Socket | null;
+  chat: Socket | null;
   game: Socket | null;
 }
 
 const WebsocketContext = createContext<OpenedSockets>({
   general: null,
-  // chat: null,
+  chat: null,
   game: null,
-})
+});
 
 const deregisterSocket = (socket: Socket): void => {
   setTimeout(() => {
     socket.disconnect();
   }, 5000);
   socket.off("online");
-}
+};
 
 const closeOpenSockets = (sockets: OpenedSockets): void => {
   if (sockets.general) deregisterSocket(sockets.general);
-  // if (sockets.chat) deregisterSocket(sockets.chat);
+  if (sockets.chat) deregisterSocket(sockets.chat);
   if (sockets.game) deregisterSocket(sockets.game);
 };
 
@@ -41,43 +41,44 @@ const OpenSocket = (namespace: string): Socket => {
 export default function Websocket({ children }: WebsocketProps): JSX.Element {
   const [socketInstances, setSocketInstances] = useState<OpenedSockets>({
     general: null,
+    chat: null,
     game: null,
   });
+  const { id: userId } = useAppSelector(state => state.user.userData);
   
-  const userDataRef = useRef<UserData | null>(null); // Use useRef to store userData
-
   useEffect((): (() => void) => {
-    const storedUserData = localStorage.getItem('userData');
-
-    // if (storedUserData) {
-      // userDataRef.current = JSON.parse(storedUserData); // Assign to userDataRef
+    console.log(userId);
+    if (userId) {
+      console.log("yo")
+      console.log("yo" , OpenSocket("http://localhost:8000/chat"));
       const general =
         socketInstances.general?.connected !== true
           ? OpenSocket("http://localhost:8000/general")
           : socketInstances.general;
+      const chat =
+        socketInstances.chat?.connected !== true
+          ? OpenSocket("http://localhost:8000/chat")
+          : socketInstances.chat;
       const game =
         socketInstances.game?.connected !== true
           ? OpenSocket("http://localhost:8000/game")
           : socketInstances.game;
 
-      setSocketInstances({ general: general, game: game });
-
-    // } else {
-    //   closeOpenSockets(socketInstances);
-    //   setSocketInstances({ general: null, game: null });
-    // }
+      setSocketInstances({ general: general, chat: chat, game: game });
+    } else {
+      closeOpenSockets(socketInstances);
+      setSocketInstances({ general: null, chat: null, game: null });
+      console.log()
+    }
 
     return (): void => {
       closeOpenSockets(socketInstances);
-      setSocketInstances({ general: null, game: null });
-    }
-
-  }, [localStorage.getItem('userData')])
+      setSocketInstances({ general: null, chat: null, game: null });
+    };
+  }, [userId]);
 
   return (
-    <WebsocketContext.Provider value={socketInstances}>
-      {children}
-    </WebsocketContext.Provider>
+    <WebsocketContext.Provider value={socketInstances}>{children}</WebsocketContext.Provider>
   );
 }
 

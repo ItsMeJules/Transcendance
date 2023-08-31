@@ -6,6 +6,7 @@ import { UserData } from 'services/User/User';
 import { API_ROUTES, APP_ROUTES } from 'utils/routing/routing';
 import { useNavigate } from 'react-router-dom';
 
+
 interface EditUserFormValidationProps {
   setErrMsg: (error: string) => void;
   userData: UserData | null;
@@ -104,8 +105,8 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
             className={`data-values-input-sub-others border edit-form-label`}
             onChange={(e) => setLastName(e.target.value)} maxLength={100} />
 
-          <div className="myBtn">
-            <button type="submit" className="save-changes-button">
+          <div className="save-button">
+            <button type="submit" className="save-changes-button" style={{ marginTop: '10px' }}>
               Save changes
             </button>
           </div>

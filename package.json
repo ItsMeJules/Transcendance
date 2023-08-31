@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "redux-persist": "^6.0.0",
+    "socket.io": "^4.7.2"
+  }
+}
