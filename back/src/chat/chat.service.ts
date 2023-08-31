@@ -1,6 +1,5 @@
 import {
   AcknowledgementType,
-  RoomInfo,
   AcknowledgementPayload,
 } from './partial_types/partial.types';
 import { Injectable } from '@nestjs/common';
@@ -99,7 +98,9 @@ export class ChatService {
       const room = await this.prismaService.returnCompleteRoom(
         sendMsgRoomDto.roomName,
       );
-
+      const user = await this.prismaService.user.findUnique({
+        where: { id: client.data.id },
+      });
       if (room.mutes.some((muted) => client.data.id === muted.id))
         throw new Error('You are muted'); //time
 
@@ -114,11 +115,10 @@ export class ChatService {
 
       const picturePayload = {
         text: sendMsgRoomDto.message,
-        authorId: client.data.id,
+        authorId: user.id,
         clientId: client.id,
-        profilePicture:
-          'https://cdn.intra.42.fr/users/d97b6212aaf900daa3e64abff472b7b8/jpeyron.jpg', //TODO Change my picture.
-        userName: 'jpeyron',
+        profilePicture: user.profilePicture, //TODO Change my picture.
+        userName: user.username,
       };
       // implement the "block" feature.
       server
@@ -251,7 +251,6 @@ export class ChatService {
   }
 
   async fetchMessagesOnRoomForUser(
-    // I need the user's profile picture & name. For now I hardcode mine.
     client: Socket,
     fetchRoomDto: ChatDtos.FetchRoomDto,
   ): Promise<Message[]> {
@@ -263,25 +262,31 @@ export class ChatService {
         client.data.id,
       );
 
-      const messagesWithClientId = messages.map((currentMessage) => {
-        const isAuthorBanned = usersBlocked.some(
-          (bannedUser) => bannedUser.id === currentMessage.authorId,
-        );
+      const messagesWithClientId = await Promise.all(
+        messages.map(async (currentMessage) => {
+          const isAuthorBanned = usersBlocked.some(
+            (bannedUser) => bannedUser.id === currentMessage.authorId,
+          );
 
-        if (isAuthorBanned) {
+          if (isAuthorBanned) {
+            return {
+              ...currentMessage,
+              userName: 'blocked user',
+              profilePicture:
+                'https://imgs.search.brave.com/JXYNRtuKQm3-Vmdw4PY0GaHw_53mRAViyqcOHZSCh_4/rs:fit:860:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy82/LzZmL0thcmFrdWwt/Y2FtZWxsb3MtZDAz/LmpwZw',
+              text: 'blocked user',
+            };
+          }
+          const isUserBanned = await this.prismaService.user.findUnique({
+            where: { id: currentMessage.authorId },
+          });
           return {
             ...currentMessage,
-            text: 'blocked message',
+            profilePicture: isUserBanned.profilePicture,
+            userName: isUserBanned.username,
           };
-        }
-
-        return {
-          ...currentMessage,
-          profilePicture:
-            'https://cdn.intra.42.fr/users/d97b6212aaf900daa3e64abff472b7b8/jpeyron.jpg', // Here's my picture.
-          userName: 'jpeyron',
-        };
-      });
+        }),
+      );
 
       return messagesWithClientId;
     } catch (error) {

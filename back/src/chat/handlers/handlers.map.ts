@@ -40,11 +40,6 @@ export const ActionChatHandlers = {
     client: Socket,
     modifyPasswordDto: ChatDtos.ModifyPasswordDto,
   ): Promise<string> => chatService.modifyPassword(client, modifyPasswordDto),
-  // message: async (
-  //   chatService: ChatService,
-  //   client: Socket,
-  //   sendMsgRoomDto: ChatDtos.SendMsgRoomDto,
-  // ): Promise<void> => chatService.sendMessageToRoom(client, sendMsgRoomDto),
 };
 
 export const ActionRoomHandlers = {
