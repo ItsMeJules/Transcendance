@@ -462,8 +462,7 @@
                 border-bottom: 1px solid lightgray;
               }
 
-              .block-user {
-              }
+              .block-user {}
             }
           }
 
@@ -766,8 +765,7 @@
                   border-bottom: 1px solid lightgray;
                 }
 
-                .block-user {
-                }
+                .block-user {}
               }
             }
           }
@@ -797,7 +795,7 @@
             background-color: #a9a9a9;
 
             height: fit-content;
-            width: 100px;
+            width: 150px;
 
             top: 100%;
             left: -100%;
@@ -807,99 +805,53 @@
 
             cursor: auto;
 
-            .channel-description {
-              font-size: 10px;
+            input {
+              outline: none;
+              margin: 5px;
+              padding: 5px;
+              border-radius: 5px;
+
               border-bottom: 2px solid black;
             }
 
-            .images {
-              display: flex;
-              flex-direction: row;
-              justify-content: flex-end;
-
-              border-bottom: 2px solid black;
-
-              img {
-                background-color: gray;
-
-                height: auto;
-                width: 80%;
-
-                padding: 2px;
-                margin: 1px 1px 1px 1px;
-
-                border: 1px solid black;
-                border-radius: 2px;
-
-                cursor: pointer;
-                transition: transform 0.3s, background-color 0.3s;
-
-                &:hover {
-                  opacity: 0.5;
-                }
-
-                &.selected {
-                  background-color: #5e5e5e;
-                }
-              }
-            }
-
-            .password-input {
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-
-              height: 20%;
-              border-bottom: 2px solid black;
-
-              input {
-                height: 80%;
-                width: 90%;
-
-                margin: 2px 0 2px 0;
-                font-size: 0.8rem;
-
-                border: 1px solid black;
-                border-radius: 5px;
-              }
-            }
-
-            .validate {
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              flex-grow: 1;
-
-              width: 100%;
-
+            .confirm {
               text-align: center;
-              overflow: hidden;
 
+              border-top: 2px solid black;
               border-bottom: 2px solid black;
 
-              p {
-                margin: 0;
-                cursor: pointer;
-                transition: transform 0.3s;
+              button {
+                margin: 5px;
+                padding: 5px;
+                border-radius: 5px;
+
+                border-top: 1px solid lightgray;
+                border-left: 1px solid lightgray;
+                border-right: 1px solid lightgray;
+                border-bottom: 2px solid black;
+
+                transition: background-color;
 
                 &:hover {
-                  transform: scale(1.05);
+                  background-color: #05b805;
                 }
               }
             }
 
             .quit-channel {
               text-align: center;
-              overflow: hidden;
 
-              p {
+              button {
                 cursor: pointer;
 
-                margin: 0;
+                margin: 5px;
+                padding: 5px;
                 border-radius: 5px;
-                border: 1px solid lightgray;
+
+                border-top: 1px solid lightgray;
+                border-left: 1px solid lightgray;
+                border-right: 1px solid lightgray;
+                border-bottom: 2px solid black;
 
                 transition: background-color;
 

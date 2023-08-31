@@ -1,8 +1,5 @@
 import React, { useContext, useState } from "react";
 
-import PublicIcon from "../../../../../assets/globe.png";
-import ProtectedIcon from "../../../../../assets/padlock.png";
-import PrivateIcon from "../../../../../assets/private.png";
 
 import { useAppSelector } from "../../../../../redux/Store";
 import { SendDataContext } from "../../../ChatBox";
@@ -15,8 +12,7 @@ interface ChannelPopupProps {
   channelData: ChannelData;
 }
 
-const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProps) => {
-  const [channelType, setChannelType] = useState(ChannelType.PUBLIC);
+const ManageChannelPopup: React.FC<ChannelPopupProps> = ({ channelData }: ChannelPopupProps) => {
   const [channelPassword, setChannelPassword] = useState("");
 
   const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
@@ -24,19 +20,12 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
     useContext(SendDataContext);
 
   const changeChannel = () => {
-    const { channelData } = props;
-
-    if (!channelData || channelType === channelData.type) return;
-
-    if (channelType === ChannelType.PROTECTED) channelData.password = channelPassword;
-
     if (sendData === null) return;
     sendData(ChatSocketActionType.CHANGE_PASSWORD, {
       action: ChatSocketActionType.CHANGE_PASSWORD,
       password: channelPassword,
       roomName: activeChannelName,
     } as PayloadAction);
-    channelData.type = channelType;
     setChannelPassword("");
   };
 
@@ -51,46 +40,23 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
 
   return (
     <Popup className="channel-popup">
-      <div className="channel-description">{ChannelTypeDescription[channelType].desc}</div>
+      <input
+        placeholder="Entrez le mdp."
+        onChange={(e) => setChannelPassword(e.target.value)}
+        value={channelPassword}
+        required
+      />
 
-      <div className="images">
-        <img
-          className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
-          src={PublicIcon}
-          alt="Public"
-          onClick={() => setChannelType(ChannelType.PUBLIC)}
-        />
-        <img
-          className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
-          src={PrivateIcon}
-          alt="Private"
-          onClick={() => setChannelType(ChannelType.PRIVATE)}
-        />
-        <img
-          className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
-          src={ProtectedIcon}
-          alt="Protected"
-          onClick={() => setChannelType(ChannelType.PROTECTED)}
-        />
-      </div>
-
-      {channelType === ChannelType.PROTECTED && (
-        <div className="password-input">
-          <input
-            placeholder="Entrez le nouveau mdp du channel."
-            onChange={(e) => setChannelPassword(e.target.value)}
-            value={channelPassword}
-            required
-          />
-        </div>
-      )}
-
-      <div className="validate">
-        <p onClick={changeChannel}>Modifier le channel</p>
+      <div className="confirm">
+        <button onClick={changeChannel}>
+          {channelData.type !== ChannelType.PROTECTED
+            ? "Ajouter un mot de passe"
+            : "Changer le mot de passe"}
+        </button>
       </div>
 
       <div className="quit-channel">
-        <p onClick={quitChannel}>Quitter le channel</p>
+        <button onClick={quitChannel}>Quitter le channel</button>
       </div>
     </Popup>
   );
