@@ -277,7 +277,8 @@
                   background-color: gray;
 
                   height: auto;
-                  width: 80%;
+                  width: calc(100% / 3);
+                  overflow-x: hidden;
 
                   padding: 2px;
                   margin: 1px 1px 1px 1px;
