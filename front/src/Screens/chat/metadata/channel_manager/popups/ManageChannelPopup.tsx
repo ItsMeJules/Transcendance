@@ -8,10 +8,7 @@ import { useAppSelector } from "../../../../../redux/Store";
 import { SendDataContext } from "../../../ChatBox";
 import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
 import PayloadAction from "../../../models/PayloadSocket";
-import {
-  RoomSocketActionType,
-  ChatSocketActionType,
-} from "../../../models/TypesActionsEvents";
+import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
 import Popup from "../../../utils/Popup";
 
 interface ChannelPopupProps {

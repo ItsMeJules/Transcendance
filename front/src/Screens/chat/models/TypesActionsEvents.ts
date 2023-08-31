@@ -4,6 +4,9 @@ export enum ChatSocketEventType {
   MESSAGE = "message",
   CHAT_ACTION = "chat-action",
   ROOM_ACTION = "room-action",
+  ERRORS = "errors",
+  ACKNOWLEDGEMENTS = "acknowledgements",
+  SUCCESS = "success",
 }
 
 export enum ChatSocketActionType {

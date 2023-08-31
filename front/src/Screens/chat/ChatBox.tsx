@@ -1,7 +1,8 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 
 import "./ChatBox.scss";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
 import { useAppDispatch, useAppSelector } from "../../redux/Store";
 import { setActiveChannel, setActiveChannelMessages } from "../../redux/reducers/ChannelSlice";
@@ -20,19 +21,70 @@ export const SendDataContext = createContext<
   null | ((action: string, data: PayloadAction) => void)
 >(null);
 
+interface SocketAcknowledgements {
+  message: string;
+  type: string;
+}
+
 export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);
-
   const chatSocket = useWebsocketContext().chat;
   const dispatch = useAppDispatch();
   const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
 
+  const displayAcknowledgements = (payload: SocketAcknowledgements) => {
+    switch (payload.type) {
+      case "info":
+        toast(`${payload.message}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }); //information
+        break;
+      case "error":
+        toast.error(`Error: ${payload.message}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }); //information
+        break;
+      case "success":
+        toast.success(`Success: ${payload.message}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }); //information
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
+    // create payloads not any, create functions not callback in parameter
     chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
       dispatch(setUserActiveChannel(payload.name));
       dispatch(setActiveChannel(payload));
     });
 
+    chatSocket?.on(ChatSocketEventType.ACKNOWLEDGEMENTS, (payload: SocketAcknowledgements) =>
+      displayAcknowledgements(payload)
+    );
     chatSocket?.on(ChatSocketEventType.FETCH_MESSAGES, (payload: any) => {
       payload = payload.map((message: any) => {
         return {
@@ -42,12 +94,15 @@ export const ChatBox = () => {
           profilePicture: message.profilePicture,
         };
       });
-      dispatch(setActiveChannelMessages(payload));
+      dispatch(setActiveChannelMessages(payload)); // faire fonction
     });
 
     return () => {
       chatSocket?.off(ChatSocketEventType.FETCH_MESSAGES);
       chatSocket?.off(ChatSocketEventType.JOIN_ROOM);
+      chatSocket?.off(ChatSocketEventType.ACKNOWLEDGEMENTS);
+      chatSocket?.off(ChatSocketEventType.SUCCESS);
+      chatSocket?.off(ChatSocketEventType.ERRORS);
     };
   }, [dispatch, chatSocket, activeChannelName]);
 
@@ -80,15 +135,20 @@ export const ChatBox = () => {
   };
 
   return (
-    <div className="chat-container">
-      <SendDataContext.Provider value={sendData}>
-        <div className="toggler" style={togglerTransition}>
-          <ChatMetadata chatToggled={chatToggled} />
-          <ChatContainer />
-        </div>
+    <>
+      <ToastContainer />
+      <div className="chat-container">
+        <SendDataContext.Provider value={sendData}>
+          <div className="toggler" style={togglerTransition}>
+            <ChatMetadata chatToggled={chatToggled} />
+            <ChatContainer />
+          </div>
 
-        <ChatBar chatToggled={chatToggled} setChatToggled={setChatToggled} />
-      </SendDataContext.Provider>
-    </div>
+          <ChatBar chatToggled={chatToggled} setChatToggled={setChatToggled} />
+        </SendDataContext.Provider>
+      </div>
+      {/* <div className="errors">lol</div>
+      <div className="acknowledgements">lol</div> */}
+    </>
   );
 };
