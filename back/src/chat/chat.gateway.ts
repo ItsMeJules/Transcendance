@@ -5,7 +5,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { User } from '@prisma/client';
+import { RoomType, User } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { ChatSocketEventType, extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
@@ -67,9 +67,21 @@ export class ChatEventsGateway {
             server: this.server,
           });
 
-        this.server
-          .to(client.id)
-          .emit(ChatSocketEventType.JOIN_ROOM, currentCompleteRoom);
+        let roomDisplayname = currentCompleteRoom.name;
+        if (currentCompleteRoom.type === RoomType.DIRECT) {
+          const [_, topId, lowId] = currentCompleteRoom.name
+            .split('-')
+            .map(Number);
+          const targetId = topId === user.id ? lowId : topId;
+          roomDisplayname = currentCompleteRoom.users.find(
+            (user) => user.id === targetId,
+          )?.username;
+        }
+
+        this.server.to(client.id).emit(ChatSocketEventType.JOIN_ROOM, {
+          ...currentCompleteRoom,
+          displayname: roomDisplayname,
+        });
 
         this.server
           .to(client.id)

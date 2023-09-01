@@ -23,7 +23,7 @@ export class ChatService {
   constructor(
     private prismaService: PrismaService,
     private userSocketsService: UserSocketsService,
-  ) {}
+  ) { }
 
   sendError(client: Socket, error: Error): void {
     const payload: AcknowledgementPayload = {
@@ -515,8 +515,8 @@ export class ChatService {
         this.sendSuccess(
           client,
           'You blocked ' +
-            targetUser.username +
-            '! You cant see his messages now',
+          targetUser.username +
+          '! You cant see his messages now',
         );
         this.sendWarning(
           this.userSocketsService.getUserSocket(String(targetUser.id)),
@@ -1064,10 +1064,10 @@ export class ChatService {
       this.sendSuccess(
         this.userSocketsService.getUserSocket(String(targetUser.id)),
         'You have been invited by ' +
-          actingUser.username +
-          ' to "' +
-          room.name +
-          '"',
+        actingUser.username +
+        ' to "' +
+        room.name +
+        '"',
       );
     } catch (error) {
       this.sendError(client, error);

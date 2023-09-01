@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
 import { useAppDispatch, useAppSelector } from "../../redux/Store";
-import { activeChannelAddAdmin, activeChannelAddUserBanned, activeChannelRemoveAdmin, activeChannelRemoveUserBanned, setActiveChannel, setActiveChannelMessages } from "../../redux/reducers/ChannelSlice";
+import { activeChannelAddAdmin, activeChannelAddUser, activeChannelAddUserBanned, activeChannelRemoveAdmin, activeChannelRemoveUser, activeChannelRemoveUserBanned, setActiveChannel, setActiveChannelMessages } from "../../redux/reducers/ChannelSlice";
 import { setUserActiveChannel } from "../../redux/reducers/UserSlice";
 import ChatContainer from "./chat_container/ChatContainer";
 import ChatBar from "./chatbar/ChatBar";
@@ -106,9 +106,11 @@ export const ChatBox = () => {
           dispatch(activeChannelRemoveAdmin(payload.userId))
           break;
         case RoomSocketActionType.BAN:
+          dispatch(activeChannelRemoveUser(payload.userId))
           dispatch(activeChannelAddUserBanned(payload.userId))
           break;
           case RoomSocketActionType.UNBAN:
+          dispatch(activeChannelAddUser(payload.userId))
           dispatch(activeChannelRemoveUserBanned(payload.userId))
           break;
         default:
