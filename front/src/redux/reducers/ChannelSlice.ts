@@ -14,7 +14,7 @@ interface ChannelDataState {
     punishments: {
       type: string;
       userId: number;
-      expireAt: number;
+      expireAt: number | null;
     }[];
     messages: {
       authorId: number;
@@ -107,11 +107,26 @@ const channelSlice = createSlice({
     setPassword: (state, action: PayloadAction<string>) => {
       // state.channelData.password = action.payload;
     },
+    activeChannelRemoveUserBanned: (state, action: PayloadAction<number>) => {
+      if (state.activeChannel !== null)
+        state.activeChannel.punishments.filter(punishment =>
+          punishment.type === PunishmentType.BAN &&
+          punishment.userId === action.payload);
+    },
+    activeChannelAddUserBanned: (state, action: PayloadAction<number>) => {
+      state.activeChannel?.punishments.push({
+        type: PunishmentType.BAN,
+        userId: action.payload,
+        expireAt: null,
+      });
+    },
     addMessageToActiveChannel: (state, action: PayloadAction<ChannelMessageData>) => {
       state.activeChannel?.messages.push(action.payload);
     },
   },
 });
 
-export const { setActiveChannel, setActiveChannelMessages, setType, setPassword, addMessageToActiveChannel, activeChannelAddAdmin, activeChannelRemoveAdmin } = channelSlice.actions;
+export const { setActiveChannel, setActiveChannelMessages, setType, setPassword,
+  addMessageToActiveChannel, activeChannelAddAdmin, activeChannelRemoveAdmin,
+  activeChannelRemoveUserBanned, activeChannelAddUserBanned } = channelSlice.actions;
 export default channelSlice.reducer;

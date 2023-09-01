@@ -36,6 +36,7 @@ export default function AllUsers() {
         ? <UserActionPopup
           userData={userDataClicked}
           buttonClicked={0}
+          channelInvite={true}
         />
         : undefined}
     </Popup>

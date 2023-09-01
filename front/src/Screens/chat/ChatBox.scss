@@ -371,7 +371,7 @@
             left: 102%;
 
             height: max-content;
-            max-height: 20vw;
+            max-height: fit-content;
             width: 10vw;
             min-width: 130px;
             min-height: 180px;
@@ -393,6 +393,7 @@
               justify-content: flex-start;
 
               overflow-x: hidden;
+              height: fit-content;
 
               z-index: 10;
 
@@ -447,13 +448,15 @@
               word-wrap: break-word;
 
               h4 {
-                text-transform: uppercase;
+                text-transform: uppercase; //?
                 margin: 0px;
                 border-bottom: 1px solid lightgray;
+                cursor: default;
               }
 
               .dm:hover,
               .invite-to-play:hover,
+              .invite-to-channel:hover,
               .block-user:hover {
                 background-color: #c9c9c9;
               }
@@ -463,6 +466,10 @@
               }
 
               .invite-to-play {
+                border-bottom: 1px solid lightgray;
+              }
+
+              .invite-to-channel {
                 border-bottom: 1px solid lightgray;
               }
 
@@ -595,7 +602,7 @@
               position: absolute;
 
               top: 102%;
-              height: 40vh;
+              height: fit-content;
               width: 100%;
 
               .invited {
@@ -688,15 +695,6 @@
                   }
                 }
 
-                .invite-user {
-                  text-align: center;
-                  background-color: white;
-                  border-top: 1px solid lightgray;
-
-                  &:hover {
-                    background-color: #c9c9c9;
-                  }
-                }
               }
 
               .user-actions {
@@ -730,6 +728,7 @@
                 .demote:hover,
                 .dm:hover,
                 .invite-to-play:hover,
+                .invite-to-channel:hover,
                 .block-user:hover {
                   background-color: #c9c9c9;
                 }
@@ -767,6 +766,10 @@
                 }
 
                 .invite-to-play {
+                  border-bottom: 1px solid lightgray;
+                }
+
+                .invite-to-channel {
                   border-bottom: 1px solid lightgray;
                 }
 

@@ -13,10 +13,10 @@ export default function ChannelUsersList(props: ChannelUsersListProps) {
 
   return (
     <div className="users-list">
-      {users.map((user, key) => {
+      {users.map((user) => {
         if (user.username !== null && !filter(user.username)) return undefined;
 
-        return <ChannelUserComponent channelUser={user} onUserClick={onUserClick} />;
+        return <ChannelUserComponent key={user.id} channelUser={user} onUserClick={onUserClick} />;
       })}
     </div>
   );

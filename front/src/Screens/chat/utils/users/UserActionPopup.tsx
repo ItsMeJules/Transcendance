@@ -9,13 +9,14 @@ import Popup from "../Popup";
 interface UserActionProps {
   userData: UserData;
   buttonClicked: number;
+  channelInvite: boolean;
   isMuted?: boolean;
   isBanned?: boolean;
   isAdmin?: boolean;
   isBlocked?: boolean;
 }
 
-export default function UserActionPopup({ userData, buttonClicked, isMuted = false, isBanned = false, isAdmin = false, isBlocked = false }: UserActionProps) {
+export default function UserActionPopup({ userData, buttonClicked, channelInvite, isMuted = false, isBanned = false, isAdmin = false, isBlocked = false }: UserActionProps) {
   const { id: currentIdUser } = useAppSelector((store) => store.user.userData);
 
   const sendData: null | ((action: string, data: PayloadAction) => void) =
@@ -76,13 +77,16 @@ export default function UserActionPopup({ userData, buttonClicked, isMuted = fal
     } as PayloadAction);
   };
 
-  const onInvite = () => {
+  const onInviteChannel = () => {
     if (sendData === null) return;
 
     sendData(RoomSocketActionType.INVITE, {
       action: "invite",
       targetId: Number(userData.id),
     } as PayloadAction);
+  };
+
+  const onInviteToPlay = () => {
   };
 
   const onBlock = (block: boolean) => {
@@ -138,9 +142,15 @@ export default function UserActionPopup({ userData, buttonClicked, isMuted = fal
           <div className="dm" onClick={onDm}>
             Envoyer un message privé
           </div>
-          <div className="invite-to-play" onClick={onInvite}>
+          <div className="invite-to-play" onClick={onInviteToPlay}>
             Inviter à jouer
           </div>
+          {channelInvite
+            ?
+              <div className="invite-to-channel" onClick={onInviteChannel}>
+                Inviter dans le channel
+              </div>
+            : undefined}
           {isBlocked === true ? (
             <div className="block-user" onClick={() => onBlock(!isBlocked)}>
               Bloquer

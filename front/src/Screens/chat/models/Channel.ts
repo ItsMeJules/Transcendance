@@ -15,8 +15,8 @@ export const ChannelTypeDescription = {
 };
 
 export enum PunishmentType {
-  BAN,
-  MUTE,
+  BAN = "ban",
+  MUTE = "mute",
 }
 
 export interface PunishmentData {
