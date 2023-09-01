@@ -11,7 +11,7 @@ const ProfilePicContainer: React.FC<ProfilePicContainerProps> = ({ userData }) =
     <div className="profile-pic-container">
       {userData?.profilePicture ? (
         <div className="profile-pic-circle">
-          <img src={userData.profilePicture} alt="" />
+          <img src={userData.profilePicture} alt="" className='profile-pic-img-class'/>
         </div>
       ) : (
         <div className="empty-profile-picture-container">

@@ -76,10 +76,18 @@ export class PongEvents {
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) {
       client.disconnect();
-      return;
+      return; 
     }
     const user = await this.authService.validateJwtToken(access_token);
     if (!user) return;
+    const game = this.playersMap.get(user.id);
+    // console.log('game:', game);
+    // if (game !== undefined) {
+    //   this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'INGAME', gameMode: 0 });
+    //   return;
+    // }
+    console.log('joinqueue game:', game);
+
     const gameQueue = this.pongService.addToQueue(user, gameDto);
     // console.log('queue:', this.pongService.userQueue);
     if (gameQueue != null) {

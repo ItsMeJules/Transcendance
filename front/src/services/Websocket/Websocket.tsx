@@ -63,7 +63,7 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
         socketInstances.game?.connected !== true
           ? OpenSocket("http://localhost:8000/game")
           : socketInstances.game;
-
+      console.log('socketgame:', game);
       setSocketInstances({ general: general, chat: chat, game: game });
     } else {
       closeOpenSockets(socketInstances);
