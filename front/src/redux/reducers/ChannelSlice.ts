@@ -43,6 +43,12 @@ const findChannelIdndex = (state: ChannelDataState, channelName: string) => {
   return state.visibleChannels.findIndex(channelData => channelData.name === channelName);
 };
 
+export const getActiveChannelBans = (state: ChannelDataState): number[] => {
+  return state.activeChannel?.punishments
+    .filter(punishment => punishment.type === PunishmentType.BAN)
+    .map(punishment => punishment.userId) || []
+}
+
 const channelSlice = createSlice({
   name: "channel",
   initialState,
@@ -87,7 +93,7 @@ const channelSlice = createSlice({
       state.activeChannel = newState
     },
     setActiveChannelMessages: (state, action: PayloadAction<ChannelMessageData[]>) => {
-      if (state.activeChannel !== null) 
+      if (state.activeChannel !== null)
         state.activeChannel.messages = action.payload;
     },
     setType: (state, action: PayloadAction<{ channelName: string; type: ChannelType }>) => {

@@ -352,6 +352,36 @@ export class ChatService {
     }
   }
 
+  async sendAllUsersBannedOnRoom(
+    client: Socket,
+    usersRoomDto: ChatDtos.UsersRoomDto,
+  ): Promise<void> {
+    try {
+      const room = await this.prismaService.returnCompleteRoom(
+        usersRoomDto.roomName,
+      );
+
+      if (!room) {
+        throw new Error('no room named' + usersRoomDto.roomName);
+      }
+
+      const neededFields = room.bans.map((user) => {
+        return {
+          id: user.id,
+          username: user.username,
+          profilePicture: user.profilePicture,
+          isOnline: user.isOnline,
+        };
+      });
+
+      usersRoomDto.server
+        .to(client.id)
+        .emit(RoomSocketActionType.USERS_BANNED, { users: neededFields });
+    } catch (error) {
+      this.sendError(client, error);
+    }
+  }
+
   async joinRoom(
     client: Socket,
     joinRoomDto: ChatDtos.JoinRoomDto,

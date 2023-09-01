@@ -29,4 +29,5 @@ export enum RoomSocketActionType {
   KICK = "kick",
   INVITE = "invite",
   USERS_ON_ROOM = "users-on-room",
+  USERS_BANNED = "users-banned",
 }

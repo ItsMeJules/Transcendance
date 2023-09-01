@@ -88,4 +88,9 @@ export const ActionRoomHandlers = {
     client: Socket,
     usersRoomDto: ChatDtos.UsersRoomDto,
   ): Promise<void> => chatService.sendAllUsersOnRoom(client, usersRoomDto),
+  getBannedUsers: async (
+    chatService: ChatService,
+    client: Socket,
+    usersRoomDto: ChatDtos.UsersRoomDto,
+  ): Promise<void> => chatService.sendAllUsersBannedOnRoom(client, usersRoomDto),
 };

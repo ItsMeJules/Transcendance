@@ -577,8 +577,21 @@
           width: 88%;
 
           .channel-name {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            column-gap: 10px;
             height: 50%;
             overflow: hidden;
+
+            p {
+              margin: 0;
+            }
+
+            img {
+              width: 10%;
+              height: auto;
+            }
           }
 
           .channel-users-container {
@@ -777,6 +790,10 @@
               }
             }
           }
+        }
+        
+        .banned-users {
+          
         }
 
         .manage {

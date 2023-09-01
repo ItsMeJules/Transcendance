@@ -11,18 +11,17 @@ interface UserActionProps {
   buttonClicked: number;
   channelInvite: boolean;
   isMuted?: boolean;
-  isBanned?: boolean;
   isAdmin?: boolean;
   isBlocked?: boolean;
 }
 
-export default function UserActionPopup({ userData, buttonClicked, channelInvite, isMuted = false, isBanned = false, isAdmin = false, isBlocked = false }: UserActionProps) {
+export default function UserActionPopup({ userData, buttonClicked, channelInvite, isMuted = false, isAdmin = false, isBlocked = false }: UserActionProps) {
   const { id: currentIdUser } = useAppSelector((store) => store.user.userData);
 
   const sendData: null | ((action: string, data: PayloadAction) => void) =
     useContext(SendDataContext);
 
-  const onBan = (ban: boolean) => {
+  const onBan = () => {
     if (sendData === null) return;
 
     sendData(RoomSocketActionType.BAN, {
@@ -40,7 +39,7 @@ export default function UserActionPopup({ userData, buttonClicked, channelInvite
     } as PayloadAction);
   };
 
-  const onMute = (mute: boolean) => {
+  const onMute = () => {
     if (sendData === null) return;
 
     sendData(RoomSocketActionType.MUTE, {
@@ -49,7 +48,7 @@ export default function UserActionPopup({ userData, buttonClicked, channelInvite
     } as PayloadAction);
   };
 
-  const onPromote = (promote: boolean) => {
+  const onPromote = () => {
     if (sendData === null) return;
 
     sendData(RoomSocketActionType.PROMOTE, {
@@ -89,7 +88,7 @@ export default function UserActionPopup({ userData, buttonClicked, channelInvite
   const onInviteToPlay = () => {
   };
 
-  const onBlock = (block: boolean) => {
+  const onBlock = () => {
     if (sendData === null) return;
 
     sendData(ChatSocketActionType.BLOCK, {
@@ -101,67 +100,36 @@ export default function UserActionPopup({ userData, buttonClicked, channelInvite
   return (
     <Popup className="user-actions">
       <h4>{userData.username}</h4>
-      {buttonClicked === 1 ? (
+      {buttonClicked === 1
+      ?
         <>
-          {isBanned ? (
-            <div className="ban" onClick={() => onBan(!isBanned)}>
-              Bannir
-            </div>
-          ) : (
-            <div className="unban" onClick={() => onBan(!isBanned)}>
-              Débannir
-            </div>
-          )}
-
-          <div className="kick" onClick={() => onKick()}>
-            Expulser
+          <div className="ban" onClick={onBan}>Bannir</div>
+          <div className="kick" onClick={onKick}>Expulser</div>
+          <div className={isMuted ? 'mute' : 'unmute'} onClick={onMute}>
+            {isMuted ? 'Rendre la parole' : 'Rendre muet'}
           </div>
-
-          {isMuted ? (
-            <div className="mute" onClick={() => onMute(!isMuted)}>
-              Rendre muet
-            </div>
-          ) : (
-            <div className="unmute" onClick={() => onMute(!isMuted)}>
-              Rendre la parole
-            </div>
-          )}
-
-          {!isAdmin ? (
-            <div className="promote" onClick={() => onPromote(!isAdmin)}>
-              Définir administrateur
-            </div>
-          ) : (
-            <div className="demote" onClick={() => onPromote(!isAdmin)}>
-              Supprimer des administrateurs
-            </div>
-          )}
+          <div className={isAdmin ? "demote" : "promote"} onClick={onPromote}>
+            {isAdmin ? "Supprimer des administrateurs" : "Définir administrateur"}
+          </div>
         </>
-      ) : buttonClicked === 0 ? (
-        <>
-          <div className="dm" onClick={onDm}>
-            Envoyer un message privé
-          </div>
-          <div className="invite-to-play" onClick={onInviteToPlay}>
-            Inviter à jouer
-          </div>
-          {channelInvite
+      : buttonClicked === 0
+        ?
+          <>
+            <div className="dm" onClick={onDm}>Envoyer un message privé</div>
+            <div className="invite-to-play" onClick={onInviteToPlay}>Inviter à jouer</div>
+            {channelInvite
             ?
               <div className="invite-to-channel" onClick={onInviteChannel}>
                 Inviter dans le channel
               </div>
             : undefined}
-          {isBlocked === true ? (
-            <div className="block-user" onClick={() => onBlock(!isBlocked)}>
-              Bloquer
+            <div className={isBlocked === true ? "unblock-user" : "block-user"} onClick={onBlock}>
+              {isBlocked === true ? "Débloquer" : "Bloquer"}
             </div>
-          ) : (
-            <div className="unblock-user" onClick={() => onBlock(!isBlocked)}>
-              Débloquer
-            </div>
-          )}
-        </>
-      ) : undefined}
+            </>
+      : undefined
+      }
+
     </Popup>
   );
 }

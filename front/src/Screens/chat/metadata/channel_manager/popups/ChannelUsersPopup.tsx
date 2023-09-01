@@ -93,7 +93,6 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
           buttonClicked={buttonClicked}
           channelInvite={false}
           isAdmin={channelUserClicked.role === ChannelUserRole.ADMIN}
-          isBanned={channelUserClicked.banned}
           isMuted={channelUserClicked.muted}
         />
         : undefined}
