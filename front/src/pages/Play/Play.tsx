@@ -109,7 +109,7 @@ const Play = () => {
 
   // Game useEffect
   useEffect(() => {
-    console.log('Play:', gameStatePlay);
+    // console.log('Play:', gameStatePlay);
     if (gameStatePlay?.gameStatus) {
       setGameStatus(gameStatePlay?.gameStatus);
       game.pl1.score = gameStatePlay.gameParams.pl1.score === -1 ? 0 : gameStatePlay.gameParams.pl1.score;
@@ -146,7 +146,7 @@ const Play = () => {
 
   // Prepare useEffect
   useEffect(() => {
-    console.log('Prepare:', gameStatePrepare);
+    // console.log('Prepare:', gameStatePrepare);
     if (gameStatePlay?.gameStatus === 'ended'
     || gameStatePlay?.gameStatus === 'giveUp') return;
     

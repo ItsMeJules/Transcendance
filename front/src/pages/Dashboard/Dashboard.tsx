@@ -22,13 +22,14 @@ const Dashboard = () => {
   }, [rightContent]);
 
   return (
-    <main className="dashboard-main-container">
+    <Websocket key={location.pathname}>
+      <main className="dashboard-main-container">
 
 
-      <ProfileHeader />
+        <ProfileHeader />
 
-      <article className="screen-container">
-        <Websocket key={location.pathname}>
+        <article className="screen-container">
+
           <Routes>
             <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
             <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
@@ -37,13 +38,12 @@ const Dashboard = () => {
             <Route path={APP_ROUTES.PLAY} element={<Play />} />
             <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
           </Routes>
-        </Websocket>
 
-        <Websocket key={rightContent}>
+        {/* <Websocket key={rightContent}> */}
           <div className="right-screen-container">
             <RightScreen rightContent={rightContent} />
           </div>
-        </Websocket>
+        {/* </Websocket> */}
 
       </article>
 
@@ -51,6 +51,7 @@ const Dashboard = () => {
 
 
     </main>
+    </Websocket >
   );
 };
 

@@ -51,7 +51,10 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     };
 
     const animatePaddle = (timestamp: number) => {
-      if (!game.isPlaying) return;
+      if (!game.isPlaying && ctx) {
+        ctx.clearRect(0, 0, game.board.width, game.board.height);
+        return;
+      }
       if (!previousTimestamp) {
         previousTimestamp = timestamp;
       }
@@ -67,6 +70,10 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     };
 
     const handleResize = () => {
+      if (!game.isPlaying && ctx) {
+        ctx.clearRect(0, 0, game.board.width, game.board.height);
+        return;
+      }
       player.pad.refactorPaddle(game.board.factor);
 
       if (ctx) {
