@@ -107,7 +107,7 @@
     text-align: center;
     margin-top: 20px;
     color: white;
-    font-size: clamp(10px, 2vw, 30px);
+    font-size: clamp(10px, 2%, 30px);
     font-weight: bold;
     font-family: "dune", Arial, sans-serif;
     -webkit-text-fill-color: transparent;
@@ -157,7 +157,7 @@
     
       .text-button-style {
         // Adapt size here
-        font-size: clamp(16px, 3vw, 35px);
+        font-size: clamp(16px, 3%, 35px);
         color: white;
         -webkit-text-fill-color: transparent;
         animation: glow-text-animation 2s infinite;
@@ -169,7 +169,7 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        font-size: clamp(16px, 3vw, 35px);
+        font-size: clamp(16px, 3%, 35px);
         color: white;
         -webkit-text-fill-color: transparent;
         animation: glow-text-animation 2s infinite;

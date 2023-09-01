@@ -3,7 +3,6 @@ import { MDBCard } from 'mdb-react-ui-kit';
 import ProfileHeader from './ProfileHeader';
 import UserProfileContent from './UserProfileContent';
 import { UserData } from "../../../services/User/User";
-import QrCode from '../QrCode';
 import ImageChange from "./ImageChange";
 import EditUserFormValidation from "./EditUserFormValidation";
 import ProfilePicContainer from './ProfilePicContainer';
@@ -37,9 +36,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = '
           <EditUserFormValidation setErrMsg={setErrMsg} userData={userData} />
         </>
       )}
-
-      {type === 'user' && <QrCode />}
-
     </MDBCard>
   );
 };

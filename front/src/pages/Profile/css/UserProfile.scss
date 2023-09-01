@@ -4,16 +4,16 @@
   margin: 0;
   padding: 0;
   width: 100%;
-  min-width: 100%;
   height: 100%;
   box-sizing: border-box;
+  border-radius: 20px;
   border: 1px solid white;
+  
   .profile-board-container {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     width: 100%;
-    min-width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -24,7 +24,6 @@
       padding: 0;
       display: flex;
       width: 100%;
-      min-width: 100%;
       height: 100%;
       background-color: transparent;
 
@@ -98,7 +97,6 @@
         flex-direction: column;
         text-align: left;
         width: 20%;
-        min-width: 140px;
 
         @mixin data-fields-name-sub {
           font-family: "dune", Arial, sans-serif;
@@ -108,7 +106,6 @@
           display: flex;
           align-items: center;
           height: 35px;
-          min-width: 100px;
         }
 
         .data-fields-name-sub-first {
@@ -130,7 +127,6 @@
         flex-direction: column;
         text-align: left;
         margin-top: 6px;
-        min-width: 0px;
 
         @mixin data-values-sub {
           height: 35px;
@@ -155,12 +151,10 @@
         flex-direction: column;
         text-align: left;
         margin-top: 6px;
-        min-width: 0px;
 
         @mixin data-values-input-sub {
           height: 30px;
           width: 100%;
-          min-width: 0px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -174,13 +168,11 @@
         .data-values-input-sub-second {
           margin-top: 0px;
           width: 100%;
-          min-width: 0px;
         }
 
         .data-values-input-sub-others {
           margin-top: 4px;
           width: 100%;
-          min-width: 0px;
         }
       }
 

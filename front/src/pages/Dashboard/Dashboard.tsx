@@ -31,14 +31,16 @@ const Dashboard = () => {
 
         <article className="screen-container">
 
-          <Routes>
-            <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
-            <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
-            <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
-            <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
-            <Route path={APP_ROUTES.PLAY} element={<Play />} />
-            <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
-          </Routes>
+          <div className="left-screen-container">
+            <Routes>
+              <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
+              <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
+              <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
+              <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
+              <Route path={APP_ROUTES.PLAY} element={<Play />} />
+              <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
+            </Routes>
+          </div>
 
           <div className="right-screen-container">
             <RightScreen rightContent={rightContent} />

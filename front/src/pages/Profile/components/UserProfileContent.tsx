@@ -3,6 +3,7 @@ import ProfilePicContainer from "./ProfilePicContainer";
 import DisplayData from "./DisplayData";
 import DisplayStats from "./DisplayStats";
 import FadeLine from './FadeLine';
+import QrCode from '../QrCode';
 import { UserData } from "services/User/User";
 
 type UserProfileContentProps = {
@@ -17,6 +18,7 @@ const UserProfileContent: React.FC<UserProfileContentProps> = ({ userData }) => 
       <DisplayData userData={userData} />
       <FadeLine marginTop='-10px' />
       <DisplayStats userData={userData} />
+      <QrCode />
     </React.Fragment>
   );
 };
