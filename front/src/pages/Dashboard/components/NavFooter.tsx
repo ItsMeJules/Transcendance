@@ -11,7 +11,6 @@ const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
   const handleMatchMakingClick = (() => {
     history(APP_ROUTES.MATCHMAKING)
   });
-  const handleSpectateClick = (() => { })
 
   return (
     <main className="nav-footer-container">
@@ -32,7 +31,7 @@ const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
           <img src="/images/leaderboard.png" alt="leaderboard" />
         </button>
         <button onClick={() => setRightContent(APP_SCREENS.ONLINE_GAMES)}>
-          <img src="/images/gamesonline.png" alt="leaderboard" />
+          <img src="/images/gamesonline.png" alt="gamesonline" />
         </button>
       </div>
     </main>

@@ -21,3 +21,8 @@
     font-family: "LOT";
     src: url("../public/fonts/Lot-Regular.otf");
 }
+
+#root {
+    height: 100vh;
+    width: 100vw;
+}

@@ -10,12 +10,10 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
   const location = useLocation();
 
   return (
-    <div style={{ position: "relative" }}>
-      <BackgroundLinking  />
-      <div style={{ position: 'relative', zIndex: 2 }}>
+    <>
+      <BackgroundLinking />
         {children}
-      </div>
-    </div>
+    </>
   );
 };
 
