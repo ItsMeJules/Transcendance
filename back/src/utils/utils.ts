@@ -10,6 +10,14 @@ export enum ChatSocketEventType {
 }
 
 export enum RoomSocketActionType {
+  BAN = 'ban',
+  UNBAN = 'unban',
+  PROMOTE = 'promote',
+  DEMOTE = 'demote',
+  MUTE = 'mute',
+  UNMUTE = 'unmute',
+  KICK = 'kick',
+  INVITE = 'invite',
   USERS_ON_ROOM = `users-on-room`,
 }
 

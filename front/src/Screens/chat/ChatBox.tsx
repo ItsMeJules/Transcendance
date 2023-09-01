@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
 import { useAppDispatch, useAppSelector } from "../../redux/Store";
-import { setActiveChannel, setActiveChannelMessages } from "../../redux/reducers/ChannelSlice";
+import { activeChannelAddAdmin, activeChannelRemoveAdmin, setActiveChannel, setActiveChannelMessages } from "../../redux/reducers/ChannelSlice";
 import { setUserActiveChannel } from "../../redux/reducers/UserSlice";
 import ChatContainer from "./chat_container/ChatContainer";
 import ChatBar from "./chatbar/ChatBar";
@@ -23,6 +23,8 @@ export const SendDataContext = createContext<
 >(null);
 
 interface SocketAcknowledgements {
+  actionType: RoomSocketActionType;
+  userId: number;
   message: string;
   type: string;
 }
@@ -95,10 +97,25 @@ export const ChatBox = () => {
       dispatch(setActiveChannel(payload));
     });
 
-    chatSocket?.on(ChatSocketEventType.ACKNOWLEDGEMENTS, (payload: SocketAcknowledgements) =>
+    chatSocket?.on(ChatSocketEventType.ACKNOWLEDGEMENTS, (payload: SocketAcknowledgements) => {
+      switch (payload.actionType) {
+        case RoomSocketActionType.PROMOTE:
+          dispatch(activeChannelAddAdmin(payload.userId))
+          break;
+        case RoomSocketActionType.DEMOTE:
+          dispatch(activeChannelRemoveAdmin(payload.userId))
+          break;
+        case RoomSocketActionType.BAN:
+          break;
+        case RoomSocketActionType.UNBAN:
+          break;
+        default:
+          break;
+      }
       displayAcknowledgements(payload)
-    );
-    
+
+    });
+
     chatSocket?.on(ChatSocketEventType.FETCH_MESSAGES, (payload: ChannelMessageData[]) => {
       dispatch(setActiveChannelMessages(payload)); // faire fonction
     });

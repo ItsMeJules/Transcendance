@@ -1,4 +1,5 @@
 import { RoomType } from '@prisma/client';
+import { RoomSocketActionType } from 'src/utils';
 
 export enum AcknowledgementType {
   INFO = 'info',
@@ -14,6 +15,8 @@ export type RoomInfo = {
 };
 
 export type AcknowledgementPayload = {
+  actionType?: RoomSocketActionType;
+  userId?: number;
   type: AcknowledgementType;
   message: string;
 };

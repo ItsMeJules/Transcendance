@@ -43,12 +43,18 @@ export class ChatService {
     client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
   }
 
-  sendSuccess(client: Socket, message: string): void {
+  sendSuccess(
+    client: Socket,
+    message: string,
+    userId?: number,
+    actionType?: RoomSocketActionType,
+  ): void {
     const payload: AcknowledgementPayload = {
+      actionType: actionType,
+      userId: userId,
       message: message,
       type: AcknowledgementType.SUCCESS,
     };
-    console.log('payload :', payload);
     client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
   }
 
@@ -539,7 +545,12 @@ export class ChatService {
           data: { admins: { disconnect: { id: targetUser.id } } },
         });
         //////////////// NOTIFICATIONS BEGIN \\\\\\\\\\\\\\\\
-        this.sendSuccess(client, 'You demoted ' + targetUser.username);
+        this.sendSuccess(
+          client,
+          'You demoted ' + targetUser.username,
+          targetUser.id,
+          RoomSocketActionType.DEMOTE,
+        );
         this.sendWarning(
           this.userSocketsService.getUserSocket(String(targetUser.id)),
           'You have been demoted by ' + actingUser.username,
@@ -561,7 +572,12 @@ export class ChatService {
           data: { admins: { connect: { id: targetUser.id } } },
         });
         //////////////// NOTIFICATIONS BEGIN \\\\\\\\\\\\\\\\
-        this.sendSuccess(client, 'You promoted ' + targetUser.username);
+        this.sendSuccess(
+          client,
+          'You promoted ' + targetUser.username,
+          targetUser.id,
+          RoomSocketActionType.PROMOTE,
+        );
         this.sendWarning(
           this.userSocketsService.getUserSocket(String(targetUser.id)),
           'You have been promoted by ' + actingUser.username,
@@ -626,7 +642,12 @@ export class ChatService {
         // VVVV if user is in the room, he is also kicked VVVV
         if (targetUser.currentRoom === room.name)
           await this.userJoinRoom(targetUser.id, 'general', banDto.server);
-        this.sendSuccess(client, 'You banned ' + targetUser.username);
+        this.sendSuccess(
+          client,
+          'You banned ' + targetUser.username,
+          targetUser.id,
+          RoomSocketActionType.BAN,
+        );
         this.sendWarning(
           this.userSocketsService.getUserSocket(String(targetUser.id)),
           'You have been banned by ' + actingUser.username,
@@ -659,7 +680,12 @@ export class ChatService {
             },
           },
         });
-        this.sendSuccess(client, 'You unbanned ' + targetUser.username);
+        this.sendSuccess(
+          client,
+          'You unbanned ' + targetUser.username,
+          targetUser.id,
+          RoomSocketActionType.UNBAN,
+        );
         this.sendWarning(
           this.userSocketsService.getUserSocket(String(targetUser.id)),
           'You have been unbanned by ' + actingUser.username,
@@ -718,7 +744,12 @@ export class ChatService {
             },
           },
         });
-        this.sendSuccess(client, 'You muted ' + targetUser.username);
+        this.sendSuccess(
+          client,
+          'You muted ' + targetUser.username,
+          targetUser.id,
+          RoomSocketActionType.MUTE,
+        );
         this.sendWarning(
           this.userSocketsService.getUserSocket(String(targetUser.id)),
           'You have been muted by ' + actingUser.username,
@@ -743,7 +774,12 @@ export class ChatService {
             },
           },
         });
-        this.sendSuccess(client, 'You unmuted ' + targetUser.username);
+        this.sendSuccess(
+          client,
+          'You unmuted ' + targetUser.username,
+          targetUser.id,
+          RoomSocketActionType.UNMUTE,
+        );
         this.sendWarning(
           this.userSocketsService.getUserSocket(String(targetUser.id)),
           'You have been unmuted by ' + actingUser.username,
@@ -864,7 +900,12 @@ export class ChatService {
       if (targetUser.currentRoom !== room.name) {
         throw new Error('user is not the room you fkin golem');
       }
-      this.sendSuccess(client, 'You kicked ' + targetUser.username);
+      this.sendSuccess(
+        client,
+        'You kicked ' + targetUser.username,
+        targetUser.id,
+        RoomSocketActionType.KICK,
+      );
       this.sendWarning(
         this.userSocketsService.getUserSocket(String(targetUser.id)),
         'You have been kicked by ' + actingUser.username,

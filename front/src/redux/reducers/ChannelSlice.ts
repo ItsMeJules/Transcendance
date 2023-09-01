@@ -97,8 +97,12 @@ const channelSlice = createSlice({
       if (channelIndex !== -1)
         state.visibleChannels[channelIndex].type = type;
     },
-    setName: (state, action: PayloadAction<string>) => {
-      // state.channelData.name = action.payload;
+    activeChannelAddAdmin: (state, action: PayloadAction<number>) => {
+      state.activeChannel?.adminsId.push(action.payload)
+    },
+    activeChannelRemoveAdmin: (state, action: PayloadAction<number>) => {
+      if (state.activeChannel !== null)
+        state.activeChannel.adminsId = state.activeChannel?.adminsId.filter(id => id !== action.payload)
     },
     setPassword: (state, action: PayloadAction<string>) => {
       // state.channelData.password = action.payload;
@@ -109,5 +113,5 @@ const channelSlice = createSlice({
   },
 });
 
-export const { setActiveChannel, setActiveChannelMessages, setType, setName, setPassword, addMessageToActiveChannel } = channelSlice.actions;
+export const { setActiveChannel, setActiveChannelMessages, setType, setPassword, addMessageToActiveChannel, activeChannelAddAdmin, activeChannelRemoveAdmin } = channelSlice.actions;
 export default channelSlice.reducer;

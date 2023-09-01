@@ -21,7 +21,6 @@ interface ChannelUsersPopupProps {
 export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProps) {
   const [searchText, setSearchText] = useState("");
   const [invitedUsername, setInvitedUsername] = useState<string | null>(null);
-  const [invited, setInvited] = useState(false);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const { username: activeUserName, id: activeId } = useAppSelector(store => store.user.userData)
 
@@ -33,19 +32,27 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
   const [channelUserClicked, setChannelUserClicked] = useState<ChannelUser | null>(null);
   const [buttonClicked, setButtonClicked] = useState<number>(-1);
 
+  // Parses all the users in the room
   useEffect(() => {
     chatSocket?.on(RoomSocketActionType.USERS_ON_ROOM, (payload: any) => {
       const channelusers = payload.users
         .filter((userData: UserData) => userData.id !== activeId)
         .map((userData: UserData) => createChannelUser(userData, channelData))
+
+      if (channelUserClicked !== null) { // This is disgusting but I don't care
+        const user = payload.users.find((userData: UserData) =>
+          userData.id === channelUserClicked.id);
+        setChannelUserClicked(createChannelUser(user, channelData))
+      }
       setChannelUsers(channelusers);
     });
 
     return () => {
       chatSocket?.off(RoomSocketActionType.USERS_ON_ROOM);
     };
-  }, [chatSocket, channelData, activeId]);
+  }, [chatSocket, channelData, activeId, channelUserClicked]);
 
+  // Triggers the request for users in the room
   useEffect(() => {
     if (sendData === null) return;
 
@@ -53,16 +60,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
       roomName: channelData.name,
       action: "getRoomUsers",
     } as PayloadAction);
-  }, [sendData, channelData.name]);
-
-  useEffect(() => {
-    if (invited === false) return;
-
-    setTimeout(() => {
-      setChannelUserClicked(null);
-      setInvited(false);
-    }, 2000);
-  }, [invited]);
+  }, [sendData, channelData]);
 
   const onSearching = async (text: string, inputId: number) => {
     if (inputId === 0) {
@@ -83,8 +81,13 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
   };
 
   const onUserInvite = (userData: UserData) => {
+    if (sendData === null) return
+
+    sendData(RoomSocketActionType.INVITE, {
+      action: "invite",
+      targetId: Number(userData.id),
+    } as PayloadAction);
     setAllUsers(allUsers.filter((allUser) => allUser.getUsername() !== userData.username));
-    setInvited(true);
   };
 
   const onUserClick = ({ event, userData }: UserClickParameters) => {
@@ -125,7 +128,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
           />
         }
         {channelData.type === ChannelType.PRIVATE
-        ?
+          ?
           <input
             className="invite-user"
             type="search"
@@ -135,22 +138,18 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
             onChange={(e) => onSearching(e.target.value, 1)}
             required
           />
-        : undefined}
+          : undefined}
       </Popup>
 
-      {channelUserClicked !== null ? (
-        invited !== false ? (
-          <div className="invited">{channelUserClicked.username} a été invité !</div> // ??
-        ) : (
-          <UserActionPopup
-            userData={channelUserClicked}
-            buttonClicked={buttonClicked}
-            isAdmin={channelUserClicked.role === ChannelUserRole.ADMIN}
-            isBanned={channelUserClicked.banned}
-            isMuted={channelUserClicked.muted}
-          />
-        )
-      ) : undefined}
+      {channelUserClicked !== null ?
+        <UserActionPopup
+          userData={channelUserClicked}
+          buttonClicked={buttonClicked}
+          isAdmin={channelUserClicked.role === ChannelUserRole.ADMIN}
+          isBanned={channelUserClicked.banned}
+          isMuted={channelUserClicked.muted}
+        />
+      : undefined}
     </div>
   );
 }
