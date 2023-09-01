@@ -19,8 +19,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, iconColo
   return (
     <div className="profile-board-header">
       {type === 'user' && (
-        <Link title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT_ABSOLUTE} style={{ padding: '0px' }}>
-          <IconContext.Provider value={{ color: iconColor || 'black', size: '36px' }}>
+        <Link className="icon" title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT_ABSOLUTE} style={{ padding: '0px' }}>
+          <IconContext.Provider value={{ color: iconColor || 'white', size: '36px' }}>
             <FaUserPen />
           </IconContext.Provider>
         </Link>
@@ -28,15 +28,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, iconColo
 
       {type === 'generic' && (
         <button onClick={onAddFriend}>
-          <IconContext.Provider value={{ color: iconColor || 'black', size: '30px' }}>
+          <IconContext.Provider value={{ color: iconColor || 'white', size: '30px' }}>
             <FaHeart />
           </IconContext.Provider>
         </button>
       )}
 
       {type === 'edit' && (
-        <Link title="Back to profile" to={APP_ROUTES.USER_PROFILE_ABSOLUTE} style={{ padding: '0px' }}>
-          <IconContext.Provider value={{ color: iconColor || 'black', size: '30px' }}>
+        <Link className="icon" title="Back to profile" to={APP_ROUTES.USER_PROFILE_ABSOLUTE} style={{ padding: '0px' }}>
+          <IconContext.Provider value={{ color: iconColor || 'white', size: '30px' }}>
             <FaLeftLong />
           </IconContext.Provider>
         </Link>

@@ -87,9 +87,12 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
         <MDBTypography className="data-fields-name-sub-others" tag="h5">
           Last name
         </MDBTypography>
+        <div className="save-button"></div>
       </MDBCardBody>
-      <MDBCardBody className="data-values-input-main">
-        <form action="POST" onSubmit={handleSubmit}>
+
+      <form action="POST" onSubmit={handleSubmit}>
+
+        <MDBCardBody className="data-values-input-main">
           <MDBTypography tag="h5" className="data-values-input-sub-first" title={userData?.email}>
             {userData?.email}
           </MDBTypography>
@@ -104,15 +107,16 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
           <input type="text" autoComplete="off" placeholder="Enter last name" id="lastname" value={lastName}
             className={`data-values-input-sub-others border edit-form-label`}
             onChange={(e) => setLastName(e.target.value)} maxLength={100} />
+        </MDBCardBody>
 
           <div className="save-button">
             <button type="submit" className="save-changes-button" style={{ marginTop: '10px' }}>
               Save changes
             </button>
           </div>
-        </form>
 
-      </MDBCardBody>
+      </form>
+
     </div>
   )
 }

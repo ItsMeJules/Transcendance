@@ -7,7 +7,6 @@
   max-height: 100%;
   box-sizing: border-box;
   border-radius: 20px;
-  border: 1px solid violet;
   
   .profile-board-container {
     box-sizing: border-box;
@@ -16,21 +15,25 @@
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: column;
     
     .profile-board-card {
-      box-sizing: border-box;
-      margin: 0;
       padding: 20px;
       display: flex;
       width: 100%;
       height: 100%;
-      background-color: blue;
-      // background-color: transparent;
+      background-color: transparent;
+      flex-direction: column;
+      justify-content: space-between;
+      gap:20px;
 
       .profile-board-header {
         display: flex;
         align-items: center;
+        padding-left: 20px;
+      }
+
+      .icon {
+        // filter: invert(100%);
       }
 
       .profile-pic-container {
@@ -50,7 +53,6 @@
         .profile-pic-circle img {
           width: 100%;
           height: 100%;
-          object-fit: cover;
         }
 
         .empty-profile-pic-circle {
@@ -69,7 +71,8 @@
     }
 
     .profil-board-header-edit-profile {
-
+      filter: invert(100%);
+      background-color: aliceblue;
     }
 
 
@@ -99,6 +102,7 @@
 
     .information-display-main {
       display: flex;
+      justify-content: space-evenly;
 
       .data-fields-name-main {
         display: flex;
@@ -114,8 +118,7 @@
           color: rgba(255, 255, 255, 0.7);
           display: flex;
           align-items: center;
-          padding-top: 8px;
-          padding-bottom:0px;
+
         }
 
         .data-fields-name-sub-first {
@@ -138,7 +141,6 @@
         text-align: left;
 
         @mixin data-values-sub {
-          width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -156,36 +158,41 @@
       .data-values-input-main {
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
+        justify-content: space-between;
+        gap:10px;
         text-align: left;
-
+        
         @mixin data-values-input-sub {
-          width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
           color: rgba(255, 255, 255, 0.3);
         }
-
+        
         .data-values-input-sub-first {
           @include data-values-input-sub;
+          width: 100%;
+          height: 33px;
+          padding-top: 10px;
         }
-
+        
         .data-values-input-sub-second {
-          margin-top: 0px;
           width: 100%;
+          height: 33px;
+          padding-top: 10px;
         }
-
+        
         .data-values-input-sub-others {
-          margin-top: 4px;
           width: 100%;
+          height: 33px;
+          padding-top: 10px;
         }
       }
 
       .save-button {
         display: flex;
         justify-content: right;
-        margin-top: 5px;
+        margin-top: 10px;
 
         .save-changes-button {
           color: rgba(255, 255, 255, 0.7);
@@ -214,7 +221,6 @@
 
       display: flex;
       text-align: center;
-      margin-top: 10px;
 
       .stats-first-sub-container {
         @include fields-name-sub-font-color;
