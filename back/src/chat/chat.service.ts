@@ -30,8 +30,9 @@ export class ChatService {
       message: error.message,
       type: AcknowledgementType.ERROR,
     };
-    console.log('payload :', payload);
-    client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+    if (client) {
+      client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+    }
   }
 
   sendWarning(client: Socket, message: string): void {
@@ -39,8 +40,9 @@ export class ChatService {
       message: message,
       type: AcknowledgementType.WARNING,
     };
-    console.log('payload :', payload);
-    client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+    if (client) {
+      client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+    }
   }
 
   sendSuccess(
@@ -55,7 +57,9 @@ export class ChatService {
       message: message,
       type: AcknowledgementType.SUCCESS,
     };
-    client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+    if (client) {
+      client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+    }
   }
 
   sendInfoToUser(client: Socket, message: string): void {
@@ -63,8 +67,9 @@ export class ChatService {
       message: message,
       type: AcknowledgementType.INFO,
     };
-    console.log('payload :', payload);
-    client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+    if (client) {
+      client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload);
+    }
   }
 
   sendInformationToRoom(
@@ -1026,12 +1031,14 @@ export class ChatService {
         throw new Error("You can't invite in dms channels");
       }
       // Permission check behavior?
+      console.log('1');
       const actingUser = await this.prismaService.user.findUnique({
         where: { id: client.data.id },
       });
       const targetUser = await this.prismaService.returnCompleteUser(
         inviteDto.targetId,
       ); // careful target!
+      console.log('2');
       if (room.type !== RoomType.PRIVATE)
         throw new Error('you cannot invite in ' + room.type + 'S rooms');
       if (room.users.some((active) => active.id === targetUser.id)) {
@@ -1060,7 +1067,13 @@ export class ChatService {
           data: { users: { connect: { id: targetUser.id } } },
         });
       }
+      console.log('3');
       this.sendSuccess(client, 'You invited ' + targetUser.username);
+      console.log('4');
+      console.log(
+        'usersocket = ',
+        this.userSocketsService.getUserSocket(String(targetUser.id)),
+      );
       this.sendSuccess(
         this.userSocketsService.getUserSocket(String(targetUser.id)),
         'You have been invited by ' +
@@ -1069,6 +1082,7 @@ export class ChatService {
           room.name +
           '"',
       );
+      console.log('5');
     } catch (error) {
       this.sendError(client, error);
     }
