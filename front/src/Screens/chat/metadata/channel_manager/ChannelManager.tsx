@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
+import BannedIcon from "../../assets/banned.png";
 import SettingsIcon from "../../assets/settings.png";
-import BannedIcon from "../../assets/banned.png"
 
-import { ChannelData, ChannelType, PunishmentType } from "../../models/Channel";
+import { ChannelData, ChannelType } from "../../models/Channel";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
-import ManageChannelPopup from "./popups/ManageChannelPopup";
-import ChannelUsersPopup from "./popups/ChannelUsersPopup";
 import BannedUsersPopup from "./popups/BannedUsersPopup";
+import ChannelUsersPopup from "./popups/ChannelUsersPopup";
+import ManageChannelPopup from "./popups/ManageChannelPopup";
 
 interface ChannelManagerProps {
   channelData: ChannelData;
@@ -17,6 +17,8 @@ export default function ChannelManager(props: ChannelManagerProps) {
   const [manageChannel, setManageChannel] = useState<boolean>(false);
   const [channelUsersList, toggleChannelUsersList] = useState<boolean>(false);
   const [bannedUsersList, toggleBannedUsersList] = useState(false)
+
+  const excludeRef = useRef<HTMLImageElement | null>(null);
 
   const { channelData }: ChannelManagerProps = props;
   const usersSize = channelData?.usersId?.length || 0;
@@ -31,7 +33,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
       <div className="channel-infos">
         <div className="channel-name">
           <p>{channelData?.displayname}</p>
-          <img alt="Banned" src={BannedIcon} onClick={() => toggleBannedUsersList(!bannedUsersList)}></img>
+          <img alt="Banned" src={BannedIcon} ref={excludeRef} onClick={() => toggleBannedUsersList(!bannedUsersList)}></img>
         </div>
 
         {channelData.type !== ChannelType.DIRECT
@@ -46,16 +48,17 @@ export default function ChannelManager(props: ChannelManagerProps) {
           </OutsideClickHandler>
           : undefined}
       </div>
-
+      
       {bannedUsersList
-        ?
-          <OutsideClickHandler
-            className="banned-users"
-            onOutsideClick={() => toggleBannedUsersList(false)}
-            onInsideClick={() => toggleBannedUsersList(!bannedUsersList)}
-          >
-            <BannedUsersPopup channelData={channelData}/>
-          </OutsideClickHandler>
+      ?
+        <OutsideClickHandler
+          className="users-list-banned"
+          exclude={excludeRef}
+          onOutsideClick={() => toggleBannedUsersList(false)}
+          onInsideClick={() => undefined}
+        >
+          <BannedUsersPopup channelData={channelData} />
+        </OutsideClickHandler>
       : undefined}
 
       <OutsideClickHandler

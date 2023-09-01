@@ -558,6 +558,8 @@
         flex-direction: row;
         justify-content: space-between;
 
+        position: relative;
+
         height: 100%;
         width: 70%;
 
@@ -591,6 +593,12 @@
             img {
               width: 10%;
               height: auto;
+              cursor: pointer;
+              transition: transform 0.3s;
+
+              &:hover {
+                transform: scale(1.1)
+              }
             }
           }
 
@@ -791,9 +799,110 @@
             }
           }
         }
-        
-        .banned-users {
-          
+
+        .users-list-banned {
+          position: absolute;
+          top: 100%;
+
+          h5 {
+            background-color: white;
+            border-radius: 5px 0px 0px 5px;
+            margin: 0;
+          }
+
+          .users-list {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            overflow-x: hidden;
+            height: fit-content;
+
+            background-color: white;
+            border-radius: 5px;
+            border-right: 1px solid lightgray;
+            border-left: 1px solid lightgray;
+
+            z-index: 20;
+
+            .user-container {
+              border-bottom: 1px solid lightgray;
+
+              cursor: pointer;
+
+              .user {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: center;
+
+                transition: background-color;
+
+                &:hover {
+                  background-color: #c9c9c9;
+                }
+
+                .profile-picture {
+                  width: 30%;
+                  height: auto;
+                  margin: 5px 0px 5px 5px;
+                  object-fit: cover;
+
+                  border-radius: 50%;
+                  box-shadow: 7px 10px 10px -6px rgba(0, 0, 0, 0.72);
+                }
+
+                .username {
+                  width: 70%;
+                  margin: 0px 0px 0px 10px;
+                }
+              }
+            }
+          }
+
+          .unban-confirm {
+            position: fixed;
+
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            background-color: white;
+
+            border-radius: 5px;
+            z-index: 10;
+
+            text-align: center;
+
+            h3 {}
+
+            button {
+              padding: 8px 16px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              margin: 5px;
+            }
+
+            .cancel {
+              background-color: lightgray;
+
+              &:hover {
+                color: white;
+                background-color: #dd3c49;
+              }
+            }
+
+            .confirm {
+              background-color: blue;
+              color: white;
+
+              &:hover {
+                color: white;
+                background-color: green;
+              }
+            }
+          }
         }
 
         .manage {

@@ -22,7 +22,15 @@ export default function BannedUsersPopup({ channelData }: BannedUsersPopupProps)
 
   // Parses all the users banned in the room
   useEffect(() => {
-    chatSocket?.on(RoomSocketActionType.USERS_BANNED, (payload: any) => setBannedUsers(payload.users));
+    chatSocket?.on(RoomSocketActionType.USERS_BANNED, (payload: any) => {
+      setBannedUsers(payload.users.map((data: UserData) => {
+        const frontUser = new User();
+        console.log(data)
+        frontUser.setUserFromResponseData(data);
+        console.log("-----------------")
+        return frontUser;
+      }))
+    });
 
     return () => {
       chatSocket?.off(RoomSocketActionType.USERS_BANNED);
@@ -50,18 +58,20 @@ export default function BannedUsersPopup({ channelData }: BannedUsersPopupProps)
       action: "unban",
       targetId: parseInt(userClicked.id)
     } as PayloadAction)
+    setUserClicked(null)
   }
 
   return (
-    <div className="users-list-banned">
+    <>
       <UsersList users={bannedUsers} onUserClick={onUserClick} />
-      {userClicked !== null ?
+      {userClicked !== null
+      ?
         <div className="unban-confirm">
-          <button onClick={() => unBan()}>
-            {`Débannir ${userClicked.username} ?`}
-          </button>
+          <h3>{`Débannir ${userClicked.username} ?`}</h3>
+          <button className="confirm" onClick={() => unBan()}>Confirmer</button>
+          <button className="cancel" onClick={() => setUserClicked(null)}>Annuler</button>
         </div>
-        : undefined}
-    </div>
+      : undefined}
+    </>
   )
 }
