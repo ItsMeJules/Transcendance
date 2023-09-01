@@ -108,6 +108,7 @@
 
       .data-fields-name-main {
         display: flex;
+        flex-shrink: 1;
         flex-direction: column;
         justify-content: space-evenly;
         text-align: left;
