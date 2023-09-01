@@ -176,11 +176,20 @@ export class ChatService {
 
       // Make user join the room if its a DM
       if (room && createRoomDto.type === RoomType.DIRECT) {
-        console.log('room is already created under the name of ', room.name);
+        const firstUser = parseInt(createRoomDto.roomName.split('-')[1]);
+        const secondUser = parseInt(createRoomDto.roomName.split('-')[2]);
+        const otherId = firstUser === client.data.id ? secondUser : firstUser;
+        const targetUser = await this.prismaService.user.findUnique({
+          where: { id: otherId },
+        });
         await this.userJoinRoom(
           client.data.id,
           createRoomDto.roomName,
           createRoomDto.server,
+        );
+        this.sendInfoToUser(
+          client,
+          'You are speaking with ' + targetUser.username,
         );
         return room;
       }
@@ -189,6 +198,10 @@ export class ChatService {
         const parts = createRoomDto.roomName.split('-');
         const firstUser = parseInt(parts[1]);
         const secondUser = parseInt(parts[2]);
+        const otherId = firstUser === client.data.id ? secondUser : firstUser;
+        const targetUser = await this.prismaService.user.findUnique({
+          where: { id: otherId },
+        });
         console.log('first & second: ', firstUser, secondUser);
         room = await this.prismaService.room.create({
           data: {
@@ -204,6 +217,10 @@ export class ChatService {
           password: createRoomDto.password,
           server: createRoomDto.server,
         });
+        this.sendInfoToUser(
+          client,
+          'You are speaking with ' + targetUser.username,
+        );
         console.log('createRoom for DMs function ending');
         return room;
       }
@@ -386,6 +403,11 @@ export class ChatService {
       joinRoomDto.server
         .to(client.id)
         .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
+      if (room.type === RoomType.DIRECT) {
+        this.sendInfoToUser(client, 'You are speaking with ' + roomDisplayname);
+        return room;
+      }
+
       this.sendInfoToUser(client, 'You joined "' + joinRoomDto.roomName + '"');
 
       this.sendInformationToRoom(
@@ -403,26 +425,49 @@ export class ChatService {
 
   async leaveRoom(client: Socket, leaveDto: ChatDtos.LeaveDto): Promise<void> {
     try {
-      console.log('hello');
+      console.log('leaveRoom function begin');
       const room = await this.prismaService.returnCompleteRoom(
         leaveDto.roomName,
       );
+      if (room.name === 'general') {
+        throw new Error("You can't leave the general channel");
+      }
       if (room.type === RoomType.PRIVATE) {
         await this.prismaService.room.update({
           where: { name: room.name },
           data: { users: { disconnect: { id: client.data.id } } },
         });
       }
-      await this.userJoinRoom(client.data.id, 'general', leaveDto.server);
-      // if (client.data.id === room.ownerId) {
-      //   await this.prismaService.room.delete({ where: { id: room.id } });
-      // }
+      if (room.admins.some((admin) => admin.id === client.data.id)) {
+        await this.prismaService.room.update({
+          where: { name: room.name },
+          data: { admins: { disconnect: { id: client.data.id } } },
+        });
+      }
       if (client.data.id === room.ownerId) {
         await this.prismaService.room.update({
           where: { name: room.name },
           data: { ownerId: null },
         });
       }
+      const actingUser = await this.prismaService.user.findUnique({
+        where: { id: client.data.id },
+      });
+      if (room.type !== RoomType.DIRECT && room.name !== 'general') {
+        console.log('room type is not direct');
+        this.sendSuccess(
+          client,
+          'You left the room "' + room.name + '" with your privileges',
+        );
+        this.sendInformationToRoom(
+          `${actingUser.username} left the room with his privileges`,
+          leaveDto.server,
+          room.name,
+          this.userSocketsService.getUserSocket(String(actingUser.id)),
+        );
+      }
+      await this.userJoinRoom(client.data.id, 'general', leaveDto.server);
+      console.log('leaveRoom function end');
     } catch (error) {
       this.sendError(client, error);
     }
