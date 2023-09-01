@@ -7,13 +7,14 @@ interface ProfilesHeaderProps {
   game: GameProperties;
   player1Data: UserData | null;
   player2Data: UserData | null;
+  noGame: boolean;
 }
 
-const ProfilesHeader: React.FC<ProfilesHeaderProps> = ({ game, player1Data, player2Data }) => {
+const ProfilesHeader: React.FC<ProfilesHeaderProps> = ({ game, player1Data, player2Data, noGame }) => {
 
   return (
     <>
-      {game.status !== 'noGame' &&
+      {!noGame &&
         <article className='profile-infos-container glow-border' id='profile-card' style={{ width: `${game.board.width}px` }}>
           <LeftPlayerProfile player1Data={player1Data} />
           <div className="versus-text" style={{ verticalAlign: 'center' }}>VS</div>

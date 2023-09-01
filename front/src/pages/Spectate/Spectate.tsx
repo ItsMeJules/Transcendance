@@ -53,6 +53,7 @@ const Spectate = () => {
   // const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameState, setGameState] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
+  const [noGame, setNoGame] = useState(false);
   const [gameStatus, setGameStatus] = useState('');
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
@@ -118,8 +119,10 @@ const Spectate = () => {
 
   // Prepare useEffect
   useEffect(() => {
-    if (gameStatus === 'noGame')
-      history('/gamesonline');
+    if (gameStatus === 'noGame') {
+      console.log('NOGAMEEEE');
+      // history('/gamesonline');
+    }
     if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);
     if (gameState?.gameStatus === 'pending' || gameState?.gameStatus === 'pending') {
       setCentralText('Waiting for players');
@@ -166,7 +169,7 @@ const Spectate = () => {
         <RightPlayerProfile player2Data={player2Data} />
       </article>
 
-      <ScoreBoard game={game} />
+      <ScoreBoard game={game} noGame={noGame} />
 
 
       <div className="pong-sub-container text-white">

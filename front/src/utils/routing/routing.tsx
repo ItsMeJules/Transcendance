@@ -44,6 +44,7 @@ export const APP_ROUTES = {
   PLAY: "play",
   PLAY_ABSOLUTE: "/dashboard/play",
   SPECTATE: "spectate",
+  SPECTATE_ABSOLUTE: "/dashboard/spectate",
   USER_FRIENDS: "/profile/me/friends",
   AUTH_2FA: "/profile/me/two-fa",
   LEADERBOARD: "/leaderboard",

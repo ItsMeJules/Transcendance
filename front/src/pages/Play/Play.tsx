@@ -52,6 +52,7 @@ const Play = () => {
   const [gameStatePrepare, setGameStatePrepare] = useState<GameSocket>();
   const [gameStatePlay, setGameStatePlay] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
+  const [noGame, setNoGame] = useState(false);
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
   const [centralText, setCentralText] = useState('');
@@ -61,10 +62,6 @@ const Play = () => {
   const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle2CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
-
-  useEffect(() => {
-    socket.game?.connect();
-  }, []);
 
   // Data parsing
   useEffect(() => {
@@ -96,8 +93,8 @@ const Play = () => {
     socket.game?.on('noGame', (data: noGame) => {
       if (data.status === 'noGame') {
         console.log('NoGame on');
+        setNoGame(true);
         setGame({ ...game, status: 'noGame' })
-        // setGameStatus('noGame');
       }
     });
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
@@ -151,11 +148,8 @@ const Play = () => {
     if (gameStatePlay?.gameStatus === 'ended'
       || gameStatePlay?.gameStatus === 'giveUp') return;
 
-    if (game.status === 'noGame') {
+    if (game.status === 'noGame')
       console.log('thhhhhhhhhhhhhhhhhhhhhhhhhis')
-      setCentralText('No open game');
-      // history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
-    }
     if (gameStatePrepare?.gameStatus) setGame({ ...game, status: gameStatePrepare?.gameStatus });
     if (gameStatePrepare?.gameStatus === 'pending'
       || (gameStatePrepare?.playerStatus === 'pending' && gameStatePrepare.gameStatus !== 'timeout')) {
@@ -188,6 +182,7 @@ const Play = () => {
   // Window resizing
   useEffect(() => {
     const handleResize = () => {
+      console.log('resize game status:', game.status);
       // Adapter la largeur ici a celle de lecran total vs le conteneur
       const newWidth = window.innerWidth * 0.4;
       const factor = game.board.updateDimensions(newWidth);
@@ -205,16 +200,16 @@ const Play = () => {
 
       <ConfettisComponent gameIsEnded={game.isEnded} userIsWinner={game.isUserWinner} />
 
-      <ProfilesHeader game={game} player1Data={player1Data} player2Data={player2Data} />
+      <ProfilesHeader game={game} player1Data={player1Data} player2Data={player2Data} noGame={noGame} />
 
-      <ScoreBoard game={game} />
+      <ScoreBoard game={game} noGame={noGame} />
 
       <AllCanvas game={game} socket={socket.game} whichPlayer={whichPlayer} centralText={centralText}
-        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} />
+        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
       
-      <GiveUp socket={socket.game} whichPlayer={whichPlayer} game={game}></GiveUp>
+      <GiveUp socket={socket.game} whichPlayer={whichPlayer} game={game} noGame={noGame} />
 
-      <NoGame gameStatus={game.status} />
+      <NoGame noGame={noGame} />
 
     </div >
   );

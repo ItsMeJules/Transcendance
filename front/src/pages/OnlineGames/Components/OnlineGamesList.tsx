@@ -26,11 +26,10 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
       const dataString = JSON.stringify(gameData);
       const dataJSON = JSON.parse(dataString);
       if (dataJSON.status === "OK") {
-        // console.log('received:', dataJSON);
         localStorage.setItem('gameDataWatch', JSON.stringify(dataJSON.gameState));
         localStorage.setItem('player1Watch', JSON.stringify(dataJSON.player1));
         localStorage.setItem('player2Watch', JSON.stringify(dataJSON.player2));
-        history(APP_ROUTES.SPECTATE);
+        history(APP_ROUTES.SPECTATE_ABSOLUTE);
       }
     }
     console.log('gameData:', gameData);

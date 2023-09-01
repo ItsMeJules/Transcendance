@@ -370,7 +370,7 @@ export class GameStruct {
 
   /* Function to score a point and end game if max points is reached by a player */
   private scorePoint(winner: number) {
-    let maxScore = 1;//11;
+    let maxScore = 11;
     if (winner === 2) {
       this.pl2.score += 1;
       this.ball.randomService(this.board, 2, this.gameMode);

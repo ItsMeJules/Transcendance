@@ -13,6 +13,7 @@ interface PaddleCanvasProps {
 }
 
 const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, whichPlayer, socket }) => {
+  const continueAnimation = useRef(true);
 
   useEffect(() => {
 
@@ -20,6 +21,7 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (game.isEnded && ctx) {
+      continueAnimation.current = false;
       ctx.clearRect(-game.board.width, -game.board.height, game.board.width * 2, game.board.height * 2);
       return;
     }
@@ -72,7 +74,8 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
         ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height);
         ctx.setLineDash([]);
       }
-      requestAnimationFrame(animatePaddle);
+      if (continueAnimation.current)
+        requestAnimationFrame(animatePaddle);
     };
 
     const handleResize = () => {
@@ -110,7 +113,7 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       }
       window.removeEventListener('resize', handleResize);
     };
-  }, [canvasRef, player, game.board.factor, game.isPlaying]);
+  }, [canvasRef, player, game.board.factor, game.isPlaying, game.isEnded]);
 
   return null;
 };

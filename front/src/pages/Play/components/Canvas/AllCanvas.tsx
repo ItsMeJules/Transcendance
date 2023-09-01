@@ -13,16 +13,17 @@ interface AllCanvasProps {
   centralText: string;
   isPlayerReady: boolean;
   profileCardHeight: number;
+  noGame: boolean;
 }
 
-const AllCanvas: React.FC<AllCanvasProps> = ({ game, socket, whichPlayer, centralText, isPlayerReady, profileCardHeight }) => {
+const AllCanvas: React.FC<AllCanvasProps> = ({ game, socket, whichPlayer, centralText, isPlayerReady, profileCardHeight, noGame }) => {
   const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle2CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   return (
     <>
-      {game.status !== 'noGame' && 
+      {!noGame && 
       <main className="pong-game-canvas-main-container">
         <section className="pong-game-canvas" id='pong-canvas-container' style={{ height: `${game.board.height + 80}px` }}>
           {!game.isPlaying && 
@@ -37,8 +38,8 @@ const AllCanvas: React.FC<AllCanvasProps> = ({ game, socket, whichPlayer, centra
 
           <BoardCanvas game={game} canvasRef={boardCanvasRef as React.RefObject<HTMLCanvasElement>} />
           <BallCanvas game={game} canvasRef={ballCanvasRef as React.RefObject<HTMLCanvasElement>} />
-          {/* <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket} />
-          <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket} /> */}
+          <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket} />
+          <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket} />
         </section>
       </main>}
     </>

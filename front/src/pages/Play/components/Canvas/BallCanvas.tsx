@@ -9,6 +9,8 @@ interface BallCanvasProps {
 }
 
 const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
+  const continueAnimation = useRef(true);
+
   useEffect(() => {
     let ball = game.ball;
     if (!canvasRef.current) return;
@@ -17,6 +19,7 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
     let previousTimestamp = 0;
     if (ctx && game.isEnded) {
       console.log('here okkkkkkkkkk');
+      continueAnimation.current = false;
       ctx.clearRect(0, 0, game.board.width, game.board.height);
       return;
     }
@@ -36,7 +39,8 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
         ctx.fillRect(ball.tip.x, ball.tip.y, ball.size, ball.size);
         ctx.setLineDash([]);
       }
-      requestAnimationFrame(animateBall);
+      if (continueAnimation.current)
+        requestAnimationFrame(animateBall);
     };
 
     const handleResize = () => {
@@ -61,7 +65,7 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [canvasRef, game.ball, game.board.factor, game.isPlaying]);
+  }, [canvasRef, game.ball, game.board.factor, game.isPlaying, game.isEnded]);
 
   return null;
 };
