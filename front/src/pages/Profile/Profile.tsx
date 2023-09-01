@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { APP_ROUTES } from "utils/routing/routing";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
+import ToastError from "layout/ToastError/ToastError";
 import User from "services/User/User";
 import { UserData } from "services/User/User";
 import { MDBContainer } from 'mdb-react-ui-kit';
@@ -21,6 +22,10 @@ export const Profile: React.FC = () => {
   const history = useNavigate();
   const dispatchUser = useAppDispatch();
   const axiosInstanceError = useAxios();
+
+  const resetErrMsg = () => {
+    setErrMsg(''); // Reset errMsg to an empty string
+  };
 
   const fetchUserProfile = async () => {
     try {

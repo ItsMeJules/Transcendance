@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
 import React, { useState, useEffect } from 'react';
+import { FaArrowRightFromBracket } from "react-icons/fa6";
+
+import LogoutParent from "layout/LogoutButton/LogoutParent";
 
 const ProfileHeader = () => {
   const history = useNavigate();
@@ -26,8 +29,8 @@ const ProfileHeader = () => {
 
       <div className="icons">
         <div className="pic">
-          <button className="profile-pic-button" onClick={handleProfileClick}>
-            <img className="profile-pic-image" src={profilePicture} alt="Profile" />
+         <button className="profile-pic-button" onClick={handleProfileClick}>
+          <img className="profile-pic-image" src={profilePicture} alt="Profile" />
           </button>
         </div>
 
@@ -38,7 +41,7 @@ const ProfileHeader = () => {
           <LogoutParent setErrMsg={setErrMsg} />
         </div>
       </div>
-
+      
     </main>
   );
 };

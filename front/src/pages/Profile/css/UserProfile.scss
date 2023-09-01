@@ -17,23 +17,20 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-
+    
     .profile-board-card {
       box-sizing: border-box;
       margin: 0;
-      padding: 0;
+      padding: 20px;
       display: flex;
       width: 100%;
       height: 100%;
-      background-color: transparent;
-      gap: 10px;
+      background-color: blue;
+      // background-color: transparent;
+
       .profile-board-header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        margin-top: 6px;
-        margin-right: 6px;
-        margin-left: 8px;
       }
 
       .profile-pic-container {
@@ -72,34 +69,43 @@
     }
 
     .profil-board-header-edit-profile {
-      display: flex;
-      align-items: center;
-      justify-content: right;
-      margin-top: 6px;
-      margin-right: 6px;
 
     }
 
 
 
     .profile-pic-upload-button {
-      display: flex;
-      justify-content: center;
-      margin-top: 10px;
-    }
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+
+        .custom-file-input {
+
+          font-family: "dune", Arial, sans-serif;
+          background-color: rgba(0, 128, 0, 0.3);
+          color: rgba(255, 255, 255, 0.7);
+          border-radius: 4px;
+          padding: 15px;
+          transition-duration: 0.4s;
+        }
+
+        .custom-file-input:hover {
+          background-color: rgba(0, 128, 0, 1);
+          /* Green */
+          color: rgba(255, 255, 255, 0.7);
+        }
+      }
+
 
     .information-display-main {
       display: flex;
-      flex-shrink: 1;
-      gap: 25px;
 
       .data-fields-name-main {
         display: flex;
         flex-direction: column;
+        justify-content: space-evenly;
         text-align: left;
-        width: 20%;
-        margin-top: 6px;
-        gap: 10px;
+        width: 150px;
 
         @mixin data-fields-name-sub {
           font-family: "dune", Arial, sans-serif;
@@ -108,6 +114,8 @@
           color: rgba(255, 255, 255, 0.7);
           display: flex;
           align-items: center;
+          padding-top: 8px;
+          padding-bottom:0px;
         }
 
         .data-fields-name-sub-first {
@@ -116,7 +124,6 @@
 
         .data-fields-name-sub-others {
           @include data-fields-name-sub;
-          margin-top: 6px;
         }
 
       }
@@ -127,9 +134,8 @@
         color: rgba(255, 255, 255, 0.7);
         display: flex;
         flex-direction: column;
+        justify-content: space-evenly;
         text-align: left;
-        margin-top: 6px;
-        gap: 10px;
 
         @mixin data-values-sub {
           width: 100%;
@@ -144,22 +150,21 @@
 
         .data-values-sub-others {
           @include data-values-sub;
-          margin-top: 6px;
         }
       }
 
       .data-values-input-main {
         display: flex;
         flex-direction: column;
+        justify-content: space-evenly;
         text-align: left;
-        margin-top: 6px;
 
         @mixin data-values-input-sub {
           width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          color: white;
+          color: rgba(255, 255, 255, 0.3);
         }
 
         .data-values-input-sub-first {
@@ -179,23 +184,22 @@
 
       .save-button {
         display: flex;
-        justify-content: left;
+        justify-content: right;
         margin-top: 5px;
 
         .save-changes-button {
           color: rgba(255, 255, 255, 0.7);
           background-color: rgba(0, 128, 0, 0.3);
-          /* border: 2px solid black; */
           border-radius: 4px;
-          padding: 7px;
+          padding: 15px;
           transition-duration: 0.4s;
+          font-family: "dune", Arial, sans-serif;
         }
 
         .save-changes-button:hover {
-          background-color: rgba(0, 128, 0, 0.3);
+          background-color: rgba(0, 128, 0, 1);
           /* Green */
           color: rgba(255, 255, 255, 0.7);
-          box-shadow: 1px 1px 1px 0 rgba(255, 253, 253, 0.24), 0 3px 3px 3px rgba(255, 255, 255, 0.19);
         }
       }
 
@@ -210,7 +214,7 @@
 
       display: flex;
       text-align: center;
-      margin-top: 15px;
+      margin-top: 10px;
 
       .stats-first-sub-container {
         @include fields-name-sub-font-color;
@@ -228,8 +232,8 @@
 
       display: flex;
       text-align: center;
-      margin-top: 20px;
-      margin-bottom: 20px;
+      margin-top: 10px;
+      margin-bottom: 10px;
 
       .stats-second-sub-container {
         @include fields-name-sub-font-color;

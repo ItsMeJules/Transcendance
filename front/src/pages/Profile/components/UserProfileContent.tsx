@@ -2,7 +2,6 @@ import React from 'react';
 import ProfilePicContainer from "./ProfilePicContainer";
 import DisplayData from "./DisplayData";
 import DisplayStats from "./DisplayStats";
-import FadeLine from './FadeLine';
 import QrCode from '../QrCode';
 import { UserData } from "services/User/User";
 
@@ -14,9 +13,7 @@ const UserProfileContent: React.FC<UserProfileContentProps> = ({ userData }) => 
   return (
     <React.Fragment>
       <ProfilePicContainer userData={userData} />
-      <FadeLine marginTop='20px' />
       <DisplayData userData={userData} />
-      <FadeLine marginTop='-10px' />
       <DisplayStats userData={userData} />
       <QrCode />
     </React.Fragment>

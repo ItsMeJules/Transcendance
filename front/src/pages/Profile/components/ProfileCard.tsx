@@ -1,14 +1,12 @@
 import React from 'react';
 import { MDBCard } from 'mdb-react-ui-kit';
 import ProfileHeader from './ProfileHeader';
-import UserProfileContent from './UserProfileContent';
 import { UserData } from "../../../services/User/User";
 import ImageChange from "./ImageChange";
 import EditUserFormValidation from "./EditUserFormValidation";
 import ProfilePicContainer from './ProfilePicContainer';
 import DisplayData from './DisplayData';
 import DisplayStats from './DisplayStats';
-import FadeLine from './FadeLine';
 import QrCode from '../QrCode';
 
 type ProfileType = 'user' | 'generic' | 'edit';
@@ -31,9 +29,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = '
       {type != 'edit' && (
         <>
           <ProfilePicContainer userData={userData} />
-          <FadeLine marginTop='20px' />
           <DisplayData userData={userData} />
-          <FadeLine marginTop='-10px' />
           <DisplayStats userData={userData} />
           <QrCode />
         </>
@@ -43,7 +39,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = '
         <>
           <ProfilePicContainer userData={userData} />
           <ImageChange setErrMsg={setErrMsg} fetchUserProfile={fetchUserProfile!} />
-          <div className="fade-line-black" style={{ marginTop: '20px' }}></div>
           <EditUserFormValidation setErrMsg={setErrMsg} userData={userData} />
         </>
       )}
