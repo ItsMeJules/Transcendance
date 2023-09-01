@@ -5,23 +5,29 @@ import { GameProperties } from '../../models/Properties';
 
 interface BallCanvasProps {
   game: GameProperties;
-  ball: Ball;
   canvasRef: React.RefObject<HTMLCanvasElement>;
-  whichPlayer: number;
 }
 
-const BallCanvas: React.FC<BallCanvasProps> = ({ game, ball, canvasRef, whichPlayer }) => {
+const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
   useEffect(() => {
+    let ball = game.ball;
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     let previousTimestamp = 0;
+    if (ctx && game.isEnded) {
+      console.log('here okkkkkkkkkk');
+      ctx.clearRect(0, 0, game.board.width, game.board.height);
+      return;
+    }
+
     const animateBall = (timestamp: number) => {
-      if (!game.isPlaying) return;
+      if (!game.isPlaying && !game.isEnded) return;
       const deltaTime = (timestamp - previousTimestamp) / 1000;
       previousTimestamp = timestamp;
       if (ctx) {
         ctx.clearRect(0, 0, game.board.width, game.board.height);
+        if (game.isEnded) return;
         // ball.pos.x = ball.pos.x + ball.dir.x * ball.speed * deltaTime * game.board.width / game.board.gridWidth;
         // ball.pos.y = ball.pos.y + ball.dir.y * ball.speed * deltaTime * game.board.width / game.board.gridWidth;
         // ball.tip.x = ball.pos.x - ball.size * 0.5;
@@ -34,12 +40,10 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, ball, canvasRef, whichPla
     };
 
     const handleResize = () => {
-      // console.log('pos before:', ball.pos);
       ball.refactorBall(game.board.factor);
-      // console.log('pos after:', ball.pos);
       if (ctx) {
-        // Draw the ball
-
+        ctx.clearRect(0, 0, game.board.width, game.board.height);
+        if (game.isEnded) return;
         ctx.fillStyle = 'white';
         ctx.fillRect(ball.tip.x, ball.tip.y, ball.size, ball.size);
         ctx.setLineDash([]);
@@ -50,11 +54,14 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, ball, canvasRef, whichPla
     requestAnimationFrame(animateBall);
 
     window.addEventListener('resize', handleResize);
-
+    // if (game.isEnded && ctx) {
+    //   ctx.clearRect(0, 0, game.board.width, game.board.height);
+    //   return;
+    // }
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [canvasRef, ball, game.board.factor, game.isPlaying]);
+  }, [canvasRef, game.ball, game.board.factor, game.isPlaying]);
 
   return null;
 };

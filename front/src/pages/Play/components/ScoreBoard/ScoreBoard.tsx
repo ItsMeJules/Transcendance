@@ -8,10 +8,13 @@ interface ScoreBoardProps {
 const ScoreBoard: React.FC<ScoreBoardProps> = ({ game }) => {
 
   return (
-    <article className="score-main-container">
-      <section>Score</section>
-      <section>{game.pl1.score} - {game.pl2.score}</section>
-    </article>    
+    <>
+      {game.status !== 'noGame' &&
+        < article className="score-main-container">
+          <section>Score</section>
+          <section>{game.pl1.score} - {game.pl2.score}</section>
+        </article >}
+    </>
   );
 }
 

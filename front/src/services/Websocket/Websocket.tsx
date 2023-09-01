@@ -45,7 +45,7 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
     game: null,
   });
   const { id: userId } = useAppSelector(state => state.user.userData);
-  
+  // console.log("render-------------------", socketInstances.game)
   useEffect((): (() => void) => {
     // console.log(userId);
     if (userId) {

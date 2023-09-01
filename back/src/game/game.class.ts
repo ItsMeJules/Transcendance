@@ -372,11 +372,9 @@ export class GameStruct {
   private scorePoint(winner: number) {
     let maxScore = 1;//11;
     if (winner === 2) {
-      console.log('SCORE 2');
       this.pl2.score += 1;
       this.ball.randomService(this.board, 2, this.gameMode);
     } else if (winner === 1) {
-      console.log('SCORE 1');
       this.pl1.score += 1;
       this.ball.randomService(this.board, 1, this.gameMode);
     }
@@ -388,6 +386,8 @@ export class GameStruct {
       this.winner.isWinner = true;
       this.stopGameLoop();
       this.prop.status = 'ended';
+      this.pongEvents.playersMap.delete(this.pl1.id);
+      this.pongEvents.playersMap.delete(this.pl2.id);
     }
     if (this.gameMode === 2) {
       this.pl1.pad.resetPaddleTop(this.board);

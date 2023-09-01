@@ -59,6 +59,9 @@ export class PongService {
   }
 
   getGameStructById(gameId: number) {
+    // this.onlineGames.forEach((value, key) => {
+    //   console.log('og key id:', key, ' value id:', value.prop.id);
+    // })
     return this.onlineGames.get(gameId);
   }
 

@@ -19,7 +19,10 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-
+    if (game.isEnded && ctx) {
+      ctx.clearRect(-game.board.width, -game.board.height, game.board.width * 2, game.board.height * 2);
+      return;
+    }
     let movingUp = false;
     let movingDown = false;
     let previousTimestamp = 0;
@@ -28,9 +31,11 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
         event.preventDefault();
         if (event.key === 'ArrowUp') {
+          console.log('OK up');
           movingUp = true;
           socket?.emit('moveUp', { player: whichPlayer, action: 'pressed' });
         } else if (event.key === 'ArrowDown') {
+          console.log('OK down');
           movingDown = true;
           socket?.emit('moveDown', { player: whichPlayer, action: 'pressed' });
         }
@@ -51,6 +56,10 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     };
 
     const animatePaddle = (timestamp: number) => {
+      if (game.isEnded && ctx) {
+        ctx.clearRect(-game.board.width, -game.board.height, game.board.width * 2, game.board.height * 2);
+        return;
+      }
       if (!game.isPlaying) return;
       if (!previousTimestamp) {
         previousTimestamp = timestamp;
@@ -76,10 +85,18 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
         else if (player.num === 2)
           ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height); // Right paddle
       }
+      if (game.isEnded && ctx) {
+        ctx.clearRect(-game.board.width, -game.board.height, game.board.width * 2, game.board.height * 2);
+        return;
+      }
     };
 
     handleResize();
     requestAnimationFrame(animatePaddle);
+    if (game.isEnded && ctx) {
+      ctx.clearRect(-game.board.width, -game.board.height, game.board.width * 2, game.board.height * 2);
+      return;
+    }
     if (whichPlayer !== 0) {
       window.addEventListener('keydown', handleKeyDown);
       window.addEventListener('keyup', handleKeyUp);

@@ -1,4 +1,4 @@
-#link {color: #E45635;display:block;font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;text-align:center; text-decoration: none;}
+#link {color: rgb(228, 86, 53, 0.2);display:block;font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;text-align:center; text-decoration: none;}
 #link:hover {color: #CCCCCC}
 
 #link, #link:hover {-webkit-transition: color 0.5s ease-out;-moz-transition: color 0.5s ease-out;-ms-transition: color 0.5s ease-out;-o-transition: color 0.5s ease-out;transition: color 0.5s ease-out;}
@@ -97,7 +97,7 @@
         }
 
         .loading-container:hover .loading {
-            border-color: transparent #E45635 transparent #E45635;
+            border-color: transparent rgb(228, 86, 53, 0.8) transparent rgb(228, 86, 53, 0.8);
         }
         .loading-container:hover .loading,
         .loading-container .loading {
@@ -115,9 +115,9 @@
             animation: loading-text-opacity 2s linear 0s infinite normal;
             color: #ffffff;
             font-family: "Roboto", sans-serif;
-            font-size: 12px;
+            font-size: 16px;
             font-weight: bold;
-            margin-top: 80px;
+            margin-top: 73px;
             opacity: 0;
             justify-items: center;
             position: absolute;

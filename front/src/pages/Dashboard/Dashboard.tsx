@@ -29,7 +29,7 @@ const Dashboard = () => {
 
       <article className="screen-container">
         <Websocket>
-          <div style={{display:'flex'}}>
+          {/* <div style={{display:'flex'}}> */}
             <div className="left-screen-container">
             <Routes>
               <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
@@ -40,13 +40,13 @@ const Dashboard = () => {
               <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
             </Routes>
             </div>
-            {/* </Websocket>
+            </Websocket>
 
-        <Websocket key={rightContent}> */}
+        <Websocket key={rightContent}>
             <div className="right-screen-container">
               <RightScreen rightContent={rightContent} />
             </div>
-          </div>
+          {/* </div> */}
         </Websocket>
 
       </article>

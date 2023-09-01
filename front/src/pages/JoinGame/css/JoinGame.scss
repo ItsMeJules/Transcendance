@@ -1,3 +1,5 @@
+$orange-color: rgb(228, 86, 53, 0.2);
+
 .join-game-main-container {
   display: flex;
   flex-direction: column;
@@ -151,13 +153,16 @@
 
     .join-game-button {
       color: white;
-
     }
+
+    .cancel-color {
+      color: $orange-color;
+      -webkit-text-fill-color: $orange-color;
+      // animation: text-color;
+    }
+
   }
 
-  .join-game-loading-animation {
-
-  }
 
   @keyframes glow-text-animation {
     0% {
@@ -199,4 +204,6 @@
       opacity: 1;
     }
   }
+
+  
 }

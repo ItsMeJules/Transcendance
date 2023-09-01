@@ -13,7 +13,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ inQueue }) => {
         <section className="loading-container">
           <p className="loading"></p>
           <p id="loading-text" className="">
-            Searching for opponent
+            Searching<br /> for opponent
           </p>
         </section>}
     </main>
