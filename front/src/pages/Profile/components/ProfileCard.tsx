@@ -3,10 +3,13 @@ import { MDBCard } from 'mdb-react-ui-kit';
 import ProfileHeader from './ProfileHeader';
 import UserProfileContent from './UserProfileContent';
 import { UserData } from "../../../services/User/User";
-import QrCode from '../QrCode';
 import ImageChange from "./ImageChange";
 import EditUserFormValidation from "./EditUserFormValidation";
 import ProfilePicContainer from './ProfilePicContainer';
+import DisplayData from './DisplayData';
+import DisplayStats from './DisplayStats';
+import FadeLine from './FadeLine';
+import QrCode from '../QrCode';
 
 type ProfileType = 'user' | 'generic' | 'edit';
 
@@ -22,11 +25,18 @@ type ProfileCardProps = {
 const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = 'user', iconColor, onAddFriend, fetchUserProfile }) => {
   return (
     <MDBCard className="profile-board-card">
-      
+
       <ProfileHeader setErrMsg={setErrMsg} type={type} iconColor={iconColor} onAddFriend={onAddFriend} />
-     
+
       {type != 'edit' && (
-        <UserProfileContent userData={userData} />
+        <>
+          <ProfilePicContainer userData={userData} />
+          <FadeLine marginTop='20px' />
+          <DisplayData userData={userData} />
+          <FadeLine marginTop='-10px' />
+          <DisplayStats userData={userData} />
+          <QrCode />
+        </>
       )}
 
       {type == 'edit' && (
@@ -37,9 +47,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = '
           <EditUserFormValidation setErrMsg={setErrMsg} userData={userData} />
         </>
       )}
-
-      {type === 'user' && <QrCode />}
-
     </MDBCard>
   );
 };

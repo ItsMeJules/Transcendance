@@ -12,7 +12,8 @@
   justify-content: space-between;
   gap: 20px;
   overflow: hidden;
-
+  overflow-x: auto;
+  gap: 1px;
   .custom-text-color{
     color: rgba(255, 255, 255, 0.7) !important;
   }
@@ -122,8 +123,8 @@
   }
 
   .screen-container {
-    flex: 1;
     display: flex;
+    flex-direction: row;
     align-items: center;
     margin: 20px;
     padding: 20px;
@@ -142,6 +143,7 @@
       width: 350px;
       height:100%;
       border-radius: 20px;
+      border: solid 1px red;
     }
   }
 
@@ -204,4 +206,12 @@
       }
     }
   }
+      .nav-footer-container.visible {
+      transform: translateY(50%);
+    }
+
+    .nav-footer-container.hidden {
+      transform: translateY(80%);
+    }
+
 }

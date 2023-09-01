@@ -3,17 +3,17 @@
   flex-direction: column;
   margin: 0;
   padding: 0;
-  width: 100%;
-  min-width: 100%;
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   box-sizing: border-box;
-
+  border-radius: 20px;
+  border: 1px solid violet;
+  
   .profile-board-container {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     width: 100%;
-    min-width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -24,10 +24,9 @@
       padding: 0;
       display: flex;
       width: 100%;
-      min-width: 100%;
       height: 100%;
       background-color: transparent;
-
+      gap: 10px;
       .profile-board-header {
         display: flex;
         align-items: center;
@@ -42,8 +41,8 @@
         justify-content: center;
 
         .profile-pic-circle {
-          width: 120px;
-          height: 120px;
+          width: 15%;
+          height: 15%;
           border-radius: 50%;
           overflow: hidden;
           display: flex;
@@ -58,8 +57,8 @@
         }
 
         .empty-profile-pic-circle {
-          width: 120px;
-          height: 120px;
+          width: 15%;
+          height: 15%;
           overflow: hidden;
           display: flex;
           align-items: center;
@@ -91,14 +90,16 @@
 
     .information-display-main {
       display: flex;
-      flex-grow: 2;
+      flex-shrink: 1;
+      gap: 25px;
 
       .data-fields-name-main {
         display: flex;
         flex-direction: column;
         text-align: left;
         width: 20%;
-        min-width: 140px;
+        margin-top: 6px;
+        gap: 10px;
 
         @mixin data-fields-name-sub {
           font-family: "dune", Arial, sans-serif;
@@ -107,8 +108,6 @@
           color: rgba(255, 255, 255, 0.7);
           display: flex;
           align-items: center;
-          height: 35px;
-          min-width: 100px;
         }
 
         .data-fields-name-sub-first {
@@ -130,10 +129,9 @@
         flex-direction: column;
         text-align: left;
         margin-top: 6px;
-        min-width: 0px;
+        gap: 10px;
 
         @mixin data-values-sub {
-          height: 35px;
           width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -155,12 +153,9 @@
         flex-direction: column;
         text-align: left;
         margin-top: 6px;
-        min-width: 0px;
 
         @mixin data-values-input-sub {
-          height: 30px;
           width: 100%;
-          min-width: 0px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -174,13 +169,11 @@
         .data-values-input-sub-second {
           margin-top: 0px;
           width: 100%;
-          min-width: 0px;
         }
 
         .data-values-input-sub-others {
           margin-top: 4px;
           width: 100%;
-          min-width: 0px;
         }
       }
 

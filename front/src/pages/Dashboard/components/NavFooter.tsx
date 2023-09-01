@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
+import React, { useEffect, useState } from 'react';
+
 
 interface LeftNavFooterProps {
   setRightContent: (option: number) => void;
@@ -12,8 +14,33 @@ const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
     history(APP_ROUTES.MATCHMAKING)
   });
 
+  const [showFooter, setShowFooter] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      const mouseY = event.clientY;
+      const windowHeight = window.innerHeight;
+
+      // Show the footer if the mouse is within 50 pixels of the bottom of the screen
+      if (mouseY > windowHeight - 50) {
+        setShowFooter(true);
+      } else {
+        setShowFooter(false);
+      }
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    // Cleanup: remove event listener when the component is unmounted
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []); // Empty dependency array means this effect runs once when the component mounts
+
+
+
   return (
-    <main className="nav-footer-container">
+    <main className={`nav-footer-container ${showFooter ? 'visible' : 'hidden'}`}>
       <div className="icons">
         <button onClick={handleMatchMakingClick}>
           <img src="/images/game.png" alt="game" />

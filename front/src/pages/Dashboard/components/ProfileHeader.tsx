@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 const ProfileHeader = () => {
   const history = useNavigate();
   const [profilePicture, setProfilePicture] = useState('/images/game.png');  // Set default picture
+  const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
     const storedUserData = localStorage.getItem('userData');
@@ -33,9 +34,8 @@ const ProfileHeader = () => {
         <div className="stats">
 
         </div>
-
-        <div className="settings">
-          <img src="/images/settings.png" alt="game" />
+        <div className="icons">
+          <LogoutParent setErrMsg={setErrMsg} />
         </div>
       </div>
 
