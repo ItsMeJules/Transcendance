@@ -25,9 +25,7 @@ export default function BannedUsersPopup({ channelData }: BannedUsersPopupProps)
     chatSocket?.on(RoomSocketActionType.USERS_BANNED, (payload: any) => {
       setBannedUsers(payload.users.map((data: UserData) => {
         const frontUser = new User();
-        console.log(data)
         frontUser.setUserFromResponseData(data);
-        console.log("-----------------")
         return frontUser;
       }))
     });

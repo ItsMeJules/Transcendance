@@ -33,7 +33,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
       <div className="channel-infos">
         <div className="channel-name">
           <p>{channelData?.displayname}</p>
-          {channelData.type !== ChannelType.DIRECT
+          {channelData.type !== ChannelType.DIRECT && channelData.name !== "general"
           ?
             <img alt="Banned" src={BannedIcon} ref={excludeRef} onClick={() => toggleBannedUsersList(!bannedUsersList)}></img>
           : undefined}

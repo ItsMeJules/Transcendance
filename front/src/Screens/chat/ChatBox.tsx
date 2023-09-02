@@ -119,6 +119,9 @@ export const ChatBox = () => {
         case ChatSocketActionType.UNBLOCK:
           dispatch(removeUserBlocked(payload.userId))
           break;
+        case RoomSocketActionType.INVITE:
+          dispatch(activeChannelAddUser(payload.userId))
+          break;
         default:
           break;
       }

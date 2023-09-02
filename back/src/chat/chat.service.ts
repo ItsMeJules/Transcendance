@@ -1093,7 +1093,12 @@ export class ChatService {
         });
       }
       console.log('3');
-      this.sendSuccess(client, 'You invited ' + targetUser.username);
+      this.sendSuccess(
+        client,
+        'You invited ' + targetUser.username,
+        targetUser.id,
+        RoomSocketActionType.INVITE,
+      );
       console.log('4');
       console.log(
         'usersocket = ',

@@ -37,12 +37,12 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
         if (channelusers.length !== 0) {
           const user = channelusers.find((userData: UserData) =>
             userData.id === channelUserClicked.id);
-          setChannelUserClicked(createChannelUser(user, channelData))
+          setChannelUserClicked(user === undefined ? null : createChannelUser(user, channelData))
         } else {
           setChannelUserClicked(null)
         }
       }
-
+      
       setChannelUsers(channelusers.map((userData: UserData) => createChannelUser(userData, channelData)));
     });
 
