@@ -1,5 +1,5 @@
 import React, { FormEvent, useState, useEffect } from 'react';
-import {MDBCardBody, MDBTypography } from 'mdb-react-ui-kit';
+import { MDBCardBody, MDBTypography } from 'mdb-react-ui-kit';
 import axios from 'axios';
 
 import QrCode from '../QrCode';
@@ -75,23 +75,27 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
 
   return (
     <div className="information-display-main">
-      <MDBCardBody className="data-fields-name-main">
-        <MDBTypography className="data-fields-name-sub-first" tag="h5">
-          Email
-        </MDBTypography>
-        <MDBTypography className="data-fields-name-sub-others" tag="h5">
-          Username
-        </MDBTypography>
-        <MDBTypography className="data-fields-name-sub-others" tag="h5">
-          First name
-        </MDBTypography>
-        <MDBTypography className="data-fields-name-sub-others" tag="h5">
-          Last name
-        </MDBTypography>
+
+      <div className="data-fields" style={{display: "flex", flexDirection:"column"}}>
+        <MDBCardBody className="data-fields-name-main">
+          <MDBTypography className="data-fields-name-sub-first" tag="h5">
+            Email
+          </MDBTypography>
+          <MDBTypography className="data-fields-name-sub-others" tag="h5">
+            Username
+          </MDBTypography>
+          <MDBTypography className="data-fields-name-sub-others" tag="h5">
+            First name
+          </MDBTypography>
+          <MDBTypography className="data-fields-name-sub-others" tag="h5">
+            Last name
+          </MDBTypography>
+        </MDBCardBody>
+
         <div className="2fa-button">
           <QrCode />
         </div>
-      </MDBCardBody>
+      </div>
 
       <form action="POST" onSubmit={handleSubmit}>
 
@@ -112,11 +116,11 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
             onChange={(e) => setLastName(e.target.value)} maxLength={100} />
         </MDBCardBody>
 
-          <div className="save-button">
-            <button type="submit" className="save-changes-button" style={{ marginTop: '10px' }}>
-              Save changes
-            </button>
-          </div>
+        <div className="save-button">
+          <button type="submit" className="save-changes-button" style={{ marginTop: '10px' }}>
+            Save changes
+          </button>
+        </div>
 
       </form>
 

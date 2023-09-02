@@ -101,6 +101,11 @@
     .information-display-main {
       display: flex;
       justify-content: space-evenly;
+      
+      .data-fields {
+        display: "flex";
+        flex-direction:"column";
+      }
 
       .data-fields-name-main {
         display: flex;
@@ -109,6 +114,7 @@
         justify-content: space-evenly;
         text-align: left;
         width: 150px;
+        padding: 20px 0px 0px 20px;
 
         @mixin data-fields-name-sub {
           font-family: "dune", Arial, sans-serif;
@@ -213,8 +219,8 @@
       }
         .activate-deactivate-button,
         .deactivate {
-          width: 190.89px;
-          height: 51.01px;
+//          width: 190.89px;
+//          height: 51.01px;
           display: flex;
           justify-content: left;
           margin-top: 10px;
