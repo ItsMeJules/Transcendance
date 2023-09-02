@@ -966,7 +966,7 @@ $font-color: rgba(255, 255, 255, 0.7);
       }
 
       &::-webkit-scrollbar-thumb {
-        background-color: transparent; // Transparent scrollbar thumb
+        background-color: rgba(128, 128, 128, 0.3); // Transparent scrollbar thumb
         border-radius: 5px; // Rounded corners for the thumb
         border: 2px solid rgba(0, 0, 0, 0); // Hide the border initially
       }
