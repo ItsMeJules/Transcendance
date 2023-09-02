@@ -153,13 +153,15 @@
       }
 
       &__name {
+        box-sizing: border-box;
+        height: 110%;
         text-align: left;
         color: #979cb0;
         font-weight: 550;
         font-size: 15px;
         letter-spacing: 0.6px;
-        min-width: 110px;
-        max-width: 110px;
+        min-width: 150px;
+        max-width: 140px;
         margin-left: 15px;
         overflow: hidden;
         text-overflow: ellipsis;

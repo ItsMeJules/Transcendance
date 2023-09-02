@@ -416,7 +416,7 @@ export class GameStruct {
   }
 
   updateOnlineGames() {
-    gameEvents.emit('serviceEndGame', { action: 'update' });
+    gameEvents.emit('gatewayUpdateOnlineGames', { action: 'update' });
   }
 
   /* Function to get the state of the game */

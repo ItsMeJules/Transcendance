@@ -17,6 +17,7 @@ import { User } from '@prisma/client';
 import { PongStoreService } from 'src/utils/pong-store/pong-store.service';
 import { disconnect } from 'process';
 import { gameEvents } from './game.class';
+import { type } from 'os';
 
 export type SpectatorMap = Map<number, number>; // <userId, gameId
 export type PlayersMap = Map<number, number>; // <userId, gameId
@@ -36,6 +37,7 @@ export class PongEvents {
     /* Remove players from players map */
     gameEvents.on('gatewayRemovePlayersFromList', (data) => {
       this.eventRemovePlayersFromList(data);
+      this.emitUpdateAllUsers('toAll', 0);
     });
     /* Update room */
     gameEvents.on('gatewayUpdateRoom', (data) => {
@@ -43,6 +45,7 @@ export class PongEvents {
     });
     /* Update online games */
     gameEvents.on('gatewayUpdateOnlineGames', (data) => {
+      console.log('UPDATE ONLINE GAMES RECEIVED FROM CLASS');
       this.updateEmitOnlineGames('toRoom', 0);
     });
   }
@@ -74,11 +77,13 @@ export class PongEvents {
       if (gameWatchId)
         client.join(`game_${gameWatchId}`);
     }
+    this.emitUpdateAllUsers('toAll', 0);
   }
 
   async handleDisconnect(client: Socket) {
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
+    this.emitUpdateAllUsers('toAll', 0);
     this.pongService.removeFromQueue(user.id);
     this.spectatorsMap.delete(user.id);
     this.idToSocketMap.delete(user.id);
@@ -139,7 +144,7 @@ export class PongEvents {
       // this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
       // this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
       this.updateEmitOnlineGames('toRoom', 0);
-      // this.allUsersUpdater();
+      this.emitUpdateAllUsers('toAll', 0);
     }
   }
 
@@ -185,7 +190,6 @@ export class PongEvents {
   async handlePlayerReady(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { player: string, action: string }) {
-
 
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) {
@@ -240,8 +244,12 @@ export class PongEvents {
           gameStruct.prop.status = 'timeout';
           gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
           this.pongService.deleteGamePrismaAndList(gameStruct.prop.id);
+          this.playersMap.delete(player.id);
+          this.playersMap.delete(opponent.id);
+          this.emitUpdateAllUsers('toAll', 0);
         }
       }, timeoutInSeconds * 1000);
+      
     }
     // Both ready launch game
     else if (data.action === 'playPressed' && opponent.status === 'ready') {
@@ -367,6 +375,7 @@ export class PongEvents {
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'refreshGame');
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
       this.updateEmitOnlineGames('toRoom', 0);
+      this.emitUpdateAllUsers('toAll', 0);
       // this.allUsersUpdater();
     }
   }
@@ -437,6 +446,44 @@ export class PongEvents {
       }
       return;
     }
+  }
+
+  /* All users right screen */
+  @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
+  async allUsersHandler(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { action: string }) {
+    console.log('ALL USERS and status:', data.action);
+
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!client.data.id || !access_token) {
+      client.disconnect();
+      return;
+    }
+    const userId = parseInt(client.data.id);
+    this.emitUpdateAllUsers('toUser', userId);
+  }
+
+  async emitUpdateAllUsers(type: string, userId: number) {
+    // protect and manage errors
+    const allUsers = await this.pongService.prismaService.user.findMany({
+      orderBy: {
+        username: 'asc',
+      }
+    });
+    // console.log('playersMap:', this.playersMap);
+    allUsers.forEach((user) => {
+      delete user.hash;
+      const isPlaying = this.playersMap.get(user.id);
+      user.isPlaying = isPlaying !== undefined ? true : false;
+      const isOnline = isPlaying ? true : this.idToSocketMap.get(user.id);
+      user.isOnline = isOnline !== undefined ? true : false;
+    });
+    // console.log('all users list:', allUsers);
+    if (type === 'toUser')
+      this.server.to(`user_${userId}`).emit('allUsers', allUsers);
+    else
+      this.server.to('game_online').emit('allUsers', allUsers);
   }
 
   /* Refresh front functions */
@@ -515,34 +562,6 @@ export class PongEvents {
   }
 
 
-  // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
-  // async allUsersHandler(
-  //   @ConnectedSocket() client: Socket,
-  //   @MessageBody() data: { action: string }) {
-  //   console.log('All users and status:', data.action);
-
-  //   if (!client.data.id) {
-  //     client.disconnect();
-  //     return;
-  //   }
-  //   const userId = parseInt(client.data.id);
-  //   // protect and manage errors
-  //   const allUsers = await this.prismaService.user.findMany({
-  //     orderBy: {
-  //       username: 'asc',
-  //     }
-  //   });
-  //   console.log('playersMap:', this.pongEvents.playersMap);
-  //   allUsers.forEach((user) => {
-  //     delete user.hash;
-  //     const isPlaying = this.pongEvents.playersMap.get(user.id);
-  //     user.isPlaying = isPlaying !== undefined ? true : false;
-  //     const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
-  //     user.isOnline = isOnline !== undefined ? true : false;
-  //   });
-  //   console.log('all users list:', allUsers);
-  //   this.server.to(`user_${userId}`).emit('allUsers', allUsers);
-  // }
 
 
   // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'

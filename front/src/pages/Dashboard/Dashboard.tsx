@@ -22,7 +22,7 @@ const Dashboard = () => {
   }, [rightContent]);
 
   return (
-    <Websocket>
+    <Websocket key={rightContent}>
       <main className="dashboard-main-container">
 
         <ProfileHeader />

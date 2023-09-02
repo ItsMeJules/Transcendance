@@ -14,8 +14,6 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
   const socket = useWebsocketContext();
   const history = useNavigate();
 
-
-
   useEffect(() => {
     socket.game?.on('watchGame', (data: any) => {
       setGameData(data);
