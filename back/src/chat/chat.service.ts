@@ -203,7 +203,7 @@ export class ChatService {
         );
         this.sendInfoToUser(
           client,
-          'You are speaking with ' + targetUser.username + '!',
+          'You are speaking with ' + targetUser.username,
         );
         return room;
       }
@@ -212,10 +212,6 @@ export class ChatService {
         const parts = createRoomDto.roomName.split('-');
         const firstUser = parseInt(parts[1]);
         const secondUser = parseInt(parts[2]);
-        const otherId = firstUser === client.data.id ? secondUser : firstUser;
-        const targetUser = await this.prismaService.user.findUnique({
-          where: { id: otherId },
-        });
         console.log('first & second: ', firstUser, secondUser);
         room = await this.prismaService.room.create({
           data: {
@@ -231,10 +227,6 @@ export class ChatService {
           password: createRoomDto.password,
           server: createRoomDto.server,
         });
-        this.sendInfoToUser(
-          client,
-          'You are speaking with ' + targetUser.username,
-        );
         console.log('createRoom for DMs function ending');
         return room;
       }
@@ -486,10 +478,10 @@ export class ChatService {
         console.log('room type is not direct');
         this.sendSuccess(
           client,
-          'You left the room "' + room.name + '" with your privileges',
+          'You left the room "' + room.name + '" and lost your privileges',
         );
         this.sendInformationToRoom(
-          `${actingUser.username} left the room with his privileges`,
+          `${actingUser.username} left the room and lost his privileges`,
           leaveDto.server,
           room.name,
           this.userSocketsService.getUserSocket(String(actingUser.id)),
