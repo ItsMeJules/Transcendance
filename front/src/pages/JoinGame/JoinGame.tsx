@@ -43,7 +43,7 @@ const JoinGame = () => {
     socket.game?.on('joinGameQueue', (data: any) => {
       setSocketData(data);
     });
-
+    socket.game?.emit('joinGameQueue', { gameMode: 'query' });
     return () => {
       socket.game?.off('joinGameQueue');
     };

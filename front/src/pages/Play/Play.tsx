@@ -52,6 +52,7 @@ const Play = () => {
   const [gameStatePrepare, setGameStatePrepare] = useState<GameSocket>();
   const [gameStatePlay, setGameStatePlay] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
+  const [gameIsEnded, setGameIsEnded] = useState(false);
   const [noGame, setNoGame] = useState(false);
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
@@ -124,17 +125,20 @@ const Play = () => {
       } else {
         console.log('1 YOU GAVE UP OK');
         setCentralText('You gave up :(');
-        setGame({ ...game, isEnded: true, isPlaying: false, status: 'giveUp'  });
+        setGame({ ...game, isEnded: true, isPlaying: false, status: 'giveUp' });
       }
     }
     else if (gameStatePlay?.gameStatus === 'ended') {
+      setIsPlayerReady(true);
       if ((gameStatePlay.gameParams.pl1.isWinner === true && whichPlayer === 1)
         || (gameStatePlay.gameParams.pl2.isWinner === true && whichPlayer === 2)) {
+        console.log('Here ended 1');
         setCentralText('You win!!');
         setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
       } else {
+        console.log('Here ended 2');
         setCentralText('You lose...');
-        setGame({ ...game, isEnded: true, isPlaying: false });
+        setGame({ ...game, isEnded: true, isPlaying: false, isUserWinner: false });
       }
     }
     else if (gameStatePlay) {
@@ -212,7 +216,7 @@ const Play = () => {
       <AllCanvas game={game} socket={socket.game} whichPlayer={whichPlayer} centralText={centralText}
         isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
 
-      <GiveUp socket={socket.game} whichPlayer={whichPlayer} game={game} noGame={noGame} />
+      <GiveUp socket={socket.game} whichPlayer={whichPlayer} game={game} noGame={noGame} gameStatus={game.status} />
 
       <NoGame noGame={noGame} />
 

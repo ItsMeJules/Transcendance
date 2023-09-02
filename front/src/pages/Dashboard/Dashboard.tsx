@@ -25,12 +25,9 @@ const Dashboard = () => {
     <Websocket>
       <main className="dashboard-main-container">
 
-
         <ProfileHeader />
 
         <article className="screen-container">
-          {/* <Websocket> */}
-          {/* <div style={{display:'flex'}}> */}
           <div className="left-screen-container">
             <Routes>
               <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
@@ -41,15 +38,10 @@ const Dashboard = () => {
               <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
             </Routes>
           </div>
-          {/* </Websocket> */}
 
-          {/* <Websocket key={rightContent}> */}
           <div className="right-screen-container">
             <RightScreen rightContent={rightContent} />
           </div>
-          {/* </div> */}
-          {/* </Websocket> */}
-
         </article>
 
         <NavFooter setRightContent={setRightContent} />

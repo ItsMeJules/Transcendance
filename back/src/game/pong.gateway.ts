@@ -16,6 +16,7 @@ import { Player } from './models/player.model';
 import { User } from '@prisma/client';
 import { PongStoreService } from 'src/utils/pong-store/pong-store.service';
 import { disconnect } from 'process';
+import { gameEvents } from './game.class';
 
 export type SpectatorMap = Map<number, number>; // <userId, gameId
 export type PlayersMap = Map<number, number>; // <userId, gameId
@@ -31,10 +32,22 @@ export class PongEvents {
   constructor(
     public pongService: PongService,
     private authService: AuthService,
-    private userService: UserService) { }
+    private userService: UserService) {
+    /* Remove players from players map */
+    gameEvents.on('gatewayRemovePlayersFromList', (data) => {
+      this.eventRemovePlayersFromList(data);
+    });
+    /* Update room */
+    gameEvents.on('gatewayUpdateRoom', (data) => {
+      this.sendUpdateToRoom(data);
+    });
+    /* Update online games */
+    gameEvents.on('gatewayUpdateOnlineGames', (data) => {
+      this.updateEmitOnlineGames('toRoom', 0);
+    });
+  }
 
   async handleConnection(client: Socket) {
-
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -92,6 +105,7 @@ export class PongEvents {
       this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'INGAME', gameMode: 0 });
       return;
     }
+    if (gameDto.gameMode === 'query') return;
     const gameQueue = this.pongService.addToQueue(user, gameDto);
     console.log('2 Queue:', this.pongService.userQueue);
     if (gameQueue != null) {
@@ -102,7 +116,7 @@ export class PongEvents {
       console.log('2 GAME CREATED');
       let gameMode = parseInt(gameDto.gameMode);
       const game = new GameStruct(gameMode, gameData.gameId, gameData.player1Id,
-        gameData.player2Id, gameData.gameChannel, this, this.pongService);
+        gameData.player2Id, gameData.gameChannel);
       this.pongService.onlineGames.set(game.prop.id, game);
       const player1 = await this.userService.findOneById(game.pl1.id);
       const player2 = await this.userService.findOneById(game.pl2.id);
@@ -127,28 +141,6 @@ export class PongEvents {
       this.updateEmitOnlineGames('toRoom', 0);
       // this.allUsersUpdater();
     }
-  }
-
-  async updateEmitOnlineGames(type: string, userId: number) {
-    const dataMap = new Map<number, { player1: User, player1Score: number, player2: User, player2Score: number }>();
-    for (const [key, value] of this.pongService.onlineGames.entries()) {
-      value.prop.id
-      let player1 = await this.userService.findOneById(value.pl1.id);
-      let player1Score = value.pl1.score;
-      let player2 = await this.userService.findOneById(value.pl2.id);
-      let player2Score = value.pl2.score;
-      let players = { player1, player1Score, player2, player2Score };
-      dataMap.set(key, players);
-    };
-    const dataObject = {};
-    dataMap.forEach((value, key) => {
-      dataObject[key] = value;
-    });
-    if (type === 'toUser')
-      this.server.to(`user_${userId}`).emit('onlineGames', dataObject);
-    else if (type === 'toRoom')
-      this.server.to('onlineGames').emit('onlineGames', dataObject);
-    // console.log('online games data Map:', dataObject);
   }
 
   @SubscribeMessage('onlineGames')
@@ -231,7 +223,7 @@ export class PongEvents {
     // Status
     if (data.action === 'status') {
       console.log('3 ACTION STATUS');
-      gameStruct.sendUpdateToPlayer(player, opponent.status, gameStruct.prop.countdown, 'prepareToPlay');
+      this.sendUpdateToPlayer(gameStruct, player, opponent.status, gameStruct.prop.countdown, 'prepareToPlay');
       return;
     }
     // Wait for opponent
@@ -239,7 +231,7 @@ export class PongEvents {
       console.log('3 WAIT FOR OPPONENT');
       player.status = 'ready';
       gameStruct.prop.status = 'waiting';
-      gameStruct.sendUpdateToPlayer(player, opponent.status, -1, 'prepareToPlay');
+      this.sendUpdateToPlayer(gameStruct, player, opponent.status, -1, 'prepareToPlay');
       const timeoutInSeconds = 10;
       setTimeout(() => {
         if (opponent.status === 'pending'
@@ -447,6 +439,64 @@ export class PongEvents {
     }
   }
 
+  /* Refresh front functions */
+  sendUpdateToPlayer(game: GameStruct, player: Player, opponentStatus: string, countdown: number, channel: string) {
+    let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
+    this.server.to(`user_${player.id}`).emit(channel,
+      {
+        gameStatus: game.prop.status,
+        gameParams: game.getState(),
+        playerStatus: player.status,
+        opponentStatus: opponentStatus,
+        time: Date.now(),
+        countdown: countdownStr,
+      });
+  }
+
+  async updateEmitOnlineGames(type: string, userId: number) {
+    const dataMap = new Map<number, { player1: User, player1Score: number, player2: User, player2Score: number }>();
+    for (const [key, value] of this.pongService.onlineGames.entries()) {
+      value.prop.id
+      let player1 = await this.userService.findOneById(value.pl1.id);
+      let player1Score = value.pl1.score;
+      let player2 = await this.userService.findOneById(value.pl2.id);
+      let player2Score = value.pl2.score;
+      let players = { player1, player1Score, player2, player2Score };
+      dataMap.set(key, players);
+    };
+    const dataObject = {};
+    dataMap.forEach((value, key) => {
+      dataObject[key] = value;
+    });
+    if (type === 'toUser')
+      this.server.to(`user_${userId}`).emit('onlineGames', dataObject);
+    else if (type === 'toRoom')
+      this.server.to('onlineGames').emit('onlineGames', dataObject);
+  }
+
+  /* Events functions */
+  eventRemovePlayersFromList(data: any) {
+    if (data.pl1Id && data.pl2Id) {
+      const pl1Id = parseInt(data.pl1Id);
+      const pl2Id = parseInt(data.pl2Id);
+      this.playersMap.delete(pl1Id);
+      this.playersMap.delete(pl2Id);
+    }
+  }
+
+  sendUpdateToRoom(data: any) {
+    this.server.to(data.room).emit(data.channel,
+      {
+        gameStatus: data.gameStatus,
+        gameParams: data.gameParams,
+        playerStatus: data.playerStatus,
+        opponentStatus: data.opponentStatus,
+        time: Date.now(),
+        countdown: data.countdown,
+      });
+  }
+
+  /* Utils */
   playersMapDeleteGameById(gameIdToDelete: number) {
     for (const [userId, gameId] of this.playersMap.entries()) {
       if (gameId === gameIdToDelete) {
@@ -454,6 +504,16 @@ export class PongEvents {
       }
     }
   }
+
+  async printUsersInRoom(room: string) {
+    const sockets = await this.server.in(room).fetchSockets();
+    console.log('Users in room:', room);
+    sockets.forEach((Socket) => {
+      console.log(Socket.data.id);
+    });
+    console.log(' ');
+  }
+
 
   // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
   // async allUsersHandler(
@@ -514,14 +574,7 @@ export class PongEvents {
   //   this.server.to(`user_${userId}`).emit('allUsers', allUsers);
   // }
 
-  async printUsersInRoom(room: string) {
-    const sockets = await this.server.in(room).fetchSockets();
-    console.log('Users in room:', room);
-    sockets.forEach((Socket) => {
-      console.log(Socket.data.id);
-    });
-    console.log(' ');
-  }
+
 
 }
 

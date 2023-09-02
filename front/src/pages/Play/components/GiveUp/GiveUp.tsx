@@ -8,9 +8,10 @@ interface GiveUpProps {
   whichPlayer: number;
   game: GameProperties;
   noGame: boolean;
+  gameStatus: string;
 }
 
-const GiveUp: React.FC<GiveUpProps> = ({ socket, whichPlayer, game, noGame }) => {
+const GiveUp: React.FC<GiveUpProps> = ({ socket, whichPlayer, game, noGame, gameStatus }) => {
   const [giveUp, setGiveUp] = useState(false);
 
   const handleQuitGame = () => {
@@ -26,7 +27,7 @@ const GiveUp: React.FC<GiveUpProps> = ({ socket, whichPlayer, game, noGame }) =>
   };
 
   return (
-    <>{!game.isEnded && !noGame &&
+    <>{!game.isEnded && !noGame && gameStatus !== 'giveUp' && gameStatus !== 'ended' && 
       <article className='give-up-main-container'>
         <button className="give-up-button-text" onClick={handleQuitGame} >
           {giveUp ? 'Confirm by clicking again' : 'Give up?'}

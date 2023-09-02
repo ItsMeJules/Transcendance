@@ -36,7 +36,6 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
   return (
     <article className='main-text-container'
       style={{ marginTop: `-${game.board.height / 2 - 20}px`, maxWidth: `${game.board.width - 100}px` }}>
-
       {/* Get ready button */}
       {(gameStatus === 'pending' || gameStatus === 'waiting') && !finalPlayerReady && whichPlayer !== 0 &&
         <button className="text-button-style" onClick={handleReadyClick}
