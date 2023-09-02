@@ -33,7 +33,8 @@ export default function AllUsers() {
         onUserClick={({ userData }) => setUserDataClicked(userData)}
       />
       {userDataClicked !== null
-        ? <UserActionPopup
+        ?
+        <UserActionPopup
           userData={userDataClicked}
           buttonClicked={0}
           channelInvite={true}
@@ -48,9 +49,7 @@ export const fetchAllUsers = async (): Promise<User[]> => {
     const response = await axios.get(API_ROUTES.GET_ALL_USERS, { withCredentials: true });
     const frontUsers = response.data.map((data: UserData) => {
       const frontUser = new User();
-
       frontUser.setUserFromResponseData(data);
-
       return frontUser;
     });
 

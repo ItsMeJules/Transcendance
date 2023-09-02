@@ -15,6 +15,7 @@ export interface UserData {
     userLevel: number | null;
     isOnline: boolean | null;
     currentRoom: string | null;
+    blockedUsers: number[];
 }
 
 class User {
@@ -33,6 +34,7 @@ class User {
     private userLevel: number | null = null;
     private isOnline: boolean | null = null;
     private currentRoom: string | null = null;
+    private blockedUsers: number[] = [];
 
     static getInstance() {
         if (!User.instance) {
@@ -55,6 +57,8 @@ class User {
         this.userPoints = data.userPoints;
         this.userLevel = data.userLevel;
         this.isOnline = data.isOnline;
+        this.currentRoom = data.currentRoom;
+        this.blockedUsers = data.blockedUsers;
     }
 
     getData(): UserData | null {
@@ -72,8 +76,9 @@ class User {
             userPoints: this.userPoints,
             userLevel: this.userLevel,
             isOnline: this.isOnline,
-            currentRoom: this.currentRoom
-        });
+            currentRoom: this.currentRoom,
+            blockedUsers: this.blockedUsers,
+  });
     }
 
     getId(): string {

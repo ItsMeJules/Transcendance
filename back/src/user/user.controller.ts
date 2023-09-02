@@ -42,7 +42,6 @@ export class UserController {
 
   @Get('current-chat')
   getCurrentChat(@GetUser() user: User): string {
-    console.log('user :', user);
     return user.currentRoom;
   }
 
@@ -53,7 +52,6 @@ export class UserController {
 
   @Get('complete-user')
   getCompleteUser(@GetUser() user: User): Promise<CompleteUser> {
-    console.log('user :', user);
     return this.prisma.returnCompleteUser(user.id);
   }
 

@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useWebsocketContext } from "../../Wrappers/Websocket";
 import { useAppDispatch, useAppSelector } from "../../redux/Store";
 import { activeChannelAddAdmin, activeChannelAddUser, activeChannelAddUserBanned, activeChannelRemoveAdmin, activeChannelRemoveUser, activeChannelRemoveUserBanned, setActiveChannel, setActiveChannelMessages } from "../../redux/reducers/ChannelSlice";
-import { setUserActiveChannel } from "../../redux/reducers/UserSlice";
+import { addUserBlocked, removeUserBlocked, setUserActiveChannel } from "../../redux/reducers/UserSlice";
 import ChatContainer from "./chat_container/ChatContainer";
 import ChatBar from "./chatbar/ChatBar";
 import ChatMetadata from "./metadata/ChatMetadata";
@@ -23,7 +23,7 @@ export const SendDataContext = createContext<
 >(null);
 
 interface SocketAcknowledgements {
-  actionType: RoomSocketActionType;
+  actionType: string;
   userId: number;
   message: string;
   type: string;
@@ -109,9 +109,15 @@ export const ChatBox = () => {
           dispatch(activeChannelRemoveUser(payload.userId))
           dispatch(activeChannelAddUserBanned(payload.userId))
           break;
-          case RoomSocketActionType.UNBAN:
+        case RoomSocketActionType.UNBAN:
           dispatch(activeChannelAddUser(payload.userId))
           dispatch(activeChannelRemoveUserBanned(payload.userId))
+          break;
+        case ChatSocketActionType.BLOCK:
+          dispatch(addUserBlocked(payload.userId))
+          break;
+        case ChatSocketActionType.UNBLOCK:
+          dispatch(removeUserBlocked(payload.userId))
           break;
         default:
           break;

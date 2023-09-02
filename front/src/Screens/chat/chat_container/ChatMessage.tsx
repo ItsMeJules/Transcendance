@@ -1,5 +1,7 @@
 import React from "react";
 
+import BlockedImg from "../assets/blocked.png"
+
 import { ChatMessageData } from "../models/ChatMessageData";
 
 interface ChatMessageProps {
@@ -19,9 +21,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ messagesReceived }) => {
 
         return (
           <div className="message-container">
-            {!isSameSender && !message.self ? <img src={message.profilePicture} /> : undefined}
+            {!isSameSender && !message.self ? <img src={message.blocked ? BlockedImg : message.profilePicture} /> : undefined}
             <div className={messageClassName} key={index}>
-              <p>{message.message}</p>
+              <p>{message.blocked ? "Utilisateur bloqué" : message.message}</p>
             </div>
           </div>
         );

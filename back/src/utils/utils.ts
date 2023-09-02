@@ -20,6 +20,8 @@ export enum RoomSocketActionType {
   INVITE = 'invite',
   USERS_ON_ROOM = `users-on-room`,
   USERS_BANNED = 'users-banned',
+  BLOCK = `block`,
+  UNBLOCK = `unblock`,
 }
 
 export const extractAccessTokenFromCookie = (client: Socket) => {

@@ -23,7 +23,7 @@ export class ChatService {
   constructor(
     private prismaService: PrismaService,
     private userSocketsService: UserSocketsService,
-  ) { }
+  ) {}
 
   sendError(client: Socket, error: Error): void {
     const payload: AcknowledgementPayload = {
@@ -112,6 +112,7 @@ export class ChatService {
       const user = await this.prismaService.user.findUnique({
         where: { id: client.data.id },
       });
+
       if (room.mutes.some((muted) => client.data.id === muted.id))
         throw new Error('You are muted'); //time
 
@@ -120,25 +121,27 @@ export class ChatService {
         authorId: client.data.id,
         clientId: client.id,
       };
+
       await this.prismaService.message.create({
         data: { ...messageData, roomId: room.id },
       });
 
-      const picturePayload = {
+      const pictureAndBlockedPayload = {
         text: sendMsgRoomDto.message,
         authorId: user.id,
         clientId: client.id,
         profilePicture: user.profilePicture, //TODO Change my picture.
         userName: user.username,
       };
+
       // implement the "block" feature.
       server
         .to(sendMsgRoomDto.roomName)
-        .emit(ChatSocketEventType.MESSAGE, picturePayload);
+        .emit(ChatSocketEventType.MESSAGE, pictureAndBlockedPayload);
 
       console.log(
         'message sent : ',
-        picturePayload,
+        pictureAndBlockedPayload,
         'to room : ',
         sendMsgRoomDto.roomName,
       );
@@ -286,32 +289,17 @@ export class ChatService {
       const messages = await this.prismaService.allMessagesFromRoom(
         fetchRoomDto.roomName,
       );
-      const usersBlocked = await this.prismaService.allBlockedUsersFromUser(
-        client.data.id,
-      );
 
       const messagesWithClientId = await Promise.all(
         messages.map(async (currentMessage) => {
-          const isAuthorBanned = usersBlocked.some(
-            (bannedUser) => bannedUser.id === currentMessage.authorId,
-          );
-
-          if (isAuthorBanned) {
-            return {
-              ...currentMessage,
-              userName: 'blocked user',
-              profilePicture:
-                'https://imgs.search.brave.com/JXYNRtuKQm3-Vmdw4PY0GaHw_53mRAViyqcOHZSCh_4/rs:fit:860:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy82/LzZmL0thcmFrdWwt/Y2FtZWxsb3MtZDAz/LmpwZw',
-              text: 'blocked user',
-            };
-          }
-          const isUserBanned = await this.prismaService.user.findUnique({
+          const userSender = await this.prismaService.user.findUnique({
             where: { id: currentMessage.authorId },
           });
+
           return {
             ...currentMessage,
-            profilePicture: isUserBanned.profilePicture,
-            userName: isUserBanned.username,
+            profilePicture: userSender.profilePicture,
+            userName: userSender.username,
           };
         }),
       );
@@ -536,7 +524,12 @@ export class ChatService {
           data: { blockedUsers: { disconnect: { id: targetUser.id } } },
         });
         const messageActor = `You unblocked ${targetUser.username} ! You can now see his messages`;
-        this.sendSuccess(client, messageActor);
+        this.sendSuccess(
+          client,
+          messageActor,
+          targetUser.id,
+          RoomSocketActionType.UNBLOCK,
+        );
         this.sendWarning(
           this.userSocketsService.getUserSocket(String(targetUser.id)),
           `You have been unblocked by ${actingUser.username}`,
@@ -550,8 +543,10 @@ export class ChatService {
         this.sendSuccess(
           client,
           'You blocked ' +
-          targetUser.username +
-          '! You cant see his messages now',
+            targetUser.username +
+            '! You cant see his messages now',
+          targetUser.id,
+          RoomSocketActionType.BLOCK,
         );
         this.sendWarning(
           this.userSocketsService.getUserSocket(String(targetUser.id)),
@@ -1107,10 +1102,10 @@ export class ChatService {
       this.sendSuccess(
         this.userSocketsService.getUserSocket(String(targetUser.id)),
         'You have been invited by ' +
-        actingUser.username +
-        ' to "' +
-        room.name +
-        '"',
+          actingUser.username +
+          ' to "' +
+          room.name +
+          '"',
       );
       console.log('5');
     } catch (error) {

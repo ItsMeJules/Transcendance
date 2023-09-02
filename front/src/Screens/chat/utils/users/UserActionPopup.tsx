@@ -12,14 +12,13 @@ interface UserActionProps {
   channelInvite: boolean;
   isMuted?: boolean;
   isAdmin?: boolean;
-  isBlocked?: boolean;
 }
 
-export default function UserActionPopup({ userData, buttonClicked, channelInvite, isMuted = false, isAdmin = false, isBlocked = false }: UserActionProps) {
-  const { id: currentIdUser } = useAppSelector((store) => store.user.userData);
-
+export default function UserActionPopup({ userData, buttonClicked, channelInvite, isMuted = false, isAdmin = false }: UserActionProps) {
+  const { id: currentIdUser, blockedUsers } = useAppSelector((store) => store.user.userData);
   const sendData: null | ((action: string, data: PayloadAction) => void) =
     useContext(SendDataContext);
+  const isBlocked = blockedUsers.some(id => userData.id === null ? false : id === parseInt(userData.id))
 
   const onBan = () => {
     if (sendData === null) return;
@@ -101,7 +100,7 @@ export default function UserActionPopup({ userData, buttonClicked, channelInvite
     <Popup className="user-actions">
       <h4>{userData.username}</h4>
       {buttonClicked === 1
-      ?
+        ?
         <>
           <div className="ban" onClick={onBan}>Bannir</div>
           <div className="kick" onClick={onKick}>Expulser</div>
@@ -112,22 +111,22 @@ export default function UserActionPopup({ userData, buttonClicked, channelInvite
             {isAdmin ? "Supprimer des administrateurs" : "Définir administrateur"}
           </div>
         </>
-      : buttonClicked === 0
-        ?
+        : buttonClicked === 0
+          ?
           <>
             <div className="dm" onClick={onDm}>Envoyer un message privé</div>
             <div className="invite-to-play" onClick={onInviteToPlay}>Inviter à jouer</div>
             {channelInvite
-            ?
+              ?
               <div className="invite-to-channel" onClick={onInviteChannel}>
                 Inviter dans le channel
               </div>
-            : undefined}
+              : undefined}
             <div className={isBlocked === true ? "unblock-user" : "block-user"} onClick={onBlock}>
               {isBlocked === true ? "Débloquer" : "Bloquer"}
             </div>
-            </>
-      : undefined
+          </>
+          : undefined
       }
 
     </Popup>
