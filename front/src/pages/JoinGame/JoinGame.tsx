@@ -43,6 +43,10 @@ const JoinGame = () => {
     socket.game?.on('joinGameQueue', (data: any) => {
       setSocketData(data);
     });
+
+    return () => {
+      socket.game?.off('joinGameQueue');
+    };
   }, [socket.game]);
 
 

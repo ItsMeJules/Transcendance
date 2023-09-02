@@ -115,14 +115,16 @@ const Play = () => {
       setGame({ ...game, status: gameStatePlay?.gameStatus });
     }
     if (gameStatePlay?.gameStatus === 'giveUp') {
-      game.isPlaying = false;
+      console.log('1 P GIVEUP whichPlayer:', whichPlayer);
       if ((gameStatePlay.gameParams.pl1.status === 'givenUp' && whichPlayer === 2)
         || (gameStatePlay.gameParams.pl2.status === 'givenUp' && whichPlayer === 1)) {
+        console.log('1 OP GAVE UP OK');
         setCentralText('Your opponent gave up!');
-        setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
+        setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false, status: 'giveUp' });
       } else {
+        console.log('1 YOU GAVE UP OK');
         setCentralText('You gave up :(');
-        setGame({ ...game, isEnded: true });
+        setGame({ ...game, isEnded: true, isPlaying: false, status: 'giveUp'  });
       }
     }
     else if (gameStatePlay?.gameStatus === 'ended') {
@@ -147,19 +149,22 @@ const Play = () => {
     // console.log('Prepare:', gameStatePrepare);
     if (gameStatePlay?.gameStatus === 'ended'
       || gameStatePlay?.gameStatus === 'giveUp') return;
-
     if (game.status === 'noGame')
       console.log('thhhhhhhhhhhhhhhhhhhhhhhhhis')
     if (gameStatePrepare?.gameStatus) setGame({ ...game, status: gameStatePrepare?.gameStatus });
     if (gameStatePrepare?.gameStatus === 'pending'
+      || (gameStatePrepare?.gameStatus === 'waiting' && gameStatePrepare.playerStatus === 'pending')
       || (gameStatePrepare?.playerStatus === 'pending' && gameStatePrepare.gameStatus !== 'timeout')) {
+      console.log('1 P READY');
       setCentralText('Ready?');
     } else if (gameStatePrepare?.gameStatus === 'waiting'
       && gameStatePrepare.playerStatus === 'ready'
       && gameStatePrepare.opponentStatus === 'pending') {
+      console.log('1 P WAITING');
       setIsPlayerReady(true);
       setCentralText('Waiting for opponent');
     } else if (gameStatePrepare?.gameStatus === 'countdown') {
+      console.log('1 P COUNTDOWN');
       setIsOpponentReady(true);
       setIsPlayerReady(true);
       if (gameStatePrepare.countdown) {
@@ -167,13 +172,14 @@ const Play = () => {
       } else
         setCentralText('Get ready!');
     } else if (gameStatePrepare?.gameStatus === 'timeout') {
+      console.log('1 P TIMEOUT');
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
         console.log('thhhhhhhhhhhhhhhhhhhhhhhhhaaaaaaaaaaaaaaaaaaaats')
         history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
       }, 3 * 1000);
     } else if (gameStatePrepare?.gameStatus === 'playing') {
-      game.isPlaying = true;
+      console.log('1 P ELSE');
       if (socket.game) socket.game.off('prepareToPlay');
       setGame({ ...game, isPlaying: true });
     }
@@ -182,7 +188,6 @@ const Play = () => {
   // Window resizing
   useEffect(() => {
     const handleResize = () => {
-      console.log('resize game status:', game.status);
       // Adapter la largeur ici a celle de lecran total vs le conteneur
       const newWidth = window.innerWidth * 0.4;
       const factor = game.board.updateDimensions(newWidth);
@@ -206,7 +211,7 @@ const Play = () => {
 
       <AllCanvas game={game} socket={socket.game} whichPlayer={whichPlayer} centralText={centralText}
         isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
-      
+
       <GiveUp socket={socket.game} whichPlayer={whichPlayer} game={game} noGame={noGame} />
 
       <NoGame noGame={noGame} />

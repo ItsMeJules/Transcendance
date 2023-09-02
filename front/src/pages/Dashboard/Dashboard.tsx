@@ -22,15 +22,16 @@ const Dashboard = () => {
   }, [rightContent]);
 
   return (
-    <main className="dashboard-main-container">
+    <Websocket>
+      <main className="dashboard-main-container">
 
 
-      <ProfileHeader />
+        <ProfileHeader />
 
-      <article className="screen-container">
-        <Websocket>
+        <article className="screen-container">
+          {/* <Websocket> */}
           {/* <div style={{display:'flex'}}> */}
-            <div className="left-screen-container">
+          <div className="left-screen-container">
             <Routes>
               <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
               <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
@@ -39,22 +40,23 @@ const Dashboard = () => {
               <Route path={APP_ROUTES.PLAY} element={<Play />} />
               <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
             </Routes>
-            </div>
-            </Websocket>
+          </div>
+          {/* </Websocket> */}
 
-        <Websocket key={rightContent}>
-            <div className="right-screen-container">
-              <RightScreen rightContent={rightContent} />
-            </div>
+          {/* <Websocket key={rightContent}> */}
+          <div className="right-screen-container">
+            <RightScreen rightContent={rightContent} />
+          </div>
           {/* </div> */}
-        </Websocket>
+          {/* </Websocket> */}
 
-      </article>
+        </article>
 
-      <NavFooter setRightContent={setRightContent} />
+        <NavFooter setRightContent={setRightContent} />
 
 
-    </main>
+      </main>
+    </Websocket>
   );
 };
 

@@ -10,6 +10,7 @@ interface OnlineGameInstanceProps {
 
 const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
   const [gameData, setGameData] = useState<any | null>(null);
+  const [inGame, setInGame] = useState(false);
   const socket = useWebsocketContext();
   const history = useNavigate();
 
@@ -17,14 +18,32 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
 
   useEffect(() => {
     socket.game?.on('watchGame', (data: any) => {
-      setGameData(data)
+      setGameData(data);
     });
+    socket.game?.on('inGame', (data: any) => {
+      setInGame(true);
+      console.log('in game:', data);
+    });
+    return () => {
+      socket.game?.off('watchGame');
+      socket.game?.off('inGame');
+    };
   }, [socket.game]);
+
+  useEffect(() => {
+    console.log('2 inGame:', inGame);
+    if (inGame) {
+      console.log('IN GAME OKKKKKK');
+      history(APP_ROUTES.PLAY_ABSOLUTE);
+      return;
+    }
+  }, [inGame]);
 
   useEffect(() => {
     if (gameData) {
       const dataString = JSON.stringify(gameData);
       const dataJSON = JSON.parse(dataString);
+      console.log('WATCH GAME received:', dataJSON);
       if (dataJSON.status === "OK") {
         localStorage.setItem('gameDataWatch', JSON.stringify(dataJSON.gameState));
         localStorage.setItem('player1Watch', JSON.stringify(dataJSON.player1));

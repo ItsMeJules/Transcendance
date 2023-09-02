@@ -12,7 +12,6 @@ const OnlineGameInstance: React.FC<OnlineGameInstanceProps> = ({ game }) => {
   const socket = useWebsocketContext();
 
   const handleWatchGame = (gameId: string) => {
-    console.log('HANDLE WATCH:', gameId);
     socket.game?.emit('watchGame', { gameId: gameId });
   }
 
