@@ -15,6 +15,8 @@ import { GameStruct } from './game.class';
 import { Player } from './models/player.model';
 import { User } from '@prisma/client';
 import { PongStoreService } from 'src/utils/pong-store/pong-store.service';
+import { disconnect } from 'process';
+import { gameEvents } from './game.class';
 
 export type SpectatorMap = Map<number, number>; // <userId, gameId
 export type PlayersMap = Map<number, number>; // <userId, gameId
@@ -25,12 +27,25 @@ export class PongEvents {
   server: Server;
   public idToSocketMap = new Map<number, Socket>();
   public spectatorsMap = new Map<number, number>;
-  public playersMap = new Map<number, number>;
+  public playersMap = new Map<number, number>; // <userId, GameId>
 
   constructor(
     public pongService: PongService,
     private authService: AuthService,
-    private userService: UserService) { }
+    private userService: UserService) {
+    /* Remove players from players map */
+    gameEvents.on('gatewayRemovePlayersFromList', (data) => {
+      this.eventRemovePlayersFromList(data);
+    });
+    /* Update room */
+    gameEvents.on('gatewayUpdateRoom', (data) => {
+      this.sendUpdateToRoom(data);
+    });
+    /* Update online games */
+    gameEvents.on('gatewayUpdateOnlineGames', (data) => {
+      this.updateEmitOnlineGames('toRoom', 0);
+    });
+  }
 
   async handleConnection(client: Socket) {
     const access_token = extractAccessTokenFromCookie(client);
@@ -39,12 +54,15 @@ export class PongEvents {
       return;
     }
     const user = await this.authService.validateJwtToken(access_token);
+    console.log(' ');
+    console.log(' ');
+    console.log('1 IN id:', user.id);
     if (!user) {
       client.disconnect();
       return;
     }
     const gameId = this.playersMap.get(user.id);
-    client.data = { id: user.id, username: user.username, gameId: gameId };
+    client.data = { id: user.id, username: user.username };
     this.idToSocketMap.set(user.id, client);
     client.join(`user_${user.id}`);
     client.join('game_online');
@@ -70,9 +88,6 @@ export class PongEvents {
   async joinQueue(
     @ConnectedSocket() client: Socket,
     @MessageBody() gameDto: GameDto) {
-
-    console.log('Matchmaking - gameMode:', gameDto);
-
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) {
       client.disconnect();
@@ -80,17 +95,28 @@ export class PongEvents {
     }
     const user = await this.authService.validateJwtToken(access_token);
     if (!user) return;
+    console.log(' ');
+    console.log(' ');
+    console.log('2 JOINE GAME QUEUE id:', user.id);
+
+    const gameId = this.playersMap.get(user.id);
+    if (gameId !== undefined) {
+      console.log('2 RETURN game existing id:', gameId)
+      this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'INGAME', gameMode: 0 });
+      return;
+    }
+    if (gameDto.gameMode === 'query') return;
     const gameQueue = this.pongService.addToQueue(user, gameDto);
-    // console.log('queue:', this.pongService.userQueue);
+    console.log('2 Queue:', this.pongService.userQueue);
     if (gameQueue != null) {
-      // console.log('Here 1');
+      console.log('2 EMIT JOINED to user:', user.id);
       this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED', gameMode: gameDto.gameMode });
       const gameData = await this.pongService.gameCreate(gameDto, this.server); // not await?
       if (!gameData) return;
-      // console.log('Here 2');
+      console.log('2 GAME CREATED');
       let gameMode = parseInt(gameDto.gameMode);
       const game = new GameStruct(gameMode, gameData.gameId, gameData.player1Id,
-        gameData.player2Id, gameData.gameChannel, this, this.pongService);
+        gameData.player2Id, gameData.gameChannel);
       this.pongService.onlineGames.set(game.prop.id, game);
       const player1 = await this.userService.findOneById(game.pl1.id);
       const player2 = await this.userService.findOneById(game.pl2.id);
@@ -102,37 +128,19 @@ export class PongEvents {
       }
       player1socket.join(`game_${game.prop.id}`);
       player2socket.join(`game_${game.prop.id}`);
+      this.playersMap.delete(player1.id);
+      this.playersMap.delete(player2.id);
       this.playersMap.set(player1.id, game.prop.id);
       this.playersMap.set(player2.id, game.prop.id);
       const data = { status: 'START', gameChannel: game.prop.room, game: gameData, player1: player1, player2: player2 };
-      this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
-      this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
+      console.log('2 EMIT GAME START in joinGameQueue TO:');
+      this.printUsersInRoom(`game_${game.prop.id}`);
+      this.server.to(`game_${game.prop.id}`).emit(`joinGameQueue`, data);
+      // this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
+      // this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
       this.updateEmitOnlineGames('toRoom', 0);
       // this.allUsersUpdater();
-      console.log('GAME AT CREATION pl1s:', game.pl1.score, 'pl2s:', game.pl2.score);
     }
-  }
-
-  async updateEmitOnlineGames(type: string, userId: number) {
-    const dataMap = new Map<number, { player1: User, player1Score: number, player2: User, player2Score: number }>();
-    for (const [key, value] of this.pongService.onlineGames.entries()) {
-      value.prop.id
-      let player1 = await this.userService.findOneById(value.pl1.id);
-      let player1Score = value.pl1.score;
-      let player2 = await this.userService.findOneById(value.pl2.id);
-      let player2Score = value.pl2.score;
-      let players = { player1, player1Score, player2, player2Score };
-      dataMap.set(key, players);
-    };
-    const dataObject = {};
-    dataMap.forEach((value, key) => {
-      dataObject[key] = value;
-    });
-    if (type === 'toUser')
-      this.server.to(`user_${userId}`).emit('onlineGames', dataObject);
-    else if (type === 'toRoom')
-      this.server.to('onlineGames').emit('onlineGames', dataObject);
-    // console.log('online games data Map:', dataObject);
   }
 
   @SubscribeMessage('onlineGames')
@@ -178,7 +186,7 @@ export class PongEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { player: string, action: string }) {
 
-    console.log('prepare client data:', data);
+
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) {
       client.disconnect();
@@ -189,13 +197,16 @@ export class PongEvents {
       client.disconnect();
       return;
     }
-    // Check if user is in game or not otherwise emit nogame:
+    console.log(' ');
+    console.log(' ');
+    console.log('3 PREPARE TO PLAY id:', user.id);
     const gameId = this.playersMap.get(user.id);
     const gameStruct = this.pongService.getGameStructById(gameId);
-    // console.log('game status:', gameStruct.prop.status);
     if (!gameId || !gameStruct) {
+      if (gameId && !gameStruct)
+        this.playersMapDeleteGameById(gameId);
+      console.log('3 NO GAME');
       this.server.to(`user_${user.id}`).emit('noGame', { status: 'noGame' });
-      client.disconnect();
       return;
     }
     let player: Player;
@@ -209,21 +220,18 @@ export class PongEvents {
       opponent = gameStruct.pl1;
     } else
       return;
-    // const sockets = await this.server.in(gameStruct.prop.room).fetchSockets();
-    // sockets.forEach((Socket) => {
-    //   console.log('IN room user:', Socket.data);
-    // });
     // Status
     if (data.action === 'status') {
-      console.log('status');
-      gameStruct.sendUpdateToPlayer(player, opponent.status, gameStruct.prop.countdown, 'prepareToPlay');
+      console.log('3 ACTION STATUS');
+      this.sendUpdateToPlayer(gameStruct, player, opponent.status, gameStruct.prop.countdown, 'prepareToPlay');
       return;
     }
     // Wait for opponent
     else if (data.action === 'playPressed' && opponent.status === 'pending') {
+      console.log('3 WAIT FOR OPPONENT');
       player.status = 'ready';
       gameStruct.prop.status = 'waiting';
-      gameStruct.sendUpdateToPlayer(player, opponent.status, -1, 'prepareToPlay');
+      this.sendUpdateToPlayer(gameStruct, player, opponent.status, -1, 'prepareToPlay');
       const timeoutInSeconds = 10;
       setTimeout(() => {
         if (opponent.status === 'pending'
@@ -237,20 +245,18 @@ export class PongEvents {
     }
     // Both ready launch game
     else if (data.action === 'playPressed' && opponent.status === 'ready') {
-      console.log('GAME AT before ctd pl1s:', gameStruct.pl1.score, 'pl2s:', gameStruct.pl2.score);
+      console.log('3 BOTH READY GO');
       player.status = 'ready';
       gameStruct.sendUpdateToRoom(player.status, opponent.status, gameStruct.prop.countdown, 'prepareToPlay');
-      console.log('1 pl1s:', gameStruct.pl1.score, 'pl2s:', gameStruct.pl2.score);
       await this.launchCountdown(gameStruct);
-      console.log('2 pl1s:', gameStruct.pl1.score, 'pl2s:', gameStruct.pl2.score);
       if (gameStruct.prop.status === 'giveUp') return;
       gameStruct.prop.status = 'playing';
       gameStruct.prop.tStart = Date.now();
+      console.log('3 EMIT TO prepareToPlay and refreshGame TO:');
+      this.printUsersInRoom(gameStruct.prop.room);
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'refreshGame');
-      console.log('3 pl1s:', gameStruct.pl1.score, 'pl2s:', gameStruct.pl2.score);
       await gameStruct.startGameLoop(); // remove await?
-      console.log('GAME AT start pl1s:', gameStruct.pl1.score, 'pl2s:', gameStruct.pl2.score);
     }
   }
 
@@ -271,36 +277,50 @@ export class PongEvents {
   @SubscribeMessage('watchGame')
   async watchGame(@ConnectedSocket() client: Socket,
     @MessageBody() data: { gameId: string }) {
-    // console.log('1 watch spectator:', this.spectatorsMap);
-    // console.log('Client entering dataspectator:', client.data);
     const access_token = extractAccessTokenFromCookie(client);
     if ((!client.data.id || !access_token)) {
-      console.log('NO GAME 2');
       this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
       client.disconnect();
       return;
     }
-    const clientId = parseInt(client.data.id);
+    const user = await this.authService.validateJwtToken(access_token);
+    console.log('5 WATCH WITH ID:', user.id, ' AND GAMEID:', data.gameId);
     const gameId = parseInt(data.gameId);
+    console.log('5 WATCH GAME ID:', gameId)
     const game = gameId === -1 ?
-      this.pongService.getGameStructById(parseInt(client.data.watchGame)) :
+      this.pongService.getGameStructById(this.spectatorsMap.get(user.id)) :
       this.pongService.getGameStructById(gameId);
+    const isUserInGame = this.playersMap.get(user.id);
+    this.pongService.onlineGames.forEach((value, key) => {
+      console.log('online games id:', key);
+    });
+    // console.log('5 pongservice online games:', this.pongService.onlineGames);
+    // No game
     if (!game) {
-      console.log('this one!!!!!!');
+      console.log('5 WATCH NO GAME');
       this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
       return;
     }
-    const clientSocket = this.idToSocketMap.get(client.data.id);
+    // User is in game redirect to play
+    else if (isUserInGame !== undefined) {
+      console.log('5 WATCH IN GAME');
+      this.server.to(`user_${client.data.id}`).emit('inGame', { status: 'inGame' });
+      return;
+    }
+    const clientSocket = this.idToSocketMap.get(user.id);
     if (!clientSocket) return  // error handling?
     const player1 = await this.userService.findOneById(game.pl1.id);
     const player2 = await this.userService.findOneById(game.pl2.id);
-    this.spectatorsMap.set(clientId, gameId);
-    client.data.watchGame = gameId;
+    this.spectatorsMap.set(user.id, gameId);
     clientSocket.join(`game_${game.prop.id}`);
-
     const dataToSend = { status: 'OK', gameState: game.getState(), player1: player1, player2: player2 }
     this.server.to(`user_${client.data.id}`).emit('watchGame', dataToSend);
-    // console.log('2 watch spectator:', this.spectatorsMap);
+    console.log('ok here emit watch game');
+    console.log('2 watch spectator:', this.spectatorsMap);
+    const sockets = await this.server.in(`game_${game.prop.id}`).fetchSockets();
+    sockets.forEach((Socket) => {
+      console.log('IN room user:', Socket.data);
+    });
   }
 
   @SubscribeMessage('giveUp')
@@ -314,11 +334,13 @@ export class PongEvents {
     if (data.action !== 'giveUp') return;
     const user = await this.authService.validateJwtToken(access_token);
     const gameId = this.playersMap.get(user.id);
+    console.log(' ');
+    console.log(' ');
+    console.log('4 GIVE UP id:', user.id);
     const gameStruct = this.pongService.getGameStructById(gameId);
     if (!gameId || !gameStruct) {
-      console.log('GIVE UP emit no game');
+      console.log('4 NO GAME');
       this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
-      client.disconnect();
       return;
     }
     let player: Player;
@@ -333,13 +355,15 @@ export class PongEvents {
     } else
       return;
     if (gameStruct.prop.status !== 'ended') {
-      console.log('HEREEEEEEEEEEEEEEEEEEEEE give up');
       gameStruct.stopGameLoop();
       gameStruct.prop.status = 'giveUp';
       player.status = 'givenUp';
       await this.pongService.giveUpGame(gameStruct, opponent, player, true);
       this.playersMap.delete(player.id);
       this.playersMap.delete(opponent.id);
+      console.log('4 EMIT TO ROOM:', gameStruct.prop.room);
+      console.log('4 WITH USERS IN ROOM:');
+      this.printUsersInRoom(gameStruct.prop.room);
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'refreshGame');
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
       this.updateEmitOnlineGames('toRoom', 0);
@@ -350,16 +374,9 @@ export class PongEvents {
   @SubscribeMessage('moveUp')
   async moveUp(@ConnectedSocket() client: Socket) {
     if (!client.data.id) return;
-    const userId = parseInt(client.data.id);
-    const dataGameId = parseInt(client.data.gameId);
-    const gameId = this.playersMap.get(userId);
-    if (gameId !== dataGameId) return;
-    const game = this.pongService.getGameStructById(client.data.gameId);
-    if (game === undefined || game === null) {
-      this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
-      client.disconnect();
-      return;
-    }
+    const gameId = this.playersMap.get(client.data.id);
+    const game = this.pongService.getGameStructById(gameId);
+    if (game === undefined || game === null) return;
     if (game.prop.status === 'playing') {
       let player: Player;
       if (client.data.id === game.pl1.id) player = game.pl1;
@@ -373,16 +390,9 @@ export class PongEvents {
   @SubscribeMessage('unpressUp')
   async stopMoveUp(@ConnectedSocket() client: Socket) {
     if (!client.data.id) return;
-    const userId = parseInt(client.data.id);
-    const dataGameId = parseInt(client.data.gameId);
-    const gameId = this.playersMap.get(userId);
-    if (gameId !== dataGameId) return;
-    const game = this.pongService.getGameStructById(client.data.gameId);
-    if (game === undefined || game === null) {
-      this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
-      client.disconnect();
-      return;
-    }
+    const gameId = this.playersMap.get(client.data.id);
+    const game = this.pongService.getGameStructById(gameId);
+    if (game === undefined || game === null) return;
     if (game.prop.status === 'playing') {
       let player: Player;
       if (client.data.id === game.pl1.id) player = game.pl1;
@@ -398,16 +408,9 @@ export class PongEvents {
   @SubscribeMessage('moveDown')
   async moveDown(@ConnectedSocket() client: Socket) {
     if (!client.data.id) return;
-    const userId = parseInt(client.data.id);
-    const dataGameId = parseInt(client.data.gameId);
-    const gameId = this.playersMap.get(userId);
-    if (gameId !== dataGameId) return;
-    const game = this.pongService.getGameStructById(client.data.gameId);
-    if (game === undefined || game === null) {
-      this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
-      client.disconnect();
-      return;
-    }
+    const gameId = this.playersMap.get(client.data.id);
+    const game = this.pongService.getGameStructById(gameId);
+    if (game === undefined || game === null) return;
     if (game.prop.status === 'playing') {
       let player: Player;
       if (client.data.id === game.pl1.id) player = game.pl1;
@@ -421,16 +424,9 @@ export class PongEvents {
   @SubscribeMessage('unpressDown')
   async stopMoveDown(@ConnectedSocket() client: Socket) {
     if (!client.data.id) return;
-    const userId = parseInt(client.data.id);
-    const dataGameId = parseInt(client.data.gameId);
-    const gameId = this.playersMap.get(userId);
-    if (gameId !== dataGameId) return;
-    const game = this.pongService.getGameStructById(client.data.gameId);
-    if (game === undefined || game === null) {
-      this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
-      client.disconnect();
-      return;
-    }
+    const gameId = this.playersMap.get(client.data.id);
+    const game = this.pongService.getGameStructById(gameId);
+    if (game === undefined || game === null) return;
     if (game.prop.status === 'playing') {
       let player: Player;
       if (client.data.id === game.pl1.id) player = game.pl1;
@@ -442,12 +438,82 @@ export class PongEvents {
       return;
     }
   }
- 
-  verifyIfPlayer(room) {
-    if (room === undefined)
-      return false;
-    return true;
+
+  /* Refresh front functions */
+  sendUpdateToPlayer(game: GameStruct, player: Player, opponentStatus: string, countdown: number, channel: string) {
+    let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
+    this.server.to(`user_${player.id}`).emit(channel,
+      {
+        gameStatus: game.prop.status,
+        gameParams: game.getState(),
+        playerStatus: player.status,
+        opponentStatus: opponentStatus,
+        time: Date.now(),
+        countdown: countdownStr,
+      });
   }
+
+  async updateEmitOnlineGames(type: string, userId: number) {
+    const dataMap = new Map<number, { player1: User, player1Score: number, player2: User, player2Score: number }>();
+    for (const [key, value] of this.pongService.onlineGames.entries()) {
+      value.prop.id
+      let player1 = await this.userService.findOneById(value.pl1.id);
+      let player1Score = value.pl1.score;
+      let player2 = await this.userService.findOneById(value.pl2.id);
+      let player2Score = value.pl2.score;
+      let players = { player1, player1Score, player2, player2Score };
+      dataMap.set(key, players);
+    };
+    const dataObject = {};
+    dataMap.forEach((value, key) => {
+      dataObject[key] = value;
+    });
+    if (type === 'toUser')
+      this.server.to(`user_${userId}`).emit('onlineGames', dataObject);
+    else if (type === 'toRoom')
+      this.server.to('onlineGames').emit('onlineGames', dataObject);
+  }
+
+  /* Events functions */
+  eventRemovePlayersFromList(data: any) {
+    if (data.pl1Id && data.pl2Id) {
+      const pl1Id = parseInt(data.pl1Id);
+      const pl2Id = parseInt(data.pl2Id);
+      this.playersMap.delete(pl1Id);
+      this.playersMap.delete(pl2Id);
+    }
+  }
+
+  sendUpdateToRoom(data: any) {
+    this.server.to(data.room).emit(data.channel,
+      {
+        gameStatus: data.gameStatus,
+        gameParams: data.gameParams,
+        playerStatus: data.playerStatus,
+        opponentStatus: data.opponentStatus,
+        time: Date.now(),
+        countdown: data.countdown,
+      });
+  }
+
+  /* Utils */
+  playersMapDeleteGameById(gameIdToDelete: number) {
+    for (const [userId, gameId] of this.playersMap.entries()) {
+      if (gameId === gameIdToDelete) {
+        this.playersMap.delete(userId);
+      }
+    }
+  }
+
+  async printUsersInRoom(room: string) {
+    const sockets = await this.server.in(room).fetchSockets();
+    console.log('Users in room:', room);
+    sockets.forEach((Socket) => {
+      console.log(Socket.data.id);
+    });
+    console.log(' ');
+  }
+
 
   // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
   // async allUsersHandler(
@@ -478,25 +544,37 @@ export class PongEvents {
   //   this.server.to(`user_${userId}`).emit('allUsers', allUsers);
   // }
 
-  // Update all users
-  // async allUsersUpdater() {
-  //   console.log('OK inside alluserupdater!!!!!!!!!!');
+
+  // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
+  // async allUsersHandler(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody() data: { action: string }) {
+  //   console.log('All users and status:', data.action);
+
+  //   if (!client.data.id) {
+  //     client.disconnect();
+  //     return;
+  //   }
+  //   const userId = parseInt(client.data.id);
   //   // protect and manage errors
   //   const allUsers = await this.pongService.prismaService.user.findMany({
   //     orderBy: {
   //       username: 'asc',
   //     }
   //   });
+  //   console.log('playersMap:', this.playersMap);
   //   allUsers.forEach((user) => {
   //     delete user.hash;
   //     const isPlaying = this.playersMap.get(user.id);
   //     user.isPlaying = isPlaying !== undefined ? true : false;
-  //     const isOnline = isPlaying ? true : this.idToSocketMap.get(user.id);
+  //     const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
   //     user.isOnline = isOnline !== undefined ? true : false;
   //   });
   //   console.log('all users list:', allUsers);
-  //   this.server.to('game_online').emit('allUsers', allUsers);
+  //   this.server.to(`user_${userId}`).emit('allUsers', allUsers);
   // }
+
+
 
 }
 

@@ -15,6 +15,7 @@ const BoardCanvas: React.FC<BoardCanvasProps> = ({ game, canvasRef }) => {
     let resizeTimeout: NodeJS.Timeout | null = null;
 
     const handleResize = () => {
+      console.log('BOARD game status:', game.status);
       if (resizeTimeout) {
         clearTimeout(resizeTimeout);
       }

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { GameProperties } from '../../models/Properties';
+import { APP_ROUTES } from 'utils/routing/routing';
+import { Link } from 'react-router-dom';
 
 interface MainTextProps {
   textToDisplay: string;
@@ -34,12 +36,13 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
   return (
     <article className='main-text-container'
       style={{ marginTop: `-${game.board.height / 2 - 20}px`, maxWidth: `${game.board.width - 100}px` }}>
-
-      {gameStatus === 'pending' && !finalPlayerReady && whichPlayer !== 0 &&
+      {/* Get ready button */}
+      {(gameStatus === 'pending' || gameStatus === 'waiting') && !finalPlayerReady && whichPlayer !== 0 &&
         <button className="text-button-style" onClick={handleReadyClick}
           style={{ maxWidth: `${game.board.width - 100}px` }}>
           {textToDisplay}
         </button>}
+      {/* Display text */}
       {((!gameIsPlaying && finalPlayerReady && whichPlayer !== 0) || gameStatus === 'giveUp'
         || gameStatus === 'timeout') &&
         <section className="text-container-style">
@@ -47,7 +50,7 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
         </section>}
 
       {/* Spectators messages */}
-      {( gameStatus != 'playing' && whichPlayer === 0) &&
+      {(gameStatus != 'playing' && whichPlayer === 0) &&
         <section className="text-container-style">
           {textToDisplay}
         </section>}

@@ -17,10 +17,9 @@ import GiveUp from "./components/GiveUp/GiveUp";
 import ScoreBoard from "./components/ScoreBoard/ScoreBoard";
 import './css/Play.scss'
 import { APP_ROUTES } from "utils/routing/routing";
-
-interface PlayBackProps {
-  whichPlayer: number,
-}
+import ProfilesHeader from "./components/PlayersProfile/ProfilesHeader";
+import AllCanvas from "./components/Canvas/AllCanvas";
+import NoGame from "./components/NoGame/NoGame";
 
 interface GameParams {
   pl1: Player;
@@ -42,10 +41,6 @@ interface noGame {
 }
 
 const Play = () => {
-  const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
-  const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
-  const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
-  const paddle2CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const socket = useWebsocketContext();
   const [whichPlayer, setWhichPlayer] = useState(0);
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
@@ -57,15 +52,17 @@ const Play = () => {
   const [gameStatePrepare, setGameStatePrepare] = useState<GameSocket>();
   const [gameStatePlay, setGameStatePlay] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
-  const [gameStatus, setGameStatus] = useState('');
+  const [gameIsEnded, setGameIsEnded] = useState(false);
+  const [noGame, setNoGame] = useState(false);
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
   const [centralText, setCentralText] = useState('');
   const history = useNavigate();
 
-  useEffect(() => {
-    socket.game?.connect();
-  }, []);
+  const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
+  const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
+  const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
+  const paddle2CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
 
   // Data parsing
   useEffect(() => {
@@ -87,15 +84,18 @@ const Play = () => {
   // Sockets on
   useEffect(() => {
     socket.game?.on('prepareToPlay', (data: GameSocket) => {
+      console.log('prepare:', data);
       setGameStatePrepare(data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
+      console.log('Play:', data);
       setGameStatePlay(data);
     });
     socket.game?.on('noGame', (data: noGame) => {
       if (data.status === 'noGame') {
-        setGameStatus('noGame');
-        console.log('NO GAME HITTTED');
+        console.log('NoGame on');
+        setNoGame(true);
+        setGame({ ...game, status: 'noGame' })
       }
     });
     socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'status' });
@@ -111,30 +111,34 @@ const Play = () => {
   useEffect(() => {
     // console.log('Play:', gameStatePlay);
     if (gameStatePlay?.gameStatus) {
-      setGameStatus(gameStatePlay?.gameStatus);
       game.pl1.score = gameStatePlay.gameParams.pl1.score === -1 ? 0 : gameStatePlay.gameParams.pl1.score;
       game.pl2.score = gameStatePlay.gameParams.pl2.score === -1 ? 0 : gameStatePlay.gameParams.pl2.score;
-      setGame({ ...game });
+      setGame({ ...game, status: gameStatePlay?.gameStatus });
     }
     if (gameStatePlay?.gameStatus === 'giveUp') {
-      game.isPlaying = false;
+      console.log('1 P GIVEUP whichPlayer:', whichPlayer);
       if ((gameStatePlay.gameParams.pl1.status === 'givenUp' && whichPlayer === 2)
         || (gameStatePlay.gameParams.pl2.status === 'givenUp' && whichPlayer === 1)) {
+        console.log('1 OP GAVE UP OK');
         setCentralText('Your opponent gave up!');
-        setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
+        setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false, status: 'giveUp' });
       } else {
+        console.log('1 YOU GAVE UP OK');
         setCentralText('You gave up :(');
-        setGame({ ...game, isEnded: true });
+        setGame({ ...game, isEnded: true, isPlaying: false, status: 'giveUp' });
       }
     }
     else if (gameStatePlay?.gameStatus === 'ended') {
+      setIsPlayerReady(true);
       if ((gameStatePlay.gameParams.pl1.isWinner === true && whichPlayer === 1)
         || (gameStatePlay.gameParams.pl2.isWinner === true && whichPlayer === 2)) {
+        console.log('Here ended 1');
         setCentralText('You win!!');
         setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
       } else {
+        console.log('Here ended 2');
         setCentralText('You lose...');
-        setGame({ ...game, isEnded: true, isPlaying: false });
+        setGame({ ...game, isEnded: true, isPlaying: false, isUserWinner: false });
       }
     }
     else if (gameStatePlay) {
@@ -148,23 +152,23 @@ const Play = () => {
   useEffect(() => {
     // console.log('Prepare:', gameStatePrepare);
     if (gameStatePlay?.gameStatus === 'ended'
-    || gameStatePlay?.gameStatus === 'giveUp') return;
-    
-    if (gameStatus === 'noGame') {
+      || gameStatePlay?.gameStatus === 'giveUp') return;
+    if (game.status === 'noGame')
       console.log('thhhhhhhhhhhhhhhhhhhhhhhhhis')
-
-      history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
-    }
-    if (gameStatePrepare?.gameStatus) setGameStatus(gameStatePrepare?.gameStatus);
+    if (gameStatePrepare?.gameStatus) setGame({ ...game, status: gameStatePrepare?.gameStatus });
     if (gameStatePrepare?.gameStatus === 'pending'
+      || (gameStatePrepare?.gameStatus === 'waiting' && gameStatePrepare.playerStatus === 'pending')
       || (gameStatePrepare?.playerStatus === 'pending' && gameStatePrepare.gameStatus !== 'timeout')) {
+      console.log('1 P READY');
       setCentralText('Ready?');
     } else if (gameStatePrepare?.gameStatus === 'waiting'
       && gameStatePrepare.playerStatus === 'ready'
       && gameStatePrepare.opponentStatus === 'pending') {
+      console.log('1 P WAITING');
       setIsPlayerReady(true);
       setCentralText('Waiting for opponent');
     } else if (gameStatePrepare?.gameStatus === 'countdown') {
+      console.log('1 P COUNTDOWN');
       setIsOpponentReady(true);
       setIsPlayerReady(true);
       if (gameStatePrepare.countdown) {
@@ -172,18 +176,18 @@ const Play = () => {
       } else
         setCentralText('Get ready!');
     } else if (gameStatePrepare?.gameStatus === 'timeout') {
+      console.log('1 P TIMEOUT');
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
         console.log('thhhhhhhhhhhhhhhhhhhhhhhhhaaaaaaaaaaaaaaaaaaaats')
-        socket.game?.disconnect();
         history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
       }, 3 * 1000);
     } else if (gameStatePrepare?.gameStatus === 'playing') {
-      game.isPlaying = true;
+      console.log('1 P ELSE');
       if (socket.game) socket.game.off('prepareToPlay');
       setGame({ ...game, isPlaying: true });
     }
-  }, [gameStatePrepare, gameStatus]);
+  }, [gameStatePrepare, game.status]);
 
   // Window resizing
   useEffect(() => {
@@ -205,33 +209,16 @@ const Play = () => {
 
       <ConfettisComponent gameIsEnded={game.isEnded} userIsWinner={game.isUserWinner} />
 
-      <article className='profile-infos-container glow-border' id='profile-card' style={{ width: `${game.board.width}px` }}>
-        <LeftPlayerProfile player1Data={player1Data} />
-        <div className="versus-text" style={{ verticalAlign: 'center' }}>VS</div>
-        <RightPlayerProfile player2Data={player2Data} />
-      </article>
+      <ProfilesHeader game={game} player1Data={player1Data} player2Data={player2Data} noGame={noGame} />
 
-      <ScoreBoard game={game} />
+      <ScoreBoard game={game} noGame={noGame} />
 
-      <div className="pong-game-canvas-main-container">
-        <div className="pong-game-canvas" id='pong-canvas-container' style={{ height: `${game.board.height + 80}px` }}>
-          <MainText textToDisplay={centralText} socket={socket.game}
-            whichPlayer={whichPlayer} gameIsPlaying={game.isPlaying}
-            isPlayerReady={isPlayerReady} game={game}
-            elementHeight={profileCardHeight} gameStatus={gameStatus} />
-          <canvas ref={boardCanvasRef as React.RefObject<HTMLCanvasElement>} id="boardCanvas" width={game.board.width} height={game.board.height} className="canvas-container-board" />
-          <canvas ref={ballCanvasRef as React.RefObject<HTMLCanvasElement>} id="ballCanvas" width={game.board.width} height={game.board.height} className="canvas-container-ball" />
-          <canvas ref={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" />
-          <canvas ref={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" />
+      <AllCanvas game={game} socket={socket.game} whichPlayer={whichPlayer} centralText={centralText}
+        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
 
-          <BoardCanvas game={game} canvasRef={boardCanvasRef as React.RefObject<HTMLCanvasElement>} />
-          <BallCanvas whichPlayer={whichPlayer} game={game} ball={game.ball} canvasRef={ballCanvasRef as React.RefObject<HTMLCanvasElement>} />
-          <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
-          <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
-        </div>
-      </div>
+      <GiveUp socket={socket.game} whichPlayer={whichPlayer} game={game} noGame={noGame} gameStatus={game.status} />
 
-      <GiveUp socket={socket.game} whichPlayer={whichPlayer} gameIsEnded={game.isEnded}></GiveUp>
+      <NoGame noGame={noGame} />
 
     </div >
   );

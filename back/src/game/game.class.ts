@@ -3,11 +3,12 @@ import { Ball } from './models/ball.model';
 import { Point } from './models/point.model';
 import { Player } from './models/player.model';
 import { GameProperties } from './models/properties.model';
-import { PongEvents } from './pong.gateway';
 import { CollisionPointsBall } from './models/collisionPoints.model';
 import { CollisionPointsPaddle } from './models/collisionPointsPaddle.model';
 import { Paddle } from './models/paddle.model';
-import { PongService } from './pong.service';
+import { EventEmitter } from 'events';
+
+export const gameEvents = new EventEmitter();
 
 export interface GameParams {
   pl1: Player;
@@ -33,9 +34,7 @@ export class GameStruct {
   ////////////////////
   public update = 1;
 
-  constructor(gameMode: number, id: number, pl1Id: number, pl2Id: number, room: string,
-    private pongEvents: PongEvents,
-    private pongService: PongService) {
+  constructor(gameMode: number, id: number, pl1Id: number, pl2Id: number, room: string) {
     this.gameMode = gameMode;
     this.prop = new GameProperties(id, room);
     this.board = new Board();
@@ -46,8 +45,6 @@ export class GameStruct {
     this.loser = null;
     this.board.updatePointsAndCollisionParameters(this.pl1.pad);
   }
-
-  // if (this.update === 1) 
 
   /* Main time-frame loop function that calls the main updater */
   async startGameLoop() {
@@ -60,8 +57,13 @@ export class GameStruct {
     if (this.prop.status === 'ended') {
       this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
       if (this.winner && this.loser) {
-        await this.pongService.endGame(this, this.winner, this.loser);
-        this.pongEvents.updateEmitOnlineGames('toRoom', 0);
+        gameEvents.emit('serviceEndGame', {
+          action: 'endGame',
+          gameStruct: this,
+          winner: this.winner,
+          loser: this.loser,
+        });
+        this.updateOnlineGames();
       }
       return;
     }
@@ -370,24 +372,26 @@ export class GameStruct {
 
   /* Function to score a point and end game if max points is reached by a player */
   private scorePoint(winner: number) {
-    let maxScore = 1;//11;
+    let maxScore = 11;
     if (winner === 2) {
-      console.log('SCORE 2');
       this.pl2.score += 1;
       this.ball.randomService(this.board, 2, this.gameMode);
     } else if (winner === 1) {
-      console.log('SCORE 1');
       this.pl1.score += 1;
       this.ball.randomService(this.board, 1, this.gameMode);
     }
     this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
-    this.pongEvents.updateEmitOnlineGames('toRoom', 0);
+    this.updateOnlineGames();
     if (this.pl1.score >= maxScore || this.pl2.score >= maxScore) {
       this.winner = this.pl1.score >= maxScore ? this.pl1 : this.pl2;
       this.loser = this.pl1.score >= maxScore ? this.pl2 : this.pl1;
       this.winner.isWinner = true;
       this.stopGameLoop();
       this.prop.status = 'ended';
+      gameEvents.emit('gatewayRemovePlayersFromList', {
+        pl1Id: this.pl1.id,
+        pl2Id: this.pl2.id,
+      });
     }
     if (this.gameMode === 2) {
       this.pl1.pad.resetPaddleTop(this.board);
@@ -397,33 +401,23 @@ export class GameStruct {
     }
   }
 
-  /* Functions to update the front on the game state */
+  /* Functions to update the front via the gateway */
   sendUpdateToRoom(playerStatus: string, opponentStatus: string, countdown: number, channel: string) {
     let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
-    this.pongEvents.server.to(this.prop.room).emit(channel,
-      {
-        gameStatus: this.prop.status,
-        gameParams: this.getState(),
-        playerStatus: playerStatus,
-        opponentStatus: opponentStatus,
-        time: Date.now(),
-        countdown: countdownStr,
-      });
+    gameEvents.emit('gatewayUpdateRoom', {
+      room: this.prop.room,
+      channel: channel,
+      gameStatus: this.prop.status,
+      gameParams: this.getState(),
+      playerStatus: playerStatus,
+      opponentStatus: opponentStatus,
+      countdown: countdownStr,
+    });
   }
 
-  sendUpdateToPlayer(player: Player, opponentStatus: string, countdown: number, channel: string) {
-    let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
-    this.pongEvents.server.to(`user_${player.id}`).emit(channel,
-      {
-        gameStatus: this.prop.status,
-        gameParams: this.getState(),
-        playerStatus: player.status,
-        opponentStatus: opponentStatus,
-        time: Date.now(),
-        countdown: countdownStr,
-      });
+  updateOnlineGames() {
+    gameEvents.emit('serviceEndGame', { action: 'update' });
   }
-  /* */
 
   /* Function to get the state of the game */
   getState(): GameParams {

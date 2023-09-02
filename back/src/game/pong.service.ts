@@ -7,6 +7,7 @@ import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
 import { Player } from './models/player.model';
 import { SocketEvents } from 'src/websocket/websocket.gateway';
+import { gameEvents } from './game.class';
 
 export type UserQueue = Map<number, string>;
 export type OnlineGameMap = Map<number, GameStruct>;
@@ -20,7 +21,12 @@ export class PongService {
 
   constructor(
     public prismaService: PrismaService,
-    private userService: UserService) { }
+    private userService: UserService) {
+    gameEvents.on('serviceEndGame', (data) => {
+      if (data.action === 'endGame')
+        this.endGame(data.gameStruct, data.winner, data.loser)
+    });
+  }
 
   async gameCreate(gameMode: GameDto, server: Server) {
     let player1Id: number = 0;
@@ -54,11 +60,14 @@ export class PongService {
     this.userQueue.delete(userId);
   }
 
-  getQueue(): UserQueue { 
+  getQueue(): UserQueue {
     return this.userQueue;
   }
 
   getGameStructById(gameId: number) {
+    // this.onlineGames.forEach((value, key) => {
+    //   console.log('og key id:', key, ' value id:', value.prop.id);
+    // })
     return this.onlineGames.get(gameId);
   }
 
@@ -141,6 +150,7 @@ export class PongService {
 
   async endGame(gameStruct: GameStruct, winner: Player, loser: Player) {
     try {
+      console.log('inside game end');
       const game = await this.prismaService.game.findUnique({ where: { id: gameStruct.prop.id } });
       if (!game) {
         console.log('Game not found'); // set error accordingly
@@ -157,7 +167,7 @@ export class PongService {
           player2Score: game.player2Id === winner.id ? winner.score : loser.score,
         },
       });
-      
+
       // Protect if not found
       this.onlineGames.delete(gameStruct.prop.id);
       this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
@@ -175,12 +185,12 @@ export class PongService {
 
     // Ladder logic
     const points = Math.round(Math.sqrt(((11 - winnerLevel) * (1 + loserLevel) + 1)));
-    
+
     let winnerPoints = winner.userPoints + points;
     let loserPoints = loser.userPoints - points < 0 ? 0 : loser.userPoints - points;
 
-    const winnerNewLevel = winnerLevel >= 10 ? winnerLevel : winnerLevel +  winnerPoints * 0.01;
-    const loserNewLevel = loserLevel >= 10 ? loserLevel : loserLevel +  loserPoints * 0.0025;
+    const winnerNewLevel = winnerLevel >= 10 ? winnerLevel : winnerLevel + winnerPoints * 0.01;
+    const loserNewLevel = loserLevel >= 10 ? loserLevel : loserLevel + loserPoints * 0.0025;
 
     const updateWinnerData = {
       gamesPlayed: winner.gamesPlayed + 1,
@@ -191,7 +201,7 @@ export class PongService {
 
     const updateLoserData = {
       gamesPlayed: loser.gamesPlayed + 1,
-      userPoints:loserPoints,
+      userPoints: loserPoints,
       userLevel: loserNewLevel,
     };
 
@@ -199,7 +209,7 @@ export class PongService {
       await this.prismaService.user.update({
         where: { id: winner.id },
         data: updateWinnerData,
-    });
+      });
     } catch (error) {
       console.error('Error updating game:', error);
     }

@@ -13,6 +13,7 @@ const OnlineGames = () => {
 
   useEffect(() => {
     socket.game?.on('onlineGames', (data: any) => {
+      console.log('ONLINE GAMES RECEIVED:', data);
       setGamesData(data);
     });
     socket.game?.emit('onlineGames', { action: 'query' });

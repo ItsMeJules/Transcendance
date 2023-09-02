@@ -12,7 +12,6 @@ import { PongEvents } from './pong.gateway';
 @Injectable()
 export class GameService {
 
-  constructor(
-    private pongEvents: PongEvents) { }
+  constructor() { }
 
 }

@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { Socket } from 'socket.io-client';
+import './GiveUp.scss'
+import { GameProperties } from 'pages/Play/models/Properties';
 
 interface GiveUpProps {
   socket: Socket | null;
   whichPlayer: number;
-  gameIsEnded: boolean;
+  game: GameProperties;
+  noGame: boolean;
+  gameStatus: string;
 }
 
-const GiveUp: React.FC<GiveUpProps> = ({ socket, whichPlayer, gameIsEnded}) => {
+const GiveUp: React.FC<GiveUpProps> = ({ socket, whichPlayer, game, noGame, gameStatus }) => {
   const [giveUp, setGiveUp] = useState(false);
 
   const handleQuitGame = () => {
@@ -23,12 +27,13 @@ const GiveUp: React.FC<GiveUpProps> = ({ socket, whichPlayer, gameIsEnded}) => {
   };
 
   return (
-    <article className='give-up-main-container'>
-      {!gameIsEnded &&
+    <>{!game.isEnded && !noGame && gameStatus !== 'giveUp' && gameStatus !== 'ended' && 
+      <article className='give-up-main-container'>
         <button className="give-up-button-text" onClick={handleQuitGame} >
           {giveUp ? 'Confirm by clicking again' : 'Give up?'}
-        </button >}
-    </article>
+        </button >
+      </article>}
+    </>
   );
 }
 

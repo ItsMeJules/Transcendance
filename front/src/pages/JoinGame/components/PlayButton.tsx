@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useHref } from "react-router-dom";
 import { useWebsocketContext } from "services/Websocket/Websocket";
+import { Socket } from "socket.io-client";
 
 interface playButtonProps {
   gameMode: number;
@@ -8,26 +10,18 @@ interface playButtonProps {
 }
 
 const PlayButton: React.FC<playButtonProps> = ({ gameMode, inQueue, buttonText }) => {
-  const socket = useWebsocketContext();
+  const gameSocket = useWebsocketContext().game;
 
   const handleJoinGameQueue = async (gameMode: number) => {
-    console.log('test');
-    if (socket.game?.connected) {
-      console.log("Socket is connected!");
-  } else {
-      console.log("Socket is not connected!");
-  }
-
-    console.log("gamemode:", gameMode, " inQueue:", inQueue);
     if (inQueue !== gameMode) {
-      socket.game?.emit('joinGameQueue', { gameMode: gameMode });
+      gameSocket?.emit('joinGameQueue', { gameMode: gameMode });
     } else if (inQueue === gameMode)
-      socket.game?.emit('leaveGameQueue');
+      gameSocket?.emit('leaveGameQueue');
   }
 
   return (
-    <button className="corner-button" onClick={() => handleJoinGameQueue(gameMode)}>
-      <span>{inQueue === gameMode ? "Cancel - leave queue" : `${buttonText}`}</span>
+    <button className={`corner-button ${inQueue === gameMode ? 'cancel-color' : ''}`} onClick={() => handleJoinGameQueue(gameMode)}>
+      <span>{inQueue === gameMode ? <>Cancel<br/>leave queue</> : `${buttonText}`}</span>
     </button>
   );
 }

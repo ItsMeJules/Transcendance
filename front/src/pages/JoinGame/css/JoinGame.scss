@@ -154,13 +154,16 @@
 
     .join-game-button {
       color: white;
-
     }
+
+    .cancel-color {
+      color: $orange-color;
+      -webkit-text-fill-color: $orange-color;
+      // animation: text-color;
+    }
+
   }
 
-  .join-game-loading-animation {
-
-  }
 
   @keyframes glow-text-animation {
     0% {
@@ -202,4 +205,6 @@
       opacity: 1;
     }
   }
+
+  
 }

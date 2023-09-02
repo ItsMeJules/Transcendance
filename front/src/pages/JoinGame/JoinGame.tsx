@@ -24,13 +24,15 @@ const JoinGame = () => {
         setInQueue(dataJSON.gameMode);
       else if (dataJSON.status === "LEAVE")
         setInQueue(0);
+      else if (dataJSON.status === 'INGAME')
+        history(APP_ROUTES.PLAY_ABSOLUTE);
       else if (dataJSON.status === 'START') {
         localStorage.setItem('gameData', JSON.stringify(dataJSON.game));
         localStorage.setItem('player1', JSON.stringify(dataJSON.player1));
         localStorage.setItem('player2', JSON.stringify(dataJSON.player2));
         localStorage.setItem('gameChannel', JSON.stringify(dataJSON.gameChannel));
         setInQueue(0);
-        console.log("OKKKKKKKKKKK GOOOODDDDD"); 
+        console.log("OKKKKKKKKKKK GOOOODDDDD");
         // setLeftContent(APP_SCREENS.PLAY);
         history(APP_ROUTES.PLAY_ABSOLUTE);
       }
@@ -41,6 +43,10 @@ const JoinGame = () => {
     socket.game?.on('joinGameQueue', (data: any) => {
       setSocketData(data);
     });
+    socket.game?.emit('joinGameQueue', { gameMode: 'query' });
+    return () => {
+      socket.game?.off('joinGameQueue');
+    };
   }, [socket.game]);
 
 
