@@ -1065,11 +1065,11 @@ export class ChatService {
         client.data.id !== room.ownerId
       )
         throw new Error(
-          'user is banned from the room and youre not the owner of the room',
+          'You need to be owning the room to invite a banned user',
         );
       else if (
         room.bans.some((banned) => banned.id === targetUser.id) &&
-        client.data.id !== room.ownerId
+        client.data.id === room.ownerId
       ) {
         await this.prismaService.room.update({
           where: { name: inviteDto.roomName },
