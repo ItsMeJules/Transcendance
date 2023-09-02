@@ -35,11 +35,11 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
   }
 
   const getIconFromType = (type: ChannelType) => {
-    let iconSrc = "images/globe.png";
+    let iconSrc = "/images/globe.png";
     if (type === ChannelType.PROTECTED)
-      iconSrc = "images/padlock.png";
+      iconSrc = "/images/padlock.png";
     else if (type === ChannelType.PRIVATE)
-      iconSrc = "images/private.png";
+      iconSrc = "/images/private.png";
 
     return (<img alt="Channel Type" src={iconSrc} />)
   }

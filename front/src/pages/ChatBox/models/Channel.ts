@@ -5,9 +5,9 @@ export enum ChannelType {
 }
 
 export const ChannelTypeDescription = {
-  PUBLIC: { name: "Public", desc: "Canal accessible par tout le monde." },
-  PRIVATE: { name: "Privé", desc: "Canal accessible sous invitation." },
-  PROTECTED: { name: "Protégé", desc: "Canal protégé par un mot de passe." },
+  PUBLIC: { name: "Public", desc: "Everyone can access" },
+  PRIVATE: { name: "Privé", desc: "Invite only" },
+  PROTECTED: { name: "Protégé", desc: "Password protected" },
 };
 
 export enum PunishmentType {

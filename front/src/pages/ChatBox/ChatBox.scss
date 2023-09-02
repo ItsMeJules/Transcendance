@@ -26,6 +26,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
       z-index: 2;
 
+
       .more {
         display: flex;
         flex-direction: column;
@@ -48,7 +49,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
             span {
               display: block;
-              // position: relative;
+              position: relative;
 
               width: 50%;
               height: 4%;
@@ -64,7 +65,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
             span:before {
               display: block;
-              // position: relative;
+              position: relative;
 
               width: 100%;
               height: 100%;
@@ -80,7 +81,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
             span:after {
               display: block;
-              // position: relative;
+              position: relative;
 
               width: 100%;
               height: 100%;
@@ -111,7 +112,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
         .more-popup {
 
-          // position: relative;
+          position: relative;
           top: 150%;
           left: 0%;
           height: 100%;
@@ -143,7 +144,7 @@ $font-color: rgba(255, 255, 255, 0.7);
           }
 
           .password-popup {
-            // position: fixed;
+            position: relative;
 
             top: 50%;
             left: 50%;
@@ -205,9 +206,9 @@ $font-color: rgba(255, 255, 255, 0.7);
             flex-direction: column;
             justify-content: flex-start;
 
-            // position: absolute;
-            // top: 0%;
-            // left: 102%;
+            position: relative;
+            top: 0%;
+            left: 102%;
             margin-top: 2px;
 
             border-radius: 5px;
@@ -227,6 +228,8 @@ $font-color: rgba(255, 255, 255, 0.7);
 
               height: 40%;
               width: 100%;
+
+              filter: invert(100%);
 
               .selected-text {
                 width: 55%;
@@ -287,32 +290,33 @@ $font-color: rgba(255, 255, 255, 0.7);
               height: 20%;
               border-bottom: $border;
 
+              
               input {
                 height: 80%;
                 width: 90%;
-
+                
                 font-size: 0.8rem;
-
+                
                 border: $border;
                 border-radius: 5px;
               }
             }
-
+            
             .password-input {
               display: flex;
               flex-direction: column;
               justify-content: center;
               align-items: center;
-
+              
               height: 20%;
               border-bottom: $border;
-
+              
               input {
                 height: 80%;
                 width: 90%;
-
+                
                 font-size: 0.8rem;
-
+                
                 border: $border;
                 border-radius: 5px;
               }
@@ -323,15 +327,22 @@ $font-color: rgba(255, 255, 255, 0.7);
               flex-direction: column;
               justify-content: center;
               align-items: center;
-
+              
               flex-grow: 1;
               width: 100%;
-
+              
               p {
+                text-align: center;
+                font-family: "dune", Arial, sans-serif;
+                border: $border;
+                border-radius: 5px;
+                font-size: 14px;
+                color: $font-color;
+                
                 margin: 0px;
                 cursor: pointer;
                 transition: transform 0.3s;
-
+                
                 &:hover {
                   transform: scale(1.05);
                 }
@@ -344,9 +355,9 @@ $font-color: rgba(255, 255, 255, 0.7);
             flex-direction: column;
             justify-content: flex-start;
 
-            // position: absolute;
-            // top: calc(100% / 3);
-            // left: 102%;
+            position: relative;
+            top: calc(100% / 3);
+            left: 102%;
 
             height: max-content;
             // max-height: 20vw;
@@ -407,10 +418,10 @@ $font-color: rgba(255, 255, 255, 0.7);
             }
 
             .user-actions {
-              // position: absolute;
+              position: relative;
 
-              // top: 0%;
-              // left: 100%;
+              top: 0%;
+              left: 100%;
 
               width: 10rem;
 
@@ -450,9 +461,9 @@ $font-color: rgba(255, 255, 255, 0.7);
             flex-direction: column;
             justify-content: flex-start;
 
-            // position: absolute;
-            // top: calc(100% / 3 * 2);
-            // left: 102%;
+            position: relative;
+            top: calc(100% / 3 * 2);
+            left: 102%;
 
             height: max-content;
             max-height: 200px;
@@ -508,6 +519,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                     overflow: hidden;
 
                     p {
+                      font-family: "dune", Arial, sans-serif;
                       line-height: 12px;
                       font-size: 12px;
                       margin: 0px 0px 0px 10px;
@@ -528,6 +540,8 @@ $font-color: rgba(255, 255, 255, 0.7);
         height: 100%;
         width: 70%;
 
+        font-family: "dune", Arial, sans-serif;
+        color: $font-color;
         border-left: $border;
         border-right: $border;
 
@@ -550,7 +564,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             height: 50%;
             width: 100%;
             cursor: pointer;
-            // position: relative;
+            position: relative;
 
             .channel-users-count {
               height: 100%;
@@ -563,16 +577,16 @@ $font-color: rgba(255, 255, 255, 0.7);
             }
 
             .popup-container {
-              // position: absolute;
+              position: relative;
 
-              // top: 102%;
+              top: 102%;
               // height: 40vh;
               width: 100%;
 
               .invited {
-                // position: absolute;
-                // top: 0%;
-                // left: 100%;
+                position: relative;
+                top: 0%;
+                left: 100%;
                 // height: 10vh;
 
                 display: flex;
@@ -616,7 +630,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                   overflow-x: hidden;
 
                   .user-container {
-                    // position: relative;
+                    position: relative;
                     border-top: $border;
 
                     cursor: pointer;
@@ -650,7 +664,9 @@ $font-color: rgba(255, 255, 255, 0.7);
                 }
 
                 .invite-user {
-                  text-align: center;
+                      font-family: "dune", Arial, sans-serif;
+                      color: $font-color;
+                      text-align: center;
                   border-top: $border;
 
                   &:hover {
@@ -660,10 +676,10 @@ $font-color: rgba(255, 255, 255, 0.7);
               }
 
               .user-actions {
-                // position: absolute;
+                position: relative;
 
-                // top: 0%;
-                // left: 100%;
+                top: 0%;
+                left: 100%;
 
                 width: 10rem;
 
@@ -730,6 +746,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                 }
 
                 .block-user {
+                  border-bottom: $border; 
                 }
               }
             }
@@ -737,7 +754,7 @@ $font-color: rgba(255, 255, 255, 0.7);
         }
 
         .manage {
-          // position: relative;
+          position: relative;
 
           width: 12%;
           height: 100%;
@@ -745,6 +762,7 @@ $font-color: rgba(255, 255, 255, 0.7);
           cursor: pointer;
 
           img {
+            filter: invert(40%);
             height: 50%;
             width: auto;
 
@@ -756,15 +774,16 @@ $font-color: rgba(255, 255, 255, 0.7);
             flex-direction: column;
 
             p {
+              font-family: "dune", Arial, sans-serif;
               color: $font-color;
             }
             
-            // position: relative;
+            position: relative;
             top: 100%;
-            left: -150%;
+            left: -500%;
 
             height: fit-content;
-            width: 100px;
+            width: 150px;
 
 
             border-radius: 5px;
@@ -773,7 +792,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             cursor: auto;
 
             .channel-description {
-              font-size: 10px;
+              font-size: 12px;
               border-bottom: $border;
             }
 
@@ -796,7 +815,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                 &::before,
                 &::after {
                   content: '';
-                  // position: absolute;
+                  position: relative;
                   width: 100%;
                   height: 100%;
                   border-radius: inherit;
@@ -864,7 +883,9 @@ $font-color: rgba(255, 255, 255, 0.7);
               border-bottom: $border;
 
               p {
-                margin: 0;
+                font-family: "dune", Arial, sans-serif;
+                color: $font-color;
+              margin: 0;
                 cursor: pointer;
                 transition: transform 0.3s;
 
@@ -879,7 +900,9 @@ $font-color: rgba(255, 255, 255, 0.7);
               overflow: hidden;
 
               p {
-                cursor: pointer;
+                font-family: "dune", Arial, sans-serif;
+                color: $font-color;
+              cursor: pointer;
 
                 margin: 0;
                 border-radius: 5px;
@@ -905,6 +928,7 @@ $font-color: rgba(255, 255, 255, 0.7);
         height: 100%;
         width: 17%;
 
+        filter: invert(40%);
         border-radius: 0px 10px 0px 0px;
 
         img {
@@ -955,7 +979,7 @@ $font-color: rgba(255, 255, 255, 0.7);
       }
 
       .denied {
-        // position: fixed;
+        position: relative;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -1011,6 +1035,7 @@ $font-color: rgba(255, 255, 255, 0.7);
           margin-right: 5px;
 
           p {
+            color: $font-color;
             background-color: rgba(0, 69, 0, 0.5);
           }
         }
@@ -1020,6 +1045,7 @@ $font-color: rgba(255, 255, 255, 0.7);
           margin-left: 5px;
 
           p {
+            color: $font-color;
             background-color: rgba(0, 30, 69, 0.5);
           }
         }

@@ -9,11 +9,11 @@ interface ChannelListProps {
 
 const ChannelsList: React.FC<ChannelListProps> = ({ channels, onClickElement, filter = () => true }) => {
   const getIconFromType = (type: ChannelType) => {
-    let iconSrc = "images/public.png";
+    let iconSrc = "/images/public.png";
     if (type === ChannelType.PROTECTED)
-      iconSrc = "images/padlock.png";
+      iconSrc = "/images/padlock.png";
     else if (type === ChannelType.PRIVATE)
-      iconSrc = "images/private.png";
+      iconSrc = "/images/private.png";
 
     return (<img alt="Channel Type" src={iconSrc} />)
   }

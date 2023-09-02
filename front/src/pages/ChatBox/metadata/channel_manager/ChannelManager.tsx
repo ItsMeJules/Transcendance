@@ -31,7 +31,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
           onOutsideClick={() => toggleChannelUsersList(false)}
           onInsideClick={() => toggleChannelUsersList(!channelUsersList)}
         >
-          <div className="channel-users-count">{"Membres : " + usersSize}</div>
+          <div className="channel-users-count">{"Members : " + usersSize}</div>
           {channelUsersList ? <ChannelUsersPopup channelData={channelData} /> : undefined}
         </OutsideClickHandler>
       </div>
@@ -41,7 +41,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
         onOutsideClick={() => setManageChannel(false)}
         onInsideClick={() => setManageChannel(!manageChannel)}
       >
-        <img alt="Settings" src="images/settings.png" style={manageStyle} />
+        <img alt="Settings" src="/images/settings.png" style={manageStyle} />
 
         {manageChannel && <ManageChannelPopup channelData={channelData} />}
       </OutsideClickHandler>
