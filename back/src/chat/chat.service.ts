@@ -203,7 +203,7 @@ export class ChatService {
         );
         this.sendInfoToUser(
           client,
-          'You are speaking with ' + targetUser.username,
+          'You are speaking with ' + targetUser.username + '!',
         );
         return room;
       }
