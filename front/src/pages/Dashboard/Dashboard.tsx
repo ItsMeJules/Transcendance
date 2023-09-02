@@ -45,12 +45,11 @@ const Dashboard = () => {
           </div>
         {/* </Websocket> */}
 
+        </article>
+        
+        <NavFooter setRightContent={setRightContent} />
+
       </main>
-
-      <NavFooter setRightContent={setRightContent} />
-
-
-    </main>
     </Websocket >
   );
 };
