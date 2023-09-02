@@ -4,4 +4,5 @@ export interface ChatMessageData {
   authorId: number;
   profilePicture: string;
   userName: string;
+  blocked: boolean;
 }

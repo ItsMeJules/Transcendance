@@ -1,38 +1,61 @@
-import React, { useState } from "react";
-import Popup from "../../../utils/Popup";
+import React, { useContext, useState } from "react";
+
+
+import { useAppSelector } from "utils/redux/Store";
+import { SendDataContext } from "../../../ChatBox";
 import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
+import PayloadAction from "../../../models/PayloadSocket";
+import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
+import Popup from "../../../utils/Popup";
 
 interface ChannelPopupProps {
-  channelData: ChannelData
+  channelData: ChannelData;
 }
 
-const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProps) => {
-  const [channelType, setChannelType] = useState(ChannelType.PUBLIC);
+const ManageChannelPopup: React.FC<ChannelPopupProps> = ({ channelData }: ChannelPopupProps) => {
   const [channelPassword, setChannelPassword] = useState("");
 
+  const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
+  const sendData: null | ((action: string, data: PayloadAction) => void) =
+    useContext(SendDataContext);
+
   const changeChannel = () => {
-    const { channelData } = props;
-
-    if (!channelData || channelType === channelData.type)
-      return;
-
-    if (channelType === ChannelType.PROTECTED)
-      channelData.password = channelPassword;
-
-    channelData.type = channelType;
+    if (sendData === null) return;
+    sendData(ChatSocketActionType.CHANGE_PASSWORD, {
+      action: ChatSocketActionType.CHANGE_PASSWORD,
+      password: channelPassword,
+      roomName: activeChannelName,
+    } as PayloadAction);
     setChannelPassword("");
-  }
+  };
 
   const quitChannel = () => {
+    if (sendData === null) return;
 
-  }
+    sendData(ChatSocketActionType.LEAVE_ROOM, {
+      action: ChatSocketActionType.LEAVE_ROOM,
+      roomName: activeChannelName,
+    } as PayloadAction);
+  };
 
   return (
     <Popup className="channel-popup">
-      <div className="channel-description">
-        {ChannelTypeDescription[channelType].desc}
+      <input
+        placeholder="Entrez le mdp."
+        onChange={(e) => setChannelPassword(e.target.value)}
+        value={channelPassword}
+        required
+      />
+
+      <div className="confirm">
+        <button onClick={changeChannel}>
+          {channelData.type !== ChannelType.PROTECTED
+            ? "Ajouter un mot de passe"
+            : "Changer le mot de passe"}
+        </button>
       </div>
 
+<<<<<<< HEAD:front/src/pages/ChatBox/metadata/channel_manager/popups/ManageChannelPopup.tsx
       <div className="images">
         <img
           className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
@@ -52,28 +75,13 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
           alt="Protected"
           onClick={() => setChannelType(ChannelType.PROTECTED)}
         />
+=======
+      <div className="quit-channel">
+        <button onClick={quitChannel}>Quitter le channel</button>
+>>>>>>> sockets_errors_acknowledgements:front/src/Screens/chat/metadata/channel_manager/popups/ManageChannelPopup.tsx
       </div>
-
-      {channelType === ChannelType.PROTECTED && (
-        <div className="password-input">
-          <input
-            placeholder="Entrez le nouveau mdp du channel."
-            onChange={(e) => setChannelPassword(e.target.value)}
-            value={channelPassword}
-            required
-          />
-        </div>
-      )}
-
-      <div className="validate">
-        <p onClick={changeChannel}>Modifier le channel</p>
-      </div>
-
-        <div className="quit-channel">
-          <p onClick={quitChannel}>Quitter le channel</p>
-        </div>
     </Popup>
   );
-}
+};
 
 export default ManageChannelPopup;

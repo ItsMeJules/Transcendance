@@ -7,6 +7,7 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ messagesReceived }) => {
+  let BlockedImg = require("../assets/blocked.png");
   let previousMessageSender: number | null = null;
 
   return (
@@ -19,9 +20,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ messagesReceived }) => {
 
         return (
           <div className="message-container">
-            {!isSameSender && !message.self ? <img src={message.profilePicture} /> : null}
+            {!isSameSender && !message.self ? (
+              <img src={message.blocked ? BlockedImg : message.profilePicture} />
+            ) : undefined}
             <div className={messageClassName} key={index}>
-              <p>{message.message}</p>
+              <p>{message.blocked ? "Utilisateur bloqué" : message.message}</p>
             </div>
           </div>
         );

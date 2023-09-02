@@ -1,43 +1,42 @@
 import { useState, useEffect, FormEvent } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { APP_ROUTES, API_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import ToastError from "layout/ToastError/ToastError";
-import './Signin.scss'
+import "./Signin.scss";
+import { useAppDispatch } from "utils/redux/Store";
 
 export const Signin = () => {
   const history = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errMsg, setErrMsg] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
+  const dispatchUser = useAppDispatch();
 
   function RequestURI42() {
     console.log("ok");
-    let url = '/api/auth/42/login';
-    if (url)
-      document.location = (url) // 
+    let url = "/api/auth/42/login";
+    if (url) document.location = url; //
   }
 
   function RequestURIGoogle() {
-    let url = '/api/auth/google/login';
+    let url = "/api/auth/google/login";
     try {
-      if (url)
-        window.location.href = url; // Use window.location.href to trigger the redirect
+      if (url) window.location.href = url; // Use window.location.href to trigger the redirect
     } catch (err: any) {
       setErrMsg(err.response.data.message);
     }
-
   }
 
   const resetErrMsg = () => {
-    setErrMsg(''); // Reset errMsg to an empty string
+    setErrMsg(""); // Reset errMsg to an empty string
   };
 
   useEffect(() => {
-    setErrMsg('');
-  }, [email, password])
+    setErrMsg("");
+  }, [email, password]);
 
   useEffect(() => {
     if (success) {
@@ -49,58 +48,57 @@ export const Signin = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(API_ROUTES.SIGN_IN,
+      const response = await axios.post(
+        API_ROUTES.SIGN_IN,
         JSON.stringify({ email: email, password: password }),
         {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        })
-      localStorage.setItem('userData', JSON.stringify(response.data));
-      // User.getInstance().setAccessToken(response.data.accessToken);
-      setEmail('');
-      setPassword('');
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log(response.data);
+      setEmail("");
+      setPassword("");
       setSuccess(true);
-
     } catch (err: any) {
       console.log(err.response.data.message);
       if (!err?.response) {
-        setErrMsg('No Server Response');
+        setErrMsg("No Server Response");
       } else if (err.response?.status === 400) {
-        setErrMsg('Missing email or password');
+        setErrMsg("Missing email or password");
       } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized');
+        setErrMsg("Unauthorized");
       } else if (err.response?.status === 403) {
-        setErrMsg('Credentials incorrect');
-      }
-      else {
-        setErrMsg('Login failed');
+        setErrMsg("Credentials incorrect");
+      } else {
+        setErrMsg("Login failed");
       }
     }
-  }
+  };
 
   return (
     <div className="login-container">
-
       <GlowTextSignin className="signin-header">sign in</GlowTextSignin>
 
       <div className="main-login-container">
         <div className="secondary-login-container">
           <div className="form-master-container">
-
             <div className="form-sub-container">
-              <form onSubmit={handleSubmit} action="POST"className="signin-form">
+              <form onSubmit={handleSubmit} action="POST" className="signin-form">
                 <label htmlFor="email" className="form-text-login-first">
                   Email address
                 </label>
 
-                <input type="email" // Max length?
+                <input
+                  type="email" // Max length?
                   placeholder="youremail@email.com"
                   id="emailaddress"
                   value={email}
                   className="input-text-login"
-                  style={{ marginTop: '10px' }}
+                  style={{ marginTop: "10px" }}
                   onChange={(e) => setEmail(e.target.value)}
-                  required />
+                  required
+                />
 
                 <span className="cd-error-message">Error message here!</span>
 
@@ -108,17 +106,22 @@ export const Signin = () => {
                   Password
                 </label>
 
-                <input type="password"
+                <input
+                  type="password"
                   id="password"
                   name="password"
                   value={password}
                   className="input-text-login"
-                  style={{ marginTop: '10px' }}
+                  style={{ marginTop: "10px" }}
                   onChange={(e) => setPassword(e.target.value)}
                   maxLength={100}
-                  required />
+                  required
+                />
 
-                <div className="flex justify-center items-center" style={{ marginTop: '10px' }}>
+                <div
+                  className="flex justify-center items-center"
+                  style={{ marginTop: "10px" }}
+                >
                   <button type="submit" className=" signin-submit-form-button">
                     Sign in
                   </button>
@@ -127,8 +130,15 @@ export const Signin = () => {
             </div>
 
             <div className="signin-buttons-main">
-              <button className="loginBtn loginBtn--42" onClick={RequestURI42}>Continue with 42</button>
-              <button className="loginBtn loginBtn--google text-white" onClick={RequestURIGoogle}>Continue with Google</button>
+              <button className="loginBtn loginBtn--42" onClick={RequestURI42}>
+                Continue with 42
+              </button>
+              <button
+                className="loginBtn loginBtn--google text-white"
+                onClick={RequestURIGoogle}
+              >
+                Continue with Google
+              </button>
             </div>
 
             <article className="signin-switch-to-signup">
@@ -137,14 +147,13 @@ export const Signin = () => {
                 Create an account.
               </Link>
             </article>
-
           </div>
         </div>
       </div>
 
       <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
-    </div >
-  )
-}
+    </div>
+  );
+};
 
 export default Signin;

@@ -1,18 +1,22 @@
+import User, { UserData } from "../../../Services/User";
+
 export enum ChannelType {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
   PROTECTED = "PROTECTED",
+  DIRECT = "DIRECT",
 }
 
 export const ChannelTypeDescription = {
   PUBLIC: { name: "Public", desc: "Canal accessible par tout le monde." },
   PRIVATE: { name: "Privé", desc: "Canal accessible sous invitation." },
   PROTECTED: { name: "Protégé", desc: "Canal protégé par un mot de passe." },
+  DIRECT: { name: undefined, desc: undefined },
 };
 
 export enum PunishmentType {
-  BAN,
-  MUTE,
+  BAN = "ban",
+  MUTE = "mute",
 }
 
 export interface PunishmentData {
@@ -24,7 +28,7 @@ export interface MuteData extends PunishmentData {
   expireAt: number;
 }
 
-export interface BanData extends PunishmentData {}
+export interface BanData extends PunishmentData { }
 
 export interface ChannelMessageData {
   authorId: number;
@@ -36,6 +40,7 @@ export interface ChannelMessageData {
 export interface ChannelData {
   type: ChannelType;
   name: string;
+  displayname: string;
   password: string | null;
   usersId: number[];
   ownerId: number | null;
@@ -52,8 +57,48 @@ export class Channel {
   }
 }
 
+export enum ChannelUserRole {
+  OWNER,
+  ADMIN,
+  MEMBER
+}
+
+export type ChannelUser = UserData & {
+  role: ChannelUserRole
+  banned: boolean
+  muted: boolean
+}
+
+export function createChannelUser(userData: UserData, channelData: ChannelData): ChannelUser {
+  const userId = userData.id !== null ? parseInt(userData.id) : -1
+  let role = ChannelUserRole.MEMBER
+  let banned = false;
+  let muted = false;
+
+  if (channelData.ownerId === userId)
+    role = ChannelUserRole.OWNER
+  else if (channelData.adminsId?.find(adminId => adminId === userId) !== undefined)
+    role =  ChannelUserRole.ADMIN
+
+  if (channelData.punishments !== undefined) {
+    channelData.punishments.forEach((punishment) => {
+      if (punishment.userId === userId) {
+        banned = punishment.type === PunishmentType.BAN;
+        muted = punishment.type === PunishmentType.MUTE;
+      }
+    });
+  }
+
+  return {
+    ...userData,
+    role: role,
+    banned: banned,
+    muted: muted
+  } as ChannelUser
+}
+
 // TODO Finish this type
-export function transformToChannelData(data: any): ChannelData {
+export function transformSliceToChannelData(data: any): ChannelData {
   if (data === null) return {} as ChannelData;
 
   const punishments: PunishmentData[] = data.punishments.map((punishment: any) => {
@@ -72,21 +117,24 @@ export function transformToChannelData(data: any): ChannelData {
     return {} as PunishmentData;
   });
 
-  // const messages: ChannelMessageData[] = data.messages.map((message: any) => {
-  //   return {
-  //     authorId: message.authorId,
-  //     text: message.text,
-  //   };
-  // });
+  const messages: ChannelMessageData[] = data.messages.map((message: any) => {
+    return {
+      authorId: message.authorId,
+      text: message.text,
+      userName: message.userName,
+      profilePicture: message.profilePicture,
+    };
+  });
 
   return {
     type: data.type,
     name: data.name,
+    displayname: data.displayname,
     password: data.password,
-    usersId: data.users,
+    usersId: data.usersId,
     ownerId: data.ownerId,
-    adminsId: data.admins,
+    adminsId: data.adminsId,
     punishments: punishments,
-    messages: [],
+    messages: messages,
   };
 }

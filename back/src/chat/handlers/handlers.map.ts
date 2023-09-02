@@ -35,11 +35,11 @@ export const ActionChatHandlers = {
     client: Socket,
     leaveDto: ChatDtos.LeaveDto,
   ): Promise<void> => chatService.leaveRoom(client, leaveDto),
-  // message: async (
-  //   chatService: ChatService,
-  //   client: Socket,
-  //   sendMsgRoomDto: ChatDtos.SendMsgRoomDto,
-  // ): Promise<void> => chatService.sendMessageToRoom(client, sendMsgRoomDto),
+  changePassword: async (
+    chatService: ChatService,
+    client: Socket,
+    modifyPasswordDto: ChatDtos.ModifyPasswordDto,
+  ): Promise<string> => chatService.modifyPassword(client, modifyPasswordDto),
 };
 
 export const ActionRoomHandlers = {
@@ -78,11 +78,6 @@ export const ActionRoomHandlers = {
     client: Socket,
     kickDto: ChatDtos.KickDto,
   ): Promise<boolean> => chatService.kickUserRoom(client, kickDto),
-  changePassword: async (
-    chatService: ChatService,
-    client: Socket,
-    modifyPasswordDto: ChatDtos.ModifyPasswordDto,
-  ): Promise<string> => chatService.modifyPassword(client, modifyPasswordDto),
   invite: async (
     chatService: ChatService,
     client: Socket,
@@ -93,4 +88,9 @@ export const ActionRoomHandlers = {
     client: Socket,
     usersRoomDto: ChatDtos.UsersRoomDto,
   ): Promise<void> => chatService.sendAllUsersOnRoom(client, usersRoomDto),
+  getBannedUsers: async (
+    chatService: ChatService,
+    client: Socket,
+    usersRoomDto: ChatDtos.UsersRoomDto,
+  ): Promise<void> => chatService.sendAllUsersBannedOnRoom(client, usersRoomDto),
 };

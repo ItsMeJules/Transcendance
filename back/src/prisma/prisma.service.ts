@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaClient, User, Room, Message, RoomType } from '@prisma/client';
+import { Message, PrismaClient, Room, RoomType, User } from '@prisma/client';
 import { RoomInfo } from 'src/chat/partial_types/partial.types';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
@@ -52,9 +52,18 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         where: {
           OR: [
             {
-              id: {
-                in: activeRoomsId,
-              },
+              AND: [
+                {
+                  id: {
+                    in: activeRoomsId,
+                  },
+                },
+                {
+                  type: {
+                    not: RoomType.DIRECT,
+                  },
+                },
+              ],
             },
             {
               AND: [
@@ -77,15 +86,27 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         select: {
           name: true,
           type: true,
-          usersOnRoom: true,
+          password: true,
+          ownerId: true,
+          admins: true,
+          bans: true,
+          users: true,
         },
         orderBy: { createdAt: 'asc' },
       });
 
       const roomsInfo = rooms.map((room) => ({
         name: room.name,
-        type: room.type,
-        userCount: room.usersOnRoom.length,
+        type:
+          room.type === RoomType.PUBLIC &&
+          room.password !== null &&
+          room.password.length !== 0
+            ? RoomType.PROTECTED
+            : room.type,
+        userCount: room.users.length,
+        ownerId: room.ownerId,
+        adminsId: room.admins.map((admin) => admin.id),
+        bannedId: room.bans.map((bans) => bans.id),
       }));
 
       return roomsInfo;

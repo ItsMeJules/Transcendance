@@ -10,7 +10,13 @@ export class UserSocketsService {
   }
 
   getUserSocket(userId: string): Socket | undefined {
+    console.log('6');
     return this.userSockets[userId];
+  }
+
+  getArrayUserSockets(userIds: number[]): Socket[] | undefined {
+    const userIdsSet = userIds.map((userId) => String(userId));
+    return userIdsSet.map((userId) => this.userSockets[userId]);
   }
 
   removeUserSocket(userId: string): void {
