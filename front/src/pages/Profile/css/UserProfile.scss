@@ -211,6 +211,36 @@
           color: rgba(255, 255, 255, 0.7);
         }
       }
+        .activate-deactivate-button,
+        .deactivate {
+          width: 190.89px;
+          height: 51.01px;
+          display: flex;
+          justify-content: left;
+          margin-top: 10px;
+          min-height: 20px;
+          color: rgba(255, 255, 255, 0.7); 
+          padding: 15px;
+          border-radius: 4px;
+          transition-duration: 0.4s;
+          font-family: "dune", Arial, sans-serif;
+
+        &.activate-deactivate-button {
+          background-color: rgba(0, 128, 0, 0.3);
+
+        &:hover {
+          background-color: rgba(0, 128, 0, 1);
+          }
+        }
+
+        &.deactivate {
+          background-color: rgba(199, 28, 50, 0.3);
+
+        &:hover {
+          background-color: rgba(199, 28, 50, 1);
+          }
+        }
+      }
 
     }
 

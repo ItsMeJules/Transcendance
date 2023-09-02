@@ -2,6 +2,7 @@ import React, { FormEvent, useState, useEffect } from 'react';
 import {MDBCardBody, MDBTypography } from 'mdb-react-ui-kit';
 import axios from 'axios';
 
+import QrCode from '../QrCode';
 import { UserData } from 'services/User/User';
 import { API_ROUTES, APP_ROUTES } from 'utils/routing/routing';
 import { useNavigate } from 'react-router-dom';
@@ -87,7 +88,9 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
         <MDBTypography className="data-fields-name-sub-others" tag="h5">
           Last name
         </MDBTypography>
-        <div className="save-button"></div>
+        <div className="2fa-button">
+          <QrCode />
+        </div>
       </MDBCardBody>
 
       <form action="POST" onSubmit={handleSubmit}>

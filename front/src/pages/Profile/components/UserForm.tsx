@@ -56,7 +56,7 @@ const UserForm: React.FC<UserFormProps> = ({
         maxLength={100}
       />
 
-      <div className="myBtn">
+      <div className="activate-deactivate-button">
         <button type="submit" className="save-changes-button">
           Save changes
         </button>
