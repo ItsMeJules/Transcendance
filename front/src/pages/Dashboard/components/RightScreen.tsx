@@ -18,7 +18,7 @@ const RightScreen: React.FC<RightScreenProps> = ({ rightContent }) => {
   } else if (rightContent === APP_SCREENS.ONLINE_GAMES) {
     return <OnlineGames />;
   } else {
-    return <div>Default Content</div>; // Fallback content or initial state
+    return <div></div>;
   }
 
 };

@@ -24,7 +24,6 @@ const Dashboard = () => {
   return (
     <main className="dashboard-main-container">
 
-
       <ProfileHeader />
 
       <main className="screen-container">
