@@ -126,6 +126,7 @@
     padding: 20px;
     justify-content: space-between;
     gap: 20px;
+    background-color: rgba(0, 128, 0, 0.25);
 
     max-height: 60%;
 
@@ -136,11 +137,11 @@
     }
 
     .right-screen-container {
-      background: rgba(0, 128, 0, 1);
+      background: rgba(0, 128, 0, 1) !important;
       width: 350px;
       height: 100%;
       border-radius: 20px;
-      border: solid 1px red;
+      border: solid 10px red !important;
     }
   }
 

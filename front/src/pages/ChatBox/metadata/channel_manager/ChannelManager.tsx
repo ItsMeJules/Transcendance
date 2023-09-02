@@ -1,6 +1,9 @@
 import { useRef, useState } from "react";
 import { ChannelData, ChannelType } from "../../models/Channel";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
+import BannedUsersPopup from "./popups/BannedUsersPopup";
+import ManageChannelPopup from "./popups/ManageChannelPopup";
+import ChannelUsersPopup from "./popups/ChannelUsersPopup";
 
 interface ChannelManagerProps {
   channelData: ChannelData;
@@ -12,15 +15,11 @@ export default function ChannelManager(props: ChannelManagerProps) {
   const [bannedUsersList, toggleBannedUsersList] = useState(false);
 
   const excludeRef = useRef<HTMLImageElement | null>(null);
-  let BannedUsersPopup = require("./popups/BannedUsersPopup");
-  let ChannelUsersPopup = require("./popups/ChannelUsersPopup");
-  let ManageChannelPopup = require("./popups/ManageChannelPopup");
+  let BannedIcon = require("../../assets/banned.png");
+  let SettingsIcon = require("../../assets/settings.png");
 
   const { channelData }: ChannelManagerProps = props;
   const usersSize = channelData?.usersId?.length || 0;
-
-  let BannedIcon = require("../../assets/banned.png");
-  let SettingsIcon = require("../../assets/settings.png");
 
   const manageStyle = {
     transition: "transform 1s ease",
@@ -70,7 +69,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
         onOutsideClick={() => setManageChannel(false)}
         onInsideClick={() => setManageChannel(!manageChannel)}
       >
-        <img alt="Settings" src="images/settings.png" style={manageStyle} />
+        <img alt="Settings" src={SettingsIcon} style={manageStyle} />
 
         {manageChannel && <ManageChannelPopup channelData={channelData} />}
       </OutsideClickHandler>
