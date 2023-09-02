@@ -200,3 +200,5 @@ export const ChatBox = () => {
     </>
   );
 };
+
+export default ChatBox;

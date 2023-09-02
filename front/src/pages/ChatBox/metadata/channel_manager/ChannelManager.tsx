@@ -1,9 +1,6 @@
 import { useRef, useState } from "react";
 import { ChannelData, ChannelType } from "../../models/Channel";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
-import BannedUsersPopup from "./popups/BannedUsersPopup";
-import ChannelUsersPopup from "./popups/ChannelUsersPopup";
-import ManageChannelPopup from "./popups/ManageChannelPopup";
 
 interface ChannelManagerProps {
   channelData: ChannelData;
@@ -15,6 +12,9 @@ export default function ChannelManager(props: ChannelManagerProps) {
   const [bannedUsersList, toggleBannedUsersList] = useState(false);
 
   const excludeRef = useRef<HTMLImageElement | null>(null);
+  let BannedUsersPopup = require("./popups/BannedUsersPopup");
+  let ChannelUsersPopup = require("./popups/ChannelUsersPopup");
+  let ManageChannelPopup = require("./popups/ManageChannelPopup");
 
   const { channelData }: ChannelManagerProps = props;
   const usersSize = channelData?.usersId?.length || 0;

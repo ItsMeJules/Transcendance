@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import User, { UserData } from "services/User/User";
 import { API_ROUTES } from "utils/routing/routing";
 import Popup from "../../../utils/Popup";
-import UsersList from "../../../utils/users/UsersList";
-import UserActionPopup from "../../../utils/users/UserActionPopup";
+import UsersList from "pages/ChatBox/utils/users/UsersList";
+import UserActionPopup from "pages/ChatBox/utils/users/UserActionPopup";
 import { useAppSelector } from "utils/redux/Store";
 
 export default function AllUsers() {

@@ -20,7 +20,7 @@ export interface UserData {
 class User {
   public isPlaying: boolean | null = null;
   private static instance: User;
-  private id: string | null = null;
+  public id: string | null = null;
   private createdAt: string | null = null;
   private updatedAt: string | null = null;
   private email: string | null = null;

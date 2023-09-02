@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
-import { UserData } from "../../../../../Services/User";
-import { useWebsocketContext } from "../../../../../Wrappers/Websocket";
+import { UserData } from "../../../../../services/User/User";
+import { useWebsocketContext } from "../../../../../services/Websocket/Websocket";
 import { useAppSelector } from "utils/redux/Store";
 import { SendDataContext } from "../../../ChatBox";
 import {

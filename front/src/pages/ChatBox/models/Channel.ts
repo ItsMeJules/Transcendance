@@ -1,4 +1,4 @@
-import User, { UserData } from "../../../Services/User";
+import User, { UserData } from "../../../services/User/User";
 
 export enum ChannelType {
   PUBLIC = "PUBLIC",
@@ -28,7 +28,7 @@ export interface MuteData extends PunishmentData {
   expireAt: number;
 }
 
-export interface BanData extends PunishmentData { }
+export interface BanData extends PunishmentData {}
 
 export interface ChannelMessageData {
   authorId: number;
@@ -60,25 +60,24 @@ export class Channel {
 export enum ChannelUserRole {
   OWNER,
   ADMIN,
-  MEMBER
+  MEMBER,
 }
 
 export type ChannelUser = UserData & {
-  role: ChannelUserRole
-  banned: boolean
-  muted: boolean
-}
+  role: ChannelUserRole;
+  banned: boolean;
+  muted: boolean;
+};
 
 export function createChannelUser(userData: UserData, channelData: ChannelData): ChannelUser {
-  const userId = userData.id !== null ? parseInt(userData.id) : -1
-  let role = ChannelUserRole.MEMBER
+  const userId = userData.id !== null ? parseInt(userData.id) : -1;
+  let role = ChannelUserRole.MEMBER;
   let banned = false;
   let muted = false;
 
-  if (channelData.ownerId === userId)
-    role = ChannelUserRole.OWNER
-  else if (channelData.adminsId?.find(adminId => adminId === userId) !== undefined)
-    role =  ChannelUserRole.ADMIN
+  if (channelData.ownerId === userId) role = ChannelUserRole.OWNER;
+  else if (channelData.adminsId?.find((adminId) => adminId === userId) !== undefined)
+    role = ChannelUserRole.ADMIN;
 
   if (channelData.punishments !== undefined) {
     channelData.punishments.forEach((punishment) => {
@@ -93,8 +92,8 @@ export function createChannelUser(userData: UserData, channelData: ChannelData):
     ...userData,
     role: role,
     banned: banned,
-    muted: muted
-  } as ChannelUser
+    muted: muted,
+  } as ChannelUser;
 }
 
 // TODO Finish this type

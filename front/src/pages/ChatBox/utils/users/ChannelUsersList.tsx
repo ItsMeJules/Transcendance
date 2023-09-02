@@ -1,4 +1,4 @@
-import { ChannelUser } from "../../models/Channel";
+import { ChannelUser } from "pages/ChatBox/models/Channel";
 import ChannelUserComponent from "./ChannelUserComponent";
 import { UserClickParameters } from "./UserComponent";
 
@@ -16,7 +16,9 @@ export default function ChannelUsersList(props: ChannelUsersListProps) {
       {users.map((user) => {
         if (user.username !== null && !filter(user.username)) return undefined;
 
-        return <ChannelUserComponent key={user.id} channelUser={user} onUserClick={onUserClick} />;
+        return (
+          <ChannelUserComponent key={user.id} channelUser={user} onUserClick={onUserClick} />
+        );
       })}
     </div>
   );
