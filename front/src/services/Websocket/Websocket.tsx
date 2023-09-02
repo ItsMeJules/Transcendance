@@ -47,8 +47,10 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
   const { id: userId } = useAppSelector(state => state.user.userData);
   
   useEffect((): (() => void) => {
-    // console.log(userId);
-    if (userId) {
+    if (!userId) {
+      console.log('>>>>>>>>>>>>>>>>> PROBLEM on socket <<<<<<<<<<<<<<');
+    }
+    else if (userId) {
       // console.log("yo")
       // console.log("yo" , OpenSocket("http://localhost:8000/chat"));
       const general =

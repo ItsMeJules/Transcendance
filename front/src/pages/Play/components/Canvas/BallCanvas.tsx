@@ -17,7 +17,10 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, ball, canvasRef, whichPla
     const ctx = canvas.getContext('2d');
     let previousTimestamp = 0;
     const animateBall = (timestamp: number) => {
-      if (!game.isPlaying) return;
+      if (!game.isPlaying && ctx) {
+        ctx.clearRect(0, 0, game.board.width, game.board.height);
+        return;
+      }
       const deltaTime = (timestamp - previousTimestamp) / 1000;
       previousTimestamp = timestamp;
       if (ctx) {

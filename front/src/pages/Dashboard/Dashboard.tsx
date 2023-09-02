@@ -22,30 +22,28 @@ const Dashboard = () => {
   }, [rightContent]);
 
   return (
-    <main className="dashboard-main-container">
+    <Websocket key={location.pathname}>
+      <main className="dashboard-main-container">
 
-      <ProfileHeader />
 
-      <main className="screen-container">
+        <ProfileHeader />
 
-        <Websocket key={location.pathname}>
-          <article className="left-screen-container">
-            <Routes>
-              <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
-              <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
-              <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
-              <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
-              <Route path={APP_ROUTES.PLAY} element={<Play />} />
-              <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
-            </Routes>
-          </article>
-        </Websocket>
+        <article className="screen-container">
 
-        <Websocket key={rightContent}>
-          <article className="right-screen-container">
+          <Routes>
+            <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
+            <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
+            <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
+            <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
+            <Route path={APP_ROUTES.PLAY} element={<Play />} />
+            <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
+          </Routes>
+
+        {/* <Websocket key={rightContent}> */}
+          <div className="right-screen-container">
             <RightScreen rightContent={rightContent} />
-          </article>
-        </Websocket>
+          </div>
+        {/* </Websocket> */}
 
       </main>
 
@@ -53,6 +51,7 @@ const Dashboard = () => {
 
 
     </main>
+    </Websocket >
   );
 };
 

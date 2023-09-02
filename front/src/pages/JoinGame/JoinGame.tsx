@@ -48,7 +48,7 @@ const JoinGame = () => {
     <main className="join-game-main-container">
 
       <header className="join-game-header-title">
-        Choose your mode
+        Choose your mode LOL
       </header>
 
       <article className="join-game-buttons">
