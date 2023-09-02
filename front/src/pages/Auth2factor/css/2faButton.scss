@@ -1,89 +1,77 @@
-/* //////////////////// 2FA CSS BEGIN \\\\\\\\\\\\\\\\\\\\\\\\\  */
-
-$border: 1px solid rgba(255, 255, 255, 0.5);
-$background: rgba(255, 255, 255, 0.05);
-$hover-color: rgba(255, 255, 255, 0.5);
-$font-color: rgba(255, 255, 255, 0.7);
-
 :root {
-	--visible: none;
-	/* --visibility: block; */
+  --visible: none;
 }
 
 .popup {
-    display: var(--visible); /* Cachée par défaut */
-    position: fixed; /* Position fixe */
-    z-index: 1; /* Au premier plan */
-    left: 0;
-    top: 0;
-    width: 100%; /* Largeur totale */
-    height: 100%; /* Hauteur totale */
-    overflow: auto; /* Pour gérer le défilement */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  display: var(--visible);
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
-/* Style de la fenêtre popup elle-même */
 .popup-content {
-    position: relative;
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% depuis le haut, centrée horizontalement */
-    padding: 20px;
-    border: $border;
-    width: 80%; /* Largeur de 80% */
-}
-	
-.myBtn {
-    background-color: rgba(0, 128, 0, 0.3); /* Green */
-    border: none;
-    color: rgba(255, 255, 255, 0.7); /* Text color */
-    padding: 15px 32px; /* Padding around text */
-    text-align: center; /* Center the text */
-    text-decoration: none;
-    display: inline-block;
-    font-family: "dune", Arial, sans-serif;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer; /* Change cursor when hovering over button */
-    border-radius: 12px; /* Rounded corners */
-    transition-duration: 0.4s; /* Transition effect duration */
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  margin: 0;
+  padding: 20px;
+  font-family: "dune", Arial, sans-serif;
+  font-weight: bold;
+  max-width: 300px;
+  color: black;
+  background: rgba(197, 0, 0, 0.678);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  justify-content: center;
 }
 
-.myBtn:hover {
-    background-color: #45a049; /* Change background color on hover */
-}
-
-.deactivate {
-    background-color: #da243c;
-    border: none;
-    color: rgba(255, 255, 255, 0.7); /* Text color */
-    padding: 15px 32px; /* Padding around text */
-    text-align: center; /* Center the text */
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer; /* Change cursor when hovering over button */
-    border-radius: 12px; /* Rounded corners */
-    transition-duration: 0.4s; /* Transition effect duration */
-}
-
-.deactivate:hover {
-    background-color: #c71c32;
-}
-/* Le bouton close */
 .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
+  color : black;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
 
-.close:hover,
-.close:focus {
-    color: black;
+  &:hover,
+  &:focus {
+    color: white;
     text-decoration: none;
-    cursor: pointer;
+  }
 }
 
-/* //////////////////2FA CSS END \\\\\\\\\\\\\\\\\\\\\\\\\  */
+.myBtn,
+.deactivate {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition-duration: 0.4s;
+
+  &.myBtn {
+    background-color: #4CAF50;
+
+    &:hover {
+      background-color: #45a049;
+    }
+  }
+
+  &.deactivate {
+    background-color: #da243c;
+
+    &:hover {
+      background-color: #c71c32;
+    }
+  }
+}

@@ -14,7 +14,7 @@ import JoinGame from 'pages/JoinGame/JoinGame';
 import Websocket from 'services/Websocket/Websocket';
 
 const Dashboard = () => {
-  const [rightContent, setRightContent] = useState<number>(APP_SCREENS.CHAT);
+  const [rightContent, setRightContent] = useState<number>(APP_SCREENS.LEADERBOARD);
   const location = useLocation();
 
   useEffect(() => {
