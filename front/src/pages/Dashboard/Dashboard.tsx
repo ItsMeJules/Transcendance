@@ -42,8 +42,8 @@ const Dashboard = () => {
         </Websocket>
 
         <Websocket key={rightContent}>
-          <article className="right-screen-container">
-            <RightScreen rightContent={rightContent} />
+          <article className="right-screen-container border">
+            {/* <RightScreen rightContent={rightContent} /> */}
           </article>
         </Websocket>
 
