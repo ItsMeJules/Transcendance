@@ -66,7 +66,7 @@ export default function ChannelListPopup() {
         <input
           className="filter-channels"
           type="search"
-          placeholder="Chercher un channel"
+          placeholder="Search channel..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />

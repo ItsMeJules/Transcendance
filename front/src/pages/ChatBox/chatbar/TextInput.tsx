@@ -33,7 +33,7 @@ const TextInput = () => {
     <div className="text-input">
       <input
         autoFocus
-        placeholder="Write here ..."
+        placeholder="Password..."
         onChange={(e) => setValue(e.target.value)}
         value={value}
         onKeyDown={(e) => handleEnterPressed(e)}
