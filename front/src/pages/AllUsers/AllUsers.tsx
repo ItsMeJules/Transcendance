@@ -35,19 +35,17 @@ const AllUsers = () => {
   }, [usersData])
 
   return (
-    <main className="right-screen-container">
-      <article className="all-users-main-container">
+    <article className="all-users-main-container">
 
-        <header className="all-users-header">
-          All users
-        </header>
+      <header className="all-users-header">
+        All users
+      </header>
 
-        <MDBContainer className="allusers-container">
-          <AllUsersList usersList={usersList} />
-        </MDBContainer>
+      <MDBContainer className="allusers-container">
+        <AllUsersList usersList={usersList} />
+      </MDBContainer>
 
-      </article>
-    </main>
+    </article>
   );
 }
 
