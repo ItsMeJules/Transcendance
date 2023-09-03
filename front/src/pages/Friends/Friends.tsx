@@ -104,18 +104,20 @@ const Friends = () => {
   }
 
   return (
-    <article className="friends-main-container" style={{}}>
+    <main className="right-screen-container">
+      <article className="friends-main-container" style={{}}>
 
-      <header className="friends-header">
-        Friends
-      </header>
+        <header className="friends-header">
+          Friends
+        </header>
 
         <MDBContainer className="friends-container">
           <UserProfileList friendsList={friendsList} onRemoveClick={removeFriend} onProfileClick={handleProfileClick} />
         </MDBContainer>
 
         <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
-    </article>
+      </article>
+    </main>
   );
 }
 
