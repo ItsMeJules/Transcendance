@@ -8,6 +8,7 @@ $font-color: rgba(255, 255, 255, 0.7);
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
+  max-height: 1000px;
   min-height: 200px;
   height: 100%;
   width: 100%;
@@ -58,12 +59,11 @@ $font-color: rgba(255, 255, 255, 0.7);
               width: 100%;
               background: rgba(255, 255, 255, 0.3);
               transition: transform 250ms ease-in-out;
-              margin-bottom: 6px;
+              margin-top: 6px;
             }
             
             &.active li:nth-child(1) {
               transform: rotate(45deg);
-              margin-bottom: 6px;
             }
 
             &.active li:nth-child(2) {
@@ -85,7 +85,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
         
         .more-popup {
-          transform: translateY(20%); // Move the popup slightly up
+          transform: translateY(80%);
           width: 120px; // Set the desired width
 
           transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease; // Add transitions
