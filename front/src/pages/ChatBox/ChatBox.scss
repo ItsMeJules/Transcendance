@@ -19,7 +19,7 @@ $font-color: rgba(255, 255, 255, 0.7);
     .metadata-container {
       display: flex;
       flex-direction: row;
-      justify-content: center;
+      justify-content: space-evenly;
       align-items: center;
 
       height: 90px;
@@ -35,7 +35,8 @@ $font-color: rgba(255, 255, 255, 0.7);
         width: 20%;
         justify-content: center;
         align-items: center;
-      
+        padding: 10px;
+
         .more-symbol-container {
           height: 80%;
           width: 100%;
@@ -46,47 +47,57 @@ $font-color: rgba(255, 255, 255, 0.7);
           
           .more-symbol {
 
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 10px;
-      
-          li {
-            display: block;
-            position: relative;
-            height: 4px;
-            width: 100%;
-            min-width: 10px;
-            background: $font-color;
-            transition: transform 250ms ease-in-out;
-            transform-origin: center;
-          }
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
 
-          li:nth-child(1) {
-            top: 0;
-          }
+            li {
+              height: 4px;
+              width: 100%;
+              background: rgba(255, 255, 255, 0.3);
+              transition: transform 250ms ease-in-out;
+              margin-bottom: 6px;
+            }
+            
+            &.active li:nth-child(1) {
+              transform: rotate(45deg);
+              margin-bottom: 6px;
+            }
 
-          li:nth-child(2) {
-            top: 50%;
-            transform-origin: center;
-          }
+            &.active li:nth-child(2) {
+              height: 0;
+              width: 0;
+              opacity: 0; // Start with opacity 0
+              transform: scale(0); // Start with a scaled-down size
+              transition: transform 1s ease-in-out, opacity 1s ease-in-out; // Transition both transform and opacity
+            }
+            
 
-          li:nth-child(3) {
-            bottom: 0;
-          }
-          
-          &.active li {
-            transform: rotate(45deg);
-          }
-          }
+            &.active li:nth-child(3) {
+              transform: rotate(-45deg);
+            }
+
+            }
         }
 
-        .more-popup {
 
-          position: relative;
-          left: 20%;
-          top: 240%;
-          height: 300px;
-          width: 120px;
+        
+        .more-popup {
+          position: absolute; // Change to absolute positioning
+          opacity: 0; // Start with opacity 0 to hide the popup
+          transform: translateY(-10px); // Move the popup slightly up
+          height: 0; // Initially, set the height to 0
+          width: 120px; // Set the desired width
+
+          transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease; // Add transitions
+
+          .more.active + .more-popup {
+            opacity: 1; // Show the popup when .more has the "active" class
+            transform: translateY(0); // Reset the transform
+            height: auto; // Allow the content to expand the height smoothly
+          }
 
           .contents {
             display: flex;
