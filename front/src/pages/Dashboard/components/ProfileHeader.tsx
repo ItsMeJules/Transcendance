@@ -51,19 +51,13 @@ const ProfileHeader = () => {
             Win/Loss Ratio: {winLossRatio.toFixed(2)}
           </MDBCardText>
         </div>
-
-        <div className="stats">
-          <div className="progress-bar-container">
-            <div className={`progress-bar ${progressBarClass}`}></div>
-            <MDBCardText className="small mt-0.5 text-muted mb-0 custom-text-color">
-              Level {parsedUserLevel}
-            </MDBCardText>
-          </div>
-
+        <div className="progress-bar-container">
+          <div className={`progress-bar ${progressBarClass}`}></div>
+          <MDBCardText className="small mt-0.5 text-muted mb-0 custom-text-color">
+            Level {parsedUserLevel}
+          </MDBCardText>
         </div>
-        <div className="icons">
-          <LogoutParent setErrMsg={setErrMsg} />
-        </div>
+        <LogoutParent setErrMsg={setErrMsg} />
       </div>
 
     </main>

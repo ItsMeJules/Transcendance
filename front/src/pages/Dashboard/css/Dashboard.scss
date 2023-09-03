@@ -25,44 +25,53 @@
     height: 200px;
     width: 400px;
     transform: translateY(-50%);
-    justify-content: center;
-    padding-bottom: 10px;
+    justify-content:space-between;
+    align-items: end;
+    padding: 10px;
+    padding-top: 40px;
+    padding-bottom: 25px;
 
-        .WinLossRatio{
+      .WinLossRatio{
       display: flex;
       font-family: "dune", Arial, sans-serif;
       font-weight: bold;
-      margin: auto;
+      font-weight: bold;
+      font-size: 14px;
+      align-self: end;
+      width: 25%
     }
+
+      .progress-bar-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        font-family: "dune", Arial, sans-serif;
+        font-weight: bold;
+        font-size: 14px;
+        align-self: end;
+        width: 25%
+      }
 
 
     .icons {
-      transform: translateY(40%);
+      transform: translateY(30%);
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-evenly;
       padding-bottom: 10px;
-      gap: 10px;
+      gap: 1px;
       
       .stats {
         align-items: center;
         justify-content: center;
-        width: 200px;
         font-family: "dune", Arial, sans-serif;
         font-weight: bold;
-
-        .progress-bar-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 5px;
-        }
       }
       
       button {
         align-items: center;
-        justify-content: center;
-        width: 100px;
+        justify-content: space-evenly;
         border-radius: 50px;
         cursor: pointer;
         transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
@@ -104,24 +113,21 @@
       }
 
       button.profile-pic-button {
-        align-items: center;
-        justify-content: center;
-        background: none;
-        border: none;
+        filter: none;
         cursor: pointer;
 
         &:focus {
           outline: none;
-          filter: none; // to ensure the button itself doesn't apply a filter
+          filter: none;
         }
 
         &:hover {
-          filter: none; // to ensure the button itself doesn't apply a filter
+          filter: none;
 
           .profile-pic-image {
             transform: scale(1.1);
             transition: transform 0.3s ease;
-            filter: none !important; // to ensure that the image itself doesn't apply a filter
+            filter: none !important;
           }
         }
 
