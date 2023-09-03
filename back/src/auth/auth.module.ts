@@ -12,8 +12,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { FortyTwoStrategy } from './strategy/strategy.42';
 import { SocketModule } from 'src/websocket/websocket.module';
 import { SocketService } from 'src/websocket/websocket.service';
-import { TwoFaModule } from './two-fa/two-fa.module';
-import { TwoFaService } from './two-fa/two-fa.service';
+import { TwoFaService } from './two-fa.service';
 
 @Module({
   imports: [
@@ -24,7 +23,6 @@ import { TwoFaService } from './two-fa/two-fa.service';
     UserModule,
     PassportModule,
     SocketModule,
-    TwoFaModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -33,12 +31,11 @@ import { TwoFaService } from './two-fa/two-fa.service';
     UserService,
     PrismaService,
     AuthService,
+    JwtService,
     JwtStrategy,
-    JwtService,
-    JwtService,
     SocketService,
     TwoFaService,
   ], // why no guards?
-  exports: [AuthService, JwtService],
+  exports: [AuthService, JwtService, TwoFaService],
 })
 export class AuthModule {}

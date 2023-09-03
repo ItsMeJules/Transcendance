@@ -15,7 +15,7 @@ import { AuthDto } from './dto';
 import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
 import { AuthDtoUp } from './dto/authup.dto';
-import { TwoFaService } from './two-fa/two-fa.service';
+import { TwoFaService } from './two-fa.service';
 import { GetUser } from './decorator';
 import { User } from '@prisma/client';
 import { UnauthorizedException } from '@nestjs/common';

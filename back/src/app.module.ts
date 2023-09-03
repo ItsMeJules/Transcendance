@@ -18,8 +18,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { TwoFaModule } from './auth/two-fa/two-fa.module';
-import { TwoFaService } from './auth/two-fa/two-fa.service';
+import { TwoFaService } from './auth/two-fa.service';
 import { WebSocketGateway } from '@nestjs/websockets';
 import { ChatModule } from './chat/chat.module';
 
@@ -42,7 +41,6 @@ import { ChatModule } from './chat/chat.module';
     PrismaModule,
     SocketModule,
     PongModule,
-    TwoFaModule,
     ChatModule,
   ],
   controllers: [AppController, AuthController],
