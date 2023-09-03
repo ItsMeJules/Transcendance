@@ -31,7 +31,7 @@ $png-background-color: rgba(250, 250, 250, 1);
       .profile-board-header {
         display: flex;
         align-items: center;
-        padding-left: 20px;
+        padding: 20px;
       }
 
       .profile-pic-container {
@@ -122,8 +122,10 @@ $png-background-color: rgba(250, 250, 250, 1);
         flex-direction: column;
         justify-content: space-evenly;
         text-align: left;
+        align-content: right;
         width: 150px;
-        // padding: 20px 0px 0px 20px;
+        // padding: 0px 0px 0px 20px;
+        padding-left: 16%;
 
         @mixin data-fields-name-sub {
           font-family: "dune", Arial, sans-serif;
@@ -154,7 +156,7 @@ $png-background-color: rgba(250, 250, 250, 1);
         flex-direction: column;
         justify-content: space-evenly;
         text-align: left;
-        // width: 70%;
+        width: 50%;
 
         @mixin data-values-sub {
           overflow: hidden;
