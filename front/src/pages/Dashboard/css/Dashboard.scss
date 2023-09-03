@@ -114,6 +114,7 @@
 
       button.profile-pic-button {
         filter: none;
+        background-color: white;
         cursor: pointer;
 
         &:focus {
@@ -135,8 +136,8 @@
           align-items: center;
           justify-content: center;
           border-radius: 50%;
-          width: 70px;
-          height: 70px;
+          width: 75px;
+          height: 75px;
           object-fit: cover;
           transition: transform 0.3s ease;
         }

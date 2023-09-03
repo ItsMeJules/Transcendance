@@ -28,7 +28,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, iconColo
 
       {type === 'generic' && (
         <button onClick={onAddFriend}>
-          <IconContext.Provider value={{ color: iconColor || 'rgba(255, 255, 255, 0.5)', size: '30px' }}>
+          <IconContext.Provider value={{ color: iconColor || 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
             <FaHeart />
           </IconContext.Provider>
         </button>
