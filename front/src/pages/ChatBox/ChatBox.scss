@@ -8,8 +8,8 @@ $font-color: rgba(255, 255, 255, 0.7);
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  max-height: 800px;
-  min-height: 200px;
+  max-height: 70vh;
+  min-height: 450px;
   height: 100%;
   width: 100%;
   padding: 10px 10px;
@@ -203,7 +203,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             border: $border;
 
             height: 280px;
-            width: 160px;
+            width: 200px;
 
             .icons {
               display: flex;
@@ -343,14 +343,13 @@ $font-color: rgba(255, 255, 255, 0.7);
             justify-content: flex-start;
 
             position: relative;
-            top: calc(100% / 3);
+            top: -99%;
             left: 102%;
 
-            height: max-content;
-            // max-height: 20vw;
-            // width: 10vw;
-            min-width: 130px;
-            min-height: 180px;
+            background: rgba(0, 0, 0, 0.8); // Transparent background
+
+            width: 200px;
+            height: 320px;
 
             border-radius: 5px;
             border: $border;
@@ -360,6 +359,8 @@ $font-color: rgba(255, 255, 255, 0.7);
               border: none;
               border-bottom: $border;
               outline: none;
+              background: transparent;
+              color: white;
             }
 
             .users-list {
@@ -368,8 +369,32 @@ $font-color: rgba(255, 255, 255, 0.7);
               justify-content: flex-start;
 
               overflow-x: hidden;
+              overflow-y: scroll;
 
-              z-index: 10;
+              
+              // Style the scrollbar
+              scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
+              &:hover {
+                scrollbar-color: rgba(128, 128, 128, 0.6) rgba(0, 0, 0, 0.2); // Show scrollbar thumb and border on hover
+              }
+              &::-webkit-scrollbar {
+                width: 10px; // Adjust the width as needed
+              }
+              &::-webkit-scrollbar-track {
+                background-color: rgba(128, 128, 128, 0.2); // Gray transparent background
+              }
+              &::-webkit-scrollbar-thumb {
+                background-color: rgba(128, 128, 128, 0.3); // Transparent scrollbar thumb
+                border-radius: 5px; // Rounded corners for the thumb
+                border: 2px solid rgba(0, 0, 0, 0); // Hide the border initially
+              }
+              &:hover {
+                &::-webkit-scrollbar-thumb {
+                  background-color: rgba(128, 128, 128, 0.6); // Show scrollbar thumb on hover
+                  border-color: rgba(0, 0, 0, 0.2); // Show border on hover
+                }
+              }
+
 
               .user-container {
                 border-bottom: $border;
@@ -381,11 +406,14 @@ $font-color: rgba(255, 255, 255, 0.7);
                   flex-direction: row;
                   justify-content: flex-start;
                   align-items: center;
+                  padding: 5px;
+                  overflow-x: hidden;
 
                   transition: background-color;
 
                   &:hover {
-                    background-color: $hover-color;
+                    background-color: rgba(255, 255, 255, 0.1);
+                    transform: scale(1.03);
                   }
 
                   .profile-picture {
@@ -399,46 +427,52 @@ $font-color: rgba(255, 255, 255, 0.7);
 
                   .username {
                     margin: 0px 0px 0px 10px;
+                    color: white;
                   }
                 }
               }
             }
 
             .user-actions {
-              position: relative;
 
-              top: 0%;
-              left: 100%;
-
-              width: 10rem;
-
+              font-family: "dune", Arial, sans-serif;
+              font-size: 8pt;
+              justify-content: center;
+              padding: 10px;
+              background: black;
               border-radius: 5px;
-              border: $border;
 
               text-align: center;
               word-wrap: break-word;
 
               h4 {
-                text-transform: uppercase;
+                font-size: 14pt;
+                padding: 10px;
                 margin: 0px;
-                border-bottom: $border;
+                color: white;
               }
+
+              .dm,
+              .invite-to-play,
+              .block-user,
+              .unblock-user {
+                color: white;
+                border: $border;
+                border-radius: 5px;
+                padding: 10px;
+            }
 
               .dm:hover,
-              .invite-to-play:hover,
+              .invite-to-play:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+              }
+              
               .block-user:hover {
-                background-color: $hover-color;
+                background-color: rgba(255, 0, 0, 0.3);
               }
 
-              .dm {
-                border-bottom: $border;
-              }
-
-              .invite-to-play {
-                border-bottom: $border;
-              }
-
-              .block-user {
+              .unblock-user:hover {
+                background-color: rgba(0, 255, 0, 0.3);
               }
             }
           }
@@ -446,41 +480,63 @@ $font-color: rgba(255, 255, 255, 0.7);
           .channel-list-popup {
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
 
+            z-index: 10;
             position: relative;
-            top: calc(100% / 3 * 2);
+            top: -99%;
             left: 102%;
 
-            height: max-content;
-            max-height: 200px;
-            // width: 10vw;
+            width: 200px;
+            height: 320px;
 
             overflow-x: hidden;
             overflow-y: scroll;
 
+            // Style the scrollbar
+            scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
+            &:hover {
+              scrollbar-color: rgba(128, 128, 128, 0.6) rgba(0, 0, 0, 0.2); // Show scrollbar thumb and border on hover
+            }
+            &::-webkit-scrollbar {
+              width: 10px; // Adjust the width as needed
+            }
+            &::-webkit-scrollbar-track {
+              background-color: rgba(128, 128, 128, 0.2); // Gray transparent background
+            }
+            &::-webkit-scrollbar-thumb {
+              background-color: rgba(128, 128, 128, 0.3); // Transparent scrollbar thumb
+              border-radius: 5px; // Rounded corners for the thumb
+              border: 2px solid rgba(0, 0, 0, 0); // Hide the border initially
+            }
+            &:hover {
+              &::-webkit-scrollbar-thumb {
+                background-color: rgba(128, 128, 128, 0.6); // Show scrollbar thumb on hover
+                border-color: rgba(0, 0, 0, 0.2); // Show border on hover
+              }
+            }
+
             border-radius: 5px;
             border: $border;
+            background: rgba(0, 0, 0, 0.8); // Transparent background
 
             .filter-channels {
               padding: 10px;
               border: none;
               border-bottom: $border;
               outline: none;
+              background: transparent;
+              color: white;
             }
 
             .channel-list {
               display: flex;
               flex-direction: column;
-              justify-content: flex-start;
-
-              z-index: 10;
 
               .channel-container {
-                border-bottom: $border;
                 cursor: pointer;
-
+                
                 .channel {
+                  border: $border;
                   display: flex;
                   flex-direction: row;
                   justify-content: flex-start;
@@ -500,6 +556,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                     margin: 5px 0px 5px 5px;
 
                     border-radius: 50%;
+                    filter: invert(100%);
                   }
 
                   .channel-info {
@@ -507,9 +564,10 @@ $font-color: rgba(255, 255, 255, 0.7);
 
                     p {
                       font-family: "dune", Arial, sans-serif;
+                      color: white;
                       line-height: 12px;
                       font-size: 12px;
-                      margin: 0px 0px 0px 10px;
+                      margin: 10px;
                     }
                   }
                 }
@@ -568,9 +626,10 @@ $font-color: rgba(255, 255, 255, 0.7);
 
             .popup-container {
               position: relative;
-
-              top: 102%;
-              width: 100%;
+              left: -7%;
+              top: 50%;
+              height: 3500px;
+              width: 200px;
 
               .invited {
                 position: relative;
@@ -594,19 +653,38 @@ $font-color: rgba(255, 255, 255, 0.7);
                 flex-direction: column;
                 justify-content: flex-start;
 
-                height: max-content;
-                max-height: 100%;
-                width: 100%;
+
 
                 overflow-y: scroll;
+                // Style the scrollbar
+                scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
+                &:hover {
+                  scrollbar-color: rgba(128, 128, 128, 0.6) rgba(0, 0, 0, 0.2); // Show scrollbar thumb and border on hover
+                }
+                &::-webkit-scrollbar {
+                  width: 10px; // Adjust the width as needed
+                }
+                &::-webkit-scrollbar-track {
+                  background-color: rgba(128, 128, 128, 0.2); // Gray transparent background
+                }
+                &::-webkit-scrollbar-thumb {
+                  background-color: rgba(128, 128, 128, 0.3); // Transparent scrollbar thumb
+                  border-radius: 5px; // Rounded corners for the thumb
+                  border: 2px solid rgba(0, 0, 0, 0); // Hide the border initially
+                }
+                &:hover {
+                  &::-webkit-scrollbar-thumb {
+                    background-color: rgba(128, 128, 128, 0.6); // Show scrollbar thumb on hover
+                    border-color: rgba(0, 0, 0, 0.2); // Show border on hover
+                  }
+                }
 
                 border-radius: 5px;
-
                 border: $border;
 
                 .filter-users {
                   height: 30px;
-                  padding: 10px;
+                  margin: 10px;
                   outline: none;
                 }
 
@@ -948,25 +1026,20 @@ $font-color: rgba(255, 255, 255, 0.7);
 
       // Style the scrollbar
       scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
-
       &:hover {
         scrollbar-color: rgba(128, 128, 128, 0.6) rgba(0, 0, 0, 0.2); // Show scrollbar thumb and border on hover
       }
-
       &::-webkit-scrollbar {
         width: 10px; // Adjust the width as needed
       }
-
       &::-webkit-scrollbar-track {
         background-color: rgba(128, 128, 128, 0.2); // Gray transparent background
       }
-
       &::-webkit-scrollbar-thumb {
         background-color: rgba(128, 128, 128, 0.3); // Transparent scrollbar thumb
         border-radius: 5px; // Rounded corners for the thumb
         border: 2px solid rgba(0, 0, 0, 0); // Hide the border initially
       }
-
       &:hover {
         &::-webkit-scrollbar-thumb {
           background-color: rgba(128, 128, 128, 0.6); // Show scrollbar thumb on hover
@@ -979,9 +1052,6 @@ $font-color: rgba(255, 255, 255, 0.7);
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-
-        // width: 10vw;
-        // height: 10vh;
 
         display: flex;
         justify-content: center;
