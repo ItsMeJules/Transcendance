@@ -7,7 +7,6 @@ import EditUserFormValidation from "./EditUserFormValidation";
 import ProfilePicContainer from './ProfilePicContainer';
 import DisplayData from './DisplayData';
 import DisplayStats from './DisplayStats';
-import QrCode from '../QrCode';
 
 type ProfileType = 'user' | 'generic' | 'edit';
 
@@ -31,7 +30,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = '
           <ProfilePicContainer userData={userData} />
           <DisplayData userData={userData} />
           <DisplayStats userData={userData} />
-          <QrCode />
         </>
       )}
 

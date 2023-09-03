@@ -18,6 +18,8 @@ $png-background-color: rgba(250, 250, 250, 1);
       // border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 40px;
       padding: 20px;
+      padding-left: 0px;
+      padding-top: 1px;
       display: flex;
       width: 100%;
       height: 100%;
@@ -32,17 +34,13 @@ $png-background-color: rgba(250, 250, 250, 1);
         padding-left: 20px;
       }
 
-      .icon {
-        // filter: invert(100%);
-      }
-
       .profile-pic-container {
         display: flex;
         justify-content: center;
 
         .profile-pic-circle {
-          width: 15%;
-          height: 15%;
+          width: 12%;
+          height: 12%;
           border-radius: 50%;
           overflow: hidden;
           display: flex;
@@ -112,7 +110,11 @@ $png-background-color: rgba(250, 250, 250, 1);
     .information-display-main {
       display: flex;
       justify-content: space-evenly;
-      padding: 30px;
+      
+      .data-fields {
+        display: "flex";
+        flex-direction:"column";
+      }
 
       .data-fields-name-main {
         display: flex;
@@ -121,6 +123,7 @@ $png-background-color: rgba(250, 250, 250, 1);
         justify-content: space-evenly;
         text-align: left;
         width: 150px;
+        padding: 20px 0px 0px 20px;
 
         @mixin data-fields-name-sub {
           font-family: "dune", Arial, sans-serif;
@@ -222,6 +225,34 @@ $png-background-color: rgba(250, 250, 250, 1);
           background-color: rgba(0, 128, 0, 1);
           /* Green */
           color: rgba(255, 255, 255, 0.7);
+        }
+      }
+        .activate-deactivate-button,
+        .deactivate {
+          display: flex;
+          justify-content: left;
+          margin-top: 10px;
+          min-height: 20px;
+          color: rgba(255, 255, 255, 0.7); 
+          padding: 15px;
+          border-radius: 4px;
+          transition-duration: 0.4s;
+          font-family: "dune", Arial, sans-serif;
+
+        &.activate-deactivate-button {
+          background-color: rgba(0, 128, 0, 0.3);
+
+        &:hover {
+          background-color: rgba(0, 128, 0, 1);
+          }
+        }
+
+        &.deactivate {
+          background-color: rgba(199, 28, 50, 0.3);
+
+        &:hover {
+          background-color: rgba(199, 28, 50, 1);
+          }
         }
       }
 

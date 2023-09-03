@@ -1,5 +1,3 @@
-/* //////////////////// 2FA CSS BEGIN \\\\\\\\\\\\\\\\\\\\\\\\\  */
-
 :root {
   --visible: none;
 }
@@ -16,12 +14,22 @@
 }
 
 .popup-content {
-    position: relative;
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% depuis le haut, centrée horizontalement */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Largeur de 80% */
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  margin: 0;
+  padding: 20px;
+  font-family: "dune", Arial, sans-serif;
+  font-weight: bold;
+  max-width: 300px;
+  color: black;
+  background: rgba(197, 0, 0, 0.678);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  justify-content: center;
 }
 
 .close {
@@ -33,49 +41,6 @@
   &:hover,
   &:focus {
     color: white;
-  }
-}
-	
-.myBtn {
-    background-color: rgba(0, 128, 0, 0.3); /* Green */
-    border: none;
-    color: rgba(255, 255, 255, 0.7); /* Text color */
-    padding: 15px 32px; /* Padding around text */
-    text-align: center; /* Center the text */
     text-decoration: none;
-    display: inline-block;
-    font-family: "dune", Arial, sans-serif;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer; /* Change cursor when hovering over button */
-    border-radius: 12px; /* Rounded corners */
-    transition-duration: 0.4s; /* Transition effect duration */
-}
-
-.myBtn:hover {
-    background-color: #45a049; /* Change background color on hover */
-}
-
-.myBtn,
-.deactivate {
-    background-color: #da243c;
-    border: none;
-    color: white; /* Text color */
-    padding: 15px 32px; /* Padding around text */
-    text-align: center; /* Center the text */
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer; /* Change cursor when hovering over button */
-    border-radius: 12px; /* Rounded corners */
-    transition-duration: 0.4s; /* Transition effect duration */
-
-  &.deactivate {
-    background-color: #da243c;
-
-    &:hover {
-      background-color: #c71c32;
-    }
   }
 }

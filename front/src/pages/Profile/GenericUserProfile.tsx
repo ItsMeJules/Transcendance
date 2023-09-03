@@ -18,7 +18,7 @@ const GenericUserProfile = () => {
   const { id } = useParams();
   const [level, setLevel] = useState<number | null>(0);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [iconColor, setIconColor] = useState('black');
+  const [iconColor, setIconColor] = useState('rgba(255, 255, 255, 0.7)');
   const [errMsg, setErrMsg] = useState('');
   getProgressBarClass(level);
 
@@ -34,11 +34,10 @@ const GenericUserProfile = () => {
             withCredentials: true
           });
         localStorage.setItem('genericUserData', JSON.stringify(response.data.data.user.user));
-        // console.log(response.data);
         setUserData(response.data.data.user.user);
 
         if (response.data.data.friendStatus === 'Is friend')
-          setIconColor('red');
+          setIconColor('rgba(255, 0, 0, 0.7)');
         if (response.data.redirectTo === APP_URL + APP_ROUTES.USER_PROFILE)
           window.location.href = APP_ROUTES.USER_PROFILE;
         if (userData)
@@ -65,9 +64,9 @@ const GenericUserProfile = () => {
           withCredentials: true
         });
       if (response.data.friendStatus === 'Is friend')
-        setIconColor('red');
+        setIconColor('rgba(255, 0, 0, 0.7)');
       else
-        setIconColor('black');
+        setIconColor('rgba(255, 255, 255, 0.7)');
     } catch (err: any) {
       // adequate error management
     }
