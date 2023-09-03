@@ -62,9 +62,6 @@ export class PongEvents {
       return;
     }
     const user = await this.authService.validateJwtToken(access_token);
-    console.log(' ');
-    console.log(' ');
-    console.log('1 IN id:', user.id);
     if (!user) {
       client.disconnect();
       return;
