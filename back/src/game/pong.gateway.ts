@@ -63,6 +63,7 @@ export class PongEvents {
   }
 
   async handleConnection(client: Socket) {
+    console.log('----------CONNECT------------');
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -91,6 +92,8 @@ export class PongEvents {
   }
 
   async handleDisconnect(client: Socket) {
+    console.log('>>>>>>>>>> DISCO <<<<<<<<<<<<<');
+    console.log('NECTTTTTTTTTTTTTTTTTTTTar');
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     this.emitUpdateAllUsers('toAll', 0);

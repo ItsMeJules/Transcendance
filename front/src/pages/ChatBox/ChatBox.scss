@@ -411,12 +411,17 @@ $font-color: rgba(255, 255, 255, 0.7);
               }
 
               .dm:hover,
+              .invite-to-chat:hover,
               .invite-to-play:hover,
               .block-user:hover {
                 background-color: $hover-color;
               }
 
               .dm {
+                border-bottom: $border;
+              }
+
+              .invite-to-chat {
                 border-bottom: $border;
               }
 
@@ -676,6 +681,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                 .unmute:hover,
                 .demote:hover,
                 .dm:hover,
+                .invite-to-chat:hover,
                 .invite-to-play:hover,
                 .block-user:hover {
                   background-color: $hover-color;
@@ -710,6 +716,10 @@ $font-color: rgba(255, 255, 255, 0.7);
                 }
 
                 .dm {
+                  border-bottom: $border; 
+                }
+
+                .invite-to-chat {
                   border-bottom: $border; 
                 }
 
