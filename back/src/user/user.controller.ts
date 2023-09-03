@@ -29,6 +29,7 @@ import { editFileName, imageFileFilter } from './module';
 import { Response } from 'express';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
+
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
@@ -58,32 +59,6 @@ export class UserController {
   @Get('me')
   getMe(@GetUser() user: User): User {
     return user;
-  }
-
-  @Get('me/friends')
-  async getFriends(@GetUser() user: User) {
-    const userWithFriends = await this.prisma.user.findUnique({
-      where: { id: user.id },
-      include: { friends: true },
-    });
-    delete userWithFriends.hash;
-
-    // Set online status for friends
-    const onlineUsers = await this.socketEvents.server
-      .in('general_online')
-      .fetchSockets();
-    userWithFriends.friends.forEach((user) => {
-      delete user.hash;
-      for (let i = 0; i < onlineUsers.length; i++) {
-        const socket = onlineUsers[i];
-        if (user.id === socket.data.id) {
-          user.isOnline = true;
-          break;
-        }
-      }
-    });
-
-    return userWithFriends;
   }
 
   @Get('all')

@@ -3,16 +3,16 @@ import User from "../../../services/User/User";
 import UserProfile from "./UserProfile";
 
 interface UserProfilesListProps {
-  users: User[];
-  currentUserId?: string | null;
+  leaderboardList: any[];
+  currentUserId?: string;
 }
 
-const UserProfilesList: React.FC<UserProfilesListProps> = ({ users, currentUserId }) => {
+const UserProfilesList: React.FC<UserProfilesListProps> = ({ leaderboardList, currentUserId }) => {
   return (
     <main className="leaderboard__profiles">
-      {users.map((user) => (
+      {leaderboardList.map((user) => (
         <UserProfile
-        key={user.getId()}
+        key={user.id}
         user={user}
         currentUserId={currentUserId} />
       ))}

@@ -10,10 +10,9 @@ const AllUsers = () => {
   const [usersList, setUsersList] = useState<any[]>([]);
   const socket = useWebsocketContext();
 
-  // Sockets on
+  // Socket on + emit
   useEffect(() => {
     socket.game?.on('allUsers', (data: any) => {
-      console.log('ALL USERSSSSSSSSSSSSS:', data);
       setUsersData(data);
     });
     socket.game?.emit('allUsers', { action: 'status' });
@@ -22,6 +21,7 @@ const AllUsers = () => {
     };
   }, [socket.game]);
 
+  // Set data
   useEffect(() => {
     const tmpUsersList = (Object.entries(usersData) as Array<[string, UserData]>).map(
       ([userId, userData]: [string, UserData]) => ({

@@ -22,7 +22,6 @@ const deregisterSocket = (socket: Socket): void => {
   setTimeout(() => {
     socket.disconnect();
   }, 5000);
-  socket.off("online");
 };
 
 const closeOpenSockets = (sockets: OpenedSockets): void => {
@@ -34,6 +33,11 @@ const closeOpenSockets = (sockets: OpenedSockets): void => {
 const OpenSocket = (namespace: string): Socket => {
   const newSocket = io(namespace, {
     withCredentials: true,
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    randomizationFactor: 0.5,
   });
   return newSocket;
 };
