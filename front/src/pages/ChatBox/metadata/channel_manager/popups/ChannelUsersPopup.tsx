@@ -117,7 +117,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
         <input
           className="filter-users"
           type="search"
-          placeholder="Search users"
+          placeholder="Search users..."
           value={searchText}
           onChange={(e) => onSearching(e.target.value, 0)}
         />
@@ -138,7 +138,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
         <input
           className="invite-user"
           type="search"
-          placeholder="Invite user"
+          placeholder="Invite user..."
           value={invitedUsername}
           onChange={(e) => onSearching(e.target.value, 1)}
           required

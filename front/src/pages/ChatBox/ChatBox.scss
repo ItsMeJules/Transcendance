@@ -586,7 +586,6 @@ $font-color: rgba(255, 255, 255, 0.7);
         height: 90px;
         width: 200px;
 
-        font-family: "dune", Arial, sans-serif;
         color: $font-color;
         border-left: $border;
         border-right: $border;
@@ -603,6 +602,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
           .channel-name {
             height: 50%;
+            font-family: "dune", Arial, sans-serif;
             font-size: 14px;
           }
 
@@ -618,6 +618,7 @@ $font-color: rgba(255, 255, 255, 0.7);
               height: 100%;
               width: 130px;
               border-radius: 5px;
+              font-family: "dune", Arial, sans-serif;
 
               &:hover {
                 outline: $border;
@@ -626,16 +627,14 @@ $font-color: rgba(255, 255, 255, 0.7);
 
             .popup-container {
               position: relative;
-              left: -7%;
-              top: 50%;
-              height: 3500px;
-              width: 200px;
-
+              left: -40%;
+              top: 52%;
+              height: 320px;
+              width: 160px;
+              
               .invited {
-                position: relative;
-                top: 0%;
-                left: 100%;
 
+                background: rgba(0, 0, 0, 0.72);
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -649,11 +648,11 @@ $font-color: rgba(255, 255, 255, 0.7);
               }
 
               .channel-users-popup {
+                background: rgba(0, 0, 0, 0.72);
+                color: white;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
-
-
 
                 overflow-y: scroll;
                 // Style the scrollbar
@@ -683,9 +682,12 @@ $font-color: rgba(255, 255, 255, 0.7);
                 border: $border;
 
                 .filter-users {
-                  height: 30px;
-                  margin: 10px;
+                  padding: 10px;
+                  border: none;
+                  border-bottom: $border;
                   outline: none;
+                  background: transparent;
+                  color: white;
                 }
 
                 .users-list {
@@ -710,7 +712,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                       transition: background-color 0.3s;
 
                       &:hover {
-                        background-color: $hover-color;
+                        background-color: rgb(255, 255, 255, 0.3);
                       }
 
                       .profile-picture {
@@ -730,90 +732,63 @@ $font-color: rgba(255, 255, 255, 0.7);
                 }
 
                 .invite-user {
-                      font-family: "dune", Arial, sans-serif;
-                      color: $font-color;
-                      text-align: center;
+                  padding: 10px;
+                  border: none;
                   border-top: $border;
+                  outline: none;
+                  background: transparent;
+                  color: white;
 
                   &:hover {
-                    background-color: $hover-color;
+                    background-color: rgb(255, 255, 255, 0.3);
                   }
                 }
               }
 
               .user-actions {
+                background: rgba(0, 0, 0, 0.72);
                 position: relative;
-
-                top: 0%;
-                left: 100%;
-
-                width: 10rem;
-
+                top: -29%;
+                left: 102%;
+                width: 160px;
                 border-radius: 5px;
                 border: $border;
-
                 text-align: center;
                 word-wrap: break-word;
+                font-family: "dune", Arial, sans-serif;
+                font-size: 8pt;
+                padding: 10px;
 
                 h4 {
-                  text-transform: uppercase; //?
+                  padding: 10px;
+                  font-size: 12pt;
                   margin: 0px;
-                  border-bottom: $border;
                   cursor: default;
                 }
 
-                .kick:hover,
-                .ban:hover,
-                .mute:hover,
-                .promote:hover,
-                .unban:hover,
-                .unmute:hover,
-                .demote:hover,
-                .dm:hover,
-                .invite-to-play:hover,
-                .block-user:hover {
-                  background-color: $hover-color;
-                }
                 
-                .ban {
-                  border-bottom: $border; 
+                .ban,
+                .unban,
+                .kick,
+                .mute,
+                .unmute,
+                .promote,
+                .demote,
+                .dm,
+                .invite-to-play,
+                .block-user,
+                .unblock-user {
+                  padding: 10px;
+                  font-size: 8pt;
+                  border: $border; 
+                  border-radius: 5px;
+                  color: white;
+
+                  &:hover {
+                    background-color: rgba(255, 255, 255, 0.3);
+                  }
                 }
 
-                .unban {
-                  border-bottom: $border; 
-                }
-
-                .kick {
-                  border-bottom: $border; 
-                }
-
-                .mute {
-                  border-bottom: $border; 
-                }
-
-                .unmute {
-                  border-bottom: $border; 
-                }
-
-                .promote {
-                  border-bottom: $border; 
-                }
-
-                .demote {
-                  border-bottom: $border; 
-                }
-
-                .dm {
-                  border-bottom: $border; 
-                }
-
-                .invite-to-play {
-                  border-bottom: $border; 
-                }
-
-                .block-user {
-                  border-bottom: $border; 
-                }
               }
             }
           }

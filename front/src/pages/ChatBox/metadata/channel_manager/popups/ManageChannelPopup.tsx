@@ -57,7 +57,7 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
       {channelType === ChannelType.PROTECTED && (
         <div className="password-input">
           <input
-            placeholder="write here..."
+            placeholder="Password..."
             onChange={(e) => setChannelPassword(e.target.value)}
             value={channelPassword}
             required
