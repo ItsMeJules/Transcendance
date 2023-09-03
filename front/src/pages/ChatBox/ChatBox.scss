@@ -85,19 +85,12 @@ $font-color: rgba(255, 255, 255, 0.7);
 
         
         .more-popup {
-          position: absolute; // Change to absolute positioning
-          opacity: 0; // Start with opacity 0 to hide the popup
-          transform: translateY(-10px); // Move the popup slightly up
-          height: 0; // Initially, set the height to 0
+          transform: translateY(20%); // Move the popup slightly up
           width: 120px; // Set the desired width
 
           transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease; // Add transitions
 
-          .more.active + .more-popup {
-            opacity: 1; // Show the popup when .more has the "active" class
-            transform: translateY(0); // Reset the transform
-            height: auto; // Allow the content to expand the height smoothly
-          }
+
 
           .contents {
             display: flex;
