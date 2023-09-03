@@ -18,12 +18,15 @@ import {
 } from './module';
 import { Response } from 'express';
 import { hash } from 'argon2';
+import { EventEmitter } from 'events';
+
+export const userServiceEmitter = new EventEmitter();
 
 const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as needed)
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService, private config: ConfigService) {}
+  constructor(private prisma: PrismaService, private config: ConfigService) { }
 
 
   async editUser(userId: number, dto: EditUserDto) {
@@ -114,7 +117,7 @@ export class UserService {
         // console.log('path to delete:',pathToDelete);
         fs.unlinkSync(pathToDelete);
       }
-    } catch (err: any) {}
+    } catch (err: any) { }
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
@@ -195,18 +198,19 @@ export class UserService {
           },
         },
       });
-      // console.log("user:", user);
       if (user.friends.length === 0) {
         await this.prisma.user.update({
           where: { id: userId },
           data: { friends: { connect: { id: friendId } } },
         });
+        userServiceEmitter.emit('updateFriendsOfUser', { userId: userId })
         return { friendStatus: 'Is friend' };
       } else {
         await this.prisma.user.update({
           where: { id: userId },
           data: { friends: { disconnect: { id: friendId } } },
         });
+        userServiceEmitter.emit('updateFriendsOfUser', { userId: userId })
         return { friendStatus: 'Is not friend' };
       }
     } catch (error) {

@@ -67,9 +67,6 @@ export class PongService {
   }
 
   getGameStructById(gameId: number) {
-    // this.onlineGames.forEach((value, key) => {
-    //   console.log('og key id:', key, ' value id:', value.prop.id);
-    // })
     return this.onlineGames.get(gameId);
   }
 
@@ -96,12 +93,12 @@ export class PongService {
 
   async deleteGamePrismaAndList(gameId: number) {
     // Protect prisma delete??
+    this.onlineGames.delete(gameId);
     await this.prismaService.game.delete({
       where: {
         id: gameId,
       },
     });
-    this.onlineGames.delete(gameId);
   }
 
   async getPlayerById(gameId: number, userId: number): Promise<number> {
@@ -169,12 +166,11 @@ export class PongService {
           player2Score: game.player2Id === winner.id ? winner.score : loser.score,
         },
       });
-
       // Protect if not found
       this.onlineGames.delete(gameStruct.prop.id);
-      this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
+      await this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
       console.log('Game updated successfully');
-      pongServiceEmitter.emit('serviceEndGame', { action: 'emitOnlieGames'});
+      pongServiceEmitter.emit('serviceEndGame', { action: 'emitOnlineGames' });
       // emit to front room
     } catch (error) {
       console.error('Error updating game:', error);

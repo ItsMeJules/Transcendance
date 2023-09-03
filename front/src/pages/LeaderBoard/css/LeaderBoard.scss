@@ -96,7 +96,7 @@
 
       &__profile {
         display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
+        grid-template-columns: 1fr 3fr 0.95fr 0.95fr;
         align-items: center;
         padding: 10px 0px 10px 10px;
         overflow: hidden;
@@ -127,6 +127,15 @@
         box-shadow: 0 0 0 10px #4b4b4b, 0 0 0 22px #404041;
       }
 
+      &__picture.online {
+        box-shadow: 0 0 0 5px var(--online-color);
+        animation: pulsateShadow 1.5s infinite;
+      }
+
+      &__picture.offline {
+        box-shadow: 0 0 0 8px #cfcdcd;
+      }
+
       &__name {
         text-align: left;
         color: #979cb0;
@@ -139,13 +148,37 @@
         white-space: nowrap;
       }
 
+      &__level {
+        margin-right: 10px;
+        color: #a5a4a4;
+        font-weight: 700;
+        font-size: 15px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &__lvl {
+          font-size: 25px;
+        }
+
+        &>span {
+          opacity: .8;
+          font-weight: 600;
+          font-size: 13px;
+          margin-left: 3px;
+        }
+      }
+
       &__value {
+        margin-right: 5px;
         color: #ffffff;
         font-weight: 700;
         font-size: 20px;
         text-overflow: ellipsis;
         white-space: nowrap;
-        // text-align: right;
+
+        &__pts {
+          font-size: 5px;
+        }
 
         &>span {
           opacity: .8;

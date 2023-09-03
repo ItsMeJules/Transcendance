@@ -18,7 +18,8 @@ import { PongStoreService } from 'src/utils/pong-store/pong-store.service';
 import { disconnect } from 'process';
 import { gameEvents } from './game.class';
 import { pongServiceEmitter } from './pong.service';
-import { type } from 'os';
+import { userServiceEmitter } from 'src/user/user.service';
+import { Interval } from '@nestjs/schedule';
 
 export type SpectatorMap = Map<number, number>; // <userId, gameId
 export type PlayersMap = Map<number, number>; // <userId, gameId
@@ -41,6 +42,8 @@ export class PongEvents {
       const gameIdToDelete = parseInt(data.gameId);
       this.removeSpectatorsFromList(gameIdToDelete);
       this.emitUpdateAllUsers('toAll', 0);
+      this.emitUpdateFriendsOf(parseInt(data.pl1Id));
+      this.emitUpdateFriendsOf(parseInt(data.pl1Id));
     });
     /* Update room */
     gameEvents.on('gatewayUpdateRoom', (data) => {
@@ -52,7 +55,11 @@ export class PongEvents {
     });
     pongServiceEmitter.on('serviceEndGame', (data) => {
       this.updateEmitOnlineGames('toRoom', 0);
+      this.emitUpdateLeaderboard('toRoom', 0);
     });
+    userServiceEmitter.on('updateFriendsOfUser', (data) => {
+      this.emitUpdateFriends('toUser', parseInt(data.userId));
+    })
   }
 
   async handleConnection(client: Socket) {
@@ -69,23 +76,25 @@ export class PongEvents {
     const gameId = this.playersMap.get(user.id);
     client.data = { id: user.id, username: user.username };
     this.idToSocketMap.set(user.id, client);
-    client.join(`user_${user.id}`);
-    client.join('game_online');
+    await this.socketJoin(client, `user_${user.id}`);
+    await this.socketJoin(client, 'game_online');
     if (this.pongService.onlineGames) {
       const gameId = this.playersMap.get(user.id);
       if (gameId)
-        client.join(`game_${gameId}`);
+        await this.socketJoin(client, `game_${gameId}`);
       const gameWatchId = this.spectatorsMap.get(user.id);
       if (gameWatchId)
-        client.join(`game_${gameWatchId}`);
+        await this.socketJoin(client, `game_${gameWatchId}`);
     }
     this.emitUpdateAllUsers('toAll', 0);
+    this.emitUpdateFriendsOf(user.id);
   }
 
   async handleDisconnect(client: Socket) {
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     this.emitUpdateAllUsers('toAll', 0);
+    this.emitUpdateFriendsOf(user.id);
     this.pongService.removeFromQueue(user.id);
     // this.spectatorsMap.delete(user.id);
     this.idToSocketMap.delete(user.id);
@@ -133,8 +142,8 @@ export class PongEvents {
         this.pongService.deleteGamePrismaAndList(game.prop.id)
         return;
       }
-      player1socket.join(`game_${game.prop.id}`);
-      player2socket.join(`game_${game.prop.id}`);
+      await this.socketJoin(player1socket, `game_${game.prop.id}`);
+      await this.socketJoin(player2socket, `game_${game.prop.id}`);
       this.playersMap.delete(player1.id);
       this.playersMap.delete(player2.id);
       this.playersMap.set(player1.id, game.prop.id);
@@ -147,6 +156,8 @@ export class PongEvents {
       // this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
       this.updateEmitOnlineGames('toRoom', 0);
       this.emitUpdateAllUsers('toAll', 0);
+      this.emitUpdateFriendsOf(player1.id);
+      this.emitUpdateFriendsOf(player2.id);
     }
   }
 
@@ -169,7 +180,8 @@ export class PongEvents {
     if (data.action === 'query') {
       this.updateEmitOnlineGames('toUser', user.id);
       const clientSocket = this.idToSocketMap.get(client.data.id);
-      if (clientSocket) clientSocket.join('onlineGames');
+      if (clientSocket)
+        await this.socketJoin(clientSocket, 'onlineGames');
     }
   }
 
@@ -239,20 +251,21 @@ export class PongEvents {
       gameStruct.prop.status = 'waiting';
       this.sendUpdateToPlayer(gameStruct, player, opponent.status, -1, 'prepareToPlay');
       const timeoutInSeconds = 10;
-      setTimeout(() => {
-        if (opponent.status === 'pending'
-          && gameStruct.prop.status === 'waiting') {
-          console.log('TIMEOUT');
-          gameStruct.prop.status = 'timeout';
-          gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
-          this.pongService.deleteGamePrismaAndList(gameStruct.prop.id);
-          this.playersMap.delete(player.id);
-          this.playersMap.delete(opponent.id);
-          this.removeSpectatorsFromList(gameStruct.prop.id);
-          this.emitUpdateAllUsers('toAll', 0);
-        }
-      }, timeoutInSeconds * 1000);
-
+      await new Promise((resolve) => setTimeout(resolve, timeoutInSeconds * 1000));
+      if (opponent.status === 'pending'
+        && gameStruct.prop.status === 'waiting') {
+        console.log('TIMEOUT');
+        gameStruct.prop.status = 'timeout';
+        gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
+        await this.pongService.deleteGamePrismaAndList(gameStruct.prop.id);
+        this.playersMap.delete(player.id);
+        this.playersMap.delete(opponent.id);
+        this.removeSpectatorsFromList(gameStruct.prop.id);
+        this.updateEmitOnlineGames('toRoom', 0);
+        this.emitUpdateAllUsers('toAll', 0);
+        this.emitUpdateFriendsOf(gameStruct.pl1.id);
+        this.emitUpdateFriendsOf(gameStruct.pl2.id);
+      }
     }
     // Both ready launch game
     else if (data.action === 'playPressed' && opponent.status === 'ready') {
@@ -306,7 +319,7 @@ export class PongEvents {
       console.log('online games id:', key);
     });
     // console.log('5 pongservice online games:', this.pongService.onlineGames);
-    
+
     // User is in game redirect to play
     if (isUserInGame !== undefined) {
       console.log('5 WATCH IN GAME');
@@ -323,7 +336,7 @@ export class PongEvents {
     const player2 = await this.userService.findOneById(game.pl2.id);
     if (gameId !== -1)
       this.spectatorsMap.set(user.id, gameId);
-    clientSocket.join(`game_${game.prop.id}`);
+    await this.socketJoin(clientSocket, `game_${game.prop.id}`);
     const dataToSend = { status: 'OK', gameState: game.getState(), player1: player1, player2: player2 }
     this.server.to(`user_${client.data.id}`).emit('watchGame', dataToSend);
     console.log('ok here emit watch game');
@@ -380,6 +393,8 @@ export class PongEvents {
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
       this.updateEmitOnlineGames('toRoom', 0);
       this.emitUpdateAllUsers('toAll', 0);
+      this.emitUpdateFriendsOf(player.id);
+      this.emitUpdateFriendsOf(opponent.id);
       // this.allUsersUpdater();
     }
   }
@@ -452,6 +467,95 @@ export class PongEvents {
     }
   }
 
+  /* Friends right screen */
+  @SubscribeMessage('friends') // This decorator listens for messages with the event name 'message'
+  async friendsHandler(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { action: string }) {
+    console.log('FRIENDS and status:', data.action);
+
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!client.data.id || !access_token) {
+      client.disconnect(); // emit error message??
+      return;
+    }
+    const userId = parseInt(client.data.id);
+    this.emitUpdateFriends('toUser', userId);
+  }
+
+  async emitUpdateFriends(type: string, userId: number) {
+    // protect and manage errors
+    const userWithFriends = await this.pongService.prismaService.user.findUnique({
+      where: { id: userId },
+      include: { friends: true },
+    });
+    delete userWithFriends.hash;
+    userWithFriends.friends.forEach((user) => {
+      delete user.hash;
+      const isPlaying = this.playersMap.get(user.id);
+      user.isPlaying = isPlaying !== undefined ? true : false;
+      const isOnline = isPlaying ? true : this.idToSocketMap.get(user.id);
+      user.isOnline = isOnline !== undefined ? true : false;
+
+    });
+    if (type === 'toUser')
+      this.server.to(`user_${userId}`).emit('friends', userWithFriends);
+    else if (type === 'toAll')
+      this.server.to('game_online').emit('friends', userWithFriends);
+  }
+
+  async emitUpdateFriendsOf(userId: number) {
+    // protect and manage errors
+    const userWithFriends = await this.pongService.prismaService.user.findUnique({
+      where: { id: userId },
+      include: { friendsOf: true },
+    });
+    for (const user of userWithFriends.friendsOf.values()) {
+      this.emitUpdateFriends('toUser', user.id);
+    }
+    // userWithFriends.friendsOf.forEach((user) => {
+    //   delete user.hash;
+    //   const isPlaying = this.playersMap.get(user.id);
+    //   user.isPlaying = isPlaying !== undefined ? true : false;
+    //   const isOnline = isPlaying ? true : this.idToSocketMap.get(user.id);
+    //   user.isOnline = isOnline !== undefined ? true : false;
+
+    // });
+    // if (type === 'toUser')
+    //   this.server.to(`user_${userId}`).emit('friends', userWithFriends);
+    // else
+    //   this.server.to('game_online').emit('friends', userWithFriends);
+  }
+
+  /* Clean unactive games */
+  @Interval(5000) // every 5 seconds
+  cleanTimedOutOnlineGames() {
+    let tMax = 10; // in seconds 
+    this.pongService.onlineGames.forEach((value, key) => {
+      if (Date.now() - value.tStart >= tMax && value.prop.status === 'pending')
+        this.dealWithTimeout(value);
+    }
+    );
+  }
+
+  async dealWithTimeout(game: GameStruct) {
+    const timeoutInSeconds = 10;
+    console.log('TIMEOUT BIG IN ');
+    await new Promise((resolve) => setTimeout(resolve, timeoutInSeconds * 1000));
+    if (game.prop.status === 'pending') {
+      game.prop.status = 'timeout';
+      game.sendUpdateToRoom(game.pl1.status, game.pl2.status, -1, 'prepareToPlay');
+      await this.pongService.deleteGamePrismaAndList(game.prop.id);
+      this.playersMap.delete(game.pl1.id);
+      this.playersMap.delete(game.pl2.id);
+      this.removeSpectatorsFromList(game.prop.id);
+      this.updateEmitOnlineGames('toRoom', 0);
+      this.emitUpdateAllUsers('toAll', 0);
+      this.emitUpdateFriendsOf(game.pl1.id);
+      this.emitUpdateFriendsOf(game.pl2.id);
+    }
+  }
+
   /* All users right screen */
   @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
   async allUsersHandler(
@@ -475,7 +579,6 @@ export class PongEvents {
         username: 'asc',
       }
     });
-    // console.log('playersMap:', this.playersMap);
     allUsers.forEach((user) => {
       delete user.hash;
       const isPlaying = this.playersMap.get(user.id);
@@ -483,11 +586,52 @@ export class PongEvents {
       const isOnline = isPlaying ? true : this.idToSocketMap.get(user.id);
       user.isOnline = isOnline !== undefined ? true : false;
     });
-    // console.log('all users list:', allUsers);
     if (type === 'toUser')
       this.server.to(`user_${userId}`).emit('allUsers', allUsers);
     else
       this.server.to('game_online').emit('allUsers', allUsers);
+  }
+
+  /* Leaderboard right screen */
+  @SubscribeMessage('leaderboard') // This decorator listens for messages with the event name 'message'
+  async leaderboardHandler(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { action: string }) {
+    console.log('LLLLeaderboard and status:', data.action);
+
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!client.data.id || !access_token) {
+      client.disconnect(); // emit error message??
+      return;
+    }
+    const userId = parseInt(client.data.id);
+    this.emitUpdateLeaderboard('toUser', userId);
+  }
+
+  async emitUpdateLeaderboard(type: string, userId: number) {
+    console.log('LEADERBOARD EMIT');
+    // protect and manage errors
+    const leaderboard = await this.pongService.prismaService.user.findMany({
+      orderBy: {
+        userPoints: 'desc',
+      },
+    });
+    leaderboard.forEach((user) => {
+      delete user.hash;
+      const isPlaying = this.playersMap.get(user.id);
+      user.isPlaying = isPlaying !== undefined ? true : false;
+      const isOnline = isPlaying ? true : this.idToSocketMap.get(user.id);
+      user.isOnline = isOnline !== undefined ? true : false;
+      console.log('user:', user.username, ' pts:', user.userPoints);
+    });
+    let data: any = {};
+    data.userId = userId;
+    data.leaderboard = leaderboard;
+
+    if (type === 'toUser')
+      this.server.to(`user_${userId}`).emit('leaderboard', data);
+    else
+      this.server.to('game_online').emit('leaderboard', data);
   }
 
   /* Refresh front functions */
@@ -548,8 +692,15 @@ export class PongEvents {
   }
 
   /* Utils */
+  async socketJoin(client: Socket, room: string) {
+    const sockets = await this.server.in(room).fetchSockets();
+    const isInRoom = sockets.some(Socket => Socket.id === client.id);
+    if (!isInRoom)
+      client.join(room);
+  }
+
   removeSpectatorsFromList(gameIdToDelete: number) {
-    
+
     for (const [userId, gameId] of this.spectatorsMap.entries()) {
       if (gameId === gameIdToDelete) {
         this.spectatorsMap.delete(userId);
@@ -573,40 +724,6 @@ export class PongEvents {
     });
     console.log(' ');
   }
-
-
-
-
-  // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
-  // async allUsersHandler(
-  //   @ConnectedSocket() client: Socket,
-  //   @MessageBody() data: { action: string }) {
-  //   console.log('All users and status:', data.action);
-
-  //   if (!client.data.id) {
-  //     client.disconnect();
-  //     return;
-  //   }
-  //   const userId = parseInt(client.data.id);
-  //   // protect and manage errors
-  //   const allUsers = await this.pongService.prismaService.user.findMany({
-  //     orderBy: {
-  //       username: 'asc',
-  //     }
-  //   });
-  //   console.log('playersMap:', this.playersMap);
-  //   allUsers.forEach((user) => {
-  //     delete user.hash;
-  //     const isPlaying = this.playersMap.get(user.id);
-  //     user.isPlaying = isPlaying !== undefined ? true : false;
-  //     const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
-  //     user.isOnline = isOnline !== undefined ? true : false;
-  //   });
-  //   console.log('all users list:', allUsers);
-  //   this.server.to(`user_${userId}`).emit('allUsers', allUsers);
-  // }
-
-
 
 }
 

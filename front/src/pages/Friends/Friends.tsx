@@ -8,63 +8,54 @@ import { UserArray } from "services/User/UserArray";
 import { UserData } from "services/User/User";
 import User from "services/User/User";
 import { MDBContainer } from 'mdb-react-ui-kit';
-
-
 import FriendsHeader from "./Components/FriendsHeader";
 import UserProfileList from "./Components/UserProfileList";
 import FriendsContainer from "./Components/FriendsContainer";
+import { useWebsocketContext } from "services/Websocket/Websocket";
 
 import './css/Friends.scss';
 
 const Friends = () => {
+  const [friendsData, setFriendsData] = useState<any>({});
+  const [friendsList, setFriendsList] = useState<any[]>([]);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
   const [removeFlag, setRemoveFlag] = useState(false);
   const history = useNavigate();
   const [notifMsg, setNotifMsg] = useState('');
   const [idToRemove, setIdToRemove] = useState<string | undefined>('none');
-
-  const resetErrMsg = () => {
-    setErrMsg('');
-  };
+  const socket = useWebsocketContext();
 
   const truRemoveFlag = () => {
     setRemoveFlag(true);
   };
 
+  // Socket on + emit
   useEffect(() => {
-    fetchFriends();
-
-    const fetchFriendsInterval = setInterval(fetchFriends, 10000);
-
+    socket.game?.on('friends', (data: any) => {
+      // console.log('friends received:', data.friends);
+      setFriendsData(data.friends);
+    });
+    socket.game?.emit('friends', { action: 'status' });
     return () => {
-      clearInterval(fetchFriendsInterval);
+      socket.game?.off('friends');
     };
-  }, []);
+  }, [socket.game]);
 
-  const fetchFriends = async () => {
-    // console.log('fetch friends entered!!!!');
-    try {
-      const response = await axios.get(API_ROUTES.USER_FRIENDS,
-        {
-          withCredentials: true
-        });
-      // console.log("ici:", response.data);
-      localStorage.setItem('userData', JSON.stringify(response.data));
-      setUserData(userData);
-      localStorage.setItem('userFriends', JSON.stringify(response.data.friends));
-      let updatedUsers: User[] = [];
-      response.data.friends.forEach((userDatat: any) => {
-        let userInstance = new User();
-        userInstance.setUserFromResponseData(userDatat);
-        // Get user online status with socket.io
-        updatedUsers.push(userInstance);
-      });
-      setUsers(updatedUsers);
-    } catch (err: any) {
-    }
-  };
+  // Set data
+  useEffect(() => {
+    // console.log('friends:', friendsData, 'and size:', friendsData.length);
+    if (friendsData.length <= 0) return;
+    const tmpFriendsList = (Object.entries(friendsData) as Array<[string, UserData]>).map(
+      ([userId, userData]: [string, UserData]) => ({
+        id: userData.id,
+        profilePicture: userData.profilePicture,
+        username: userData.username,
+        isOnline: userData.isOnline,
+        isPlaying: userData.isPlaying,
+      }));
+    setFriendsList(tmpFriendsList);
+  }, [friendsData])
 
   const resetNotifMsg = () => {
     setNotifMsg(''); // Reset errMsg to an empty string
@@ -75,6 +66,7 @@ const Friends = () => {
   };
 
   useEffect(() => {
+    console.log('RMOVE FREND FLAG:', removeFlag, ' id to rm:', idToRemove);
     const removeUser = async (id: string | undefined) => {
       const dataToSend: any = {};
       if (id) dataToSend.id = id;
@@ -90,7 +82,6 @@ const Friends = () => {
         // Adequate error management
       }
       setRemoveFlag(false);
-      fetchFriends();
       setIdToRemove('none');
     };
     if (removeFlag) {
@@ -109,7 +100,7 @@ const Friends = () => {
     setIdToRemove('none');
     resetNotifMsg();
     console.log('Profile clicked');
-    history(APP_ROUTES.GENERIC_USER_PROFILE + user.getId());
+    history(APP_ROUTES.GENERIC_USER_PROFILE + user.id);
   }
 
   return (
@@ -119,13 +110,13 @@ const Friends = () => {
         Friends
       </header>
 
-      <MDBContainer className="friends-container">
-        <UserProfileList users={users} onRemoveClick={removeFriend} onProfileClick={handleProfileClick} />
-      </MDBContainer>
+        <MDBContainer className="friends-container">
+          <UserProfileList friendsList={friendsList} onRemoveClick={removeFriend} onProfileClick={handleProfileClick} />
+        </MDBContainer>
 
-      <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
-      {/* <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} /> */}
-    </article>
+        <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
+      </article>
+    </main>
   );
 }
 
