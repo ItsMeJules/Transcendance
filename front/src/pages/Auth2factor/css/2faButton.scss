@@ -1,37 +1,38 @@
 /* //////////////////// 2FA CSS BEGIN \\\\\\\\\\\\\\\\\\\\\\\\\  */
 
-$border: 1px solid rgba(255, 255, 255, 0.5);
-$background: rgba(255, 255, 255, 0.05);
-$hover-color: rgba(255, 255, 255, 0.5);
-$font-color: rgba(255, 255, 255, 0.7);
-
 :root {
-	--visible: none;
-	/* --visibility: block; */
+  --visible: none;
 }
 
 .popup {
-    display: var(--visible); /* Cachée par défaut */
-    position: fixed; /* Position fixe */
-    z-index: 1; /* Au premier plan */
-    left: 0;
-    top: 0;
-    width: 100%; /* Largeur totale */
-    height: 100%; /* Hauteur totale */
-    overflow: auto; /* Pour gérer le défilement */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  display: var(--visible);
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
-/* Style de la fenêtre popup elle-même */
 .popup-content {
     position: relative;
     background-color: #fefefe;
     margin: 15% auto; /* 15% depuis le haut, centrée horizontalement */
     padding: 20px;
-    border: $border;
+    border: 1px solid #888;
     width: 80%; /* Largeur de 80% */
 }
+
+.close {
+  color : black;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    color: white;
 	
 .myBtn {
     background-color: rgba(0, 128, 0, 0.3); /* Green */
@@ -53,10 +54,11 @@ $font-color: rgba(255, 255, 255, 0.7);
     background-color: #45a049; /* Change background color on hover */
 }
 
+.myBtn,
 .deactivate {
     background-color: #da243c;
     border: none;
-    color: rgba(255, 255, 255, 0.7); /* Text color */
+    color: white; /* Text color */
     padding: 15px 32px; /* Padding around text */
     text-align: center; /* Center the text */
     text-decoration: none;
@@ -68,22 +70,11 @@ $font-color: rgba(255, 255, 255, 0.7);
     transition-duration: 0.4s; /* Transition effect duration */
 }
 
-.deactivate:hover {
-    background-color: #c71c32;
-}
-/* Le bouton close */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
+  &.deactivate {
+    background-color: #da243c;
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+    &:hover {
+      background-color: #c71c32;
+    }
+  }
 }
-
-/* //////////////////2FA CSS END \\\\\\\\\\\\\\\\\\\\\\\\\  */

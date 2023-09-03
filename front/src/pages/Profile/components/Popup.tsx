@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { MDBCardText } from 'mdb-react-ui-kit';
 
 interface PopupProps {
   image: string;
@@ -6,28 +7,35 @@ interface PopupProps {
   isLoading: boolean;
 }
 
-const Popup = forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
-  const { image, onClose, isLoading } = props;
+const Popup = forwardRef<HTMLDivElement, PopupProps>(
+  ({ image, onClose, isLoading }, ref) => {
+    const renderContent = () => {
+      if (isLoading) {
+        return <MDBCardText>Loading QR code...</MDBCardText>;
+      }
 
-  return (
-    <div className="popup">
-      <div className="popup-content" ref={ref}>
-        <span className="close" onClick={onClose}>
-          &times;
-        </span>
-        
-        {isLoading ? (
-          <p>Loading QR code...</p> 
-        ) : (
-          <>
-            <img src={image} alt="QR code" />
-            <p>Scan the QrCode, or Deactivate 2FA, if you don't, you'll lose access to your account.</p>
-          </>
-        )}
-        
+      return (
+        <>
+          <img src={image} alt="QR code" style={{borderRadius:"12px"}}/>
+          <MDBCardText>
+            Scan the QrCode, or Deactivate 2FA, if you don't, you'll lose
+            access to your account.
+          </MDBCardText>
+        </>
+      );
+    };
+
+    return (
+      <div className="popup">
+        <div className="popup-content" ref={ref}>
+          <span className="close" onClick={onClose}>
+            &times;
+          </span>
+          {renderContent()}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 export default Popup;

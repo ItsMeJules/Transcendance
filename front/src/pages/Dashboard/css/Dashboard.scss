@@ -25,9 +25,17 @@
     height: 200px;
     width: 400px;
     transform: translateY(-50%);
+    padding: 10px;
+
+    .WinLossRatio{
+      display: flex;
+      font-family: "dune", Arial, sans-serif;
+      font-weight: bold;
+      margin: auto;
+    }
     justify-content: center;
     padding-bottom: 10px;
-    
+   
     .icons {
       transform: translateY(40%);
       display: flex;
@@ -40,6 +48,15 @@
         align-items: center;
         justify-content: center;
         width: 200px;
+        font-family: "dune", Arial, sans-serif;
+        font-weight: bold;
+
+        .progress-bar-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 5px;
+        }
       }
       
       button {
