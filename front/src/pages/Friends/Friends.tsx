@@ -115,8 +115,7 @@ const Friends = () => {
         </MDBContainer>
 
         <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
-      </article>
-    </main>
+    </article>
   );
 }
 
