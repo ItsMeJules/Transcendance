@@ -48,9 +48,18 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
     <div className="metadata-container" style={{ zIndex: chatToggled ? 2 : 0 }}>
       <OutsideClickHandler className="more" onInsideClick={handleMoreClick} onOutsideClick={handleOutsideClick}>
         <div className="more-symbol-container">
-          <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
-            <span></span> {/* Useful for the more symbol animation */}
-          </div>
+
+          {/* <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div> */}
+
+          <ul className={"more-symbol " + (isMoreActive ? "active" : "")}>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
         </div>
 
         {isMoreActive && (
