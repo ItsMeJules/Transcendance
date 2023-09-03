@@ -1,20 +1,20 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "utils/routing/routing";
-import './NoGame.scss'
+import './NoGameSpectate.scss'
 
-interface NoGameProps {
+interface NoGameSpectateProps {
   noGame: boolean;
 }
 
-const NoGame: React.FC<NoGameProps> = ({ noGame }) => {
+const NoGameSpectate: React.FC<NoGameSpectateProps> = ({ noGame }) => {
 
   return (
     <>
-      {noGame  &&
-        <main className="no-game-outter-button">
+      {noGame &&
+        <main className="no-game-spectate-outter-button">
           <Link to={APP_ROUTES.MATCHMAKING_ABSOLUTE}>
             <section className="no-game-link-button">
-              <span>No game to play<br/><br/>Go to matchmaking</span>
+              <span>Nothing to see here<br/><br/>Go to matchmaking</span>
             </section>
           </Link>
         </main>}
@@ -22,4 +22,4 @@ const NoGame: React.FC<NoGameProps> = ({ noGame }) => {
   );
 }
 
-export default NoGame;
+export default NoGameSpectate;

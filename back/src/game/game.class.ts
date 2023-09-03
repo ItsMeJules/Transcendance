@@ -391,6 +391,7 @@ export class GameStruct {
       gameEvents.emit('gatewayRemovePlayersFromList', {
         pl1Id: this.pl1.id,
         pl2Id: this.pl2.id,
+        gameId: this.prop.id,
       });
     }
     if (this.gameMode === 2) {

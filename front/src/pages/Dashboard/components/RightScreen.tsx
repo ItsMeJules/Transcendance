@@ -3,9 +3,11 @@ import { APP_SCREENS } from 'utils/routing/routing';
 
 interface RightScreenProps {
   rightContent: number;
+  noGame: boolean;
+  setNoGame: (noGame: boolean) => void;
 }
 
-const RightScreen: React.FC<RightScreenProps> = ({ rightContent }) => {
+const RightScreen: React.FC<RightScreenProps> = ({ rightContent, noGame, setNoGame }) => {
   
   if (rightContent === APP_SCREENS.ALL_USERS) {
     return <AllUsers />;
@@ -16,7 +18,7 @@ const RightScreen: React.FC<RightScreenProps> = ({ rightContent }) => {
   } else if (rightContent === APP_SCREENS.LEADERBOARD) {
     return <LeaderBoard />;
   } else if (rightContent === APP_SCREENS.ONLINE_GAMES) {
-    return <OnlineGames />;
+    return <OnlineGames noGame={noGame} setNoGame={setNoGame} />;
   } else {
     return <div>Default Content</div>; // Fallback content or initial state
   }

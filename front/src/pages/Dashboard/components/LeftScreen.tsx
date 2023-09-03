@@ -12,8 +12,6 @@ const LeftScreen: React.FC<LeftScreenProps> = ({ leftContent, setLeftContent }) 
     return <JoinGame/>;
   } else if (leftContent === APP_SCREENS.PLAY) {
     return <Play />;
-  } else if (leftContent === APP_SCREENS.SPECTATE) {
-    return <Spectate />;
   } else if (leftContent === APP_SCREENS.ME_PROFILE) {
     return <Profile />;
   } else {
