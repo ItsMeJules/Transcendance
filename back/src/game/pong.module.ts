@@ -8,9 +8,10 @@ import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SocketEvents } from 'src/websocket/websocket.gateway';
 import { PongStoreModule } from 'src/utils/pong-store/pong-store.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [],
+  imports: [ScheduleModule.forRoot()],
   controllers: [],
   providers: [PongEvents, JwtService, AuthService, UserService, PongService, PrismaService, SocketEvents],
   exports: [PongEvents], 

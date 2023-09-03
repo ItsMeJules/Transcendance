@@ -19,6 +19,7 @@ import { disconnect } from 'process';
 import { gameEvents } from './game.class';
 import { pongServiceEmitter } from './pong.service';
 import { userServiceEmitter } from 'src/user/user.service';
+import { Interval } from '@nestjs/schedule';
 
 export type SpectatorMap = Map<number, number>; // <userId, gameId
 export type PlayersMap = Map<number, number>; // <userId, gameId
@@ -253,22 +254,21 @@ export class PongEvents {
       gameStruct.prop.status = 'waiting';
       this.sendUpdateToPlayer(gameStruct, player, opponent.status, -1, 'prepareToPlay');
       const timeoutInSeconds = 10;
-      setTimeout(() => {
-        if (opponent.status === 'pending'
-          && gameStruct.prop.status === 'waiting') {
-          console.log('TIMEOUT');
-          gameStruct.prop.status = 'timeout';
-          gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
-          this.pongService.deleteGamePrismaAndList(gameStruct.prop.id);
-          this.playersMap.delete(player.id);
-          this.playersMap.delete(opponent.id);
-          this.removeSpectatorsFromList(gameStruct.prop.id);
-          this.emitUpdateAllUsers('toAll', 0);
-          this.emitUpdateFriendsOf(gameStruct.pl1.id);
-          this.emitUpdateFriendsOf(gameStruct.pl2.id);
-        }
-      }, timeoutInSeconds * 1000);
-
+      await new Promise((resolve) => setTimeout(resolve, timeoutInSeconds * 1000));
+      if (opponent.status === 'pending'
+        && gameStruct.prop.status === 'waiting') {
+        console.log('TIMEOUT');
+        gameStruct.prop.status = 'timeout';
+        gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
+        await this.pongService.deleteGamePrismaAndList(gameStruct.prop.id);
+        this.playersMap.delete(player.id);
+        this.playersMap.delete(opponent.id);
+        this.removeSpectatorsFromList(gameStruct.prop.id);
+        this.updateEmitOnlineGames('toRoom', 0);
+        this.emitUpdateAllUsers('toAll', 0);
+        this.emitUpdateFriendsOf(gameStruct.pl1.id);
+        this.emitUpdateFriendsOf(gameStruct.pl2.id);
+      }
     }
     // Both ready launch game
     else if (data.action === 'playPressed' && opponent.status === 'ready') {
@@ -528,6 +528,35 @@ export class PongEvents {
     //   this.server.to(`user_${userId}`).emit('friends', userWithFriends);
     // else
     //   this.server.to('game_online').emit('friends', userWithFriends);
+  }
+
+  /* Clean unactive games */
+  @Interval(5000) // every 5 seconds
+  cleanTimedOutOnlineGames() {
+    let tMax = 10; // in seconds 
+    this.pongService.onlineGames.forEach((value, key) => {
+      if (Date.now() - value.tStart >= tMax && value.prop.status === 'pending')
+        this.dealWithTimeout(value);
+    }
+    );
+  }
+
+  async dealWithTimeout(game: GameStruct) {
+    const timeoutInSeconds = 10;
+    console.log('TIMEOUT BIG IN ');
+    await new Promise((resolve) => setTimeout(resolve, timeoutInSeconds * 1000));
+    if (game.prop.status === 'pending') {
+      game.prop.status = 'timeout';
+      game.sendUpdateToRoom(game.pl1.status, game.pl2.status, -1, 'prepareToPlay');
+      await this.pongService.deleteGamePrismaAndList(game.prop.id);
+      this.playersMap.delete(game.pl1.id);
+      this.playersMap.delete(game.pl2.id);
+      this.removeSpectatorsFromList(game.prop.id);
+      this.updateEmitOnlineGames('toRoom', 0);
+      this.emitUpdateAllUsers('toAll', 0);
+      this.emitUpdateFriendsOf(game.pl1.id);
+      this.emitUpdateFriendsOf(game.pl2.id);
+    }
   }
 
   /* All users right screen */

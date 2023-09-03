@@ -74,6 +74,7 @@ export class Ball {
       Math.sin(randomAngle) * randomY); 
 
     // const angle = Math.PI / 4;
+    // const angle = Math.PI;
     // this.dir = new Vector(
     //   -Math.cos(angle),
     //   Math.sin(angle));
@@ -83,9 +84,14 @@ export class Ball {
 
   updateDirectionBounce(collisionPercentage: number) {
     let dirX = this.dir.x;
+    let value = this.maxPaddleBounceAngle * collisionPercentage;
+    if (value <= 0.02 && value >= -0.02) {
+      const randomUpDown = Math.random() < 0.5 ? -1 : 1;
+      value = 0.02 * randomUpDown;
+    }
     this.dir = new Vector(
-      Math.cos(this.maxPaddleBounceAngle * collisionPercentage),
-      Math.sin(this.maxPaddleBounceAngle * collisionPercentage)
+      Math.cos(value),
+      Math.sin(value)
     );
     if (dirX > 0 && this.dir.x > 0)
       this.dir.x *= -1;
