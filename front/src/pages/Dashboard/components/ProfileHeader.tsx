@@ -55,8 +55,8 @@ const ProfileHeader = () => {
           </button>
         </div>
         <div className="WinLossRatio">
-          <MDBCardText className="small text-muted mb-0 custom-text-color">
-            Win/Loss Ratio: {winLossRatio.toFixed(2)}
+          <MDBCardText className="small text-muted mb-0 custom-text-color text-center">
+            Win/Loss Ratio : {winLossRatio.toFixed(2)}
           </MDBCardText>
         </div>
         <div className="progress-bar-container">

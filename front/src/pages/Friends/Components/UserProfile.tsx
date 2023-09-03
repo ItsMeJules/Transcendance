@@ -22,11 +22,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onRemoveClick, onProfil
       </button>
 
       <div className="friends__heart">
-        <span title={`${user.getIsOnline() ? 'online' : 'offline'}`}
-          className={`border friends__status-circle ${user.getIsOnline() ? 'online' : 'offline'}`}>
-          {user.getIsOnline() && <span className="ripple"></span>}
-        </span>
-
         <button className="" onClick={() => onRemoveClick(user.getId())}>
           <IconContext.Provider value={{ color: 'red', size: '30px' }}>
             <FaHeart />
