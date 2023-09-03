@@ -4,17 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { MDBCardText } from 'mdb-react-ui-kit';
 import ProgressBar from "utils/progressBar/ProgressBar";
-import { MDBCardText } from 'mdb-react-ui-kit';
-import ProgressBar from "utils/progressBar/ProgressBar";
 import LogoutParent from "layout/LogoutButton/LogoutParent";
 
 const ProfileHeader = () => {
   const history = useNavigate();
   const [profilePicture, setProfilePicture] = useState('/images/game.png');  // Set default picture
   const [errMsg, setErrMsg] = useState('');
-  const [progressBarClass, setProgressBarClass] = useState('progress-bar-1');
-  const [parsedUserLevel, setParsedUserLevel] = useState(1);
-  const [winLossRatio, setWinLossRatio] = useState(0);
   const [progressBarClass, setProgressBarClass] = useState('progress-bar-1');
   const [parsedUserLevel, setParsedUserLevel] = useState(1);
   const [winLossRatio, setWinLossRatio] = useState(0);
