@@ -18,7 +18,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
 
   const manageStyle = {
     transition: "transform 1s ease",
-    transform: manageChannel ? "rotate(90deg)" : "",
+    transform: manageChannel ? "rotate(60deg)" : "",
   };
 
   return (

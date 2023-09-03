@@ -66,11 +66,11 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = (props: ChannelPopupProp
       )}
 
       <div className="validate">
-        <p onClick={changeChannel}>Modifier le channel</p>
+        <p onClick={changeChannel}>Modify channel</p>
       </div>
 
         <div className="quit-channel">
-          <p onClick={quitChannel}>Quitter le channel</p>
+          <p onClick={quitChannel}>Quit channel</p>
         </div>
     </Popup>
   );

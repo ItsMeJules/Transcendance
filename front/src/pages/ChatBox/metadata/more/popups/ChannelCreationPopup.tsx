@@ -44,7 +44,7 @@ export default function ChannelCreationPopup() {
         <div className="images">
           <img
             className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
-            src="/images/public.png"
+            src="/images/globe.png"
             alt="Public"
             onClick={() => setChannelType(ChannelType.PUBLIC)}
           />
