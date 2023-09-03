@@ -17,6 +17,8 @@ import { User } from '@prisma/client';
 import { PongStoreService } from 'src/utils/pong-store/pong-store.service';
 import { disconnect } from 'process';
 import { gameEvents } from './game.class';
+import { pongServiceEmitter } from './pong.service';
+import { type } from 'os';
 
 export type SpectatorMap = Map<number, number>; // <userId, gameId
 export type PlayersMap = Map<number, number>; // <userId, gameId
@@ -36,6 +38,9 @@ export class PongEvents {
     /* Remove players from players map */
     gameEvents.on('gatewayRemovePlayersFromList', (data) => {
       this.eventRemovePlayersFromList(data);
+      const gameIdToDelete = parseInt(data.gameId);
+      this.removeSpectatorsFromList(gameIdToDelete);
+      this.emitUpdateAllUsers('toAll', 0);
     });
     /* Update room */
     gameEvents.on('gatewayUpdateRoom', (data) => {
@@ -43,6 +48,9 @@ export class PongEvents {
     });
     /* Update online games */
     gameEvents.on('gatewayUpdateOnlineGames', (data) => {
+      this.updateEmitOnlineGames('toRoom', 0);
+    });
+    pongServiceEmitter.on('serviceEndGame', (data) => {
       this.updateEmitOnlineGames('toRoom', 0);
     });
   }
@@ -74,13 +82,15 @@ export class PongEvents {
       if (gameWatchId)
         client.join(`game_${gameWatchId}`);
     }
+    this.emitUpdateAllUsers('toAll', 0);
   }
 
   async handleDisconnect(client: Socket) {
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
+    this.emitUpdateAllUsers('toAll', 0);
     this.pongService.removeFromQueue(user.id);
-    this.spectatorsMap.delete(user.id);
+    // this.spectatorsMap.delete(user.id);
     this.idToSocketMap.delete(user.id);
   }
 
@@ -139,7 +149,7 @@ export class PongEvents {
       // this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
       // this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
       this.updateEmitOnlineGames('toRoom', 0);
-      // this.allUsersUpdater();
+      this.emitUpdateAllUsers('toAll', 0);
     }
   }
 
@@ -186,7 +196,6 @@ export class PongEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { player: string, action: string }) {
 
-
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) {
       client.disconnect();
@@ -226,7 +235,7 @@ export class PongEvents {
       this.sendUpdateToPlayer(gameStruct, player, opponent.status, gameStruct.prop.countdown, 'prepareToPlay');
       return;
     }
-    // Wait for opponent
+    // Wait for opponent and deal with timeout
     else if (data.action === 'playPressed' && opponent.status === 'pending') {
       console.log('3 WAIT FOR OPPONENT');
       player.status = 'ready';
@@ -240,8 +249,13 @@ export class PongEvents {
           gameStruct.prop.status = 'timeout';
           gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
           this.pongService.deleteGamePrismaAndList(gameStruct.prop.id);
+          this.playersMap.delete(player.id);
+          this.playersMap.delete(opponent.id);
+          this.removeSpectatorsFromList(gameStruct.prop.id);
+          this.emitUpdateAllUsers('toAll', 0);
         }
       }, timeoutInSeconds * 1000);
+
     }
     // Both ready launch game
     else if (data.action === 'playPressed' && opponent.status === 'ready') {
@@ -286,7 +300,7 @@ export class PongEvents {
     const user = await this.authService.validateJwtToken(access_token);
     console.log('5 WATCH WITH ID:', user.id, ' AND GAMEID:', data.gameId);
     const gameId = parseInt(data.gameId);
-    console.log('5 WATCH GAME ID:', gameId)
+    console.log('5 WATCH GAME ID:', gameId, ' and spect map game id:', this.spectatorsMap.get(user.id));
     const game = gameId === -1 ?
       this.pongService.getGameStructById(this.spectatorsMap.get(user.id)) :
       this.pongService.getGameStructById(gameId);
@@ -295,23 +309,23 @@ export class PongEvents {
       console.log('online games id:', key);
     });
     // console.log('5 pongservice online games:', this.pongService.onlineGames);
-    // No game
-    if (!game) {
-      console.log('5 WATCH NO GAME');
-      this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
-      return;
-    }
+    
     // User is in game redirect to play
-    else if (isUserInGame !== undefined) {
+    if (isUserInGame !== undefined) {
       console.log('5 WATCH IN GAME');
       this.server.to(`user_${client.data.id}`).emit('inGame', { status: 'inGame' });
+      return;
+    } else if (!game) {
+      console.log('5 WATCH NO GAME');
+      this.server.to(`user_${client.data.id}`).emit('noGame', { status: 'noGame' });
       return;
     }
     const clientSocket = this.idToSocketMap.get(user.id);
     if (!clientSocket) return  // error handling?
     const player1 = await this.userService.findOneById(game.pl1.id);
     const player2 = await this.userService.findOneById(game.pl2.id);
-    this.spectatorsMap.set(user.id, gameId);
+    if (gameId !== -1)
+      this.spectatorsMap.set(user.id, gameId);
     clientSocket.join(`game_${game.prop.id}`);
     const dataToSend = { status: 'OK', gameState: game.getState(), player1: player1, player2: player2 }
     this.server.to(`user_${client.data.id}`).emit('watchGame', dataToSend);
@@ -361,12 +375,14 @@ export class PongEvents {
       await this.pongService.giveUpGame(gameStruct, opponent, player, true);
       this.playersMap.delete(player.id);
       this.playersMap.delete(opponent.id);
+      this.removeSpectatorsFromList(gameStruct.prop.id);
       console.log('4 EMIT TO ROOM:', gameStruct.prop.room);
       console.log('4 WITH USERS IN ROOM:');
       this.printUsersInRoom(gameStruct.prop.room);
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'refreshGame');
       gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
       this.updateEmitOnlineGames('toRoom', 0);
+      this.emitUpdateAllUsers('toAll', 0);
       // this.allUsersUpdater();
     }
   }
@@ -439,6 +455,44 @@ export class PongEvents {
     }
   }
 
+  /* All users right screen */
+  @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
+  async allUsersHandler(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { action: string }) {
+    console.log('ALL USERS and status:', data.action);
+
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!client.data.id || !access_token) {
+      client.disconnect();
+      return;
+    }
+    const userId = parseInt(client.data.id);
+    this.emitUpdateAllUsers('toUser', userId);
+  }
+
+  async emitUpdateAllUsers(type: string, userId: number) {
+    // protect and manage errors
+    const allUsers = await this.pongService.prismaService.user.findMany({
+      orderBy: {
+        username: 'asc',
+      }
+    });
+    // console.log('playersMap:', this.playersMap);
+    allUsers.forEach((user) => {
+      delete user.hash;
+      const isPlaying = this.playersMap.get(user.id);
+      user.isPlaying = isPlaying !== undefined ? true : false;
+      const isOnline = isPlaying ? true : this.idToSocketMap.get(user.id);
+      user.isOnline = isOnline !== undefined ? true : false;
+    });
+    // console.log('all users list:', allUsers);
+    if (type === 'toUser')
+      this.server.to(`user_${userId}`).emit('allUsers', allUsers);
+    else
+      this.server.to('game_online').emit('allUsers', allUsers);
+  }
+
   /* Refresh front functions */
   sendUpdateToPlayer(game: GameStruct, player: Player, opponentStatus: string, countdown: number, channel: string) {
     let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
@@ -497,6 +551,15 @@ export class PongEvents {
   }
 
   /* Utils */
+  removeSpectatorsFromList(gameIdToDelete: number) {
+    
+    for (const [userId, gameId] of this.spectatorsMap.entries()) {
+      if (gameId === gameIdToDelete) {
+        this.spectatorsMap.delete(userId);
+      }
+    }
+  }
+
   playersMapDeleteGameById(gameIdToDelete: number) {
     for (const [userId, gameId] of this.playersMap.entries()) {
       if (gameId === gameIdToDelete) {
@@ -515,34 +578,6 @@ export class PongEvents {
   }
 
 
-  // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
-  // async allUsersHandler(
-  //   @ConnectedSocket() client: Socket,
-  //   @MessageBody() data: { action: string }) {
-  //   console.log('All users and status:', data.action);
-
-  //   if (!client.data.id) {
-  //     client.disconnect();
-  //     return;
-  //   }
-  //   const userId = parseInt(client.data.id);
-  //   // protect and manage errors
-  //   const allUsers = await this.prismaService.user.findMany({
-  //     orderBy: {
-  //       username: 'asc',
-  //     }
-  //   });
-  //   console.log('playersMap:', this.pongEvents.playersMap);
-  //   allUsers.forEach((user) => {
-  //     delete user.hash;
-  //     const isPlaying = this.pongEvents.playersMap.get(user.id);
-  //     user.isPlaying = isPlaying !== undefined ? true : false;
-  //     const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
-  //     user.isOnline = isOnline !== undefined ? true : false;
-  //   });
-  //   console.log('all users list:', allUsers);
-  //   this.server.to(`user_${userId}`).emit('allUsers', allUsers);
-  // }
 
 
   // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'

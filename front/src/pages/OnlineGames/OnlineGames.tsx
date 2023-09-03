@@ -6,7 +6,13 @@ import OnlineGamesList from "./Components/OnlineGamesList";
 
 import './css/OnlineGames.scss'
 
-const OnlineGames = () => {
+interface OnlineGamesProps {
+  noGame: boolean;
+  setNoGame: (noGame: boolean) => void;
+}
+
+
+const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
   const socket = useWebsocketContext();
   const [gamesData, setGamesData] = useState<any>({})
   const [gameList, setGameList] = useState<any[]>([]);
@@ -14,6 +20,7 @@ const OnlineGames = () => {
   useEffect(() => {
     socket.game?.on('onlineGames', (data: any) => {
       console.log('ONLINE GAMES RECEIVED:', data);
+      setNoGame(false);
       setGamesData(data);
     });
     socket.game?.emit('onlineGames', { action: 'query' });

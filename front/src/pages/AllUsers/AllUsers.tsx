@@ -12,15 +12,15 @@ const AllUsers = () => {
 
   // Sockets on
   useEffect(() => {
-    socket.general?.on('allUsers', (data: any) => {
+    socket.game?.on('allUsers', (data: any) => {
       console.log('ALL USERSSSSSSSSSSSSS:', data);
       setUsersData(data);
     });
-    socket.general?.emit('allUsers', { action: 'status' });
+    socket.game?.emit('allUsers', { action: 'status' });
     return () => {
-      socket.general?.off('allUsers');
+      socket.game?.off('allUsers');
     };
-  }, [socket.general]);
+  }, [socket.game]);
 
   useEffect(() => {
     const tmpUsersList = (Object.entries(usersData) as Array<[string, UserData]>).map(
@@ -36,7 +36,7 @@ const AllUsers = () => {
 
   return (
     <main className="right-screen-container">
-      <article className="all-users-main-container" style={{}}>
+      <article className="all-users-main-container">
 
         <header className="all-users-header">
           All users

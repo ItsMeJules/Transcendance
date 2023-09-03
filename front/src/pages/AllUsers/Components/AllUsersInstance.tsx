@@ -23,13 +23,16 @@ const AllUsersInstance: React.FC<AllUsersInstanceProps> = ({ user }) => {
         className={`allusers__picture ${user.isOnline ? 'online' : 'offline'}`}
         title={`${user.isOnline ? 'online' : 'offline'}`} />
 
-      <button className="allusers__name" title="Go to user profile" key={user.id} onClick={() => handleProfileClick(user)} >
+      <button className="allusers__name border"
+      title="Go to user profile"
+      key={user.id}
+      onClick={() => handleProfileClick(user)} >
         {user.username}
       </button>
 
       {user.isPlaying &&
       // WATCH GAME MAKE HERE
-        <button title='Watch game'>
+        <button title='Playing'>
           <img src="/images/playing.png" alt=""
             className="allusers__isplaying" />
         </button>}

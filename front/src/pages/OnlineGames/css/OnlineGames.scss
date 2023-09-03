@@ -127,7 +127,7 @@
       }
 
       &__pictureright {
-        margin-left: 20px;
+        margin-left: 5px;
         height: 35px;
         min-height: 35px;
         width: 35px;
@@ -144,6 +144,7 @@
         color: #979cb0;
         font-weight: 550;
         font-size: 15px;
+        min-width: 70px;
         letter-spacing: 0.3px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -155,6 +156,7 @@
         color: #979cb0;
         font-weight: 550;
         font-size: 15px;
+        min-width: 65px;
         letter-spacing: 0.3px;
         margin-left: 0px;
         overflow: hidden;
@@ -169,6 +171,7 @@
         font-size: 18px;
         letter-spacing: 0.3px;
         margin-left: -0px;
+        min-width: 50px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

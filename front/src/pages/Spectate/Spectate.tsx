@@ -14,6 +14,10 @@ import RightPlayerProfile from "pages/Play/components/PlayersProfile/RightPlayer
 import MainText from "pages/Play/components/MainText/MainText";
 import ScoreBoard from "pages/Play/components/ScoreBoard/ScoreBoard";
 import { Ball } from "pages/Play/models/Ball";
+import { APP_ROUTES } from "utils/routing/routing";
+import AllCanvas from "pages/Play/components/Canvas/AllCanvas";
+import ProfilesHeader from "pages/Play/components/PlayersProfile/ProfilesHeader";
+import NoGameSpectate from "./Components/NoGame/NoGameSpectate";
 
 interface PlayBackProps {
   whichPlayer: number,
@@ -38,7 +42,12 @@ interface noGame {
   status: string;
 }
 
-const Spectate = () => {
+interface SpectateProps {
+  noGame: boolean;
+  setNoGame: (noGame: boolean) => void;
+}
+
+const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
   const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
@@ -53,7 +62,7 @@ const Spectate = () => {
   // const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameState, setGameState] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
-  const [noGame, setNoGame] = useState(false);
+  // const [noGame, setNoGame] = useState(false);
   const [gameStatus, setGameStatus] = useState('');
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
@@ -72,19 +81,29 @@ const Spectate = () => {
   // Sockets on
   useEffect(() => {
     socket.game?.on('prepareToPlay', (data: GameSocket) => {
+      setNoGame(false);
       console.log('DATA PREPARE', data);
       setGameState(data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
       console.log('DATA game', data);
+      setNoGame(false);
       setGameState(data);
     });
     socket.game?.on('noGame', (data: noGame) => {
       console.log('DATA no game', data);
-      if (data.status === 'noGame')
+      if (data.status === 'noGame') {
+        setNoGame(true);
         setGameStatus('noGame');
+      }
     });
+    // if (!noGame)
     socket.game?.emit('watchGame', { gameId: -1 });
+    return () => {
+      socket.game?.off('prepareToPlay');
+      socket.game?.off('refreshGame');
+      socket.game?.off('noGame');
+    };
   }, [socket.game]);
 
   // Game useEffect
@@ -96,18 +115,15 @@ const Spectate = () => {
       setGame({ ...game });
     }
     if (gameState?.gameStatus === 'giveUp') {
-      game.isPlaying = false;
+      setCentralText('Player 1 wins!');
       if (gameState.gameParams.pl1.status === 'givenUp')
         setCentralText('Player 2 wins!');
-      else
-        setCentralText('Player 1 wins!');
       setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
     }
     else if (gameState?.gameStatus === 'ended') {
+      setCentralText('Player 2 wins!');
       if (gameState.gameParams.pl1.isWinner === true)
         setCentralText('Player 1 wins!');
-      else
-        setCentralText('Player 2 wins!');
       setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
     }
     else if (gameState) {
@@ -120,8 +136,8 @@ const Spectate = () => {
   // Prepare useEffect
   useEffect(() => {
     if (gameStatus === 'noGame') {
-      console.log('NOGAMEEEE');
-      // history('/gamesonline');
+      setCentralText('Select a game to watch');
+      // history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
     if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);
     if (gameState?.gameStatus === 'pending' || gameState?.gameStatus === 'pending') {
@@ -133,12 +149,11 @@ const Spectate = () => {
         setCentralText('Get ready!');
     } else if (gameState?.gameStatus === 'timeout') {
       setCentralText('Timeout - game canceled')
-      setTimeout(() => {
-        history('/watch'); // or online games
-      }, 3 * 1000);
+      // setTimeout(() => {
+      // history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
+      // }, 3 * 1000);
     } else if (gameState?.gameStatus === 'playing') {
       socket.game?.off('prepareToPlay'); // dont off and use for status?
-      game.isPlaying = true;
       setGame({ ...game, isPlaying: true });
     }
     return;
@@ -163,31 +178,15 @@ const Spectate = () => {
 
       <ConfettisComponent gameIsEnded={game.isEnded} userIsWinner={game.isUserWinner} />
 
-      <article className='profile-infos-container glow-border' id='profile-card' style={{ width: `${game.board.width}px` }}>
-        <LeftPlayerProfile player1Data={player1Data} />
-        <div className="versus-text" style={{ verticalAlign: 'center' }}>VS</div>
-        <RightPlayerProfile player2Data={player2Data} />
-      </article>
+      <ProfilesHeader game={game} player1Data={player1Data} player2Data={player2Data} noGame={noGame} />
 
       <ScoreBoard game={game} noGame={noGame} />
 
+      <AllCanvas game={game} socket={socket.game} whichPlayer={whichPlayer} centralText={centralText}
+        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
 
-      <div className="pong-sub-container text-white">
-        <div className="pong-game-canvas" id='pong-canvas-container' style={{ height: `${game.board.height + 80}px` }}>
-          <MainText textToDisplay={centralText} socket={socket.game}
-            whichPlayer={whichPlayer} gameIsPlaying={game.isPlaying}
-            isPlayerReady={isPlayerReady} game={game}
-            elementHeight={profileCardHeight} gameStatus={gameStatus} />
-          <canvas ref={boardCanvasRef as React.RefObject<HTMLCanvasElement>} id="boardCanvas" width={game.board.width} height={game.board.height} className="canvas-container-board" />
-          <canvas ref={ballCanvasRef as React.RefObject<HTMLCanvasElement>} id="ballCanvas" width={game.board.width} height={game.board.height} className="canvas-container-ball" />
-          <canvas ref={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" />
-          <canvas ref={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} id="paddleCanvas" width={game.board.width} height={game.board.height} className="canvas-container-paddle" />
-        </div>
-        <BoardCanvas game={game} canvasRef={boardCanvasRef as React.RefObject<HTMLCanvasElement>} />
-        <BallCanvas game={game} canvasRef={ballCanvasRef as React.RefObject<HTMLCanvasElement>} />
-        <PaddleCanvas game={game} player={game.pl1} canvasRef={paddle1CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
-        <PaddleCanvas game={game} player={game.pl2} canvasRef={paddle2CanvasRef as React.RefObject<HTMLCanvasElement>} whichPlayer={whichPlayer} socket={socket.game} />
-      </div>
+    <NoGameSpectate noGame={noGame} />
+      {/* <NoGameSpectate noGame={noGame} /> */}
     </div >
   );
 

@@ -6,11 +6,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
 import { Player } from './models/player.model';
-import { SocketEvents } from 'src/websocket/websocket.gateway';
 import { gameEvents } from './game.class';
+import { EventEmitter } from 'events';
 
 export type UserQueue = Map<number, string>;
 export type OnlineGameMap = Map<number, GameStruct>;
+
+export const pongServiceEmitter = new EventEmitter();
 
 @Injectable()
 export class PongService {
@@ -172,7 +174,7 @@ export class PongService {
       this.onlineGames.delete(gameStruct.prop.id);
       this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
       console.log('Game updated successfully');
-
+      pongServiceEmitter.emit('serviceEndGame', { action: 'emitOnlieGames'});
       // emit to front room
     } catch (error) {
       console.error('Error updating game:', error);

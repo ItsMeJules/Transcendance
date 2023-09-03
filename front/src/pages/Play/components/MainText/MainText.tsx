@@ -43,8 +43,8 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
           {textToDisplay}
         </button>}
       {/* Display text */}
-      {((!gameIsPlaying && finalPlayerReady && whichPlayer !== 0) || gameStatus === 'giveUp'
-        || gameStatus === 'timeout') &&
+      {(((!gameIsPlaying && finalPlayerReady) || gameStatus === 'giveUp'
+        || gameStatus === 'timeout')) && whichPlayer !== 0 &&
         <section className="text-container-style">
           {textToDisplay}
         </section>}

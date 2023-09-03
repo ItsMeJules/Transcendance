@@ -391,6 +391,7 @@ export class GameStruct {
       gameEvents.emit('gatewayRemovePlayersFromList', {
         pl1Id: this.pl1.id,
         pl2Id: this.pl2.id,
+        gameId: this.prop.id,
       });
     }
     if (this.gameMode === 2) {
@@ -416,7 +417,7 @@ export class GameStruct {
   }
 
   updateOnlineGames() {
-    gameEvents.emit('serviceEndGame', { action: 'update' });
+    gameEvents.emit('gatewayUpdateOnlineGames', { action: 'update' });
   }
 
   /* Function to get the state of the game */

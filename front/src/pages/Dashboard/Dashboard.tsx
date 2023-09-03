@@ -15,6 +15,7 @@ import Websocket from 'services/Websocket/Websocket';
 
 const Dashboard = () => {
   const [rightContent, setRightContent] = useState<number>(APP_SCREENS.CHAT);
+  const [noGame, setNoGame] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const Dashboard = () => {
   }, [rightContent]);
 
   return (
-    <Websocket>
+    <Websocket key={rightContent}>
       <main className="dashboard-main-container">
 
         <ProfileHeader />
@@ -35,12 +36,12 @@ const Dashboard = () => {
               <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={React.createElement(GenericUserProfile)} />
               <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
               <Route path={APP_ROUTES.PLAY} element={<Play />} />
-              <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
+              <Route path={APP_ROUTES.SPECTATE} element={<Spectate noGame={noGame} setNoGame={setNoGame} />} />
             </Routes>
           </div>
 
           <div className="right-screen-container">
-            <RightScreen rightContent={rightContent} />
+            <RightScreen rightContent={rightContent} noGame={noGame} setNoGame={setNoGame} />
           </div>
         </article>
 
