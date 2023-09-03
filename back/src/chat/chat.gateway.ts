@@ -16,6 +16,7 @@ import {
   ActionRoomHandlers,
 } from './handlers/handlers.map';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 // @UseGuards(JwtGuard) // add jwt guard for chat auth
 @WebSocketGateway({ namespace: 'chat' })
@@ -26,6 +27,7 @@ export class ChatEventsGateway {
     private authService: AuthService,
     private chatService: ChatService,
     private userSocketsService: UserSocketsService,
+    private prismaService: PrismaService,
   ) {}
 
   private async setupConnection(client: Socket): Promise<User | null> {
@@ -91,16 +93,43 @@ export class ChatEventsGateway {
       .catch((reason) => console.log(reason));
   }
 
-  handleDisconnect(client: Socket): void {
-    this.userSocketsService.removeUserSocket(client.data.id);
-    // console.log('removed socket data of user id : ', client.data.id);
-    client.off(ChatSocketEventType.MESSAGE, () => console.log('chat !'));
-    client.off(ChatSocketEventType.CHAT_ACTION, () =>
-      console.log('chat action !'),
+  async handleDisconnect(client: Socket): Promise<void> {
+    const userClient = await this.prismaService.user.findUnique({
+      where: { id: client.data.id },
+    });
+
+    await this.leaveRoomAndRemoveUser(
+      client,
+      userClient.currentRoom,
+      userClient.id,
     );
-    client.off(ChatSocketEventType.ROOM_ACTION, () =>
-      console.log('room action !'),
-    );
+    this.removeEventListeners(client);
+  }
+
+  async leaveRoomAndRemoveUser(
+    client: Socket,
+    room: string,
+    userId: number,
+  ): Promise<void> {
+    try {
+      await client.leave(room);
+      this.userSocketsService.removeUserSocket(String(userId));
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  removeEventListeners(client: Socket): void {
+    const eventTypes = [
+      ChatSocketEventType.MESSAGE,
+      ChatSocketEventType.CHAT_ACTION,
+      ChatSocketEventType.ROOM_ACTION,
+    ];
+
+    eventTypes.forEach((eventType) => {
+      client.off(eventType, () => console.log(`${eventType} action !`));
+    });
   }
 
   @SubscribeMessage(ChatSocketEventType.MESSAGE)
