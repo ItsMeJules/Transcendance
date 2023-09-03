@@ -14,11 +14,15 @@ import LeaderBoardContainer from "./components/LeaderBoardContainer"
 import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
 
 import './css/LeaderBoard.scss';
+import { useWebsocketContext } from "services/Websocket/Websocket";
 
 const LeaderBoard: React.FC = () => {
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userId, setUserId] = useState<string>();
+  const [leaderboardData, setLeaderboardData] = useState<any>({});
+  const [leaderboardList, setLeaderboardList] = useState<any[]>([]);
   const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
+  const socket = useWebsocketContext();
   const history = useNavigate();
   // const userDataStore = useSelector((state: RootState) => state.user);
 
@@ -26,61 +30,32 @@ const LeaderBoard: React.FC = () => {
     setErrMsg(''); // Reset errMsg to an empty string
   };
 
-  const fetchLeaderboard = async () => {
-    try {
-      const response = await axios.get(API_ROUTES.GET_LEADERBOARD,
-        {
-          withCredentials: true
-        });
-      localStorage.setItem('leaderboardData', JSON.stringify(response.data));
-      let updatedUsers: User[] = [];
-      response.data.forEach((userDatat: any) => {
-        let userInstance = new User();
-        userInstance.setUserFromResponseData(userDatat);
-        // console.log("instance", userInstance);
-        updatedUsers.push(userInstance);
-        // console.log('2: ', updatedUsers);
-      });
-
-      // console.log('3: ', updatedUsers);
-      setUsers(updatedUsers);
-
-    } catch (err: any) {
-
-
-    }
-  };
-
+  // Socket on + emit
   useEffect(() => {
-    // console.log("userdata from store:", userDataStore);
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(API_ROUTES.USER_PROFILE,
-          {
-            withCredentials: true
-          });
-        const userData = response.data;
-        localStorage.setItem('userData', JSON.stringify(userData));
-        setUserData(userData);
-        User.getInstance().setUserFromResponseData(userData);
-      } catch (err: any) {
-        if (!err?.response) {
-          setErrMsg('No Server Response');        // OK
-        } else if (err.response?.status === 400) {
-          setErrMsg('Bad request');
-        } else if (err.response?.status === 401) {
-          setErrMsg('Unauthorized');
-          history(APP_ROUTES.HOME);
-        }
-        else {
-          setErrMsg('Error');
-        }
-      }
+    socket.game?.on('leaderboard', (data: any) => {
+      console.log('Leadbd:', data);
+      setUserId(data.userId);
+      setLeaderboardData(data.leaderboard);
+    });
+    socket.game?.emit('leaderboard', { action: 'status' });
+    return () => {
+      socket.game?.off('leaderboard');
     };
+  }, [socket.game]);
 
-    fetchUserProfile();
-    fetchLeaderboard();
-  }, [history]);
+  // Set leaderboard data
+  useEffect(() => {
+    const tmpUsersList = (Object.entries(leaderboardData) as Array<[string, UserData]>).map(
+      ([userId, userData]: [string, UserData]) => ({
+        id: userData.id,
+        profilePicture: userData.profilePicture,
+        username: userData.username,
+        isOnline: userData.isOnline,
+        userPoints: userData.userPoints,
+        userLevel: userData.userLevel,
+      }));
+    setLeaderboardList(tmpUsersList);
+  }, [leaderboardData])
 
   return (
     <article className="leaderboard-main-container">
@@ -89,9 +64,9 @@ const LeaderBoard: React.FC = () => {
         Leaderboard
       </header>
 
-      <MDBContainer className="leaderboard-container">
-        <UserProfilesList users={users} currentUserId={userData?.id} />
-      </MDBContainer>
+        <MDBContainer className="leaderboard-container">
+          <UserProfilesList leaderboardList={leaderboardList} currentUserId={userId} />
+        </MDBContainer>
 
     </article>
   );

@@ -17,6 +17,7 @@ export interface GameParams {
 }
 
 export class GameStruct {
+  public tStart = Date.now();
   public gameMode: number;
   public prop: GameProperties;
   public board: Board;

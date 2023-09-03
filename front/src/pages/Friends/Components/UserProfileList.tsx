@@ -3,16 +3,16 @@ import User from "../../../services/User/User";
 import UserProfile from "./UserProfile";
 
 interface UserProfileListProps {
-  users: User[];
+  friendsList: any[];
   onRemoveClick: (id: string | undefined) => void;
   onProfileClick: (user: User) => void;
 }
 
-const UserProfileList: React.FC<UserProfileListProps> = ({ users, onRemoveClick, onProfileClick }) => {
+const UserProfileList: React.FC<UserProfileListProps> = ({ friendsList, onRemoveClick, onProfileClick }) => {
   return (
     <main className="friends__profiles">
-      {users.map(user =>
-        <UserProfile key={user.getId()} user={user}
+      {friendsList.map(user =>
+        <UserProfile key={user.id} user={user}
           onRemoveClick={onRemoveClick}
           onProfileClick={onProfileClick} />)}
     </main>
