@@ -15,6 +15,7 @@ $font-color: rgba(255, 255, 255, 0.7);
   background: $background;
   border-radius: 20px;
 
+
     .metadata-container {
       display: flex;
       flex-direction: row;
@@ -28,99 +29,69 @@ $font-color: rgba(255, 255, 255, 0.7);
 
 
       .more {
+
         display: flex;
-        flex-direction: column;
+        height: 100%;
+        width: 20%;
         justify-content: center;
         align-items: center;
-
-        height: 100%;
-        width: 13%;
-
+      
         .more-symbol-container {
-          height: 100%;
+          height: 80%;
           width: 100%;
-
           cursor: pointer;
-          z-index: 5;
-
+          z-index: 1;
+          justify-content: center;
+          align-items: center;
+          
           .more-symbol {
-            height: 80px;
+
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
+      
+          li {
+            display: block;
+            position: relative;
+            height: 4px;
             width: 100%;
+            min-width: 10px;
+            background: $font-color;
+            transition: transform 250ms ease-in-out;
+            transform-origin: center;
+          }
 
-            span {
-              display: block;
-              position: relative;
+          li:nth-child(1) {
+            top: 0;
+          }
 
-              width: 50%;
-              height: 4%;
+          li:nth-child(2) {
+            top: 50%;
+            transform-origin: center;
+          }
 
-              top: 50%;
-              left: 25%;
-
-              content: " ";
-
-              background: $font-color;
-              transition: all 250ms ease-in-out;
-            }
-
-            span:before {
-              display: block;
-              position: relative;
-
-              width: 100%;
-              height: 100%;
-
-              top: -6px;
-              left: 0px;
-
-              content: " ";
-
-              background: $font-color;
-              transition: all 250ms ease-in-out;
-            }
-
-            span:after {
-              display: block;
-              position: relative;
-
-              width: 100%;
-              height: 100%;
-
-              top: 5px;
-              left: 0px;
-
-              content: " ";
-              background: $font-color;
-              transition: all 250ms ease-in-out;
-            }
-
-            &.active span {
-              background-color: transparent;
-            }
-
-            &.active span:before {
-              top: 0;
-              transform: rotate(45deg);
-            }
-
-            &.active span:after {
-              top: -100%;
-              transform: rotate(-45deg);
-            }
+          li:nth-child(3) {
+            bottom: 0;
+          }
+          
+          &.active li {
+            transform: rotate(45deg);
+          }
           }
         }
 
         .more-popup {
 
           position: relative;
-          top: 150%;
-          left: 0%;
-          height: 100px;
-          width: 100%;
+          left: 20%;
+          top: 240%;
+          height: 300px;
+          width: 120px;
 
           .contents {
             display: flex;
             flex-direction: column;
+            justify-content: space-evenly;
             
             p {
               justify-content: center;
@@ -130,8 +101,6 @@ $font-color: rgba(255, 255, 255, 0.7);
               border-radius: 5px;
               font-size: 14px;
               color: $font-color;
-              min-width: 120px;
-              padding: 5px 5px;
 
               cursor: pointer;
 
