@@ -162,7 +162,7 @@ export default function UserActionPopup(props: UserActionProps) {
       ) : props.buttonClicked === 0 ? (
         <>
           <div className="dm" onClick={onDm}>
-            Envoyer un message privé
+            Send private message
           </div>
           <div className="invite-to-chat" onClick={onInvite}>
             Invite in channel
@@ -172,11 +172,11 @@ export default function UserActionPopup(props: UserActionProps) {
           </div>
           {localIsBlocked === true ? (
             <div className="block-user" onClick={() => onBlock(!localIsBlocked)}>
-              Bloquer
+              Block user
             </div>
           ) : (
             <div className="unblock-user" onClick={() => onBlock(!localIsBlocked)}>
-              Débloquer
+              Unblock
             </div>
           )}
         </>

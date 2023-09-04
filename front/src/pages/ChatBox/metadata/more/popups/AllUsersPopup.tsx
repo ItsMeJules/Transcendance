@@ -16,7 +16,7 @@ export default function AllUsers() {
       <input
         className="filter-users"
         type="search"
-        placeholder="Chercher un utilisateur"
+        placeholder="Search user..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
