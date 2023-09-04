@@ -130,15 +130,13 @@
         display: flex;
         object-fit: cover;
         background-color: rgba(255, 255, 255, 0.5)	
-        // box-shadow: 0 0 0 10px #cfcdcd, 0 0 0 22px #dcdddf;	
-      }	
+      }
+
       &__picture.online {	
         box-shadow: 0 0 0 5px var(--online-color);	
         animation: pulsateShadow 1.5s infinite;	
       }	
-      &__picture.offline {	
-//        box-shadow: 0 0 0 8px  #cfcdcd;	
-      }	
+
       @keyframes pulsateShadow {	
         0% {	
           box-shadow: 0 0 0 6px var(--online-color);	
@@ -154,10 +152,6 @@
       &__picture.online {
         box-shadow: 0 0 0 5px var(--online-color);
         animation: pulsateShadow 1.5s infinite;
-      }
-
-      &__picture.offline {
-        box-shadow: 0 0 0 8px  #cfcdcd;
       }
 
       &__name {

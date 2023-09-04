@@ -138,10 +138,6 @@
         animation: pulsateShadow 1.5s infinite;
       }
 
-      &__picture.offline {
-//        box-shadow: 0 0 0 8px  #cfcdcd;
-      }
-
       @keyframes pulsateShadow {
         0% {
           box-shadow: 0 0 0 6px var(--online-color);
