@@ -72,6 +72,7 @@ export class AuthController {
   @Get('42/login')
   @UseGuards(FortyTwoAuthGuard)
   handle42Login(): { msg: string } {
+    console.log('lol');
     return { msg: '42 Authentification' };
   }
 
@@ -83,14 +84,19 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
+    console.log('here');
     const access_token = await this.authService.login(req.user);
+    console.log('here');
     res.cookie('access_token', access_token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 15000,
       sameSite: 'lax',
     });
+    console.log('here');
     const user = await this.authService.validateJwtToken(access_token);
+    console.log('here');
     await this.authService.connectUserToAllPublicRooms(user.id);
+    console.log('here');
     res.redirect('/dashboard/profile/me');
   }
 
@@ -106,14 +112,19 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
+    console.log('here');
     const access_token = await this.authService.login(req.user);
+    console.log('here');
     res.cookie('access_token', access_token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
+    console.log('here');
     const user = await this.authService.validateJwtToken(access_token);
+    console.log('here');
     await this.authService.connectUserToAllPublicRooms(user.id);
+    console.log('here');
     res.redirect('/dashboard/profile/me');
   }
 

@@ -13,9 +13,6 @@ import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: process.env.jwtSecret,
-    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

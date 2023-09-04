@@ -12,7 +12,6 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ConfigService } from '@nestjs/config';
 import { PayloadDto } from './dto/payload.dto';
 import { AuthDtoUp } from './dto/authup.dto';
-import { Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
@@ -20,7 +19,7 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly jwtService: JwtService,
+    private jwtService: JwtService,
     private prisma: PrismaService,
     private config: ConfigService,
   ) {}
@@ -30,7 +29,10 @@ export class AuthService {
       id: user.id,
       isTwoFactorAuthenticationVerified: false,
     };
-    return this.jwtService.sign(payload);
+    console.log('before sign');
+    const token = this.jwtService.sign(payload);
+    console.log('after sign');
+    return token;
   }
 
   async signup(dto: AuthDtoUp) {
@@ -81,7 +83,7 @@ export class AuthService {
       id: userId,
       email,
     };
-    const secret = process.env.jwtSecret;
+    const secret = 'mySuperSecretKey';
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '120m',
       secret: secret,
@@ -91,7 +93,7 @@ export class AuthService {
 
   async validateJwtToken(token: string): Promise<User | any | null> {
     try {
-      const jwtSecret = this.config.get('JWT_SECRET');
+      const jwtSecret = process.env.jwtSecret;
       const decodedToken: any = jwt.verify(token, jwtSecret);
       const { id } = decodedToken;
       // console.log('id:', id, ' and email:', email);
