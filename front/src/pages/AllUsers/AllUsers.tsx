@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { MDBContainer } from 'mdb-react-ui-kit';
 import { useWebsocketContext } from 'services/Websocket/Websocket';
 import { UserData } from "services/User/User";
+
 import AllUsersList from './Components/AllUsersList';
 import './css/AllUsers.scss'
 
 const AllUsers = () => {
+  const [userId, setUserId] = useState<string>();
   const [usersData, setUsersData] = useState<any>({});
   const [usersList, setUsersList] = useState<any[]>([]);
   const socket = useWebsocketContext();
@@ -13,6 +15,7 @@ const AllUsers = () => {
   // Socket on + emit
   useEffect(() => {
     socket.game?.on('allUsers', (data: any) => {
+      setUserId(data.userId);
       setUsersData(data);
     });
     socket.game?.emit('allUsers', { action: 'status' });
@@ -42,7 +45,7 @@ const AllUsers = () => {
       </header>
 
       <MDBContainer className="allusers-container">
-        <AllUsersList usersList={usersList} />
+        <AllUsersList usersList={usersList} currentUserId={userId}/>
       </MDBContainer>
 
     </article>

@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios, { } from "axios";
-import { useNavigate } from "react-router-dom";
-
-import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
-import ToastError from "layout/ToastError/ToastError";
-import User from "services/User/User";
-import { UserArray } from "services/User/UserArray";
 import { UserData } from "services/User/User";
-
-import LeaderBoardHeader from "./components/LeaderBoardHeader";
 import UserProfilesList from "./components/UserProfileList";
-import LeaderBoardContainer from "./components/LeaderBoardContainer"
-import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
+import { MDBContainer } from 'mdb-react-ui-kit';
 
 import './css/LeaderBoard.scss';
 import { useWebsocketContext } from "services/Websocket/Websocket";
@@ -20,15 +10,7 @@ const LeaderBoard: React.FC = () => {
   const [userId, setUserId] = useState<string>();
   const [leaderboardData, setLeaderboardData] = useState<any>({});
   const [leaderboardList, setLeaderboardList] = useState<any[]>([]);
-  const [errMsg, setErrMsg] = useState('');
-  const [users, setUsers] = useState<UserArray>([]);
   const socket = useWebsocketContext();
-  const history = useNavigate();
-  // const userDataStore = useSelector((state: RootState) => state.user);
-
-  const resetErrMsg = () => {
-    setErrMsg(''); // Reset errMsg to an empty string
-  };
 
   // Socket on + emit
   useEffect(() => {
