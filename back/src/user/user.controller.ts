@@ -79,7 +79,6 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log('BY ID OK');
     try {
       const userMain = await this.prisma.user.findUnique({
         where: { id: userId },
@@ -99,8 +98,8 @@ export class UserController {
       // console.log("userToFind:", userToFind);
       const data: any = {};
       data.user = { user };
-      data.friendStatus = '';
-      if (userMain.friends.length !== 0) data.friendStatus = 'Is friend';
+      data.isFriend = 'false';
+      if (userMain.friends.length !== 0) data.isFriend = 'true';
       return { data };
     } catch (err) {}
   }
