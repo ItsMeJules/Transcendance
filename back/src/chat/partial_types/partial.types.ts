@@ -6,6 +6,8 @@ export enum AcknowledgementType {
   SUCCESS = 'success',
   ERROR = 'error',
   WARNING = 'warning',
+  INVITATION = 'invitation',
+  PENDING_INVITE = 'pending_invite',
 }
 
 export type RoomInfo = {

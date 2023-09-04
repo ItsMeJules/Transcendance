@@ -98,12 +98,12 @@ export class ChatEventsGateway {
       where: { id: client.data.id },
     });
 
-    await this.leaveRoomAndRemoveUser(
-      client,
-      userClient.currentRoom,
-      userClient.id,
-    );
-    this.removeEventListeners(client);
+    // await this.leaveRoomAndRemoveUser(
+    //   client,
+    //   userClient.currentRoom,
+    //   userClient.id,
+    // );
+    // this.removeEventListeners(client);
   }
 
   async leaveRoomAndRemoveUser(

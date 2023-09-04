@@ -95,7 +95,14 @@ export default function UserActionPopup({
     } as PayloadAction);
   };
 
-  const onInviteToPlay = () => {};
+  const onInviteToPlay = () => {
+    if (sendData === null) return;
+
+    sendData(ChatSocketActionType.INVITE_TO_PLAY, {
+      action: "inviteToPlay",
+      targetId: Number(userData.id),
+    } as PayloadAction);
+  };
 
   const onBlock = () => {
     if (sendData === null) return;

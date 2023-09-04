@@ -40,6 +40,11 @@ export const ActionChatHandlers = {
     client: Socket,
     modifyPasswordDto: ChatDtos.ModifyPasswordDto,
   ): Promise<string> => chatService.modifyPassword(client, modifyPasswordDto),
+  inviteToPlay: async (
+    chatService: ChatService,
+    client: Socket,
+    inviteToPlayDto: ChatDtos.InviteToPlayDto,
+  ): Promise<void> => chatService.inviteToPlay(client, inviteToPlayDto),
 };
 
 export const ActionRoomHandlers = {
@@ -92,5 +97,6 @@ export const ActionRoomHandlers = {
     chatService: ChatService,
     client: Socket,
     usersRoomDto: ChatDtos.UsersRoomDto,
-  ): Promise<void> => chatService.sendAllUsersBannedOnRoom(client, usersRoomDto),
+  ): Promise<void> =>
+    chatService.sendAllUsersBannedOnRoom(client, usersRoomDto),
 };

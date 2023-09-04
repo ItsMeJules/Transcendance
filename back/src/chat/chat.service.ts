@@ -17,13 +17,38 @@ import { UserSocketsService } from './user-sockets/user-sockets.service';
 // add a global check for room actions but not invite because of banned users.
 // refacto all function especially create room.
 // ? add time mutes ?
-// move sends to other service
+// move sends to an other service
 @Injectable()
 export class ChatService {
   constructor(
     private prismaService: PrismaService,
     private userSocketsService: UserSocketsService,
   ) {}
+
+  sendInviteToUser(client: Socket, message: string, targetId: number): void {
+    const payloadSender: AcknowledgementPayload = {
+      userId: client.data.id,
+      message: message,
+      type: AcknowledgementType.PENDING_INVITE,
+    };
+    const payloadTarget: AcknowledgementPayload = {
+      userId: targetId,
+      message: 'You have been invited by ' + client.data.username,
+      type: AcknowledgementType.INVITATION,
+    };
+    try {
+      const targetSocket = this.userSocketsService.getUserSocket(
+        String(targetId),
+      );
+      if (!targetSocket) {
+        throw new Error("User isn't online"); // add nick
+      }
+      client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payloadSender);
+      targetSocket.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payloadSender);
+    } catch (error) {
+      this.sendError(client, error);
+    }
+  }
 
   sendError(client: Socket, error: Error): void {
     const payload: AcknowledgementPayload = {
@@ -97,6 +122,34 @@ export class ChatService {
         .emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload); // only one non targeted
     } else
       server.to(roomName).emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payload); // everyone targeted
+  }
+
+  async inviteToPlay(
+    client: Socket,
+    inviteToPlayDto: ChatDtos.InviteToPlayDto,
+  ): Promise<void> {
+    try {
+      const actingUser = await this.prismaService.user.findUnique({
+        where: { id: client.data.id },
+      });
+      const targetUser = await this.prismaService.returnCompleteUser(
+        inviteToPlayDto.targetId,
+      );
+      if (
+        targetUser.blockedUsers.some((blocked) => blocked.id === actingUser.id)
+      )
+        throw new Error(
+          `${targetUser.username} blocked you, you can't invite him.`,
+        );
+      // more exclusions here like if target/acting is in a game, if he didn't answered yet.
+      this.sendInviteToUser(
+        client,
+        `Waiting for ${targetUser.username} to answer...`,
+        targetUser.id,
+      );
+    } catch (error) {
+      this.sendError(client, error);
+    }
   }
 
   async sendMessageToRoom(

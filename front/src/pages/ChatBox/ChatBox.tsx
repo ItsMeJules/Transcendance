@@ -98,6 +98,30 @@ export const ChatBox = () => {
           theme: "colored",
         }); //information
         break;
+      case "invitation":
+        toast.info(`${payload.message}`, {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }); //information
+        break;
+      case "pending_invite":
+        toast.info(`${payload.message}`, {
+          position: "bottom-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }); //information
+        break;
       default:
         break;
     }
@@ -175,6 +199,7 @@ export const ChatBox = () => {
     }
 
     // console.log("data is :", data, "on eventType :", eventType);
+    console.log("sendData with action :", action, "and data :", data);
     chatSocket?.emit(eventType, data);
   };
 

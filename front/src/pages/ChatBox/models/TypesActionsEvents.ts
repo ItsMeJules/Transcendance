@@ -17,6 +17,7 @@ export enum ChatSocketActionType {
   SWITCH_CHANNEL = "joinRoom",
   LEAVE_ROOM = "leaveRoom",
   CHANGE_PASSWORD = "changePassword",
+  INVITE_TO_PLAY = "inviteToPlay",
 }
 
 export enum RoomSocketActionType {
