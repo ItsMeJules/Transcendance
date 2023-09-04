@@ -8,9 +8,8 @@
 
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: space-between;
-  gap:10px;
+  align-items: center;
   overflow-y: hidden;
   overflow-x: auto;
 
@@ -154,7 +153,6 @@
     padding: 20px;
     justify-content: space-between;
     gap: 20px;
-    max-height: 80%;
     z-index: 10;
 
 
@@ -170,6 +168,7 @@
       width: 350px;
       height:100%;
       border-radius: 20px;
+      max-height: 55vh;
     }
   }
 
@@ -181,14 +180,14 @@
     justify-content: center;
     transform: translateY(50%);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
     
     .icons {
-      padding-top: 10px;
+      height: 80px;
+      margin: 10px;
       transform: translateY(-30%);
       display: flex;
-      justify-content:x space-between;
+      justify-content: space-between;
       gap: 1px;
       
       button {

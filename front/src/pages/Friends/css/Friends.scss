@@ -151,11 +151,21 @@
         }
       }
 
+      &__picture.online {
+        box-shadow: 0 0 0 5px var(--online-color);
+        animation: pulsateShadow 1.5s infinite;
+      }
+
+      &__picture.offline {
+        box-shadow: 0 0 0 8px  #cfcdcd;
+      }
+
       &__name {
         box-sizing: border-box;	
         height: 110%;
         text-align: left;
         color: #979cb0;
+        height: 110%;
         font-weight: 550;
         font-size: 15px;
         letter-spacing: 0.6px;
@@ -168,14 +178,14 @@
       }
 
 	      &__isplaying {	
-        width:      40px;	
-        min-width:  40px;	
-        height:     40px;	
-        min-height: 40px;	
-        display: flex;	
-        justify-content: flex-end;	
-        align-items: center;	
-      }	
+          width:      40px;	
+          min-width:  40px;	
+          height:     40px;	
+          min-height: 40px;	
+          display: flex;	
+          justify-content: flex-end;	
+          align-items: center;	
+        }	
 
       &__heart {
         display: flex;

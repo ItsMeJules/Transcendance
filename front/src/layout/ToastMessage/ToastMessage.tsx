@@ -27,7 +27,7 @@ const ToastMessage: React.FC<ToastMessageProps> = ({ notifMsg, resetNotifMsg, ch
         timeoutId = setTimeout(() => {
           x.className = x.className.replace("show", "");
           setToastVisible(false);
-          changeRemoveFlag();
+          resetIdToRemove();
           resetNotifMsg(); // Call the function to reset errMsg in the parent component
         }, 5950);
       }
@@ -46,7 +46,8 @@ const ToastMessage: React.FC<ToastMessageProps> = ({ notifMsg, resetNotifMsg, ch
     // Handle the click on the toast message here
     // For example, you can reverse the operation or perform any other action
     // Then reset the notification message to hide the toast
-    resetIdToRemove();
+    
+    changeRemoveFlag();
     resetNotifMsg();
   };
 

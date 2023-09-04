@@ -44,7 +44,7 @@ export default function ChannelCreationPopup() {
         <div className="images">
           <img
             className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
-            src="/images/public.png"
+            src="/images/globe.png"
             alt="Public"
             onClick={() => setChannelType(ChannelType.PUBLIC)}
           />
@@ -65,7 +65,7 @@ export default function ChannelCreationPopup() {
 
       <div className="channel-name">
         <input
-          placeholder="Nom du channel"
+          placeholder="Channel Name"
           onChange={(e) => setChannelName(e.target.value)}
           value={channelName}
           required
@@ -75,7 +75,7 @@ export default function ChannelCreationPopup() {
       {channelType === ChannelType.PROTECTED && (
         <div className="password-input">
           <input
-            placeholder="Entrez le mdp du channel."
+            placeholder="Password"
             onChange={(e) => setChannelPassword(e.target.value)}
             value={channelPassword}
             required
@@ -84,7 +84,7 @@ export default function ChannelCreationPopup() {
       )}
 
       <div className="validate">
-        <p onClick={createChannel}>Créer le channel</p>
+        <p onClick={createChannel}>Create Channel</p>
       </div>
     </Popup>
   );
