@@ -39,7 +39,8 @@ const ProfileHeader = () => {
       if (parsedUserData.gamesPlayed && parsedUserData.gamesWon) {
         setWinLossRatio((parsedUserData.gamesWon) / (parsedUserData.gamesPlayed - parsedUserData.gamesWon));
       }
-    }
+    } else
+      console.log('No USER DATA :((((((((((((((');
   }, []);
 
   const handleProfileClick = (() => {
