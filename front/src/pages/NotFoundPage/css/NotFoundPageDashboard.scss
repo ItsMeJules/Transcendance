@@ -1,24 +1,24 @@
-.not-found-main-container {
-  width: 100vw;
+.not-found-dash-main-container {
+  // width: 100vw;
   align-items: center;
-  height: 100vh;
+  // height: 100vh;
   min-width: 400px;
   background-color: black;
   color: white;
   display: flex;
   flex-direction: column;
 
-  .not-found-sub-container {
+  .not-found-dash-sub-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-top: 100px;
+    margin-top: 40px;
     margin-bottom: 100px;
     min-width: 400px;
     font-family: "dune", Arial, sans-serif;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 20px;
   }
 
   .corner-button:before,
