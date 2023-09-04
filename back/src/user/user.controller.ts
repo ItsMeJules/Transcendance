@@ -33,6 +33,7 @@ import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
+
   constructor(
     private userService: UserService,
     private prisma: PrismaService,
@@ -78,8 +79,7 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Res({ passthrough: true }) res: Response,
   ) {
-    if (userId === id)
-      return { redirectTo: 'http://localhost:8000/profile/me' };
+    console.log('BY ID OK');
     try {
       const userMain = await this.prisma.user.findUnique({
         where: { id: userId },
@@ -94,6 +94,8 @@ export class UserController {
       const user: User | null = await this.prisma.user.findUnique({
         where: { id: id },
       });
+      if (userId === id)
+        user.id = -1;
       // console.log("userToFind:", userToFind);
       const data: any = {};
       data.user = { user };

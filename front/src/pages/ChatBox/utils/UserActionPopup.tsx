@@ -31,8 +31,7 @@ export default function UserActionPopup(props: UserActionProps) {
   const [localIsAdmin, setLocalIsAdmin] = useState(props.isAdmin);
   const [localIsBlocked, setLocalIsBlocked] = useState(props.isBlocked);
 
-  const sendData: null | ((action: string, data: PayloadAction) => void) =
-    useContext(SendDataContext);
+  const sendData: null | ((action: string, data: PayloadAction) => void) = useContext(SendDataContext);
 
   const onBan = (ban: boolean) => {
     setLocalIsBanned(ban);
@@ -102,6 +101,15 @@ export default function UserActionPopup(props: UserActionProps) {
     } as PayloadAction);
   };
 
+  const onInviteToPlay = () => {
+    if (sendData === null) return;
+
+    sendData(RoomSocketActionType.INVITE_PLAY, {
+      action: "invite-play",
+      targetId: Number(props.user.getId()),
+    } as PayloadAction);
+  };
+
   const onBlock = (block: boolean) => {
     setLocalIsBlocked(block);
     if (sendData === null) return;
@@ -156,7 +164,10 @@ export default function UserActionPopup(props: UserActionProps) {
           <div className="dm" onClick={onDm}>
             Send private message
           </div>
-          <div className="invite-to-play" onClick={onInvite}>
+          <div className="invite-to-chat" onClick={onInvite}>
+            Invite in channel
+          </div>
+          <div className="invite-to-play" onClick={onInviteToPlay}>
             Invite to play
           </div>
           {localIsBlocked === true ? (

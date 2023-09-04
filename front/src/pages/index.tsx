@@ -16,3 +16,6 @@ export {default as ChatBox} from './ChatBox/ChatBox';
 export {default as ProfileHeader} from './Dashboard/components/ProfileHeader'
 export {default as NavFooter} from './Dashboard/components/NavFooter'
 export {default as AllUsers} from './AllUsers/AllUsers'
+export {default as NotFoundPage} from './NotFoundPage/NotFoundPage'
+export {default as NotFoundPageDashboard} from './NotFoundPage/NotFoundDashboard'
+export {default as ErrorPage} from './ErrorPage/ErrorPage'

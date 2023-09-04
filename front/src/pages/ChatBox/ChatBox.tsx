@@ -16,9 +16,7 @@ import {
   RoomSocketActionType,
 } from "./models/TypesActionsEvents";
 
-export const SendDataContext = createContext<
-  null | ((action: string, data: PayloadAction) => void)
->(null);
+export const SendDataContext = createContext<null | ((action: string, data: PayloadAction) => void)>(null);
 
 export const ChatBox = () => {
   const [chatToggled, setChatToggled] = useState<boolean>(true);

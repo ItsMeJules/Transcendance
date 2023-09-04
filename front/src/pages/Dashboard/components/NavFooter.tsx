@@ -1,12 +1,15 @@
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from "react-router-dom";
 import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
-import React, { useEffect, useState } from 'react';
+import debounce from 'lodash.debounce';
+
 
 interface LeftNavFooterProps {
   setRightContent: (option: number) => void;
 }
 
 const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
+  const debouncedSetRightContent = useCallback(debounce(setRightContent, 10), [setRightContent]);
   const history = useNavigate();
 
   const handleMatchMakingClick = (() => {
@@ -44,19 +47,19 @@ const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
         <button onClick={handleMatchMakingClick}>
           <img src="/images/game.png" alt="game" />
         </button>
-        <button onClick={() => setRightContent(APP_SCREENS.ALL_USERS)}>
+        <button onClick={() => debouncedSetRightContent(APP_SCREENS.ALL_USERS)}>
           <img src="/images/allusers.png" alt="allusers" />
         </button>
-        <button onClick={() => setRightContent(APP_SCREENS.CHAT)}>
+        <button onClick={() => debouncedSetRightContent(APP_SCREENS.CHAT)}>
           <img src="/images/chat.png" alt="chat" />
         </button>
-        <button onClick={() => setRightContent(APP_SCREENS.FRIENDS)}>
+        <button onClick={() => debouncedSetRightContent(APP_SCREENS.FRIENDS)}>
           <img src="/images/friends.png" alt="friends" />
         </button>
-        <button onClick={() => setRightContent(APP_SCREENS.LEADERBOARD)}>
+        <button onClick={() => debouncedSetRightContent(APP_SCREENS.LEADERBOARD)}>
           <img src="/images/leaderboard.png" alt="leaderboard" />
         </button>
-        <button onClick={() => setRightContent(APP_SCREENS.ONLINE_GAMES)}>
+        <button onClick={() => debouncedSetRightContent(APP_SCREENS.ONLINE_GAMES)}>
           <img src="/images/gamesonline.png" alt="gamesonline" />
         </button>
       </div>

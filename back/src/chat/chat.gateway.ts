@@ -127,6 +127,8 @@ export class ChatEventsGateway {
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
     const newPayload = { ...payload, server: this.server };
+    console.log(' ');
+    console.log(' ');
     console.log('room action payload: ', payload);
     await ActionRoomHandlers[payload.action](
       this.chatService,

@@ -4,9 +4,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1;
+  z-index: 10;
 
   .signin-header {
+    z-index: 10;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -212,11 +213,6 @@
       }
 
     }
-
-
-
-
-
   }
 }
 

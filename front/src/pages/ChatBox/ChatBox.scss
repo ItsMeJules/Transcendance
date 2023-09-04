@@ -461,14 +461,28 @@ $font-color: rgba(255, 255, 255, 0.7);
             }
 
               .dm:hover,
-              .invite-to-play:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-              }
-              
+              .invite-to-chat:hover,
+              .invite-to-play:hover,
               .block-user:hover {
                 background-color: rgba(255, 0, 0, 0.3);
               }
 
+              .dm {
+                border-bottom: $border;
+              }
+
+              .invite-to-chat {
+                border-bottom: $border;
+              }
+
+              .invite-to-play {
+                border-bottom: $border;
+              }
+
+              .block-user {
+                background-color: rgba(0, 255, 0, 0.3);
+              }
+              
               .unblock-user:hover {
                 background-color: rgba(0, 255, 0, 0.3);
               }
@@ -766,6 +780,19 @@ $font-color: rgba(255, 255, 255, 0.7);
                   cursor: default;
                 }
 
+                .kick:hover,
+                .ban:hover,
+                .mute:hover,
+                .promote:hover,
+                .unban:hover,
+                .unmute:hover,
+                .demote:hover,
+                .dm:hover,
+                .invite-to-chat:hover,
+                .invite-to-play:hover,
+                .block-user:hover {
+                  background-color: $hover-color;
+                }
                 
                 .ban,
                 .unban,
@@ -775,6 +802,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                 .promote,
                 .demote,
                 .dm,
+                .invite-to-chat,
                 .invite-to-play,
                 .block-user,
                 .unblock-user {

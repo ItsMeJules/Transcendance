@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { API_ROUTES, APP_ROUTES, APP_URL } from 'utils/routing/routing';
@@ -12,14 +12,17 @@ import { MDBContainer } from 'mdb-react-ui-kit';
 
 import './css/ProgressBar.scss'
 import './css/UserProfile.scss'
+import NotFoundPageDashboard from 'pages/NotFoundPage/NotFoundDashboard';
 
 
 const GenericUserProfile = () => {
   const { id } = useParams();
   const [level, setLevel] = useState<number | null>(0);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [userNotFound, setUserNotFound] = useState(false);
   const [iconColor, setIconColor] = useState('rgba(255, 255, 255, 0.7)');
   const [errMsg, setErrMsg] = useState('');
+  const history = useNavigate();
   getProgressBarClass(level);
 
   const resetErrMsg = () => {
@@ -29,10 +32,18 @@ const GenericUserProfile = () => {
   useEffect(() => {
     const fetchUserProfile = async (id: string | undefined) => {
       try {
+        console.log('HEREEEEEEEEEEE and id:', id);
         const response = await axios.get(API_ROUTES.GENERIC_USER_PROFILE + id,
           {
             withCredentials: true
           });
+        if (response.data.data.user.user === null) {
+          setUserNotFound(true);
+          return;
+        }
+        console.log('data:', response.data.data.user.user.id);
+        if (response.data.data.user.user.id === -1)
+          history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
         localStorage.setItem('genericUserData', JSON.stringify(response.data.data.user.user));
         setUserData(response.data.data.user.user);
 
@@ -45,12 +56,16 @@ const GenericUserProfile = () => {
 
 
       } catch (err: any) {
+        console.log('error end stauts:', err.response?.status);
+        if (err.response?.status === 400)
+          setUserNotFound(true);
+        // console.log('error:', err);
         // adequate error management
       }
     };
 
     fetchUserProfile(id);
-  }, [id, userData]);
+  }, [id]);
 
   const addFriend = async (id: string | undefined) => {
     const dataToSend: any = {};
@@ -72,6 +87,9 @@ const GenericUserProfile = () => {
     }
   }
 
+  if (userNotFound) {
+    return <NotFoundPageDashboard />;
+  }
 
   return (
     <section className="profile-main-container">
