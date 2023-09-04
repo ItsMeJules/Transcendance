@@ -14,16 +14,16 @@ type ProfileCardProps = {
   userData: UserData | null;
   setErrMsg: (msg: string) => void;
   type?: ProfileType;
-  iconColor?: string;
+  isFriend?: boolean;
   onAddFriend?: () => void;
   fetchUserProfile?: () => void;
 };
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = 'user', iconColor, onAddFriend, fetchUserProfile }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ userData, setErrMsg, type = 'user', isFriend, onAddFriend, fetchUserProfile }) => {
   return (
     <MDBCard className="profile-board-card">
 
-      <ProfileHeader setErrMsg={setErrMsg} type={type} iconColor={iconColor} onAddFriend={onAddFriend} />
+      <ProfileHeader setErrMsg={setErrMsg} type={type} isFriend={isFriend} onAddFriend={onAddFriend} />
 
       {type != 'edit' && (
         <>
