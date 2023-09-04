@@ -130,7 +130,7 @@ export class PongEvents {
     const gameQueue = this.pongService.addToQueue(user, gameDto);
     console.log('2 Queue:', this.pongService.userQueue);
     if (gameQueue != null) {
-      console.log('2 EMIT JOINED to user:', user.id);
+      // console.log('2 EMIT JOINED to user:', user.id);
       this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED', gameMode: gameDto.gameMode });
       const gameData = await this.pongService.gameCreate(gameDto, this.server); // not await?
       if (!gameData) return;
@@ -144,6 +144,7 @@ export class PongEvents {
       const player1socket = this.idToSocketMap.get(game.pl1.id);
       const player2socket = this.idToSocketMap.get(game.pl2.id);
       if (player1socket === undefined || player2socket === undefined) {
+        console.log('ERRROOOOOOOORRRRRRR HEREEEEEEEEEEEEEEE');
         this.pongService.deleteGamePrismaAndList(game.prop.id)
         return;
       }
@@ -156,9 +157,10 @@ export class PongEvents {
       const data = { status: 'START', gameChannel: game.prop.room, game: gameData, player1: player1, player2: player2 };
       console.log('2 EMIT GAME START in joinGameQueue TO:');
       this.printUsersInRoom(`game_${game.prop.id}`);
-      this.server.to(`game_${game.prop.id}`).emit(`joinGameQueue`, data);
-      // this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
-      // this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
+      console.log('SOCKET1 id:', player1socket.id, ' socket 2 id', player2socket.id);
+      // this.server.to(`game_${game.prop.id}`).emit(`joinGameQueue`, data);
+      this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
+      this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
       this.updateEmitOnlineGames('toRoom', 0);
       this.emitUpdateAllUsers('toAll', 0);
       this.emitUpdateFriendsOf(player1.id);
@@ -259,7 +261,7 @@ export class PongEvents {
       await new Promise((resolve) => setTimeout(resolve, timeoutInSeconds * 1000));
       if (opponent.status === 'pending'
         && gameStruct.prop.status === 'waiting') {
-        console.log('TIMEOUT');
+        // console.log('TIMEOUT');
         gameStruct.prop.status = 'timeout';
         gameStruct.sendUpdateToRoom(player.status, opponent.status, -1, 'prepareToPlay');
         await this.pongService.deleteGamePrismaAndList(gameStruct.prop.id);
@@ -546,7 +548,7 @@ export class PongEvents {
 
   async dealWithTimeout(game: GameStruct) {
     const timeoutInSeconds = 10;
-    console.log('TIMEOUT BIG IN ');
+    // console.log('TIMEOUT BIG IN ');
     await new Promise((resolve) => setTimeout(resolve, timeoutInSeconds * 1000));
     if (game.prop.status === 'pending') {
       game.prop.status = 'timeout';
@@ -726,7 +728,7 @@ export class PongEvents {
     const sockets = await this.server.in(room).fetchSockets();
     console.log('Users in room:', room);
     sockets.forEach((Socket) => {
-      console.log(Socket.data.id);
+      console.log('id:', Socket.data.id, ' sockt id:', Socket.id);
     });
     console.log(' ');
   }

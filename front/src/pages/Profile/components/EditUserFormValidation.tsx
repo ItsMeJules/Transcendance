@@ -9,11 +9,10 @@ import { useNavigate } from 'react-router-dom';
 
 
 interface EditUserFormValidationProps {
-  setErrMsg: (error: string) => void;
   userData: UserData | null;
 }
 
-const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrMsg, userData }) => {
+const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ userData }) => {
 
   const [userDataNew, setUserDataNew] = useState<UserData | null>();
   const [username, setUsername] = useState<string>('');
@@ -44,18 +43,18 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     } catch (err: any) {
       console.log(err.response?.data.message);
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-      } else if (err.response?.status === 400) {
-        setErrMsg('Missing username');
-      } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized');
-      } else if (err.response?.status === 403) {
-        setErrMsg(`${err.response.data.message}`);
-      }
-      else {
-        setErrMsg('Login failed');
-      }
+      // if (!err?.response) {
+      //   setErrMsg('No Server Response');
+      // } else if (err.response?.status === 400) {
+      //   setErrMsg('Missing username');
+      // } else if (err.response?.status === 401) {
+      //   setErrMsg('Unauthorized');
+      // } else if (err.response?.status === 403) {
+      //   setErrMsg(`${err.response.data.message}`);
+      // }
+      // else {
+      //   setErrMsg('Login failed');
+      // }
     }
   };
 

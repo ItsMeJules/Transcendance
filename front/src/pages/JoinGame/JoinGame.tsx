@@ -40,7 +40,9 @@ const JoinGame = () => {
   }, [socketData]);
 
   useEffect(() => {
+    console.log('SOCKET id:', socket.game?.id);
     socket.game?.on('joinGameQueue', (data: any) => {
+      console.log('SOCKET ON JOIN RECEIVED:', data);
       setSocketData(data);
     });
     socket.game?.emit('joinGameQueue', { gameMode: 'query' });

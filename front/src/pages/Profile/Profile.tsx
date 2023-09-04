@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { APP_ROUTES } from "utils/routing/routing";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
 import ToastError from "layout/ToastError/ToastError";
 import User from "services/User/User";
 import { UserData } from "services/User/User";
 import { MDBContainer } from 'mdb-react-ui-kit';
-
 import './css/UserProfile.scss';
 import './css/ProgressBar.scss';
-
 import ProfileCard from "./components/ProfileCard";
 import { useAppDispatch } from "utils/redux/Store";
 import { setUser } from "utils/redux/reducers/UserSlice";
 
 export const Profile: React.FC = () => {
-  const [userDataHere, setUserDataHere] = useState<UserData | null>(null);
+  const [userDataProfile, setUserDataProfile] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
   const [level, setLevel] = useState(0);
   const history = useNavigate();
@@ -26,9 +23,6 @@ export const Profile: React.FC = () => {
   const resetErrMsg = () => {
     setErrMsg(''); // Reset errMsg to an empty string
   };
-
-  console.log(' profile rendering <<<<<<<<<<<<<<<<');
-
 
   const fetchUserProfile = async () => {
     try {
@@ -43,7 +37,7 @@ export const Profile: React.FC = () => {
       console.log("response:", userData);
       dispatchUser(setUser(userData));
       localStorage.setItem("userData", JSON.stringify(userData));
-      setUserDataHere(userData);
+      setUserDataProfile(userData);
       User.getInstance().setUserFromResponseData(userData);
       setLevel(User.getInstance().getUserLevel());
     } catch (err: any) {
@@ -73,7 +67,7 @@ export const Profile: React.FC = () => {
   return (
     <section className="profile-main-container">
       <MDBContainer className="profile-board-container">
-        <ProfileCard userData={userDataHere} setErrMsg={setErrMsg}  />
+        <ProfileCard userData={userDataProfile} />
         <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
       </MDBContainer>
     </section>

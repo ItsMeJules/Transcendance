@@ -33,14 +33,13 @@ const GenericUserProfile = () => {
   const resetErrMsg = () => {
     setErrMsg('');
   }
-  console.log('generice profile rendering for:', id);
 
   useEffect(() => {
     const fetchUserProfile = async (id: string | undefined) => {
       try {
-        console.log(' ');
-        console.log(' ');
-        console.log('HEREEEEEEEEEEE and id:', id, '<<<<<<<<<<<');
+        // console.log(' ');
+        // console.log(' ');
+        // console.log('HEREEEEEEEEEEE and id:', id, '<<<<<<<<<<<');
         const response = await axios.get(API_ROUTES.GENERIC_USER_PROFILE + id,
           {
             withCredentials: true
@@ -100,7 +99,7 @@ const GenericUserProfile = () => {
   return (
     <section className="profile-main-container">
       <MDBContainer className="profile-board-container">
-        <ProfileCard userData={userData} setErrMsg={setErrMsg} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} />
+        <ProfileCard userData={userData} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} />
       </MDBContainer>
     </section>
   );

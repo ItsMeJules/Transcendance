@@ -3,11 +3,10 @@ import axios from 'axios';
 import { API_ROUTES } from 'utils/routing/routing';
 
 interface ImageChangeProps {
-  setErrMsg: (error: string) => void; // Callback function to set errMsg in UserProfile component
   fetchUserProfile: () => void;
 }
 
-const ImageChange: React.FC<ImageChangeProps> = ({ setErrMsg, fetchUserProfile }) => {
+const ImageChange: React.FC<ImageChangeProps> = ({ fetchUserProfile }) => {
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log("IMAGE:", API_ROUTES.USER_PIC_CHANGE);
@@ -28,16 +27,16 @@ const ImageChange: React.FC<ImageChangeProps> = ({ setErrMsg, fetchUserProfile }
       } catch (err: any) {
         // catch unauthorized too!!!
         console.log('err:',err);
-        if (!err?.response) {
-          setErrMsg('No Server Response');
-        } else if (err.response?.status === 403) {
-          setErrMsg(`${err.response.data.message}`);
-        } else if (err.response?.status === 413) {
-          const errorResponse = err.response.data;
-          setErrMsg(errorResponse.error); // Set the error message to the errMsg variable
-        }
-        else
-          setErrMsg(err.response.data.message);
+        // if (!err?.response) {
+        //   setErrMsg('No Server Response');
+        // } else if (err.response?.status === 403) {
+        //   setErrMsg(`${err.response.data.message}`);
+        // } else if (err.response?.status === 413) {
+        //   const errorResponse = err.response.data;
+        //   setErrMsg(errorResponse.error); // Set the error message to the errMsg variable
+        // }
+        // else
+        //   setErrMsg(err.response.data.message);
 
       }
     }

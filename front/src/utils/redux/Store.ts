@@ -23,9 +23,7 @@ export const store = configureStore({
   reducer: rootReducer,
 })
 
-export const persistor = persistStore(store, null, () => {
-  console.log('Redux-persist rehydration complete');
-});
+export const persistor = persistStore(store, null);
 
 export type RootState = ReturnType<typeof appReducer>
 export type AppDispatch = typeof store.dispatch

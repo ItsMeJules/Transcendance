@@ -9,13 +9,12 @@ import { FaUserPen } from 'react-icons/fa6';
 type ProfileType = 'user' | 'generic' | 'edit';
 
 type ProfileHeaderProps = {
-  setErrMsg: (message: string) => void;
   type: ProfileType;
   isFriend?: boolean;
   onAddFriend?: () => void;
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, onAddFriend, isFriend }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ type, onAddFriend, isFriend }) => {
   return (
     <div className="profile-board-header">
       {type === 'user' && (
