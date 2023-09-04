@@ -596,7 +596,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
         padding: 10px;
         height: 90px;
-        width: 200px;
+        width: 240px;
 
         color: $font-color;
         border-left: $border;
@@ -610,7 +610,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
 
           height: 100%;
-          width: 88%;
+          width: 130px;
 
           .channel-name {
             height: 50%;
@@ -639,10 +639,10 @@ $font-color: rgba(255, 255, 255, 0.7);
 
             .popup-container {
               position: relative;
-              left: -40%;
+              left: -50%;
               top: 52%;
               height: 320px;
-              width: 160px;
+              width: 150px;
               
               .invited {
 
@@ -770,6 +770,8 @@ $font-color: rgba(255, 255, 255, 0.7);
                 font-family: "dune", Arial, sans-serif;
                 font-size: 8pt;
                 padding: 10px;
+                flex-direction: column;
+                justify-content: space-evenly;
 
                 h4 {
                   padding: 10px;
@@ -804,7 +806,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                 .invite-to-play,
                 .block-user,
                 .unblock-user {
-                  padding: 10px;
+                  padding: 8px;
                   font-size: 8pt;
                   border: $border; 
                   border-radius: 5px;
@@ -858,6 +860,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             }
 
             .channel-description {
+              font-family: "dune", Arial, sans-serif;
               font-size: 12px;
               padding: 10px;
               text-align: center;
@@ -879,6 +882,11 @@ $font-color: rgba(255, 255, 255, 0.7);
                 cursor: pointer;
                 transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
         
+                &.selected {
+                  filter: invert(100%);
+                }
+                
+
                 &::before,
                 &::after {
                   content: '';
