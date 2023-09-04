@@ -15,6 +15,7 @@ const ProfileHeader = () => {
   const [winLossRatio, setWinLossRatio] = useState(0);
 
   useEffect(() => {
+
     const storedUserData = localStorage.getItem('userData');
     if (storedUserData) {
       const parsedUserData = JSON.parse(storedUserData);
@@ -39,8 +40,7 @@ const ProfileHeader = () => {
       if (parsedUserData.gamesPlayed && parsedUserData.gamesWon) {
         setWinLossRatio((parsedUserData.gamesWon) / (parsedUserData.gamesPlayed - parsedUserData.gamesWon));
       }
-    } else
-      console.log('No USER DATA :((((((((((((((');
+    }
   }, []);
 
   const handleProfileClick = (() => {

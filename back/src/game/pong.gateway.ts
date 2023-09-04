@@ -58,12 +58,14 @@ export class PongEvents {
       this.emitUpdateLeaderboard('toRoom', 0);
     });
     userServiceEmitter.on('updateFriendsOfUser', (data) => {
+      console.log('INSIDE FRIEND UPDATEDR');
+      
       this.emitUpdateFriends('toUser', parseInt(data.userId));
     })
   }
 
   async handleConnection(client: Socket) {
-    console.log('----------CONNECT------------');
+    // console.log('----------CONNECT------------');
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -92,8 +94,8 @@ export class PongEvents {
   }
 
   async handleDisconnect(client: Socket) {
-    console.log('>>>>>>>>>> DISCO <<<<<<<<<<<<<');
-    console.log('NECTTTTTTTTTTTTTTTTTTTTar');
+    // console.log('>>>>>>>>>> DISCO <<<<<<<<<<<<<');
+    // console.log('NECTTTTTTTTTTTTTTTTTTTTar');
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     this.emitUpdateAllUsers('toAll', 0);
@@ -488,6 +490,7 @@ export class PongEvents {
 
   async emitUpdateFriends(type: string, userId: number) {
     // protect and manage errors
+    await new Promise((resolve) => setTimeout(resolve, 50));
     const userWithFriends = await this.pongService.prismaService.user.findUnique({
       where: { id: userId },
       include: { friends: true },

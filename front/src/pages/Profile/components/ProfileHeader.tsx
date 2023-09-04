@@ -11,16 +11,16 @@ type ProfileType = 'user' | 'generic' | 'edit';
 type ProfileHeaderProps = {
   setErrMsg: (message: string) => void;
   type: ProfileType;
-  iconColor?: string;
+  isFriend?: boolean;
   onAddFriend?: () => void;
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, iconColor, onAddFriend }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, onAddFriend, isFriend }) => {
   return (
     <div className="profile-board-header">
       {type === 'user' && (
         <Link className="icon" title="Edit profile" to={APP_ROUTES.USER_PROFILE_EDIT_ABSOLUTE} style={{ padding: '0px' }}>
-          <IconContext.Provider value={{ color: iconColor || 'rgba(255, 255, 255, 0.5)', size: '36px' }}>
+          <IconContext.Provider value={{ color: 'rgba(255, 255, 255, 0.5)', size: '36px' }}>
             <FaUserPen />
           </IconContext.Provider>
         </Link>
@@ -28,7 +28,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, iconColo
 
       {type === 'generic' && (
         <button onClick={onAddFriend}>
-          <IconContext.Provider value={{ color: iconColor || 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
+          <IconContext.Provider value={{ color: isFriend ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
             <FaHeart />
           </IconContext.Provider>
         </button>
@@ -36,7 +36,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, iconColo
 
       {type === 'edit' && (
         <Link className="icon" title="Back to profile" to={APP_ROUTES.USER_PROFILE_ABSOLUTE} style={{ padding: '0px' }}>
-          <IconContext.Provider value={{ color: iconColor || 'rgba(255, 255, 255, 0.5)', size: '30px' }}>
+          <IconContext.Provider value={{ color: 'rgba(255, 255, 255, 0.5)', size: '30px' }}>
             <FaLeftLong />
           </IconContext.Provider>
         </Link>

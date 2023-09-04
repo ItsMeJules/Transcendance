@@ -48,7 +48,7 @@ export const setUserActiveChannel = createAction<string>("user/setUserActiveChan
 export const userReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(setUser, (state, action) => {
-      console.log(action.payload)
+      // console.log('REDUXXXXXXXXXXXXXXXXXXXXXXXXX:', action.payload)
       state.userData = action.payload
     })
     .addCase(unsetUser, (state, action) => { state.userData = initialState.userData })

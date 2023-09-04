@@ -28,6 +28,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { editFileName, imageFileFilter } from './module';
 import { Response } from 'express';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
+import { copyFileSync } from 'fs';
 
 
 @UseGuards(JwtGuard)
@@ -89,14 +90,13 @@ export class UserController {
           },
         },
       });
-      // console.log("userMain:", userMain);
       const user: User | null = await this.prisma.user.findUnique({
         where: { id: id },
       });
       if (userId === id)
         user.id = -1;
-      // console.log("userToFind:", userToFind);
       const data: any = {};
+      delete user.hash;
       data.user = { user };
       data.isFriend = 'false';
       if (userMain.friends.length !== 0) data.isFriend = 'true';
@@ -109,6 +109,7 @@ export class UserController {
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) friendId: number,
   ) {
+    console.log('FRIEND TOGGLE:', userId, ' friendId:', friendId);
     return this.userService.addFriendToggler(userId, friendId);
   }
 

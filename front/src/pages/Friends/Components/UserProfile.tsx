@@ -5,11 +5,10 @@ import User from "../../../services/User/User";
 
 interface UserProfileProps {
   user: any;
-  onRemoveClick: (id: string | undefined) => void;
   onProfileClick: (user: User) => void;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({ user, onRemoveClick, onProfileClick }) => {
+const UserProfile: React.FC<UserProfileProps> = ({ user, onProfileClick }) => {
   return (
     <main className="friends__profile" key={user.id}>
 
@@ -29,8 +28,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onRemoveClick, onProfil
       {!user.isPlaying &&
         <div></div>}
 
-      <button className="friends__heart" title='Unfriend?'
-        onClick={() => onRemoveClick(user.id)}>
+      <button className="friends__heart">
         <IconContext.Provider value={{ color: 'red', size: '30px' }}>
           <FaHeart />
         </IconContext.Provider>

@@ -33,7 +33,7 @@ const Friends = () => {
   // Socket on + emit
   useEffect(() => {
     socket.game?.on('friends', (data: any) => {
-      // console.log('friends received:', data.friends);
+      console.log('friends received:', data.friends);
       setFriendsData(data.friends);
     });
     socket.game?.emit('friends', { action: 'status' });
@@ -44,8 +44,10 @@ const Friends = () => {
 
   // Set data
   useEffect(() => {
-    // console.log('friends:', friendsData, 'and size:', friendsData.length);
-    if (friendsData.length <= 0) return;
+    if (friendsData.length <= 0) {
+      setFriendsList([]);
+      return;
+    }
     const tmpFriendsList = (Object.entries(friendsData) as Array<[string, UserData]>).map(
       ([userId, userData]: [string, UserData]) => ({
         id: userData.id,
@@ -89,13 +91,6 @@ const Friends = () => {
     }
   }, [removeFlag, idToRemove]);
 
-  const removeFriend = async (id: string | undefined) => {
-    if (idToRemove === 'none') {
-      setIdToRemove(id);
-      setNotifMsg('Click here to confirm friend\'s removal');
-    }
-  }
-
   const handleProfileClick = (user: User) => {
     setIdToRemove('none');
     resetNotifMsg();
@@ -112,7 +107,7 @@ const Friends = () => {
         </header>
 
         <MDBContainer className="friends-container">
-          <UserProfileList friendsList={friendsList} onRemoveClick={removeFriend} onProfileClick={handleProfileClick} />
+          <UserProfileList friendsList={friendsList} onProfileClick={handleProfileClick} />
         </MDBContainer>
 
         <ToastMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
