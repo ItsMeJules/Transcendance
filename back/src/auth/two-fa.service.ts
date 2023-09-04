@@ -1,22 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { authenticator } from 'otplib';
-import { ConfigService } from '@nestjs/config';
-import { UserService } from 'src/user/user.service';
 import { toFileStream } from 'qrcode';
 import { Response } from 'express';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TwoFaService {
-  constructor(
-    private readonly userService: UserService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private prismaService: PrismaService) {}
 
   public isTwoFactorAuthenticationCodeValid(
     twoFactorAuthenticationCode: string,
     user: User,
-  ) {
+  ): boolean {
     console.log(
       'twoFactorAuthenticationCode :',
       twoFactorAuthenticationCode,
@@ -38,7 +34,7 @@ export class TwoFaService {
       secret,
     );
 
-    await this.userService.setTwoFactorAuthenticationSecret(secret, user.id);
+    await this.prismaService.setTwoFactorAuthenticationSecret(secret, user.id);
 
     return {
       secret,

@@ -5,9 +5,7 @@ import {
 } from '@nestjs/common';
 import { EditUserDto } from './dto';
 import { User, Prisma } from '@prisma/client';
-import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
-import { URL } from 'url';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as sharp from 'sharp';
@@ -23,8 +21,7 @@ const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as ne
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService, private config: ConfigService) {}
-
+  constructor(private prisma: PrismaService) {}
 
   async editUser(userId: number, dto: EditUserDto) {
     if (dto.username && dto.username.length > 100)
@@ -169,8 +166,7 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { id: id },
     });
-    if (user)
-      delete user.hash;
+    if (user) delete user.hash;
     return user;
   }
 
@@ -212,47 +208,5 @@ export class UserService {
     } catch (error) {
       // console.error('Error adding friend:', error);
     }
-  }
-
-  // 2fa Implementation
-
-  async setTwoFactorAuthenticationSecret(
-    secret: string,
-    userId: number,
-  ): Promise<User> {
-    const user = await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        twoFactorAuthenticationSecret: secret,
-      },
-    });
-    return user;
-  }
-
-  async turnOnTwoFactorAuthentication(userId: number): Promise<User> {
-    const user = await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        isTwoFactorAuthenticationEnabled: true,
-      },
-    });
-    return user;
-  }
-
-  async turnOffTwoFactorAuthentication(userId: number): Promise<User> {
-    const user = await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        isTwoFactorAuthenticationEnabled: false,
-        twoFactorAuthenticationSecret: null,
-      },
-    });
-    return user;
   }
 }

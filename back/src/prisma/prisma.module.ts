@@ -7,8 +7,8 @@ import { UserSocketsService } from 'src/chat/user-sockets/user-sockets.service';
 
 @Global()
 @Module({
-  imports: [AuthModule],
-  providers: [PrismaService, ChatService, AuthService, UserSocketsService],
+  imports: [],
+  providers: [PrismaService],
   exports: [PrismaService],
 })
 export class PrismaModule {}

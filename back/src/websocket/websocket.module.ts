@@ -14,7 +14,13 @@ import { PongStoreModule } from 'src/utils/pong-store/pong-store.module';
 @Module({
   imports: [],
   controllers: [],
-  providers: [PrismaService, SocketEvents, UserService, JwtService, AuthService],
-  exports: [ SocketEvents], 
+  providers: [
+    PrismaService,
+    SocketEvents,
+    UserService,
+    JwtService,
+    AuthService,
+  ],
+  exports: [SocketEvents],
 })
 export class SocketModule {}

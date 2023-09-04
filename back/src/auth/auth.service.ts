@@ -25,7 +25,7 @@ export class AuthService {
     private config: ConfigService,
   ) {}
 
-  async login(user: any): Promise<any> {
+  async login(user: any): Promise<string> {
     const payload: PayloadDto = {
       id: user.id,
       isTwoFactorAuthenticationVerified: false,

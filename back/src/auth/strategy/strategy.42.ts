@@ -1,19 +1,17 @@
 import { Injectable, Res, HttpStatus } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-42';
-import { UserService } from 'src/user/user.service';
-import { AuthService } from '../auth.service';
 import { Response } from 'express';
-
+import { User } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
-  constructor(readonly userService: UserService) {
-    //readonly / private ?
+  constructor(readonly prismaService: PrismaService) {
     super({
       clientID: process.env.FORTYTWO_CLIENT_ID,
       clientSecret: process.env.FORTYTWO_CLIENT_SECRET,
-      callbackURL: process.env.FORTYTWO_CALLBACK_URL, // change this
+      callbackURL: process.env.FORTYTWO_CALLBACK_URL,
     });
   }
 
@@ -22,10 +20,10 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     refreshToken: string,
     profile: any,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<any> {
+  ): Promise<User | null> {
     //promise? <any?> void?
     try {
-      const user = await this.userService.findOrCreateUserOAuth({
+      const user = await this.prismaService.findOrCreateUserOAuth({
         username: profile._json.login,
         firstName: profile._json.first_name,
         lastName: profile._json.last_name,
@@ -41,6 +39,5 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
       });
       return null;
     }
-
   }
 }
