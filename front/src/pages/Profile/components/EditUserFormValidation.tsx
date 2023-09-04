@@ -41,7 +41,6 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
         });
       localStorage.setItem('userData', JSON.stringify(userData));
       setUserDataNew(response.data);
-      // window.location.href = APP_ROUTES.USER_PROFILE;
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     } catch (err: any) {
       console.log(err.response?.data.message);
@@ -51,8 +50,6 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ setErrM
         setErrMsg('Missing username');
       } else if (err.response?.status === 401) {
         setErrMsg('Unauthorized');
-        // window.location.href = APP_ROUTES.HOME;
-        // history(APP_ROUTES.HOME);
       } else if (err.response?.status === 403) {
         setErrMsg(`${err.response.data.message}`);
       }

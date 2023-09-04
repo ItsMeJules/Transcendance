@@ -15,7 +15,7 @@ type ProfileHeaderProps = {
   onAddFriend?: () => void;
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, isFriend, onAddFriend }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, onAddFriend, isFriend }) => {
   return (
     <div className="profile-board-header">
       {type === 'user' && (
@@ -28,7 +28,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ setErrMsg, type, isFriend
 
       {type === 'generic' && (
         <button onClick={onAddFriend}>
-          <IconContext.Provider value={{ color: isFriend ? 'rgba(255, 0, 0, 0.7' : 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
+          <IconContext.Provider value={{ color: isFriend ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
             <FaHeart />
           </IconContext.Provider>
         </button>

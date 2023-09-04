@@ -27,10 +27,12 @@ export const Profile: React.FC = () => {
     setErrMsg(''); // Reset errMsg to an empty string
   };
 
+  console.log(' profile rendering <<<<<<<<<<<<<<<<');
+
+
   const fetchUserProfile = async () => {
     try {
       console.log('here');
-
       const response = await axiosInstanceError.get(
         "http://localhost:8000/api/users/complete-user",
         {
@@ -71,7 +73,7 @@ export const Profile: React.FC = () => {
   return (
     <section className="profile-main-container">
       <MDBContainer className="profile-board-container">
-        <ProfileCard userData={userDataHere} setErrMsg={setErrMsg} />
+        <ProfileCard userData={userDataHere} setErrMsg={setErrMsg}  />
         <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
       </MDBContainer>
     </section>

@@ -14,7 +14,6 @@ const appReducer = combineReducers({
 const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
   if (action.type === "user/unsetUser") {
     storage.removeItem('persist:user')
-
     return appReducer(undefined, action)
   }
   return appReducer(state, action)
@@ -24,7 +23,9 @@ export const store = configureStore({
   reducer: rootReducer,
 })
 
-export const persistor = persistStore(store)
+export const persistor = persistStore(store, null, () => {
+  console.log('Redux-persist rehydration complete');
+});
 
 export type RootState = ReturnType<typeof appReducer>
 export type AppDispatch = typeof store.dispatch

@@ -1,7 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-
 import "./ChatBox.scss";
-
 import { useWebsocketContext } from "services/Websocket/Websocket";
 import { useAppDispatch, useAppSelector } from "utils/redux/Store";
 import { setActiveChannel, setActiveChannelMessages } from "utils/redux/reducers/ChannelSlice";

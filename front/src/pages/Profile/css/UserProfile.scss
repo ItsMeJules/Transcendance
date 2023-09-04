@@ -171,11 +171,11 @@ $png-background-color: rgba(250, 250, 250, 1);
         }
         .data-values-sub-first,
         .data-values-sub-others {
-          display: block; // make sure it's a block level element
-          width: 250px; // set a fixed width for testing
-          overflow: hidden; // make sure it's hidden
-          text-overflow: ellipsis; // apply ellipsis
-          white-space: nowrap; // prevent wrap into the new line
+          display: block;
+          width: 250px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
 
@@ -214,11 +214,11 @@ $png-background-color: rgba(250, 250, 250, 1);
         .data-values-input-sub-first,
         .data-values-input-sub-second,
         .data-values-input-sub-others {
-          display: block; // make sure it's a block level element
-          width: 250px; // set a fixed width for testing
-          overflow: hidden; // make sure it's hidden
-          text-overflow: ellipsis; // apply ellipsis
-          white-space: nowrap; // prevent wrap into the new line
+          display: block;
+          width: 250px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
 

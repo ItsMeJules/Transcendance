@@ -68,9 +68,6 @@ export class UserService {
       filename: file.filename,
     };
     const oldPictureObj = user.profilePicture;
-
-    // console.log('begining and old:', oldPictureObj);
-    // Compress and store file and delete uncompressed
     try {
       const fileExtension = file.originalname.split('.').pop()?.toLowerCase();
       const newPicPath = constructPicturePath('cmp_' + response.filename);
@@ -78,13 +75,13 @@ export class UserService {
       let compressionOptions;
       if (fileExtension === 'jpg' || fileExtension === 'jpeg') {
         compressionOptions = {
-          quality: 50, // Adjust the quality as needed (0 - 100)
+          quality: 50,
         };
       } else if (fileExtension === 'png') {
         compressionOptions = {
-          quality: 50, // Adjust the quality as needed (0 - 100)
-          progressive: true, // Enable progressive rendering for PNG
-          compressionLevel: 9, // Adjust compression level for PNG (0 - 9)
+          quality: 50,
+          progressive: true,
+          compressionLevel: 9,
         };
       } else {
         throw new Error('File format not supported'); // better redirection
@@ -122,22 +119,26 @@ export class UserService {
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
     if (!!(await this.isUserNameTaken(data.username))) return null;
-    return this.prisma.user.create({ data });
+    const user = await this.prisma.user.create({ data });
+    if (user) delete user.hash;
+    return user;
   }
 
   async isUserNameTaken(username: string): Promise<User> {
-    return this.prisma.user.findUnique({ where: { username } });
+    const user = await this.prisma.user.findUnique({ where: { username } });
+    if (user) delete user.hash;
+    return user;
   }
 
   async isEmailTaken(email: string): Promise<User> {
-    return this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (user) delete user.hash;
+    return user;
   }
 
   async findOrCreateUserOAuth(data: Prisma.UserCreateInput): Promise<User> {
     const user: User = await this.isEmailTaken(data.email);
-    if (user) {
-      return user;
-    }
+    if (user) return user;
     let usernameAvailable = false;
     let modifiedUsername = data.username;
     // Check if username is taken
@@ -172,8 +173,7 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { id: id },
     });
-    if (user)
-      delete user.hash;
+    if (user) delete user.hash;
     return user;
   }
 
@@ -183,6 +183,9 @@ export class UserService {
         userPoints: 'desc', // Sorting by the 'score' field in descending order (highest to lowest)
       },
     });
+    leaderboard.forEach((user) => {
+      if (user) delete user.hash;
+    })
     return leaderboard;
   }
 
@@ -204,14 +207,14 @@ export class UserService {
           data: { friends: { connect: { id: friendId } } },
         });
         userServiceEmitter.emit('updateFriendsOfUser', { userId: userId })
-        return { friendStatus: 'Is friend' };
+        return { isFriend: 'true' };
       } else {
         await this.prisma.user.update({
           where: { id: userId },
           data: { friends: { disconnect: { id: friendId } } },
         });
         userServiceEmitter.emit('updateFriendsOfUser', { userId: userId })
-        return { friendStatus: 'Is not friend' };
+        return { isFriend: 'false' };
       }
     } catch (error) {
       // console.error('Error adding friend:', error);
@@ -232,6 +235,7 @@ export class UserService {
         twoFactorAuthenticationSecret: secret,
       },
     });
+    if (user) delete user.hash;
     return user;
   }
 
@@ -244,6 +248,7 @@ export class UserService {
         isTwoFactorAuthenticationEnabled: true,
       },
     });
+    if (user) delete user.hash;
     return user;
   }
 
@@ -257,6 +262,7 @@ export class UserService {
         twoFactorAuthenticationSecret: null,
       },
     });
+    if (user) delete user.hash;
     return user;
   }
 }

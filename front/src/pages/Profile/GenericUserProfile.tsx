@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { API_ROUTES, APP_ROUTES, APP_URL } from 'utils/routing/routing';
@@ -15,42 +15,44 @@ import NotFoundPageDashboard from 'pages/NotFoundPage/NotFoundDashboard';
 
 
 const GenericUserProfile = () => {
+
+
+
   const { id } = useParams();
   const [level, setLevel] = useState<number | null>(0);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userNotFound, setUserNotFound] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
   const [isFriend, setIsFriend] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const location = useLocation();
   const history = useNavigate();
   getProgressBarClass(level);
 
   const resetErrMsg = () => {
     setErrMsg('');
   }
+  console.log('generice profile rendering for:', id);
 
   useEffect(() => {
     const fetchUserProfile = async (id: string | undefined) => {
       try {
-        const response = await axios.get(API_ROUTES.GENERIC_USER_PROFILE + id, {
-          withCredentials: true
-        });
-        console.log("Is friend?", response.data.data.isFriend);  // Debugging line
+        console.log(' ');
+        console.log(' ');
+        console.log('HEREEEEEEEEEEE and id:', id, '<<<<<<<<<<<');
+        const response = await axios.get(API_ROUTES.GENERIC_USER_PROFILE + id,
+          {
+            withCredentials: true
+          });
         if (response.data.data.user.user === null) {
           setUserNotFound(true);
           return;
         }
         setUserData(response.data.data.user.user);
-        
-        // Correctly set the isFriend state here
-        console.log("Before updating isFriend:", isFriend);
-        if (response.data.data.isFriend) {
-          console.log("Setting isFriend to true");
+        setIsFriend(false);
+        if (response.data.data.isFriend === 'true')
           setIsFriend(true);
-        } else {
-          console.log("Setting isFriend to false");
-          setIsFriend(false);
-        }
-
+        if (userData)
+          setLevel(userData?.userLevel);
       } catch (err: any) {
         if (err.response?.status === 400) setUserNotFound(true);
       }
@@ -58,7 +60,7 @@ const GenericUserProfile = () => {
     console.log("Inside useEffect, id:", id);
 
     fetchUserProfile(id);
-  }, [id]);
+  }, [id, location]);
 
     useEffect(() => {
       console.log("isFriend:", isFriend);
@@ -76,6 +78,12 @@ const GenericUserProfile = () => {
         {
           withCredentials: true
         });
+        console.log('ADD RESPONSE:', response.data);
+      setIsFriend(false);
+      if (response.data.isFriend === 'true') {
+        console.log('OK INSIDE TRUE');
+        setIsFriend(true);
+      }
     } catch (err: any) {
       // adequate error management
     }
@@ -91,7 +99,6 @@ const GenericUserProfile = () => {
     <section className="profile-main-container">
       <MDBContainer className="profile-board-container">
         <ProfileCard userData={userData} setErrMsg={setErrMsg} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} />
-        <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
       </MDBContainer>
     </section>
   );
