@@ -24,8 +24,6 @@ const GenericUserProfile = () => {
   const history = useNavigate();
   getProgressBarClass(level);
 
-  console.log('Rendering GenericUserProfile with isFriend:', isFriend); // <-- Add this line
-
   const resetErrMsg = () => {
     setErrMsg('');
   }
@@ -46,11 +44,12 @@ const GenericUserProfile = () => {
         // Correctly set the isFriend state here
         console.log("Before updating isFriend:", isFriend);
         if (response.data.data.isFriend) {
+          console.log("Setting isFriend to true");
           setIsFriend(true);
         } else {
+          console.log("Setting isFriend to false");
           setIsFriend(false);
         }
-        console.log("After updating isFriend:", isFriend);
 
       } catch (err: any) {
         if (err.response?.status === 400) setUserNotFound(true);
@@ -60,6 +59,10 @@ const GenericUserProfile = () => {
 
     fetchUserProfile(id);
   }, [id]);
+
+    useEffect(() => {
+      console.log("isFriend:", isFriend);
+    }, [isFriend]);
 
   const addFriend = async (id: string | undefined) => {
      console.log("addFriend called with id:", id);
@@ -78,6 +81,8 @@ const GenericUserProfile = () => {
     }
   }
 
+  console.log('Rendering GenericUserProfile with isFriend:', isFriend);
+  
   if (userNotFound) {
     return <NotFoundPageDashboard />;
   }
