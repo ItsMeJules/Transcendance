@@ -1,9 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
-import ToastError from "layout/ToastError/ToastError";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
 import './Signup.scss'
 
@@ -12,23 +10,14 @@ export const Signup = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
   const customAxiosInstance = useAxios();
-
-  useEffect(() => {
-    setErrMsg('');
-  }, [email, password])
 
   useEffect(() => {
     if (success) {
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
-  }, [success, history]); // enelever la dep history
-
-  const resetErrMsg = () => {
-    setErrMsg(''); // Reset errMsg to an empty string
-  };
+  }, [success]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -43,28 +32,7 @@ export const Signup = () => {
       setEmail('');
       setPassword('');
       setSuccess(true);
-    } catch (err: any) {
-
-      console.log(err.response.data.message);
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-      } else if (err.response?.status === 400) {
-        setErrMsg('Missing email or password');
-      } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized');
-
-      } else if (err.response?.status === 403) {
-        if (err.response.data.message === 'Username too long')
-          setErrMsg('Username too long');
-        else if (err.response.data.message === 'Password too long')
-          setErrMsg('Password too long');
-        else
-          setErrMsg('Credentials taken');
-      }
-      else {
-        setErrMsg('Login failed');
-      }
-    }
+    } catch (err: any) { }
   }
 
   return (

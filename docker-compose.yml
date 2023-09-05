@@ -5,8 +5,13 @@ services:
     build:
       context: ./front
       dockerfile: ./Dockerfile
-    env_file:
-      - ./front/.env
+    environment:
+      PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
+      REACT_APP_CLIENT_ID: ${REACT_APP_CLIENT_ID}
+      REACT_APP_REDIRECT_URI: ${REACT_APP_CLIENT_ID}
+      REACT_APP_FOTRYTWO_LOGIN_URL: ${REACT_APP_CLIENT_ID}
+      REACT_APP_GOOGLE_LOGIN_URL: ${REACT_APP_CLIENT_ID}
     volumes:
       - ./front:/workspace/front
       - ./front/node_modules:/workspace/front/node_modules
@@ -23,6 +28,13 @@ services:
       dockerfile: ./Dockerfile
     env_file:
     - ./back/.env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      jwtSecret: ${jwtSecret}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      FORTYTWO_CLIENT_ID: ${FORTYTWO_CLIENT_ID}
+      FORTYTWO_CLIENT_SECRET: ${FORTYTWO_CLIENT_SECRET}
     ports:
       - 5555:5555
     volumes:
@@ -45,14 +57,14 @@ services:
     networks:
       - app
     restart: always
-    # volumes:
-    #   - ./front/build:/usr/share/nginx/html
 
   bdd:
     container_name: bdd
     image: postgres:latest
-    env_file:
-    - ./bdd.env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - 5432:5432
     volumes:

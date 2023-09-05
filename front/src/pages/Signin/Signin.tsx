@@ -1,88 +1,67 @@
 import { useState, useEffect, FormEvent } from "react";
-import React from 'react';
-
-import { Link, useNavigate } from 'react-router-dom';
-import axios from "axios";
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { APP_ROUTES, API_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import ToastError from "layout/ToastError/ToastError";
+import { useAxios } from "utils/axiosConfig/axiosConfig";
 import './Signin.scss'
+import { toast } from "react-toastify";
 
 export const Signin = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const errorMessage = queryParams.get('error');
   const history = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
+  const customAxiosInstance = useAxios();
 
   function RequestURI42() {
-    console.log("ok");
     let url = '/api/auth/42/login';
     if (url)
-      document.location = (url) // 
+      document.location = (url)
   }
 
   function RequestURIGoogle() {
     let url = '/api/auth/google/login';
-    try {
-      if (url)
-        window.location.href = url; // Use window.location.href to trigger the redirect
-    } catch (err: any) {
-      setErrMsg(err.response.data.message);
-    }
-
+    if (url)
+      window.location.href = url;
   }
-
-  const resetErrMsg = () => {
-    setErrMsg(''); // Reset errMsg to an empty string
-  };
-
-  useEffect(() => {
-    setErrMsg('');
-  }, [email, password])
 
   useEffect(() => {
     if (success) {
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
-  }, [success, history]);
+  }, [success]);
+
+  useEffect(() => {
+    console.log('error message:', errorMessage);
+    if (errorMessage === 'nouser')
+      toast.error('No user found');
+      if (errorMessage === 'passwordrequired')
+      toast.error('This account has a password provided, please sign in via the form.');
+  }, [])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post(API_ROUTES.SIGN_IN,
+      const response = await customAxiosInstance.post(API_ROUTES.SIGN_IN,
         JSON.stringify({ email: email, password: password }),
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         })
       localStorage.setItem('userData', JSON.stringify(response.data));
-      // User.getInstance().setAccessToken(response.data.accessToken);
       setEmail('');
       setPassword('');
       setSuccess(true);
-
-    } catch (err: any) {
-      console.log(err.response.data.message);
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-      } else if (err.response?.status === 400) {
-        setErrMsg('Missing email or password');
-      } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized');
-      } else if (err.response?.status === 403) {
-        setErrMsg('Credentials incorrect');
-      }
-      else {
-        setErrMsg('Login failed');
-      }
-    }
+    } catch (err: any) { }
   }
 
   return (
     <div className="login-container">
-      
+
       <GlowTextSignin className="signin-header">sign in</GlowTextSignin>
 
       <div className="main-login-container">
@@ -95,7 +74,7 @@ export const Signin = () => {
                   Email address
                 </label>
 
-                <input type="email" // Max length?
+                <input type="email"
                   placeholder="youremail@email.com"
                   id="emailaddress"
                   value={email}
@@ -144,7 +123,6 @@ export const Signin = () => {
         </div>
       </div>
 
-      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div >
   )
 }

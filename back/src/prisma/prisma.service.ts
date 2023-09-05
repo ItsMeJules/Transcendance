@@ -9,6 +9,7 @@ import {
   Prisma,
 } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import handlePrismaError from '@utils/prisma.error';
 import { RoomInfo } from 'src/chat/partial_types/partial.types';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
@@ -102,18 +103,26 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
   }
 
+  /* Turn on 2FA - error management ok */
   async turnOnTwoFactorAuthentication(userId: number): Promise<User> {
-    const user = await this.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        isTwoFactorAuthenticationEnabled: true,
-      },
-    });
-    return user;
+    try {
+      const user = await this.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          isTwoFactorAuthenticationEnabled: true,
+        },
+      });
+      if (user) delete user.hash;
+      return user;
+    } catch (error) {
+      handlePrismaError(error);
+      throw (error);
+    }
   }
 
+  /* Turn on 2FA - error management ok */
   async setTwoFactorAuthenticationSecret(
     secret: string,
     userId: number,

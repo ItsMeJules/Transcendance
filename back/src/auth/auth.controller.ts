@@ -9,6 +9,7 @@ import {
   UseGuards,
   Res,
   Req,
+  ForbiddenException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
@@ -22,6 +23,7 @@ import { JwtService } from '@nestjs/jwt';
 import { NoTwoFaException } from './exceptions/no-two-fa.exception';
 import JwtTwoFactorGuard from './guard/jwt.two-fa.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { error } from 'console';
 
 @Controller('auth')
 export class AuthController {
@@ -30,8 +32,9 @@ export class AuthController {
     private prismaService: PrismaService,
     private twoFaService: TwoFaService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
+  /* Signup - error management ok */
   @Post('signup')
   async signup(
     @Body() dto: AuthDtoUp,
@@ -43,18 +46,12 @@ export class AuthController {
       maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(access_token);
-    delete user.hash;
-    await this.authService.connectUserToAllPublicRooms(user.id);
+    const user = await this.authService.validateJwtToken(access_token, true);
+    if (user) await this.authService.connectUserToAllPublicRooms(user.id);
     return user;
   }
 
-
-
-
-
-  
-
+  /* Signin - error management ok */
   @HttpCode(HttpStatus.OK)
   @Post('signin')
   async signin(
@@ -67,43 +64,44 @@ export class AuthController {
       maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(access_token);
-    delete user.hash;
+    const user = await this.authService.validateJwtToken(access_token, true);
+    if (user) delete user.hash;
     await this.authService.connectUserToAllPublicRooms(user.id);
     return user;
   }
 
-  // add a filter like for image upload to return errors
-  // @usefilter
+  /* 42 login - error management ok */
   @Get('42/login')
   @UseGuards(FortyTwoAuthGuard)
   handle42Login(): { msg: string } {
-    console.log('lol');
     return { msg: '42 Authentification' };
   }
 
-  // add a filter like for image upload to return errors
-  // @usefilter -> return user for Websocket?
+  /* 42 redirection - error management ok */
   @Get('42/redirect')
   @UseGuards(FortyTwoAuthGuard)
   async handle42Redirect(
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    console.log('here');
     const access_token = await this.authService.login(req.user);
-    console.log('here');
     res.cookie('access_token', access_token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 15000,
       sameSite: 'lax',
     });
-    console.log('here');
-    const user = await this.authService.validateJwtToken(access_token);
-    console.log('here');
-    await this.authService.connectUserToAllPublicRooms(user.id);
-    console.log('here');
-    res.redirect('/dashboard/profile/me');
+    const user = await this.authService.validateJwtToken(access_token, false);
+    if (!user) {
+      const errorMessage = 'nouser';
+      return res.redirect(`/login?error=${errorMessage}`);
+    }
+    console.log('password:', user.hash, ':');
+    if (user.hash !== '') {
+      const errorMessage = 'passwordrequired';
+      return res.redirect(`/login?error=${errorMessage}`);
+    }
+    if (user) await this.authService.connectUserToAllPublicRooms(user.id);
+    return res.redirect('/dashboard/profile/me');
   }
 
   @Get('google/login')
@@ -112,41 +110,47 @@ export class AuthController {
     return { msg: '42 Authentification' };
   }
 
+  /* 42 redirection - error management ok */
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   async handleGoogleRedirect(
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    console.log('here');
     const access_token = await this.authService.login(req.user);
-    console.log('here');
     res.cookie('access_token', access_token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
-    console.log('here');
-    const user = await this.authService.validateJwtToken(access_token);
-    console.log('here');
-    await this.authService.connectUserToAllPublicRooms(user.id);
-    console.log('here');
-    res.redirect('/dashboard/profile/me');
+    const user = await this.authService.validateJwtToken(access_token, false);
+    console.log('password:', user.hash, ':');
+    if (!user) {
+      const errorMessage = 'nouser';
+      return res.redirect(`/login?error=${errorMessage}`);
+    }
+    if (user.hash !== '') {
+      const errorMessage = 'passwordrequired';
+      return res.redirect(`/login?error=${errorMessage}`);
+    }
+    if (user) await this.authService.connectUserToAllPublicRooms(user.id);
+    return res.redirect('/dashboard/profile/me');
   }
 
   // // // // // // // // // // 2FA \\ \\ \\ \\ \\ \\ \\ \\ \\ \\
 
+  // HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+  /* Turn on 2FA - error management ok */
   @Post('turn-on')
   @UseGuards(JwtGuard)
   async register(
     @Res({ passthrough: false }) res: Response, // why passthrough false?
     @GetUser() user: User,
   ): Promise<ArrayBuffer> {
-    await this.prismaService.turnOnTwoFactorAuthentication(user.id);
 
+    await this.prismaService.turnOnTwoFactorAuthentication(user.id);
     const otpAuthUrlOne =
       await this.twoFaService.generateTwoFactorAuthenticationSecret(user);
-
     const accessTokenCookie = this.jwtService.sign({
       id: user.id,
       isTwoFactorAuthenticationVerified: true,

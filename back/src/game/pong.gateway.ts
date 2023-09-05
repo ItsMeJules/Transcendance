@@ -71,7 +71,7 @@ export class PongEvents {
       client.disconnect();
       return;
     } 
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) {
       client.disconnect();
       return;
@@ -116,7 +116,7 @@ export class PongEvents {
       client.disconnect();
       return;
     }
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) return;
     console.log(' ');
     console.log(' ');
@@ -176,7 +176,7 @@ export class PongEvents {
       client.disconnect();
       return;
     }
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) {
       client.disconnect();
       return;
@@ -199,7 +199,7 @@ export class PongEvents {
       client.disconnect();
       return;
     }
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) return;
     this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'LEAVE', gameMode: 0 });
     this.pongService.removeFromQueue(user.id);
@@ -215,7 +215,7 @@ export class PongEvents {
       client.disconnect();
       return;
     }
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) {
       client.disconnect();
       return;
@@ -316,7 +316,7 @@ export class PongEvents {
       client.disconnect();
       return;
     }
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     console.log('5 WATCH WITH ID:', user.id, ' AND GAMEID:', data.gameId);
     const gameId = parseInt(data.gameId);
     console.log('5 WATCH GAME ID:', gameId, ' and spect map game id:', this.spectatorsMap.get(user.id));
@@ -366,7 +366,7 @@ export class PongEvents {
       return;
     }
     if (data.action !== 'giveUp') return;
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     const gameId = this.playersMap.get(user.id);
     console.log(' ');
     console.log(' ');
@@ -692,7 +692,7 @@ export class PongEvents {
       client.disconnect();
       return;
     }
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) return; // error handling
     this.server.to(`user_${user.id}`).emit(`userDataSocket`, user);
   }

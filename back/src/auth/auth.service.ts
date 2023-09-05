@@ -19,6 +19,8 @@ import * as jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import handlePrismaError from '@utils/prisma.error';
+import handleJwtError from '@utils/jwt.error';
+import { error } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -28,13 +30,22 @@ export class AuthService {
     private config: ConfigService,
   ) { }
 
-  /* Signup */
+  /* Login - error management ok */
+  async login(user: any): Promise<any> {
+    const payload: PayloadDto = {
+      id: user.id,
+      isTwoFactorAuthenticationVerified: false,
+    };
+    return this.jwtService.sign(payload);
+  }
+
+  /* Signup - error management ok */
   async signup(dto: AuthDtoUp) {
     const hash = await argon.hash(dto.password);
     if (dto.username.length > 100)
-      throw new BadRequestException('Username too long'); // OK
+      throw new BadRequestException('Username too long');
     else if (dto.password.length > 100)
-      throw new BadRequestException('Password too long'); // OK
+      throw new BadRequestException('Password too long');
     try {
       const user = await this.prisma.user.create({
         data: {
@@ -50,69 +61,57 @@ export class AuthService {
       return this.login(user);
     } catch (error) {
       handlePrismaError(error);
+      throw (error);
     }
   }
 
-  async login(user: any): Promise<any> {
-    const payload: PayloadDto = {
-      id: user.id,
-      isTwoFactorAuthenticationVerified: false,
-    };
-    return this.jwtService.sign(payload);
-  }
-
+  /* Signin - error management ok */
   async signin(dto: AuthDto) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (!user || user.hash === '')
-      throw new ForbiddenException('Credentials incorrect');
-    const pwMatches = await argon.verify(user.hash, dto.password);
-    if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
-    return this.login(user);
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
+      if (!user || user.hash === '')
+        throw new BadRequestException('Credentials incorrect');
+      const pwMatches = await argon.verify(user.hash, dto.password);
+      if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
+      return this.login(user);
+    } catch (error) {
+      handlePrismaError(error);
+      throw (error);
+    }
   }
 
-  async signToken(userId: number, email: string): Promise<string> {
-    const payload = {
-      id: userId,
-      email,
-    };
-    const secret = 'mySuperSecretKey';
-    const token = await this.jwtService.signAsync(payload, {
-      expiresIn: '120m',
-      secret: secret,
-    });
-    return token;
-  }
-
-  async validateJwtToken(token: string): Promise<User | any | null> {
+  /* Validate JWT token - error management ok */
+  async validateJwtToken(token: string, deleteHash: boolean): Promise<User | any | null> {
     try {
       const jwtSecret = process.env.jwtSecret;
       const decodedToken: any = jwt.verify(token, jwtSecret);
       const { id } = decodedToken;
-      // console.log('id:', id, ' and email:', email);
-      const user = await this.prisma.user.findUnique({
+      let user = await this.prisma.user.findUnique({
         where: { id },
         include: { friends: true },
       });
-      delete user.hash;
+      if (user && deleteHash) delete user.hash;
       return user;
     } catch (err) {
-      return null;
+      handleJwtError(err);
+      handlePrismaError(err);
+      throw (error);
     }
   }
 
+  /* -- CHAT -- */
+  /* Connect user to all public rooms - error management ok */
   async connectUserToAllPublicRooms(userId: number): Promise<void> {
-    console.log(`Connecting user ${userId} to all public rooms...`);
     try {
       const publicRooms = await this.prisma.room.findMany({
         where: {
           type: 'PUBLIC',
         },
       });
-
       const updates = publicRooms.map((room) => {
         return this.prisma.room.update({
           where: { id: room.id },
@@ -125,12 +124,10 @@ export class AuthService {
           },
         });
       });
-
       await Promise.all(updates);
-
-      console.log(`User ${userId} connected to all public rooms.`);
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      handlePrismaError(error);
+      throw (error);
     }
   }
 }

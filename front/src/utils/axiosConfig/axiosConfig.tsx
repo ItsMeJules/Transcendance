@@ -4,6 +4,10 @@ import { toast } from 'react-toastify';
 import { APP_ROUTES } from "utils/routing/routing";
 import { HttpStatus } from "utils/HttpStatus/HttpStatus";
 
+enum ERROR {
+  NO = 0,
+  YES = 1,
+}
 
 export function useAxios() {
   const navigate = useNavigate();
@@ -14,52 +18,121 @@ export function useAxios() {
     withCredentials: true,
   });
 
-  /* Error handler functions */
-  const handleSignupErrors = (err: any) => {
-    if (err.response.status === HttpStatus.BAD_REQUEST) {
-      switch (err.response.data.message) {
-        case 'Username too long':
-          console.log('YEAHHHHHH');
-          toast.error('Username too long');
-          break;
-        case 'Password too long':
-          toast.error('Password too long');  // Modified this to show a toast as well
-          break;
-        default:
-          toast.error('Credentials taken');  // Modified this to show a toast
-          break;
-      }
+  /* Message error cleaner */
+  function extractErrorMessage(err: any) {
+    if (!err.response
+      || !err.response.data
+      || !err.response.data.message) return undefined;
+
+    const { message } = err.response.data;
+    if (Array.isArray(message))
+      return message[0];
+    return message;
+  }
+
+  /* Global handler function */
+  /* Global Error handler function */
+  const handleGlobalErrors = (err: any, toastId: string) => {
+    const errorMessage = extractErrorMessage(err); // Get specific error message if available
+
+    if (!err.response) {
+      toast.error("Network error", { toastId });
+      return;
+    }
+
+    switch (err.response.status) {
+      case 400: // Bad Request
+        toast.error(errorMessage || "Bad request", { toastId });
+        break;
+
+      case 401: // Unauthorized
+        toast.error(errorMessage || "Unauthorized. Please log in again.", { toastId });
+        break;
+
+      case 403: // Forbidden
+        toast.error(errorMessage || "You don't have permission to do this", { toastId });
+        break;
+
+      case 404: // Not Found
+        toast.error(errorMessage || "Resource not found", { toastId });
+        break;
+
+      case 408: // Request Timeout
+        toast.error(errorMessage || "Request timeout. Please try again", { toastId });
+        break;
+
+      case 500: // Internal Server Error
+        toast.error(errorMessage || "Something went wrong on our end. Please try again later.", { toastId });
+        break;
+
+      case 503: // Service Unavailable
+        toast.error(errorMessage || "Service unavailable. Please try again later.", { toastId });
+        break;
+
+      default:
+        toast.error(errorMessage || "An error occurred. Please try again later.", { toastId });
     }
   }
 
+
+  /* Components handler functions */
+  const handleLoginErrors = (err: any, toastId: string) => {
+
+    if (err.response.status === HttpStatus.BAD_REQUEST
+      && err.response.data.message) {
+      toast.error(extractErrorMessage(err), { toastId });
+      return ERROR.YES;
+    }
+
+    return ERROR.NO;
+  }
 
   /* Main response handler */
   customAxiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
       const { response, config } = error;
-      if (config.url.includes(APP_ROUTES.SIGN_UP)) {
-        handleSignupErrors(error);
+      let errorValue: number = ERROR.NO;
+      const toastId = 'error';
 
-        if (error.response && error.response.status === 499) {
-          console.log("You have to connect with 2FA");
-          navigate("/profile/me/two-fa");
-        }
-        if (error.response && error.response.status === 450) {
-          console.log("You don't have 2FA enabled");
-          navigate("/dashboard/profile/me");
-        }
-        if (error.response && error.response.status === 451) {
-          console.log("You are already verified!! What are you trying to do???");
-          navigate("/dashboard/profile/me");
-        }
-        return Promise.reject(error);
-      }
+      if (toast.isActive(toastId)) return;
+
+      console.log('err:', error.response);
+      if (config.url.includes(APP_ROUTES.SIGN_UP))          // Sign up ok
+        errorValue = handleLoginErrors(error, toastId);
+      if (config.url.includes(APP_ROUTES.SIGN_IN))
+        errorValue = handleLoginErrors(error, toastId);
+      if (!errorValue) handleGlobalErrors(error, toastId);
+
+      return Promise.reject(error);
     }
   );
-
   return customAxiosInstance;
 }
+
+
+
+
+
+
+
+
+
+// if (error.response && error.response.status === 499) {
+//   console.log("You have to connect with 2FA");
+//   navigate("/profile/me/two-fa");
+// }
+// if (error.response && error.response.status === 450) {
+//   console.log("You don't have 2FA enabled");
+//   navigate("/dashboard/profile/me");
+// }
+// if (error.response && error.response.status === 451) {
+//   console.log("You are already verified!! What are you trying to do???");
+//   navigate("/dashboard/profile/me");
+// }
+
+
+
 
 
         // if (error.response && error.response.status === 499) {

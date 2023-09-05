@@ -8,8 +8,6 @@ function handlePrismaError(error: any) {
         throw new BadRequestException('Credentials taken');
       case 'P2025':
         throw new NotFoundException('Record not found');
-      default:
-        throw new InternalServerErrorException('An unexpected error occurred');
     }
   }
 }

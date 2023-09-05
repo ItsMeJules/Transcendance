@@ -1,4 +1,4 @@
-import { Injectable, Res, HttpStatus } from '@nestjs/common';
+import { Injectable, Res, HttpStatus, BadRequestException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-42';
 import { Response } from 'express';
@@ -31,13 +31,20 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
         profilePicture: profile._json.image.link,
         hash: '',
       });
+      // if (user.hash === '')
+      //   console.log('EMPTY HASH');
+      // else
+      //   throw new BadRequestException('Password needed, please sign in via the form');
+      // console.log('user:', user);
       return user;
     } catch (error) {
-      res.status(HttpStatus.BAD_REQUEST).json({
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Google authentication failed', // Provide a meaningful error message
-      });
-      return null;
+      // res.redirect('/dashboard/profile/me');
+      // res.status(HttpStatus.BAD_REQUEST).json({
+      //   statusCode: HttpStatus.BAD_REQUEST,
+      //   message: 'Google authentication failed', // Provide a meaningful error message
+      // });
+      throw (error);
+      // return null;
     }
   }
 }

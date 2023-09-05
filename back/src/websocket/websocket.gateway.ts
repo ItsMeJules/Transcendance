@@ -25,7 +25,7 @@ export class SocketEvents {
       client.disconnect();
       return;
     }
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) {
       client.disconnect();
       return;

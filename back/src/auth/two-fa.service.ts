@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TwoFaService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) { }
 
   public isTwoFactorAuthenticationCodeValid(
     twoFactorAuthenticationCode: string,
@@ -25,21 +25,26 @@ export class TwoFaService {
     });
   }
 
+  /* Generate 2FA secret - SECURE authentificator functions? */
   public async generateTwoFactorAuthenticationSecret(user: User) {
-    const secret = authenticator.generateSecret();
+    try {
+      const secret = authenticator.generateSecret();
 
-    const otpAuthUrl = authenticator.keyuri(
-      user.email,
-      'salut petit correcteur',
-      secret,
-    );
+      const otpAuthUrl = authenticator.keyuri(
+        user.email,
+        'salut petit correcteur',
+        secret,
+      );
 
-    await this.prismaService.setTwoFactorAuthenticationSecret(secret, user.id);
+      await this.prismaService.setTwoFactorAuthenticationSecret(secret, user.id);
 
-    return {
-      secret,
-      otpAuthUrl,
-    };
+      return {
+        secret,
+        otpAuthUrl,
+      };
+    } catch (error) {
+      throw (error);
+    }
   }
 
   public async pipeQrCodeStream(stream: Response, otpAuthUrl: string) {

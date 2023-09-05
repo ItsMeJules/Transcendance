@@ -37,7 +37,7 @@ export class ChatEventsGateway {
       return Promise.reject('no access_token');
     }
 
-    const user = await this.authService.validateJwtToken(access_token);
+    const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) {
       client.disconnect();
       return Promise.reject('no user');
