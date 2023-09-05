@@ -1,4 +1,5 @@
 import { IsString, IsNumber } from 'class-validator';
+import { Server } from 'socket.io';
 
 export class PromoteDto {
   @IsString()
@@ -6,4 +7,6 @@ export class PromoteDto {
 
   @IsNumber()
   targetId: number;
+
+  server: Server;
 }

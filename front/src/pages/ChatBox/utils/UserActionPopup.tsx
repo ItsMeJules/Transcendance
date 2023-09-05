@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext, useState } from "react";
 
-import User from "services/User/User";
 import { SendDataContext } from "pages/ChatBox/ChatBox";
 import PayloadAction from "pages/ChatBox/models/PayloadSocket";
 import { ChatSocketActionType, RoomSocketActionType } from "pages/ChatBox/models/TypesActionsEvents";
-import Popup from "./Popup";
+import User from "services/User/User";
 import { useAppSelector } from "utils/redux/Store";
+import Popup from "./Popup";
 
 interface UserActionProps {
   user: User;
