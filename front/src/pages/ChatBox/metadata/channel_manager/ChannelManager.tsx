@@ -66,15 +66,19 @@ export default function ChannelManager(props: ChannelManagerProps) {
         </OutsideClickHandler>
       ) : undefined}
 
-      <OutsideClickHandler
-        className="manage"
-        onOutsideClick={() => setManageChannel(false)}
-        onInsideClick={() => setManageChannel(!manageChannel)}
-      >
-        <img alt="Settings" src="/images/settings.png" style={manageStyle} />
+      {channelData.type !== ChannelType.DIRECT &&
+        channelData.name !== "general"
+        ?
+          <OutsideClickHandler
+            className="manage"
+            onOutsideClick={() => setManageChannel(false)}
+            onInsideClick={() => setManageChannel(!manageChannel)}
+          >
+            <img alt="Settings" src="/images/settings.png" style={manageStyle} />
 
-        {manageChannel && <ManageChannelPopup channelData={channelData} />}
-      </OutsideClickHandler>
+            {manageChannel && <ManageChannelPopup channelData={channelData} />}
+          </OutsideClickHandler>
+        : undefined}
     </>
   );
 }
