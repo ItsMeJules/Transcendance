@@ -35,9 +35,6 @@ const GenericUserProfile = () => {
   useEffect(() => {
     const fetchUserProfile = async (id: string | undefined) => {
       try {
-        // console.log(' ');
-        // console.log(' ');
-        // console.log('HEREEEEEEEEEEE and id:', id, '<<<<<<<<<<<');
         const response = await axios.get(API_ROUTES.GENERIC_USER_PROFILE + id,
           {
             withCredentials: true

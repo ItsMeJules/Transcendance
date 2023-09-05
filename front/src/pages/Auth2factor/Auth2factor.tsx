@@ -20,7 +20,7 @@ export const Auth2factor = () => {
 
   const fetchUserProfile = async () => {
     try {
-      await axiosInstanceError.post(
+      await customAxiosInstance.post(
         API_ROUTES.AUTHENTICATE_2FA,
         { twoFactorAuthentificationCode: "" },
         { withCredentials: true }
@@ -47,13 +47,13 @@ export const Auth2factor = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
 
-  const axiosInstanceError = useAxios();
+  const customAxiosInstance = useAxios();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      await axiosInstanceError.post(
+      await customAxiosInstance.post(
         API_ROUTES.AUTHENTICATE_2FA,
         { twoFactorAuthentificationCode: code },
         { withCredentials: true }

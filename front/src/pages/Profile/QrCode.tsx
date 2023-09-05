@@ -7,7 +7,7 @@ import '../Auth2factor/css/2faButton.scss';
 
 const QrCode: React.FC = () => {
   const popupRef = React.createRef<HTMLDivElement>();
-  const axiosInstanceError = useAxios();
+  const customAxiosInstance = useAxios();
   const [image, setImage] = useState<string>("");
   const [is2FAActive, setIs2FAActive] = useState<boolean | null>(null);
   const [isLoadingQRCode, setLoadingQRCode] = useState<boolean>(false);
@@ -15,7 +15,7 @@ const QrCode: React.FC = () => {
   const codeGen = async () => {
     setLoadingQRCode(true);
     try {
-      const response = await axiosInstanceError.post(
+      const response = await customAxiosInstance.post(
         API_ROUTES.ACTIVATE_2FA,
         {},
         {
@@ -35,7 +35,7 @@ const QrCode: React.FC = () => {
 
   const turnOff = async () => {
     try {
-      await axiosInstanceError.post(
+      await customAxiosInstance.post(
         API_ROUTES.DEACTIVATE_2FA,
         {},
         {
@@ -78,7 +78,7 @@ const QrCode: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstanceError.get(API_ROUTES.STATE_2FA);
+        const response = await customAxiosInstance.get(API_ROUTES.STATE_2FA);
         setIs2FAActive(response.data);
         console.log(
           "response.data.isTwoFactorAuthenticationEnabled",
@@ -90,7 +90,7 @@ const QrCode: React.FC = () => {
     };
 
     fetchData();
-  }, []); // axiosInstanceError for warning but learn how to add dependances?
+  }, []); // customAxiosInstance for warning but learn how to add dependances?
 
   return (
     <div className="activate-and-deactivate">

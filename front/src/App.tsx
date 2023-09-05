@@ -9,12 +9,7 @@ import { APP_ROUTES } from 'utils/routing/routing';
 import LayoutWrapper from 'layout/LayoutWrapper';
 import { Home, Signin, Signup, Dashboard, ChatBox, NotFoundPage } from 'pages';
 import ErrorBoundary from 'services/ErrorBoundary/ErrorBoundary';
-class ErrorThrower extends React.Component {
-  render() {
-    throw new Error('This is an intentional error!');
-    return <div>I will not be rendered!</div>;
-  }
-}
+import { ToastContainer, toast } from 'react-toastify';
 
 const App: React.FC = () => {
   return (
@@ -27,9 +22,9 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.SIGN_IN} element={<LayoutWrapper><Signin /></LayoutWrapper>} />
               <Route path={APP_ROUTES.SIGN_UP} element={<LayoutWrapper><Signup /></LayoutWrapper>} />
               <Route path={APP_ROUTES.DASHBOARD} element={<LayoutWrapper><Dashboard /></LayoutWrapper>} />
-              {/* <Route path={'/test'} element={<Websocket><LayoutWrapper><ChatBox /></LayoutWrapper></Websocket>} /> */}
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
+            <ToastContainer />
           </PersistGate>
         </Provider>
       </ErrorBoundary>

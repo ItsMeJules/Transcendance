@@ -12,12 +12,10 @@ const AllUsersInstance: React.FC<AllUsersInstanceProps> = ({ user, currentUserId
   const history = useNavigate();
 
   const handleProfileClick = (user: User) => {
-    if (user.id === currentUserId) {
+    if (user.id === currentUserId)
       history(APP_ROUTES.USER_PROFILE);
-    }
-    else {
+    else
       history(APP_ROUTES.GENERIC_USER_PROFILE + user.id);
-    }
   }
 
   return (

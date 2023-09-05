@@ -100,7 +100,7 @@
 
       &__profile {
         display: grid;
-        grid-template-columns: 10fr 30fr 13fr;
+        grid-template-columns: 1fr 3fr 0.95fr 0.95fr;
         align-items: center;
         padding: 10px 0px 10px 10px;
         overflow: hidden;
@@ -110,7 +110,6 @@
         transition: transform .25s cubic-bezier(.7, .98, .86, .98), box-shadow .25s cubic-bezier(.7, .98, .86, .98);
         background-color: transparent;
         height: 70px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
 
         &:hover {
           transform: scale(1.1);
@@ -129,9 +128,8 @@
         overflow: hidden;
         display: flex;
         object-fit: cover;
-	      background-color: rgba(255, 255, 255, 0.5)	
-        // box-shadow: 0 0 0 10px #cfcdcd, 0 0 0 22px #dcdddf;	
-      }	
+        box-shadow: 0 0 0 10px #4b4b4b, 0 0 0 22px #404041;
+      }
       &__picture.online {	
         box-shadow: 0 0 0 5px var(--online-color);	
         animation: pulsateShadow 1.5s infinite;	
@@ -154,15 +152,11 @@
       }
 
       &__name {
-        box-sizing: border-box;	
-        height: 110%;
         text-align: left;
         color: #979cb0;
         font-weight: 550;
-        font-size: 15px;
+        font-size: 18px;
         letter-spacing: 0.6px;
-        min-width: 150px;	
-        max-width: 140px;	
         margin-left: 20px;
         overflow: hidden;
         text-overflow: ellipsis;

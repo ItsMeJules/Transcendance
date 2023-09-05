@@ -18,7 +18,7 @@ export const Profile: React.FC = () => {
   const [level, setLevel] = useState(0);
   const history = useNavigate();
   const dispatchUser = useAppDispatch();
-  const axiosInstanceError = useAxios();
+  const customAxiosInstance = useAxios();
 
   const resetErrMsg = () => {
     setErrMsg(''); // Reset errMsg to an empty string
@@ -27,7 +27,7 @@ export const Profile: React.FC = () => {
   const fetchUserProfile = async () => {
     try {
       console.log('here');
-      const response = await axiosInstanceError.get(
+      const response = await customAxiosInstance.get(
         "http://localhost:8000/api/users/complete-user",
         {
           withCredentials: true,

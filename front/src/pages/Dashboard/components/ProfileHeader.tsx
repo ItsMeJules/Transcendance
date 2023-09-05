@@ -20,7 +20,7 @@ const ProfileHeader = () => {
   const [parsedUserLevel, setParsedUserLevel] = useState(1);
   const [winRatio, setWinRatio] = useState<number>(0);
   const [gamesPlayed, setGamesPlayed] = useState<number | null>(null);
-  const axiosInstanceError = useAxios();
+  const customAxiosInstance = useAxios();
   const [loaded, setLoaded] = useState(false);
   const [fetchedData, setFetchedData] = useState<any>();
   const socket = useWebsocketContext();

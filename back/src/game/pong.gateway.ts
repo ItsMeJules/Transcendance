@@ -597,10 +597,13 @@ export class PongEvents {
       const isOnline = isPlaying ? true : this.idToSocketMap.get(user.id);
       user.isOnline = isOnline !== undefined ? true : false;
     });
+    let data:any = {};
+    data.allUsers = allUsers;
+    data.userId = userId;
     if (type === 'toUser')
-      this.server.to(`user_${userId}`).emit('allUsers', allUsers);
+      this.server.to(`user_${userId}`).emit('allUsers', data);
     else
-      this.server.to('game_online').emit('allUsers', allUsers);
+      this.server.to('game_online').emit('allUsers', data);
   }
 
   /* Leaderboard right screen */
