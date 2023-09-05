@@ -14,6 +14,7 @@ import { SocketModule } from 'src/websocket/websocket.module';
 import { SocketService } from 'src/websocket/websocket.service';
 import { TwoFaModule } from './two-fa/two-fa.module';
 import { TwoFaService } from './two-fa/two-fa.service';
+import { JwtTwoFactorStrategy } from './strategy/jwt.two-fa.strategy';
 
 @Module({
   imports: [
@@ -21,7 +22,6 @@ import { TwoFaService } from './two-fa/two-fa.service';
       secret: process.env.jwtSecret,
       signOptions: { expiresIn: '1d' }, // ?
     }),
-    UserModule,
     PassportModule,
     SocketModule,
     TwoFaModule,
@@ -30,15 +30,14 @@ import { TwoFaService } from './two-fa/two-fa.service';
   providers: [
     GoogleStrategy,
     FortyTwoStrategy,
+    JwtTwoFactorStrategy,
     UserService,
     PrismaService,
     AuthService,
     JwtStrategy,
-    JwtService,
-    JwtService,
     SocketService,
     TwoFaService,
   ], // why no guards?
-  exports: [AuthService, JwtService],
+  exports: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

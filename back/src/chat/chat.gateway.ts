@@ -31,7 +31,7 @@ export class ChatEventsGateway {
   ) {}
 
   private async setupConnection(client: Socket): Promise<User | null> {
-    // console.log('> chat connection in');
+    console.log('> chat connection in');
 
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
