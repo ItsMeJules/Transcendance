@@ -370,7 +370,6 @@ $font-color: rgba(255, 255, 255, 0.7);
             overflow-x: hidden;
             overflow-y: scroll;
 
-
             // Style the scrollbar
             scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
 
@@ -614,7 +613,7 @@ $font-color: rgba(255, 255, 255, 0.7);
       height: 90px;
       width: 240px;
 
-      // position: relative;
+      position: relative;
 
       color: $font-color;
       border-left: $border;
@@ -854,34 +853,66 @@ $font-color: rgba(255, 255, 255, 0.7);
           }
         }
       }
-
+      
       .users-list-banned {
         position: absolute;
         top: 100%;
+        
+        background: rgba(0, 0, 0, 0.72);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
 
-        h5 {
-          background-color: white;
-          border-radius: 5px 0px 0px 5px;
-          margin: 0;
+        overflow-y: scroll;
+        // Style the scrollbar
+        scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
+        
+        &:hover {
+          scrollbar-color: rgba(128, 128, 128, 0.6) rgba(0, 0, 0, 0.2); // Show scrollbar thumb and border on hover
         }
 
+        &::-webkit-scrollbar {
+          width: 10px; // Adjust the width as needed
+        }
+
+        &::-webkit-scrollbar-track {
+          background-color: rgba(128, 128, 128, 0.2); // Gray transparent background
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(128, 128, 128, 0.3); // Transparent scrollbar thumb
+          border-radius: 5px; // Rounded corners for the thumb
+          border: 2px solid rgba(0, 0, 0, 0); // Hide the border initially
+        }
+
+        &:hover {
+          &::-webkit-scrollbar-thumb {
+            background-color: rgba(128, 128, 128, 0.6); // Show scrollbar thumb on hover
+            border-color: rgba(0, 0, 0, 0.2); // Show border on hover
+          }
+        }
+
+        border-radius: 5px;
+        border: $border;
+        
+        h3 {
+          font-size: 14pt;
+          padding: 10px;
+          margin: 0px;
+          color: black;
+        }
+        
         .users-list {
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
 
           overflow-x: hidden;
-          height: fit-content;
-
-          background-color: white;
-          border-radius: 5px;
-          border-right: 1px solid lightgray;
-          border-left: 1px solid lightgray;
-
-          z-index: 20;
 
           .user-container {
-            border-bottom: 1px solid lightgray;
+            position: relative;
+            border-top: $border;
 
             cursor: pointer;
 
@@ -891,24 +922,22 @@ $font-color: rgba(255, 255, 255, 0.7);
               justify-content: flex-start;
               align-items: center;
 
-              transition: background-color;
+              transition: background-color 0.3s;
 
               &:hover {
-                background-color: #c9c9c9;
+                background-color: rgb(255, 255, 255, 0.3);
               }
 
               .profile-picture {
                 width: 30%;
                 height: auto;
                 margin: 5px 0px 5px 5px;
-                object-fit: cover;
 
                 border-radius: 50%;
                 box-shadow: 7px 10px 10px -6px rgba(0, 0, 0, 0.72);
               }
 
               .username {
-                width: 70%;
                 margin: 0px 0px 0px 10px;
               }
             }
