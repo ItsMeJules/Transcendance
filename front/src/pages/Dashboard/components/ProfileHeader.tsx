@@ -16,13 +16,12 @@ const ProfileHeader = () => {
   const [errMsg, setErrMsg] = useState('');
   const [progressBarClass, setProgressBarClass] = useState('progress-bar-1');
   const [parsedUserLevel, setParsedUserLevel] = useState(1);
-  const [winLossRatio, setWinLossRatio] = useState(0);
+  const [winRatio, setWinRatio] = useState(0);
   const axiosInstanceError = useAxios();
   const [loaded, setLoaded] = useState(false);
   const [fetchedData, setFetchedData] = useState<any>();
 
   useEffect(() => {
-
     const fetchUserProfile = async () => {
       try {
         const response = await axiosInstanceError.get(
@@ -53,37 +52,25 @@ const ProfileHeader = () => {
   }, []);
 
   useEffect(() => {
+    const parseLogic = (data: any) => {
+      if (data.profilePicture)
+        setProfilePicture(data.profilePicture);
+      if (data.userLevel)
+        setParsedUserLevel(data.userLevel);
+      if (data.gamesPlayed && data.gamesWon)
+        setWinRatio((data.gamesWon / data.gamesPlayed) * 100);
+    };
+
     const parseValues = () => {
       const localStorageData = localStorage.getItem('userData');
-
       if (localStorageData) {
         const parsedUserData = JSON.parse(localStorageData);
-        if (parsedUserData.profilePicture) {
-          setProfilePicture(parsedUserData.profilePicture);
-        }
-        if (parsedUserData.userLevel) {
-          setParsedUserLevel(parsedUserData.userLevel);
-        }
-        if (parsedUserData.gamesPlayed && parsedUserData.gamesWon) {
-          setWinLossRatio(
-            parsedUserData.gamesWon / (parsedUserData.gamesPlayed - parsedUserData.gamesWon)
-          );
-        }
+        parseLogic(parsedUserData);
       }
       else if (fetchedData) {
-        if (fetchedData.profilePicture) {
-          setProfilePicture(fetchedData.profilePicture);
-        }
-        if (fetchedData.userLevel) {
-          setParsedUserLevel(fetchedData.userLevel);
-        }
-        if (fetchedData.gamesPlayed && fetchedData.gamesWon) {
-          setWinLossRatio(
-            fetchedData.gamesWon / (fetchedData.gamesPlayed - fetchedData.gamesWon)
-          );
-        }
-      };
-    }
+        parseLogic(fetchedData);
+      }
+    };
 
     parseValues();
   }, [fetchedData, localStorage.getItem('userData')]);
@@ -102,7 +89,7 @@ const ProfileHeader = () => {
         </div>
         <div className="WinLossRatio">
           <MDBCardText className="small text-muted mb-0 custom-text-color">
-            Win/Loss Ratio: {winLossRatio.toFixed(2)}
+            Win/Loss Ratio: {winRatio.toFixed(2)}
           </MDBCardText>
         </div>
         <div className="progress-bar-container">

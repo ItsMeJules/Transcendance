@@ -208,6 +208,11 @@ export class PongService {
         where: { id: winner.id },
         data: updateWinnerData,
       });
+
+      await this.prismaService.user.update({
+        where: { id: loser.id },
+        data: updateLoserData,
+      });
     } catch (error) {
       console.error('Error updating game:', error);
     }
