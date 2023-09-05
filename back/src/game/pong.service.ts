@@ -140,7 +140,7 @@ export class PongService {
       const loserPrisma = await this.prismaService.user.findUnique({ where: { id: loser.id } });
       // Protect if not found
       this.onlineGames.delete(gameStruct.prop.id);
-      this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
+      await this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
       console.log('Game updated successfully');
     } catch (error) {
       console.error('Error updating game:', error);

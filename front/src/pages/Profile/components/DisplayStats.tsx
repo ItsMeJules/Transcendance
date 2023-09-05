@@ -11,8 +11,9 @@ const DisplayStats: React.FC<DisplayStatsProps> = ({ userData }) => {
   const progressBarClass = getProgressBarClass(userData?.userLevel);
 
   return (
-    <div>
-      <div className="stats-first-container">
+    <>
+      <section className="stats-first-container">
+
         <div className="stats-first-sub-container">
           <MDBCardText className="mb-1 h5">
             {userData?.gamesPlayed}
@@ -21,6 +22,7 @@ const DisplayStats: React.FC<DisplayStatsProps> = ({ userData }) => {
             Games played
           </MDBCardText>
         </div>
+
         <div className="stats-first-sub-container custom-text-color">
           <MDBCardText className="mb-1 h5">
             {userData?.gamesWon}
@@ -29,8 +31,11 @@ const DisplayStats: React.FC<DisplayStatsProps> = ({ userData }) => {
             Games won
           </MDBCardText>
         </div>
-      </div>
-      <div className="stats-second-container">
+
+      </section>
+
+      <section className="stats-second-container">
+
         <div className="stats-second-sub-container">
           <MDBCardText className="mb-1 h5">
             {userData?.userPoints}
@@ -39,14 +44,16 @@ const DisplayStats: React.FC<DisplayStatsProps> = ({ userData }) => {
             Points won
           </MDBCardText>
         </div>
+
         <div className="stats-second-sub-container">
           <div className={`progress-bar ${progressBarClass}`}></div>
           <MDBCardText className="small mt-0.5 text-muted mb-0 custom-text-color"> 
             Level {userData?.userLevel}
           </MDBCardText>
         </div>
-      </div>
-    </div>
+
+      </section>
+    </>
   );
 }
 

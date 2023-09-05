@@ -17,6 +17,7 @@ const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
   const [gamesData, setGamesData] = useState<any>({})
   const [gameList, setGameList] = useState<any[]>([]);
 
+  // Socket on
   useEffect(() => {
     socket.game?.on('onlineGames', (data: any) => {
       console.log('ONLINE GAMES RECEIVED:', data);

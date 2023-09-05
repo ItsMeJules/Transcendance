@@ -7,6 +7,8 @@ import ProgressBar from "utils/progressBar/ProgressBar";
 import LogoutParent from "layout/LogoutButton/LogoutParent";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
 import { UserData } from "services/User/User";
+import { useWebsocketContext } from "services/Websocket/Websocket";
+import getProgressBarClass from "utils/progressBar/ProgressBar";
 
 const ProfileHeader = () => {
   const [userDataString, setUserDataString] = useState<string | null>(null);
@@ -21,62 +23,34 @@ const ProfileHeader = () => {
   const axiosInstanceError = useAxios();
   const [loaded, setLoaded] = useState(false);
   const [fetchedData, setFetchedData] = useState<any>();
+  const socket = useWebsocketContext();
+
+  const [userDataSocket, setUserDataSocket] = useState<UserData | null>(null);
+
+  // Socket on
+  useEffect(() => {
+    socket.game?.on('userDataSocket', (data: any) => {
+      console.log('userDataSocket RECEIVED:', data);
+      setUserDataSocket(data);
+    });
+    socket.game?.emit('userDataSocket', { action: 'query' });
+    return () => {
+      socket.game?.off('userDataSocket');
+    }
+  }, [socket.game]);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axiosInstanceError.get(
-          "http://localhost:8000/api/users/complete-user",
-          {
-            withCredentials: true,
-          }
-        );
-        const responseData = response.data;
-        localStorage.setItem("userData", JSON.stringify(responseData));
-        setFetchedData(responseData);
-      } catch (err: any) {
-        if (!err?.response) {
-          setErrMsg('No Server Response');
-        } else if (err.response?.status === 400) {
-          setErrMsg('Bad request');
-        } else if (err.response?.status === 401) {
-          setErrMsg('Unauthorized');
-          history(APP_ROUTES.HOME);
-        }
-        else {
-          setErrMsg('Error');
-        }
-      }
-    };
-    console.log('RECHARGEEEEEEEEEEEEEEEEEE');
-    if (localStorage.getItem('userData') === null)
-      fetchUserProfile();
-  }, []);
-
-  useEffect(() => {
-    const parseLogic = (data: any) => {
-      if (data.profilePicture)
-        setProfilePicture(data.profilePicture);
-      if (data.userLevel)
-        setParsedUserLevel(data.userLevel);
-      if (data.gamesPlayed && data.gamesWon && data.gamesPlayed > 0)
-        setWinRatio((data.gamesWon / data.gamesPlayed) * 100);
-      setGamesPlayed(data.gamesPlayed);
-    };
-
-    const parseValues = () => {
-      const localStorageData = localStorage.getItem('userData');
-      if (localStorageData) {
-        const parsedUserData = JSON.parse(localStorageData);
-        parseLogic(parsedUserData);
-      }
-      else if (fetchedData) {
-        parseLogic(fetchedData);
-      }
-    };
-
-    parseValues();
-  }, [fetchedData, localStorage.getItem('userData')]);
+    console.log('userDataSocket RECEIVED:', userDataSocket);
+    if (!userDataSocket) return;
+    if (userDataSocket.profilePicture)
+      setProfilePicture(userDataSocket.profilePicture);
+    if (userDataSocket.userLevel)
+      setParsedUserLevel(userDataSocket.userLevel);
+    if (userDataSocket.gamesPlayed && userDataSocket.gamesWon && userDataSocket.gamesPlayed > 0)
+      setWinRatio((userDataSocket.gamesWon / userDataSocket.gamesPlayed) * 100);
+    setGamesPlayed(userDataSocket.gamesPlayed);
+    setProgressBarClass(getProgressBarClass(userDataSocket.userLevel));
+  }, [userDataSocket]);
 
   const handleProfileClick = (() => {
     history(APP_ROUTES.USER_PROFILE)
@@ -91,16 +65,18 @@ const ProfileHeader = () => {
           </button>
         </div>
         <div className="WinLossRatio">
-        <MDBCardText className="small text-muted mb-0 custom-text-color text-center">
-            { gamesPlayed !== null ? `Win Rate: ${winRatio.toFixed(2)}%` : "No games played yet"}
+          <MDBCardText className="small text-muted mb-0 custom-text-color text-center">
+            {gamesPlayed !== null ? `Win Rate: ${winRatio.toFixed(2)}%` : "No games played yet"}
           </MDBCardText>
         </div>
+
         <div className="progress-bar-container">
           <div className={`progress-bar ${progressBarClass}`}></div>
           <MDBCardText className="small mt-0.5 text-muted mb-0 custom-text-color text-center">
             Level {parsedUserLevel}
           </MDBCardText>
         </div>
+
         <LogoutParent setErrMsg={setErrMsg} />
       </div>
     </main>

@@ -48,33 +48,4 @@ export class SocketEvents {
     if (!user) return;
     this.idToSocketMap.delete(user.id);
   }
-
-  // @SubscribeMessage('allUsers') // This decorator listens for messages with the event name 'message'
-  // async allUsersHandler(
-  //   @ConnectedSocket() client: Socket,
-  //   @MessageBody() data: { action: string }) {
-  //   console.log('All users and status:', data.action);
-
-  //   if (!client.data.id) {
-  //     client.disconnect();
-  //     return;
-  //   }
-  //   const userId = parseInt(client.data.id);
-  //   // protect and manage errors
-  //   const allUsers = await this.prismaService.user.findMany({
-  //     orderBy: {
-  //       username: 'asc',
-  //     }
-  //   });
-  //   console.log('playersMap:', this.pongEvents.playersMap);
-  //   allUsers.forEach((user) => {
-  //     delete user.hash;
-  //     const isPlaying = this.pongEvents.playersMap.get(user.id);
-  //     user.isPlaying = isPlaying !== undefined ? true : false;
-  //     const isOnline =  isPlaying ? true : this.idToSocketMap.get(user.id);
-  //     user.isOnline = isOnline !== undefined ? true : false;
-  //   });
-  //   console.log('all users list:', allUsers);
-  //   this.server.to(`user_${userId}`).emit('allUsers', allUsers);
-  // }
 }

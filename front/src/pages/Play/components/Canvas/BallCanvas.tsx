@@ -31,10 +31,13 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
       if (ctx) {
         ctx.clearRect(0, 0, game.board.width, game.board.height);
         if (game.isEnded) return;
+        //////////////////////////////////////////
+        // GAME MODE 2
         // ball.pos.x = ball.pos.x + ball.dir.x * ball.speed * deltaTime * game.board.width / game.board.gridWidth;
         // ball.pos.y = ball.pos.y + ball.dir.y * ball.speed * deltaTime * game.board.width / game.board.gridWidth;
         // ball.tip.x = ball.pos.x - ball.size * 0.5;
         // ball.tip.y = ball.pos.y - ball.size * 0.5;
+        /////////////////////////////////////////
         ctx.fillStyle = 'white';
         ctx.fillRect(ball.tip.x, ball.tip.y, ball.size, ball.size);
         ctx.setLineDash([]);

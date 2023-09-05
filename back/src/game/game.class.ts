@@ -34,6 +34,9 @@ export class GameStruct {
 
   ////////////////////
   public update = 1;
+  // switch to 1 or 2
+  // 1: is the timeframe refresh mode -> refreshing the front on every timeframe
+  // 2: event refresh mode -> refreshing only when an event occurs : - paddle up/down - collision
 
   constructor(gameMode: number, id: number, pl1Id: number, pl2Id: number, room: string) {
     this.gameMode = gameMode;
@@ -56,7 +59,7 @@ export class GameStruct {
     this.firstStep = false;
     const remainingTime = Math.max(this.frameDuration - (Date.now() - frameStartTime), 0);
     if (this.prop.status === 'ended') {
-      this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
       if (this.winner && this.loser) {
         gameEvents.emit('serviceEndGame', {
           action: 'endGame',
@@ -90,6 +93,7 @@ export class GameStruct {
 
   /* Updates paddles and ball functions by checking the future position and potential collisions */
   private updatePaddles(deltaTime: number) {
+    // Opti? updater uniquement une fois si paddle 1 et/ou deux bougent
     // Player 1
     if (this.pl1.isMoving && this.pl1.movingDir === 'up') {
       let pad = this.pl1.pad;
@@ -107,7 +111,7 @@ export class GameStruct {
         else
           this.ball.accelerateBall(this.gameMode);
       }
-      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
     } else if (this.pl1.isMoving && this.pl1.movingDir === 'down') {
       let pad = this.pl1.pad;
       let newPos = new Point(pad.pos.x, pad.pos.y + pad.speed * (deltaTime / 1000));
@@ -124,7 +128,7 @@ export class GameStruct {
         else
           this.ball.accelerateBall(this.gameMode);
       }
-      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
     }
     // Player 2
     if (this.pl2.isMoving && this.pl2.movingDir === 'up') {
@@ -143,7 +147,7 @@ export class GameStruct {
         else
           this.ball.accelerateBall(this.gameMode);
       }
-      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
     } else if (this.pl2.isMoving && this.pl2.movingDir === 'down') {
       let pad = this.pl2.pad;
       let newPos = new Point(pad.pos.x, pad.pos.y + pad.speed * (deltaTime / 1000));
@@ -160,9 +164,9 @@ export class GameStruct {
         else
           this.ball.accelerateBall(this.gameMode);
       }
-      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
     }
-    if (this.update === 1) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+    if (this.update === 1) this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
   }
 
   private updateBall(newPos: Point) {
@@ -181,7 +185,7 @@ export class GameStruct {
       || (newPos.y + this.ball.halfSize >= this.board.height && this.ball.dir.y > 0)) {
       this.ball.dir.y *= -1;
       this.ball.accelerateBall(1);
-      if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+      if (this.update === 2) this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
     }
     // Paddles
     else {
@@ -246,7 +250,7 @@ export class GameStruct {
     );
     this.ball.pos = tmpBall2;
     this.ball.accelerateBall(this.gameMode);
-    if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+    if (this.update === 2) this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
     return -1;
   }
 
@@ -269,7 +273,7 @@ export class GameStruct {
     );
     this.ball.pos = tmpBall2;
     this.ball.accelerateBall(this.gameMode);
-    if (this.update === 2) this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+    if (this.update === 2) this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
     return -1;
   }
   /* */
@@ -381,7 +385,7 @@ export class GameStruct {
       this.pl1.score += 1;
       this.ball.randomService(this.board, 1, this.gameMode);
     }
-    this.sendUpdateToRoom('playing', 'playing', -1, 'refreshGame');
+    this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
     this.updateOnlineGames();
     if (this.pl1.score >= maxScore || this.pl2.score >= maxScore) {
       this.winner = this.pl1.score >= maxScore ? this.pl1 : this.pl2;
@@ -404,14 +408,16 @@ export class GameStruct {
   }
 
   /* Functions to update the front via the gateway */
-  sendUpdateToRoom(playerStatus: string, opponentStatus: string, countdown: number, channel: string) {
+  sendUpdateToRoom(playerId: number, playerStatus: string, opponentId: number, opponentStatus: string, countdown: number, channel: string) {
     let countdownStr: string | number = countdown === 0 ? 'GO' : countdown;
     gameEvents.emit('gatewayUpdateRoom', {
       room: this.prop.room,
       channel: channel,
       gameStatus: this.prop.status,
       gameParams: this.getState(),
+      playerId: playerId,
       playerStatus: playerStatus,
+      opponentId: opponentId,
       opponentStatus: opponentStatus,
       countdown: countdownStr,
     });

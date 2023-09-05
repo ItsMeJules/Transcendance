@@ -95,10 +95,11 @@ export class AuthService {
       const decodedToken: any = jwt.verify(token, jwtSecret);
       const { id } = decodedToken;
       // console.log('id:', id, ' and email:', email);
-      const user = this.prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { id },
         include: { friends: true },
       });
+      delete user.hash;
       return user;
     } catch (err) {
       return null;
