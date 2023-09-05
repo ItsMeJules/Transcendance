@@ -10,6 +10,7 @@ import LayoutWrapper from 'layout/LayoutWrapper';
 import { Home, Signin, Signup, Dashboard, ChatBox, NotFoundPage } from 'pages';
 import ErrorBoundary from 'services/ErrorBoundary/ErrorBoundary';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
   return (

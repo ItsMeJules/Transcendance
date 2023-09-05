@@ -14,8 +14,6 @@ import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
 import { Player } from './models/player.model';
 import { User } from '@prisma/client';
-import { PongStoreService } from 'src/utils/pong-store/pong-store.service';
-import { disconnect } from 'process';
 import { gameEvents } from './game.class';
 import { pongServiceEmitter } from './pong.service';
 import { userServiceEmitter } from 'src/user/user.service';
@@ -78,7 +76,7 @@ export class PongEvents {
       client.disconnect();
       return;
     }
-    console.log('IN SOCKET ID:', client.id, ' and user id:', user.id);
+    // console.log('IN SOCKET ID:', client.id, ' and user id:', user.id);
     const gameId = this.playersMap.get(user.id);
     client.data = { id: user.id, username: user.username };
     this.idToSocketMap.set(user.id, client);
@@ -94,7 +92,7 @@ export class PongEvents {
     }
     this.emitUpdateAllUsers('toAll', 0);
     this.emitUpdateFriendsOf(user.id);
-    console.log('is to socket map:', this.idToSocketMap);
+    // console.log('is to socket map:', this.idToSocketMap);
   }
 
   async handleDisconnect(client: Socket) {
@@ -572,7 +570,7 @@ export class PongEvents {
   async allUsersHandler(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { action: string }) {
-    console.log('ALL USERS and status:', data.action);
+    // console.log('ALL USERS and status:', data.action);
 
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) {
@@ -611,7 +609,7 @@ export class PongEvents {
   async leaderboardHandler(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { action: string }) {
-    console.log('LLLLeaderboard and status:', data.action);
+    // console.log('LLLLeaderboard and status:', data.action);
 
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) {

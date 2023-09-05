@@ -39,7 +39,7 @@ export class AuthController {
     @Body() dto: AuthDtoUp,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const access_token = await this.authService.signup(dto);
+    const access_token = await this.authService.signup(dto); // Error ok
     res.cookie('access_token', access_token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 150,
@@ -50,6 +50,12 @@ export class AuthController {
     await this.authService.connectUserToAllPublicRooms(user.id);
     return user;
   }
+
+
+
+
+
+  
 
   @HttpCode(HttpStatus.OK)
   @Post('signin')

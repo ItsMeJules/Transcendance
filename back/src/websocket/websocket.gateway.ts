@@ -1,19 +1,12 @@
 import {
   WebSocketGateway,
   WebSocketServer,
-  SubscribeMessage,
-  ConnectedSocket,
-  MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { SocketService } from './websocket.service';
 import { extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { all } from 'axios';
-import { PongEvents } from 'src/game/pong.gateway';
-import { PongStoreService } from 'src/utils/pong-store/pong-store.service';
 
 @WebSocketGateway({ namespace: 'general' })
 export class SocketEvents {

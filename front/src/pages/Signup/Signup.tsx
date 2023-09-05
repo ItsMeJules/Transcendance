@@ -1,11 +1,11 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
-import './Signup.scss'
-
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import ToastError from "layout/ToastError/ToastError";
+import { useAxios } from "utils/axiosConfig/axiosConfig";
+import './Signup.scss'
 
 export const Signup = () => {
   const history = useNavigate();
@@ -14,6 +14,7 @@ export const Signup = () => {
   const [password, setPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
+  const customAxiosInstance = useAxios();
 
   useEffect(() => {
     setErrMsg('');
@@ -23,7 +24,7 @@ export const Signup = () => {
     if (success) {
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
-  }, [success, history]);
+  }, [success, history]); // enelever la dep history
 
   const resetErrMsg = () => {
     setErrMsg(''); // Reset errMsg to an empty string
@@ -32,7 +33,7 @@ export const Signup = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(API_ROUTES.SIGN_UP,
+      const response = await customAxiosInstance.post(API_ROUTES.SIGN_UP,
         JSON.stringify({ email: email, username: username, password: password }),
         {
           headers: { 'Content-Type': 'application/json' },
@@ -80,7 +81,7 @@ export const Signup = () => {
                 className="signup-form">
 
                 <label htmlFor="email" className="form-text-login">
-                  Email address {errMsg}
+                  Email address
                 </label>
 
                 <input type="email"
@@ -140,7 +141,6 @@ export const Signup = () => {
         </div>
       </div>
 
-      <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div>
   )
 }

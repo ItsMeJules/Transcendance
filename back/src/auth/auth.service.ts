@@ -1,5 +1,8 @@
 import {
+  BadRequestException,
   ForbiddenException,
+  NotFoundException,
+  InternalServerErrorException,
   HttpStatus,
   Injectable,
   Req,
@@ -16,6 +19,7 @@ import { Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import handlePrismaError from '@utils/prisma.error';
 
 @Injectable()
 export class AuthService {
@@ -23,22 +27,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private prisma: PrismaService,
     private config: ConfigService,
-  ) {}
+  ) { }
 
-  async login(user: any): Promise<any> {
-    const payload: PayloadDto = {
-      id: user.id,
-      isTwoFactorAuthenticationVerified: false,
-    };
-    return this.jwtService.sign(payload);
-  }
-
+  /* Signup */
   async signup(dto: AuthDtoUp) {
     const hash = await argon.hash(dto.password);
     if (dto.username.length > 100)
-      throw new ForbiddenException('Username too long');
+      throw new BadRequestException('Username too long'); // OK
     else if (dto.password.length > 100)
-      throw new ForbiddenException('Password too long');
+      throw new BadRequestException('Password too long'); // OK
     try {
       const user = await this.prisma.user.create({
         data: {
@@ -53,14 +50,16 @@ export class AuthService {
       });
       return this.login(user);
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          // Add more errors handlers or a default one?
-          throw new ForbiddenException('Credentials taken');
-        }
-      }
-      throw error;
+      handlePrismaError(error);
     }
+  }
+
+  async login(user: any): Promise<any> {
+    const payload: PayloadDto = {
+      id: user.id,
+      isTwoFactorAuthenticationVerified: false,
+    };
+    return this.jwtService.sign(payload);
   }
 
   async signin(dto: AuthDto) {
