@@ -1,10 +1,17 @@
 import { AnyAction, Reducer, combineReducers, configureStore } from '@reduxjs/toolkit';
-import { persistReducer, persistStore } from 'redux-persist';
+import { FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER, persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import ChannelSlice from './reducers/ChannelSlice';
 import { userReducer } from './reducers/UserSlice';
+
+const reduxPersistActions = [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER];
 
 const appReducer = combineReducers({
   channels: ChannelSlice,
@@ -22,6 +29,12 @@ const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [...reduxPersistActions],
+      },
+    }),
 })
 
 export const persistor = persistStore(store)
