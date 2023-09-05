@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { ChannelData, ChannelType } from "../../models/Channel";
+import { ChannelData, ChannelType, PunishmentType } from "../../models/Channel";
 import OutsideClickHandler from "../../utils/OutsideClickHandler";
 import BannedUsersPopup from "./popups/BannedUsersPopup";
 import ManageChannelPopup from "./popups/ManageChannelPopup";
@@ -31,7 +31,9 @@ export default function ChannelManager(props: ChannelManagerProps) {
       <div className="channel-infos">
         <div className="channel-name">
           <p>{channelData?.displayname}</p>
-          {channelData.type !== ChannelType.DIRECT && channelData.name !== "general" ? (
+          {channelData.type !== ChannelType.DIRECT &&
+            channelData.name !== "general" &&
+            channelData.punishments?.some(punishment => punishment.type === PunishmentType.BAN) ? (
             <img
               alt="Banned"
               src={BannedIcon}

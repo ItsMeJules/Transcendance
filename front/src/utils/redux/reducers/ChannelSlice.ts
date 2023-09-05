@@ -56,16 +56,16 @@ const channelSlice = createSlice({
     setActiveChannel: (state, action: PayloadAction<any>) => {
       const payload = action.payload
       const channelType = payload.type === ChannelType.PUBLIC && payload.password !== null && payload.password.length !== 0 ? ChannelType.PROTECTED : payload.type
-      const punishments = []
+      let punishments: any = []
 
       if (payload.bans !== null && payload.bans.length !== 0) {
-        punishments.push(payload.bans.map((user: any) => {
+        punishments = punishments.concat(payload.bans.map((user: any) => {
           return { type: PunishmentType.BAN, userId: user.id, expireAt: null }
         }))
       }
 
       if (payload.mutes !== null && payload.mutes.length !== 0) {
-        punishments.push(payload.mutes.map((user: any) => {
+        punishments = punishments.concat(payload.mutes.map((user: any) => {
           const expireAt = payload.muteUntil.find(
             (duration: any) => duration.id === user.id
           );
@@ -121,10 +121,12 @@ const channelSlice = createSlice({
       // state.channelData.password = action.payload;
     },
     activeChannelRemoveUserBanned: (state, action: PayloadAction<number>) => {
-      if (state.activeChannel !== null)
-        state.activeChannel.punishments.filter(punishment =>
-          punishment.type === PunishmentType.BAN &&
-          punishment.userId === action.payload);
+      if (state.activeChannel !== null) {
+        state.activeChannel.punishments = state.activeChannel.punishments.filter(punishment => {
+          return (punishment.type !== PunishmentType.BAN &&
+          punishment.userId !== action.payload);
+        })
+      }
     },
     activeChannelAddUserBanned: (state, action: PayloadAction<number>) => {
       state.activeChannel?.punishments.push({

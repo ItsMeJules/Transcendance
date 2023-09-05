@@ -145,8 +145,8 @@ export const ChatBox = () => {
           dispatch(activeChannelAddUserBanned(payload.userId));
           break;
         case RoomSocketActionType.UNBAN:
-          dispatch(activeChannelAddUser(payload.userId));
           dispatch(activeChannelRemoveUserBanned(payload.userId));
+          dispatch(activeChannelAddUser(payload.userId));
           break;
         case ChatSocketActionType.BLOCK:
           dispatch(addUserBlocked(payload.userId));

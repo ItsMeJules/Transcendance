@@ -116,6 +116,7 @@ export function transformSliceToChannelData(data: any): ChannelData {
     return {} as PunishmentData;
   });
 
+
   const messages: ChannelMessageData[] = data.messages.map((message: any) => {
     return {
       authorId: message.authorId,

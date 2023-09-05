@@ -646,8 +646,9 @@ $font-color: rgba(255, 255, 255, 0.7);
           }
 
           img {
-            width: 10%;
-            height: auto;
+            width: auto;
+            height: 50%;
+
             cursor: pointer;
             transition: transform 0.3s;
 
@@ -708,20 +709,25 @@ $font-color: rgba(255, 255, 255, 0.7);
               overflow-y: scroll;
               // Style the scrollbar
               scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
+
               &:hover {
                 scrollbar-color: rgba(128, 128, 128, 0.6) rgba(0, 0, 0, 0.2); // Show scrollbar thumb and border on hover
               }
+
               &::-webkit-scrollbar {
                 width: 10px; // Adjust the width as needed
               }
+
               &::-webkit-scrollbar-track {
                 background-color: rgba(128, 128, 128, 0.2); // Gray transparent background
               }
+
               &::-webkit-scrollbar-thumb {
                 background-color: rgba(128, 128, 128, 0.3); // Transparent scrollbar thumb
                 border-radius: 5px; // Rounded corners for the thumb
                 border: 2px solid rgba(0, 0, 0, 0); // Hide the border initially
               }
+
               &:hover {
                 &::-webkit-scrollbar-thumb {
                   background-color: rgba(128, 128, 128, 0.6); // Show scrollbar thumb on hover
@@ -820,7 +826,7 @@ $font-color: rgba(255, 255, 255, 0.7);
               .block-user:hover {
                 background-color: $hover-color;
               }
-              
+
               .ban,
               .unban,
               .kick,
@@ -836,7 +842,7 @@ $font-color: rgba(255, 255, 255, 0.7);
               .unblock-user {
                 padding: 8px;
                 font-size: 8pt;
-                border: $border; 
+                border: $border;
                 border-radius: 5px;
                 color: white;
 
@@ -956,91 +962,95 @@ $font-color: rgba(255, 255, 255, 0.7);
 
       .manage {
         position: relative;
-
-        width: 12%;
-        height: 100%;
-
-        cursor: pointer;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 50%;
 
         img {
-          height: 50%;
-          width: auto;
-
-          margin: 5px 5px 0 0;
+          justify-content: center;
+          align-items: center;
+          filter: invert(40%);
+          height: 30px;
+          width: 30px;
+          cursor: pointer;
         }
 
         .channel-popup {
           display: flex;
           flex-direction: column;
-
-          position: absolute;
-
-          background-color: #a9a9a9;
-
-          height: fit-content;
-          width: 150px;
-
-          top: 100%;
-          left: -100%;
-
+          align-items: center;
+          justify-content: space-evenly;
+          position: relative;
+          top: 80%;
+          left: -220%;
+          height: 300px;
+          width: 160px;
           border-radius: 5px;
-          border: 1px solid gray;
-
+          border: $border;
           cursor: auto;
+          background: rgba(0, 0, 0, 0.7);
 
           input {
-            outline: none;
-            margin: 5px;
-            padding: 5px;
-            border-radius: 5px;
+            width: 85%;
+            height: 30px;
 
-            border-bottom: 2px solid black;
+            font-size: 12px;
+            padding: 3px;
+            border: $border;
+            background: transparent;
+            border-radius: 5px;
           }
 
           .confirm {
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-            border-top: 2px solid black;
-            border-bottom: 2px solid black;
+            width: 80%;
+
+            text-align: center;
+            overflow: hidden;
+
+            border: $border;
+            border-radius: 5px;
+            padding: 10px;
+
+            transition: background-color;
+
+            &:hover {
+              background-color: rgba(0, 255, 0, 0.3);
+            }
 
             button {
-              margin: 5px;
-              padding: 5px;
-              border-radius: 5px;
-
-              border-top: 1px solid lightgray;
-              border-left: 1px solid lightgray;
-              border-right: 1px solid lightgray;
-              border-bottom: 2px solid black;
-
-              transition: background-color;
-
-              &:hover {
-                background-color: #05b805;
-              }
+              font-family: "dune", Arial, sans-serif;
+              color: $font-color;
+              margin: 0;
+              cursor: pointer;
+              transition: transform 0.3s;
             }
           }
 
           .quit-channel {
             text-align: center;
+            overflow: hidden;
+            width: 80%;
+
+            border: $border;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color;
+
+            &:hover {
+              background-color: rgba(255, 0, 0, 0.3);
+            }
 
             button {
-              cursor: pointer;
-
-              margin: 5px;
-              padding: 5px;
-              border-radius: 5px;
-
-              border-top: 1px solid lightgray;
-              border-left: 1px solid lightgray;
-              border-right: 1px solid lightgray;
-              border-bottom: 2px solid black;
-
-              transition: background-color;
-
-              &:hover {
-                background-color: #dd3c49;
-              }
+              margin: 0px;
+              font-family: "dune", Arial, sans-serif;
+              color: $font-color;
+              transition: transform;
             }
           }
         }
