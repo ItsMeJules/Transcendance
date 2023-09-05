@@ -18,11 +18,11 @@ export function useAxios() {
       }
       if (error.response && error.response.status === 450) {
         console.log("You don't have 2FA enabled");
-        navigate("/profile/me");
+        navigate("/dashboard/profile/me");
       }
       if (error.response && error.response.status === 451) {
         console.log("You are already verified!! What are you trying to do???");
-        navigate("/profile/me");
+        navigate("/dashboard/profile/me");
       }
       return Promise.reject(error);
     }

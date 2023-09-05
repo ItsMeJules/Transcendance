@@ -37,9 +37,9 @@ export const TwoFa = () => {
   }, [code]);
 
   useEffect(() => {
-    console.log("success is :", success);
+    console.log("success is !!:", success);
     if (success) {
-      history("/profile/me");
+      history("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
