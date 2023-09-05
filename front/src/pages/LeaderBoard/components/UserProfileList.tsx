@@ -1,5 +1,4 @@
 import React from 'react';
-import User from "../../../services/User/User";
 import UserProfile from "./UserProfile";
 
 interface UserProfilesListProps {

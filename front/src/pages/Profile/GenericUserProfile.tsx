@@ -6,7 +6,6 @@ import { API_ROUTES, APP_ROUTES, APP_URL } from 'utils/routing/routing';
 import getProgressBarClass from 'utils/progressBar/ProgressBar';
 import ToastError from 'layout/ToastError/ToastError';
 import { UserData } from 'services/User/User';
-import UserProfileContainer from './components/UserProfileContainer';
 import ProfileCard from './components/ProfileCard';
 import { MDBContainer } from 'mdb-react-ui-kit';
 
@@ -24,7 +23,6 @@ const GenericUserProfile = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userNotFound, setUserNotFound] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
-  const [iconColor, setIconColor] = useState('rgba(255, 255, 255, 0.7)');
   const [errMsg, setErrMsg] = useState('');
   const location = useLocation();
   const history = useNavigate();
@@ -48,10 +46,6 @@ const GenericUserProfile = () => {
           setUserNotFound(true);
           return;
         }
-        console.log('data:', response.data.data.user.user.id);
-        if (response.data.data.user.user.id === -1)
-          history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
-        localStorage.setItem('genericUserData', JSON.stringify(response.data.data.user.user));
         setUserData(response.data.data.user.user);
         setIsFriend(false);
         if (response.data.data.isFriend === 'true')
@@ -59,18 +53,20 @@ const GenericUserProfile = () => {
         if (userData)
           setLevel(userData?.userLevel);
       } catch (err: any) {
-        console.log('error end stauts:', err.response?.status);
-        if (err.response?.status === 400)
-          setUserNotFound(true);
-        // console.log('error:', err);
-        // adequate error management
+        if (err.response?.status === 400) setUserNotFound(true);
       }
     };
+    console.log("Inside useEffect, id:", id);
 
     fetchUserProfile(id);
   }, [id, location]);
 
+    useEffect(() => {
+      console.log("isFriend:", isFriend);
+    }, [isFriend]);
+
   const addFriend = async (id: string | undefined) => {
+     console.log("addFriend called with id:", id);
     const dataToSend: any = {};
     if (id)
       dataToSend.id = id;
@@ -92,6 +88,8 @@ const GenericUserProfile = () => {
     }
   }
 
+  console.log('Rendering GenericUserProfile with isFriend:', isFriend);
+  
   if (userNotFound) {
     return <NotFoundPageDashboard />;
   }

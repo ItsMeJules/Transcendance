@@ -7,7 +7,6 @@ interface DisplayDataProps {
 }
 
 const DisplayData: React.FC<DisplayDataProps> = ({ userData }) => {
-
   return (
     <div>
       <div className="information-display-main">
@@ -26,22 +25,22 @@ const DisplayData: React.FC<DisplayDataProps> = ({ userData }) => {
           </MDBTypography>
         </MDBCardBody>
         <MDBCardBody className="data-values-main">
-          <MDBTypography tag="h5" className="data-values-sub-first" title={userData?.email}>
-            {userData?.email}
+          <MDBTypography tag="h5" className="data-values-sub-first" title={userData?.email || ' '}>
+            {userData?.email || '\u00A0'} {/* '\u00A0' is a non-breaking space */}
           </MDBTypography>
-          <MDBTypography tag="h5" className="data-values-sub-others" title={userData?.username}>
-            {userData?.username}
+          <MDBTypography tag="h5" className="data-values-sub-others" title={userData?.username || ' '}>
+            {userData?.username || '\u00A0'}
           </MDBTypography>
-          <MDBTypography tag="h5" className="data-values-sub-others" title={userData?.firstName}>
-            {userData?.firstName}
+          <MDBTypography tag="h5" className="data-values-sub-others" title={userData?.firstName || ' '}>
+            {userData?.firstName || '\u00A0'}
           </MDBTypography>
-          <MDBTypography tag="h5" className="data-values-sub-others" title={userData?.lastName}>
-            {userData?.lastName}
+          <MDBTypography tag="h5" className="data-values-sub-others" title={userData?.lastName || ' '}>
+            {userData?.lastName || '\u00A0'}
           </MDBTypography>
         </MDBCardBody>
       </div>
     </div>
   );
-}
+};
 
 export default DisplayData;

@@ -1,20 +1,20 @@
-import { useWebsocketContext } from "services/Websocket/Websocket";
-import { useState } from "react";
-import User from "services/User/User";
+import React from "react";
 import AllUsersInstance from "./AllUsersInstance";
+
 
 interface AllUsersListProps {
   usersList: any[];
+  currentUserId?: string;
 }
 
-const AllUsersList: React.FC<AllUsersListProps> = ({ usersList }) => {
-  const [userData, setUserData] = useState<any | null>(null);
-  const socket = useWebsocketContext();
-
+const AllUsersList: React.FC<AllUsersListProps> = ({ usersList, currentUserId }) => {
   return (
     <main className="allusers__profiles">
       {usersList.map((user) =>
-        <AllUsersInstance key={user.id} user={user} />
+        <AllUsersInstance
+        key={user.id}
+        user={user}
+        currentUserId={currentUserId}/>
       )}
     </main>
   );

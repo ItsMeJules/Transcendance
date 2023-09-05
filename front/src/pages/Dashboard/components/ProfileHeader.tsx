@@ -16,7 +16,8 @@ const ProfileHeader = () => {
   const [errMsg, setErrMsg] = useState('');
   const [progressBarClass, setProgressBarClass] = useState('progress-bar-1');
   const [parsedUserLevel, setParsedUserLevel] = useState(1);
-  const [winRatio, setWinRatio] = useState(0);
+  const [winRatio, setWinRatio] = useState<number>(0);
+  const [gamesPlayed, setGamesPlayed] = useState<number | null>(null);
   const axiosInstanceError = useAxios();
   const [loaded, setLoaded] = useState(false);
   const [fetchedData, setFetchedData] = useState<any>();
@@ -47,6 +48,7 @@ const ProfileHeader = () => {
         }
       }
     };
+    console.log('RECHARGEEEEEEEEEEEEEEEEEE');
     if (localStorage.getItem('userData') === null)
       fetchUserProfile();
   }, []);
@@ -57,8 +59,9 @@ const ProfileHeader = () => {
         setProfilePicture(data.profilePicture);
       if (data.userLevel)
         setParsedUserLevel(data.userLevel);
-      if (data.gamesPlayed && data.gamesWon)
+      if (data.gamesPlayed && data.gamesWon && data.gamesPlayed > 0)
         setWinRatio((data.gamesWon / data.gamesPlayed) * 100);
+      setGamesPlayed(data.gamesPlayed);
     };
 
     const parseValues = () => {
@@ -88,13 +91,13 @@ const ProfileHeader = () => {
           </button>
         </div>
         <div className="WinLossRatio">
-          <MDBCardText className="small text-muted mb-0 custom-text-color">
-            Win/Loss Ratio: {winRatio.toFixed(2)}
+        <MDBCardText className="small text-muted mb-0 custom-text-color text-center">
+            { gamesPlayed !== null ? `Win Rate: ${winRatio.toFixed(2)}%` : "No games played yet"}
           </MDBCardText>
         </div>
         <div className="progress-bar-container">
           <div className={`progress-bar ${progressBarClass}`}></div>
-          <MDBCardText className="small mt-0.5 text-muted mb-0 custom-text-color">
+          <MDBCardText className="small mt-0.5 text-muted mb-0 custom-text-color text-center">
             Level {parsedUserLevel}
           </MDBCardText>
         </div>
@@ -104,4 +107,4 @@ const ProfileHeader = () => {
   );
 };
 
-export default ProfileHeader
+export default ProfileHeader;

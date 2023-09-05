@@ -93,10 +93,11 @@ const QrCode: React.FC = () => {
   }, []); // axiosInstanceError for warning but learn how to add dependances?
 
   return (
-    <div className="activate-deactivate-button">
+    <div className="activate-and-deactivate">
       <button
-        id="activate-deactivate-button"
-        className={`Activate/Deactivate ${is2FAActive ? "deactivate" : ""}`}
+        id="Activate/Deactivate"
+        type="submit"
+        className={`activate-deactivate-button ${is2FAActive ? "deactivate" : ""}`}
         onClick={(event) => {
           if (is2FAActive) {
             turnOff();

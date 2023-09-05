@@ -10,7 +10,7 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = ({ user, onProfileClick }) => {
   return (
-    <main className="friends__profile" key={user.id}>
+    <main className="friends__profile" key={user.id} title="Go to user profile" onClick={() => onProfileClick(user)}>
 
       <img src={user.profilePicture} alt={user.username}
         className={`friends__picture ${user.isOnline ? 'online' : 'offline'}`}/>
@@ -28,11 +28,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onProfileClick }) => {
       {!user.isPlaying &&
         <div></div>}
 
-      <button className="friends__heart">
+      <div className="friends__heart">
         <IconContext.Provider value={{ color: 'red', size: '30px' }}>
           <FaHeart />
         </IconContext.Provider>
-      </button>
+      </div>
 
     </main>
   );
