@@ -9,10 +9,13 @@ $png-background-color: rgba(250, 250, 250, 0.5);
     flex-direction: column;
     border-radius: 40px;
     padding: 20px;
-      background-color: transparent;
+    background-color: transparent;
 
       .profile-board-header {
         display: flex;
+        justify-content: space-between;
+        width: 100%;
+        flex-direction: row;
         align-self: start;
         padding-left: 20px;
         padding-top: 20px;
