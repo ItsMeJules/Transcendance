@@ -17,11 +17,12 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
   constructor(
-    readonly userService: UserService,
+    readonly prismaService: PrismaService,
     readonly authService: AuthService,
   ) {
     super({
@@ -39,7 +40,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     @Res({ passthrough: true }) res: Response,
   ): Promise<User> {
     try {
-      const user = await this.userService.findOrCreateUserOAuth({
+      const user = await this.prismaService.findOrCreateUserOAuth({
         // protect with try catch
         username: profile._json.name,
         firstName: profile._json.given_name,
@@ -50,14 +51,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       });
       return user;
     } catch (error) {
-      // res.status(HttpStatus.BAD_REQUEST).json({
-      //   statusCode: HttpStatus.BAD_REQUEST,
-      //   message: 'Google authentication failed', // Provide a meaningful error message
-      // });
-      // return null;
-      // return null;
-      // res.redirect('http://localhost:4000/');
-      throw new ForbiddenException('Username taken');
+      throw new ForbiddenException(error);
     }
   }
 }

@@ -1,6 +1,14 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ForbiddenException, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaClient, User, Room, Message, RoomType } from '@prisma/client';
+import {
+  PrismaClient,
+  User,
+  Room,
+  Message,
+  RoomType,
+  Prisma,
+} from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { RoomInfo } from 'src/chat/partial_types/partial.types';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
@@ -16,7 +24,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     });
   }
 
-  async onModuleInit() {
+  async onModuleInit(): Promise<Room> {
     await this.$connect();
     let generalChat = await this.room.findUnique({
       where: { id: 1 },
@@ -32,15 +40,106 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     return generalChat;
   }
 
-  async onApplicationShutdown(signal?: string) {
+  async onApplicationShutdown(signal?: string): Promise<void> {
     await this.$disconnect();
   }
 
   async getUserById(userId: number): Promise<User | null> {
-    return this.user.findUnique({
+    return await this.user.findUnique({
       where: { id: userId },
       include: { friends: true },
     });
+  }
+
+  async isUsernameTaken(username: string): Promise<User> {
+    return this.user.findUnique({ where: { username } });
+  }
+
+  async findUserById(id: number): Promise<User | null> {
+    if (!id) return null;
+    const user = await this.user.findUnique({
+      where: { id: id },
+    });
+    if (user) delete user.hash;
+    return user;
+  }
+
+  async findUserByEmail(email: string): Promise<User> {
+    return this.user.findUnique({ where: { email } });
+  }
+
+  async findOrCreateUserOAuth(data: Prisma.UserCreateInput): Promise<User> {
+    const user: User = await this.findUserByEmail(data.email);
+    if (user) {
+      return user;
+    }
+    let usernameAvailable = false;
+    let modifiedUsername = data.username;
+    // Check if username is taken
+    while (!usernameAvailable) {
+      const userNameCheck = await this.isUsernameTaken(modifiedUsername);
+      // console.log('test:', userNameCheck);
+      if (!userNameCheck) {
+        usernameAvailable = true;
+      } else {
+        const randomSuffix = Math.floor(Math.random() * 9); // You can adjust the range of the random number as needed
+        modifiedUsername = data.username + randomSuffix;
+      }
+    }
+    data.username = modifiedUsername;
+    // console.log('username:', data.username);
+    try {
+      const createdUser = await this.user.create({ data });
+      return createdUser;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          // Add more errors handlers or a default one?
+          throw new ForbiddenException('Username taken');
+        }
+      }
+      throw error;
+    }
+  }
+
+  async turnOnTwoFactorAuthentication(userId: number): Promise<User> {
+    const user = await this.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isTwoFactorAuthenticationEnabled: true,
+      },
+    });
+    return user;
+  }
+
+  async setTwoFactorAuthenticationSecret(
+    secret: string,
+    userId: number,
+  ): Promise<User> {
+    const user = await this.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        twoFactorAuthenticationSecret: secret,
+      },
+    });
+    return user;
+  }
+
+  async turnOffTwoFactorAuthentication(userId: number): Promise<User> {
+    const user = await this.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isTwoFactorAuthenticationEnabled: false,
+        twoFactorAuthenticationSecret: null,
+      },
+    });
+    return user;
   }
 
   async returnUserVisibleRooms(userId: number): Promise<RoomInfo[]> {
