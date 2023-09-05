@@ -1,68 +1,44 @@
 $png-background-color: rgba(250, 250, 250, 0.5);
 
-.profile-main-container {
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 20px;
-  
   .profile-board-container {
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     width: 100%;
     height: 100%;
     display: flex;
-    
-    .profile-board-card {
-      border-radius: 40px;
-      padding: 20px;
-      display: flex;
-      width: 100%;
-      height: 100%;
+    flex-direction: column;
+    border-radius: 40px;
+    padding: 20px;
       background-color: transparent;
-      flex-direction: column;
-      justify-content: space-evenly;
 
       .profile-board-header {
         display: flex;
-        align-items: center;
+        align-self: start;
         padding-left: 20px;
         padding-top: 20px;
       }
 
       .profile-pic-container {
+        width: 100%;
+        height: 100%;
         display: flex;
+        padding-bottom: 20px;
         justify-content: center;
-        margin-bottom: 10px;
 
         .profile-pic-circle {
-          width: 20%;
-          height: 20%;
+          width: 15%;
+          height: 100%;
           border-radius: 50%;
           overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
-        }
-
-        .profile-pic-circle img {
-          width: 100%;
-          height: 100%;
-        }
-
-        .profile-pic-img-class {
-          width: 100%;
-          height: 100%;
-        }
-
-        img.profile-pic-img-class {
           background-color: $png-background-color;
         }
 
         .empty-profile-pic-circle {
           width: 15%;
-          height: 15%;
+          height: 100%;
           overflow: hidden;
           display: flex;
           align-items: center;
@@ -70,7 +46,7 @@ $png-background-color: rgba(250, 250, 250, 0.5);
           text-align: center;
           font-weight: bold;
         }
-      }
+      
 
 
     }
@@ -116,14 +92,11 @@ $png-background-color: rgba(250, 250, 250, 0.5);
 
       .data-fields-name-main {
         display: flex;
-        flex-shrink: 1;
         flex-direction: column;
         justify-content: space-evenly;
         text-align: left;
         align-content: right;
-        width: 150px;
-        // padding: 0px 0px 0px 20px;
-        padding-left: 10%;
+        width: 50%;
 
         @mixin data-fields-name-sub {
           font-family: "dune", Arial, sans-serif;
@@ -283,7 +256,7 @@ $png-background-color: rgba(250, 250, 250, 0.5);
       }
 
       display: flex;
-      text-align: center;
+      flex-direction: column;
 
       .stats-first-sub-container {
         @include fields-name-sub-font-color;
@@ -300,7 +273,7 @@ $png-background-color: rgba(250, 250, 250, 0.5);
       }
 
       display: flex;
-      text-align: center;
+      flex-direction: column;
       margin-top: 10px;
       margin-bottom: 10px;
 
@@ -321,4 +294,4 @@ $png-background-color: rgba(250, 250, 250, 0.5);
       }
     }
   }
-}
+

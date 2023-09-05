@@ -65,12 +65,10 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <section className="profile-main-container">
-      <MDBContainer className="profile-board-container">
+    <>
         <ProfileCard userData={userDataProfile} />
         <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
-      </MDBContainer>
-    </section>
+    </>
   );
 }
 

@@ -20,7 +20,7 @@ type ProfileCardProps = {
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ userData, type = 'user', onAddFriend, fetchUserProfile, isFriend }) => {
   return (
-    <MDBCard className="profile-board-card">
+    <div className="profile-board-container">
 
       <ProfileHeader type={type} isFriend={isFriend} onAddFriend={onAddFriend} />
 
@@ -28,7 +28,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, type = 'user', onAd
         <>
           <ProfilePicContainer userData={userData} />
           <DisplayData userData={userData} />
-          <DisplayStats userData={userData} />
         </>
       )}
 
@@ -39,7 +38,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, type = 'user', onAd
           <EditUserFormValidation userData={userData} />
         </>
       )}
-    </MDBCard>
+    </div>
   );
 };
 

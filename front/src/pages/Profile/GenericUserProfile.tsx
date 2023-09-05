@@ -92,11 +92,7 @@ const GenericUserProfile = () => {
   }
 
   return (
-    <section className="profile-main-container">
-      <MDBContainer className="profile-board-container">
         <ProfileCard userData={userData} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} />
-      </MDBContainer>
-    </section>
   );
 };
 
