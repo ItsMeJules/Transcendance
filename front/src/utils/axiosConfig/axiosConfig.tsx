@@ -41,11 +41,20 @@ export function useAxios() {
       if (config.url.includes(APP_ROUTES.SIGN_UP)) {
         handleSignupErrors(error);
 
-
-
-
+        if (error.response && error.response.status === 499) {
+          console.log("You have to connect with 2FA");
+          navigate("/profile/me/two-fa");
+        }
+        if (error.response && error.response.status === 450) {
+          console.log("You don't have 2FA enabled");
+          navigate("/dashboard/profile/me");
+        }
+        if (error.response && error.response.status === 451) {
+          console.log("You are already verified!! What are you trying to do???");
+          navigate("/dashboard/profile/me");
+        }
+        return Promise.reject(error);
       }
-      return Promise.reject(error);
     }
   );
 

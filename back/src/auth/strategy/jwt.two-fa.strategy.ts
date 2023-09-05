@@ -1,23 +1,18 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, Redirect } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Request } from 'express';
-import { UserService } from 'src/user/user.service';
-import { Payload } from '@prisma/client/runtime/library';
+import { Injectable } from '@nestjs/common';
 import { PayloadDto } from '../dto/payload.dto';
 import { UnauthorizedException } from '@nestjs/common';
 import { TwoFaEnabledException } from '../exceptions/no-two-fa.exception';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class JwtTwoFactorStrategy extends PassportStrategy(
   Strategy,
   'jwt-two-factor',
 ) {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly userService: UserService,
-  ) {
+  constructor(private readonly prismaService: PrismaService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req) => {
@@ -28,8 +23,8 @@ export class JwtTwoFactorStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: PayloadDto) {
-    const user = await this.userService.findOneById(payload.id);
+  async validate(payload: PayloadDto): Promise<User> {
+    const user = await this.prismaService.findUserById(payload.id);
     if (payload.isTwoFactorAuthenticationVerified === true) {
       throw new TwoFaEnabledException();
     }

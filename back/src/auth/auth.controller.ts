@@ -12,10 +12,9 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
-import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
 import { AuthDtoUp } from './dto/authup.dto';
-import { TwoFaService } from './two-fa/two-fa.service';
+import { TwoFaService } from './two-fa.service';
 import { GetUser } from './decorator';
 import { User } from '@prisma/client';
 import { UnauthorizedException } from '@nestjs/common';
@@ -28,18 +27,17 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private userService: UserService,
+    private prismaService: PrismaService,
     private twoFaService: TwoFaService,
     private jwtService: JwtService,
-    private prismaService: PrismaService,
   ) {}
 
   @Post('signup')
   async signup(
     @Body() dto: AuthDtoUp,
     @Res({ passthrough: true }) res: Response,
-  ) {
-    const access_token = await this.authService.signup(dto); // Error ok
+  ): Promise<User> {
+    const access_token = await this.authService.signup(dto);
     res.cookie('access_token', access_token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 150,
@@ -62,7 +60,7 @@ export class AuthController {
   async signin(
     @Body() dto: AuthDto,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<User> {
     const access_token = await this.authService.signin(dto);
     res.cookie('access_token', access_token, {
       httpOnly: true,
@@ -79,7 +77,8 @@ export class AuthController {
   // @usefilter
   @Get('42/login')
   @UseGuards(FortyTwoAuthGuard)
-  handle42Login() {
+  handle42Login(): { msg: string } {
+    console.log('lol');
     return { msg: '42 Authentification' };
   }
 
@@ -90,36 +89,48 @@ export class AuthController {
   async handle42Redirect(
     @Req() req,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<void> {
+    console.log('here');
     const access_token = await this.authService.login(req.user);
+    console.log('here');
     res.cookie('access_token', access_token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 15000,
       sameSite: 'lax',
     });
+    console.log('here');
     const user = await this.authService.validateJwtToken(access_token);
+    console.log('here');
     await this.authService.connectUserToAllPublicRooms(user.id);
+    console.log('here');
     res.redirect('/dashboard/profile/me');
   }
 
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
-  handleGoogleLogin() {}
+  handleGoogleLogin(): { msg: string } {
+    return { msg: '42 Authentification' };
+  }
 
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   async handleGoogleRedirect(
     @Req() req,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<void> {
+    console.log('here');
     const access_token = await this.authService.login(req.user);
+    console.log('here');
     res.cookie('access_token', access_token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 150,
       sameSite: 'lax',
     });
+    console.log('here');
     const user = await this.authService.validateJwtToken(access_token);
+    console.log('here');
     await this.authService.connectUserToAllPublicRooms(user.id);
+    console.log('here');
     res.redirect('/dashboard/profile/me');
   }
 
@@ -131,7 +142,7 @@ export class AuthController {
     @Res({ passthrough: false }) res: Response, // why passthrough false?
     @GetUser() user: User,
   ): Promise<ArrayBuffer> {
-    await this.userService.turnOnTwoFactorAuthentication(user.id);
+    await this.prismaService.turnOnTwoFactorAuthentication(user.id);
 
     const otpAuthUrlOne =
       await this.twoFaService.generateTwoFactorAuthenticationSecret(user);
@@ -155,8 +166,8 @@ export class AuthController {
   async authenticate(
     @GetUser() user: User,
     @Res({ passthrough: true }) res: Response,
-    @Body() body: any,
-  ) {
+    @Body() body: any, //type this
+  ): Promise<void> {
     const code = body.twoFactorAuthentificationCode;
     console.log(code);
     if (!user.isTwoFactorAuthenticationEnabled) {
@@ -187,8 +198,8 @@ export class AuthController {
   async turnoff(
     @GetUser() user: User,
     @Res({ passthrough: true }) res: Response,
-  ) {
-    await this.userService.turnOffTwoFactorAuthentication(user.id);
+  ): Promise<void> {
+    await this.prismaService.turnOffTwoFactorAuthentication(user.id);
 
     const accessTokenCookie = this.jwtService.sign({
       id: user.id,

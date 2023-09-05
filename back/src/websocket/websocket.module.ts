@@ -8,7 +8,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Module({
   imports: [],
   controllers: [],
-  providers: [PrismaService, SocketEvents, UserService, JwtService, AuthService],
-  exports: [ SocketEvents], 
+  providers: [
+    PrismaService,
+    SocketEvents,
+    UserService,
+    JwtService,
+    AuthService,
+  ],
+  exports: [SocketEvents],
 })
 export class SocketModule {}

@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import 'App.css';
 import { APP_ROUTES } from 'utils/routing/routing';
 import LayoutWrapper from 'layout/LayoutWrapper';
-import { Home, Signin, Signup, Dashboard, ChatBox, NotFoundPage } from 'pages';
+import { Home, Signin, Signup, Dashboard, ChatBox, NotFoundPage, Auth2factor } from 'pages';
 import ErrorBoundary from 'services/ErrorBoundary/ErrorBoundary';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,6 +23,7 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.SIGN_IN} element={<LayoutWrapper><Signin /></LayoutWrapper>} />
               <Route path={APP_ROUTES.SIGN_UP} element={<LayoutWrapper><Signup /></LayoutWrapper>} />
               <Route path={APP_ROUTES.DASHBOARD} element={<LayoutWrapper><Dashboard /></LayoutWrapper>} />
+              <Route path={APP_ROUTES.AUTH_2FA} element={<LayoutWrapper><Auth2factor /></LayoutWrapper>} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
             <ToastContainer />
