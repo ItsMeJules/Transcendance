@@ -25,7 +25,7 @@ export class TwoFaService {
     });
   }
 
-  /* Generate 2FA secret - SECURE authentificator functions? */
+  /* Generate 2FA secret - error management ok */
   public async generateTwoFactorAuthenticationSecret(user: User) {
     try {
       const secret = authenticator.generateSecret();

@@ -175,7 +175,6 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
         isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
 
     <NoGameSpectate noGame={noGame} />
-      {/* <NoGameSpectate noGame={noGame} /> */}
     </div >
   );
 

@@ -87,6 +87,27 @@ export function useAxios() {
     return ERROR.NO;
   }
 
+  const handle2FAErrors = (err: any, toastId: string) => {
+
+    if (err.response && err.response.status === 450) {
+      // toast.error(extractErrorMessage(err), { toastId });
+      navigate("/dashboard/profile/me?error=no2fa");
+      return ERROR.YES;
+    } else if (err.response && err.response.status === 451) {
+      // console.log("You are already verified!! What are you trying to do???");
+      navigate("/dashboard/profile/me?error=alreadyverified");
+      // navigate("/dashboard/profile/me");
+    }
+
+//     if (err.response && err.response.status === 450) {
+//   console.log("You don't have 2FA enabled");
+//   navigate("/dashboard/profile/me");
+// }
+
+
+    return ERROR.NO;
+  }
+
   /* Main response handler */
   customAxiosInstance.interceptors.response.use(
     (response) => response,
@@ -122,14 +143,7 @@ export function useAxios() {
 //   console.log("You have to connect with 2FA");
 //   navigate("/profile/me/two-fa");
 // }
-// if (error.response && error.response.status === 450) {
-//   console.log("You don't have 2FA enabled");
-//   navigate("/dashboard/profile/me");
-// }
-// if (error.response && error.response.status === 451) {
-//   console.log("You are already verified!! What are you trying to do???");
-//   navigate("/dashboard/profile/me");
-// }
+
 
 
 

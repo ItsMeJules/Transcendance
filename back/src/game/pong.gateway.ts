@@ -166,6 +166,13 @@ export class PongEvents {
     }
   }
 
+  async emitToUsersinRoom(room: string, channel, data: any) {
+    const users = await this.server.in(room).fetchSockets();
+    users.forEach((user) => {
+      user.emit(channel, data);
+    });
+  }
+
   @SubscribeMessage('onlineGames')
   async getOnlineGames(
     @ConnectedSocket() client: Socket,

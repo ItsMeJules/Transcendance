@@ -53,7 +53,7 @@ const ProfileHeader = () => {
       <div className="icons">
         <div className="pic">
           <button className="profile-pic-button" onClick={handleProfileClick}>
-            <img className="profile-pic-image" src={profilePicture} alt="Profile" />
+            <img className="profile-pic-image" src={profilePicture} alt="" />
           </button>
         </div>
         <div className="WinLossRatio">

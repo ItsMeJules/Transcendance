@@ -24,6 +24,7 @@ import { NoTwoFaException } from './exceptions/no-two-fa.exception';
 import JwtTwoFactorGuard from './guard/jwt.two-fa.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { error } from 'console';
+import handleJwtError from '@utils/jwt.error';
 
 @Controller('auth')
 export class AuthController {
@@ -70,6 +71,7 @@ export class AuthController {
     return user;
   }
 
+  /* OAuth */
   /* 42 login - error management ok */
   @Get('42/login')
   @UseGuards(FortyTwoAuthGuard)
@@ -95,7 +97,6 @@ export class AuthController {
       const errorMessage = 'nouser';
       return res.redirect(`/login?error=${errorMessage}`);
     }
-    console.log('password:', user.hash, ':');
     if (user.hash !== '') {
       const errorMessage = 'passwordrequired';
       return res.redirect(`/login?error=${errorMessage}`);
@@ -104,13 +105,14 @@ export class AuthController {
     return res.redirect('/dashboard/profile/me');
   }
 
+  /* google login - error management ok */
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
   handleGoogleLogin(): { msg: string } {
     return { msg: '42 Authentification' };
   }
 
-  /* 42 redirection - error management ok */
+  /* google redirection - error management ok */
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   async handleGoogleRedirect(
@@ -124,7 +126,6 @@ export class AuthController {
       sameSite: 'lax',
     });
     const user = await this.authService.validateJwtToken(access_token, false);
-    console.log('password:', user.hash, ':');
     if (!user) {
       const errorMessage = 'nouser';
       return res.redirect(`/login?error=${errorMessage}`);
@@ -137,34 +138,35 @@ export class AuthController {
     return res.redirect('/dashboard/profile/me');
   }
 
-  // // // // // // // // // // 2FA \\ \\ \\ \\ \\ \\ \\ \\ \\ \\
-
-  // HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+  /* 2FA */
   /* Turn on 2FA - error management ok */
   @Post('turn-on')
   @UseGuards(JwtGuard)
   async register(
-    @Res({ passthrough: false }) res: Response, // why passthrough false?
+    @Res({ passthrough: false }) res: Response,
     @GetUser() user: User,
   ): Promise<ArrayBuffer> {
-
-    await this.prismaService.turnOnTwoFactorAuthentication(user.id);
-    const otpAuthUrlOne =
-      await this.twoFaService.generateTwoFactorAuthenticationSecret(user);
-    const accessTokenCookie = this.jwtService.sign({
-      id: user.id,
-      isTwoFactorAuthenticationVerified: true,
-    });
-
-    res.cookie('access_token', accessTokenCookie, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 150,
-      sameSite: 'lax',
-    });
-
-    return this.twoFaService.pipeQrCodeStream(res, otpAuthUrlOne.otpAuthUrl);
+    try {
+      await this.prismaService.turnOnTwoFactorAuthentication(user.id);
+      const otpAuthUrlOne =
+        await this.twoFaService.generateTwoFactorAuthenticationSecret(user);
+      const accessTokenCookie = this.jwtService.sign({
+        id: user.id,
+        isTwoFactorAuthenticationVerified: true,
+      });
+      res.cookie('access_token', accessTokenCookie, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 150,
+        sameSite: 'lax',
+      });
+      return this.twoFaService.pipeQrCodeStream(res, otpAuthUrlOne.otpAuthUrl);
+    } catch (error) {
+      handleJwtError(error);
+      throw (error);
+    }
   }
 
+  /* Authentification 2FA - error management ok */
   @Post('authenticate')
   @UseGuards(JwtTwoFactorGuard)
   async authenticate(
@@ -173,10 +175,8 @@ export class AuthController {
     @Body() body: any, //type this
   ): Promise<void> {
     const code = body.twoFactorAuthentificationCode;
-    console.log(code);
-    if (!user.isTwoFactorAuthenticationEnabled) {
+    if (!user.isTwoFactorAuthenticationEnabled)
       throw new NoTwoFaException();
-    }
     const isCodeValid = this.twoFaService.isTwoFactorAuthenticationCodeValid(
       code,
       user,
@@ -197,6 +197,7 @@ export class AuthController {
     });
   }
 
+  /* Turn off 2FA - */
   @Post('turn-off')
   @UseGuards(JwtGuard)
   async turnoff(

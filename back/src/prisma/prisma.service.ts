@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   PrismaClient,
@@ -122,35 +122,49 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
   }
 
+  /* 2FA */
   /* Turn on 2FA - error management ok */
   async setTwoFactorAuthenticationSecret(
     secret: string,
     userId: number,
   ): Promise<User> {
-    const user = await this.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        twoFactorAuthenticationSecret: secret,
-      },
-    });
-    return user;
+    try {
+      const user = await this.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          twoFactorAuthenticationSecret: secret,
+        },
+      });
+      return user;
+    } catch (error) {
+      handlePrismaError(error);
+      throw (error);
+    }
   }
 
+  /* Turn on 2FA - error management ok */
   async turnOffTwoFactorAuthentication(userId: number): Promise<User> {
-    const user = await this.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        isTwoFactorAuthenticationEnabled: false,
-        twoFactorAuthenticationSecret: null,
-      },
-    });
-    return user;
+    try {
+      const user = await this.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          isTwoFactorAuthenticationEnabled: false,
+          twoFactorAuthenticationSecret: null,
+        },
+      });
+      return user;
+    } catch (error) {
+      handlePrismaError(error);
+      throw (error);
+    }
   }
 
+  /* Chat */
+  /* Return visible rooms to user - error management ok */
   async returnUserVisibleRooms(userId: number): Promise<RoomInfo[]> {
     try {
       const user = await this.returnCompleteUser(userId);
@@ -198,52 +212,63 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
       return roomsInfo;
     } catch (error) {
-      console.log(error);
+      handlePrismaError(error);
+      throw (error);
     }
   }
 
+  /* Return all room infos - error management ok */
   async returnCompleteRoom(roomName: string): Promise<CompleteRoom> {
-    const room = await this.room.findUnique({
-      where: { name: roomName },
-      include: {
-        users: true,
-        bans: true,
-        admins: true,
-        mutes: true,
-        messages: true,
-        usersOnRoom: true,
-      },
-    });
-    if (!room) {
-      throw new Error('no room');
+    try {
+      const room = await this.room.findUnique({
+        where: { name: roomName },
+        include: {
+          users: true,
+          bans: true,
+          admins: true,
+          mutes: true,
+          messages: true,
+          usersOnRoom: true,
+        },
+      });
+      if (!room)
+        throw new BadRequestException('no room');
+      return room;
+    } catch (error) {
+      handlePrismaError(error);
+      throw (error);
     }
-    return room;
   }
 
+  /* Return all information about a user without the hash - error management ok */
   async returnCompleteUser(userId: number): Promise<CompleteUser> {
-    const user = await this.user.findUnique({
-      where: { id: userId },
-      include: {
-        friends: true,
-        friendsOf: true,
-        player1Games: true,
-        player2Games: true,
-        wonGames: true,
-        lostGames: true,
-        mutedRooms: true,
-        adminRooms: true,
-        activeRooms: true,
-        ownedRooms: true,
-        bannedRooms: true,
-        messages: true,
-        blockedUsers: true,
-        blockedByUser: true,
-      },
-    });
-    if (!user) {
-      throw new Error('no user');
+    try {
+      const user = await this.user.findUnique({
+        where: { id: userId },
+        include: {
+          friends: true,
+          friendsOf: true,
+          player1Games: true,
+          player2Games: true,
+          wonGames: true,
+          lostGames: true,
+          mutedRooms: true,
+          adminRooms: true,
+          activeRooms: true,
+          ownedRooms: true,
+          bannedRooms: true,
+          messages: true,
+          blockedUsers: true,
+          blockedByUser: true,
+        },
+      });
+      if (!user)
+        throw new BadRequestException('No user');
+      return user;
+    } catch (error) {
+      handlePrismaError(error);
+      throw (error);
     }
-    return user;
   }
 
   async allBannedUsersFromRoom(roomName: string): Promise<User[]> {

@@ -23,38 +23,38 @@ export const Profile: React.FC = () => {
     setErrMsg(''); // Reset errMsg to an empty string
   };
 
-  const fetchUserProfile = async () => {
-    try {
-      console.log('here');
-      const response = await customAxiosInstance.get(
-        "http://localhost:8000/api/users/complete-user",
-        {
-          withCredentials: true,
-        }
-      );
-      const userData = response.data;
-      console.log("response:", userData);
-      dispatchUser(setUser(userData));
-      localStorage.setItem("userData", JSON.stringify(userData));
-      setUserDataProfile(userData);
-      User.getInstance().setUserFromResponseData(userData);
-      setLevel(User.getInstance().getUserLevel());
-    } catch (err: any) {
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-      } else if (err.response?.status === 400) {
-        setErrMsg('Bad request');
-      } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized');
-        history(APP_ROUTES.HOME);
-      }
-      else {
-        setErrMsg('Error');
-      }
-    }
-  };
-
   useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        console.log('here');
+        const response = await customAxiosInstance.get(
+          "http://localhost:8000/api/users/complete-user",
+          {
+            withCredentials: true,
+          }
+        );
+        const userData = response.data;
+        console.log("response:", userData);
+        dispatchUser(setUser(userData));
+        localStorage.setItem("userData", JSON.stringify(userData));
+        setUserDataProfile(userData);
+        User.getInstance().setUserFromResponseData(userData);
+        setLevel(User.getInstance().getUserLevel());
+      } catch (err: any) {
+        if (!err?.response) {
+          setErrMsg('No Server Response');
+        } else if (err.response?.status === 400) {
+          setErrMsg('Bad request');
+        } else if (err.response?.status === 401) {
+          setErrMsg('Unauthorized');
+          history(APP_ROUTES.HOME);
+        }
+        else {
+          setErrMsg('Error');
+        }
+      }
+    };
+
     fetchUserProfile();
   }, []);
 
