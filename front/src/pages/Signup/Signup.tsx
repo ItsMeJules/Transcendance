@@ -1,9 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
-import ToastError from "layout/ToastError/ToastError";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
 import './Signup.scss'
 

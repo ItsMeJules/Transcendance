@@ -1,12 +1,10 @@
 import React from 'react';
-import { MDBCard } from 'mdb-react-ui-kit';
 import ProfileHeader from './ProfileHeader';
 import { UserData } from "../../../services/User/User";
 import ImageChange from "./ImageChange";
 import EditUserFormValidation from "./EditUserFormValidation";
 import ProfilePicContainer from './ProfilePicContainer';
 import DisplayData from './DisplayData';
-import DisplayStats from './DisplayStats';
 
 type ProfileType = 'user' | 'generic' | 'edit';
 

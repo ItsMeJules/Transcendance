@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { Board } from '../../models/Board';
 import { Player } from '../../models/Player';
 import { GameProperties } from '../../models/Properties';
 import { Socket } from 'socket.io-client';

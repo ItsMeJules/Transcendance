@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-import { APP_ROUTES } from 'utils/routing/routing';
 import './css/NotFoundPageDashboard.scss'
 
 const NotFoundPageDashboard = () => {

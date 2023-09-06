@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { Board } from '../../models/Board';
+import React, { useEffect } from 'react';
 import { GameProperties } from '../../models/Properties';
 
 interface BoardCanvasProps {

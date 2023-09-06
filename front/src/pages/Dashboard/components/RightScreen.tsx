@@ -1,4 +1,4 @@
-import { Profile, ChatBox, LeaderBoard, Friends, OnlineGames, AllUsers } from 'pages';
+import { ChatBox, LeaderBoard, Friends, OnlineGames, AllUsers } from 'pages';
 import { APP_SCREENS } from 'utils/routing/routing';
 
 interface RightScreenProps {

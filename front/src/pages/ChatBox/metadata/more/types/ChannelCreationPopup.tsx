@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useWebsocketContext } from "services/Websocket/Websocket";
 import Popup from "pages/ChatBox/utils/Popup";
 import { ChannelType, ChannelTypeDescription } from "pages/ChatBox/models/Channel";

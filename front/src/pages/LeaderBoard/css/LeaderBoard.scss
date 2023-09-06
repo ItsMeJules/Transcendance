@@ -110,6 +110,7 @@
         transition: transform .25s cubic-bezier(.7, .98, .86, .98), box-shadow .25s cubic-bezier(.7, .98, .86, .98);
         background-color: transparent;
         height: 70px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
 
         &:hover {
           transform: scale(1.1);
@@ -166,7 +167,6 @@
 
       &__level {
         margin-right: 10px;
-        color: #a5a4a4;
         font-weight: 700;
         font-size: 15px;
         text-overflow: ellipsis;

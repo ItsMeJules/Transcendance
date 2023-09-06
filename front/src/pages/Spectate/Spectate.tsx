@@ -1,27 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Player } from "pages/Play/models/Player";
-import BoardCanvas from "pages/Play/components/Canvas/BoardCanvas";
-import BallCanvas from "pages/Play/components/Canvas/BallCanvas";
-import PaddleCanvas from "pages/Play/components/Canvas/PaddleCanvas";
 import { useWebsocketContext } from "services/Websocket/Websocket";
 import { useNavigate } from "react-router-dom";
 import { GameProperties } from "pages/Play/models/Properties";
 import getParseLocalStorage from "utils/getParseLocalStorage/getParseLocalStorage";
 import { UserData } from "services/User/User";
 import ConfettisComponent from "pages/Play/components/Confettis/ConfettisComponent";
-import LeftPlayerProfile from "pages/Play/components/PlayersProfile/LeftPlayerProfile";
-import RightPlayerProfile from "pages/Play/components/PlayersProfile/RightPlayerProfile";
-import MainText from "pages/Play/components/MainText/MainText";
 import ScoreBoard from "pages/Play/components/ScoreBoard/ScoreBoard";
 import { Ball } from "pages/Play/models/Ball";
-import { APP_ROUTES } from "utils/routing/routing";
 import AllCanvas from "pages/Play/components/Canvas/AllCanvas";
 import ProfilesHeader from "pages/Play/components/PlayersProfile/ProfilesHeader";
 import NoGameSpectate from "./Components/NoGame/NoGameSpectate";
-
-interface PlayBackProps {
-  whichPlayer: number,
-}
 
 interface GameParams {
   pl1: Player;

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { GameProperties } from '../../models/Properties';
-import { APP_ROUTES } from 'utils/routing/routing';
-import { Link } from 'react-router-dom';
 
 interface MainTextProps {
   textToDisplay: string;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { GameProperties } from '../../models/Properties';
 
 interface ScoreBoardProps {

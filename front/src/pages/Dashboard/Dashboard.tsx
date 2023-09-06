@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProfileHeader from './components/ProfileHeader';
 import RightScreen from './components/RightScreen';
 import NavFooter from './components/NavFooter';

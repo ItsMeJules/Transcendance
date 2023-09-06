@@ -32,10 +32,10 @@ log :
 
 node_modules:
 	@if [ ! -d "./front/node_modules" ]; then \
-		cd ./front && npm install; \
+		cd ./front && sudo npm install; \
 	fi
 	@if [ ! -d "./back/node_modules" ]; then \
-		cd ./back && npm install; \
+		cd ./back && sudo npm install; \
 	fi
 
 .PHONY: all build stop start down clean fclean re log

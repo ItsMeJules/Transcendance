@@ -4,9 +4,7 @@ import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { UserData } from "services/User/User";
 import { useNavigate } from "react-router-dom";
-import { MDBContainer } from 'mdb-react-ui-kit';
 import ToastError from "layout/ToastError/ToastError";
-import UserProfileContainer from "pages/Profile/components/UserProfileContainer";
 import ProfileCard from "pages/Profile/components/ProfileCard";
 
 export const ProfileEdit: React.FC = () => {
