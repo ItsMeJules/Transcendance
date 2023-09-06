@@ -5,6 +5,7 @@ import { IconContext } from 'react-icons';
 import { FaHeart } from 'react-icons/fa6';
 import { FaLeftLong } from 'react-icons/fa6';
 import { FaUserPen } from 'react-icons/fa6';
+import { FaUserLock } from 'react-icons/fa6';
 
 type ProfileType = 'user' | 'generic' | 'edit';
 
@@ -12,9 +13,10 @@ type ProfileHeaderProps = {
   type: ProfileType;
   isFriend?: boolean;
   onAddFriend?: () => void;
+  blockUser?: () => void;
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ type, onAddFriend, isFriend }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ type, onAddFriend, isFriend, blockUser }) => {
   return (
     <div className="profile-board-header">
       {type === 'user' && (
@@ -26,11 +28,18 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ type, onAddFriend, isFrie
       )}
 
       {type === 'generic' && (
-        <button onClick={onAddFriend}>
-          <IconContext.Provider value={{ color: isFriend ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
-            <FaHeart />
-          </IconContext.Provider>
-        </button>
+        <>
+          <button onClick={onAddFriend}>
+            <IconContext.Provider value={{ color: isFriend ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
+              <FaHeart />
+            </IconContext.Provider>
+          </button>
+          <button onClick={blockUser}>
+            <IconContext.Provider value={{ color: 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
+              <FaUserLock />
+            </IconContext.Provider>
+          </button>
+        </>
       )}
 
       {type === 'edit' && (

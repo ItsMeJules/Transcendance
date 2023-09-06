@@ -1,4 +1,4 @@
-import { Play, Profile, Spectate, JoinGame } from 'pages';
+import { Play, Profile, JoinGame } from 'pages';
 import { APP_SCREENS } from 'utils/routing/routing';
 
 interface LeftScreenProps {

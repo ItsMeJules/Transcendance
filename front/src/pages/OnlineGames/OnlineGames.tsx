@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useWebsocketContext } from "services/Websocket/Websocket";
-import User from "services/User/User";
-import { MDBContainer, MDBCard } from 'mdb-react-ui-kit';
+import { MDBContainer } from 'mdb-react-ui-kit';
 import OnlineGamesList from "./Components/OnlineGamesList";
 
 import './css/OnlineGames.scss'

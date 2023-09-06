@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import { API_ROUTES, APP_ROUTES, APP_URL } from 'utils/routing/routing';
+import { API_ROUTES } from 'utils/routing/routing';
 import getProgressBarClass from 'utils/progressBar/ProgressBar';
-import ToastError from 'layout/ToastError/ToastError';
 import { UserData } from 'services/User/User';
 import ProfileCard from './components/ProfileCard';
-import { MDBContainer } from 'mdb-react-ui-kit';
+import { useWebsocketContext } from 'services/Websocket/Websocket';
 
 import './css/ProgressBar.scss'
 import './css/UserProfile.scss'
@@ -17,7 +16,7 @@ import NotFoundPageDashboard from 'pages/NotFoundPage/NotFoundDashboard';
 const GenericUserProfile = () => {
 
 
-
+  const chatSocket = useWebsocketContext().chat;  
   const { id } = useParams();
   const [level, setLevel] = useState<number | null>(0);
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -27,6 +26,14 @@ const GenericUserProfile = () => {
   const location = useLocation();
   const history = useNavigate();
   getProgressBarClass(level);
+
+const blockUser = () => {
+  if (chatSocket) {
+    chatSocket.emit("chat-action", {action: "block", targetId: id});
+  } else {
+    console.log("chatSocket is null");
+  }
+}
 
   const resetErrMsg = () => {
     setErrMsg('');
@@ -92,11 +99,7 @@ const GenericUserProfile = () => {
   }
 
   return (
-    <section className="profile-main-container">
-      <MDBContainer className="profile-board-container">
-        <ProfileCard userData={userData} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} />
-      </MDBContainer>
-    </section>
+        <ProfileCard userData={userData} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} blockUser={blockUser} />
   );
 };
 

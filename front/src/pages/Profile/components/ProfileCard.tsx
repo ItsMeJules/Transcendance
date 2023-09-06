@@ -1,12 +1,10 @@
 import React from 'react';
-import { MDBCard } from 'mdb-react-ui-kit';
 import ProfileHeader from './ProfileHeader';
 import { UserData } from "../../../services/User/User";
 import ImageChange from "./ImageChange";
 import EditUserFormValidation from "./EditUserFormValidation";
 import ProfilePicContainer from './ProfilePicContainer';
 import DisplayData from './DisplayData';
-import DisplayStats from './DisplayStats';
 
 type ProfileType = 'user' | 'generic' | 'edit';
 
@@ -16,19 +14,19 @@ type ProfileCardProps = {
   onAddFriend?: () => void;
   fetchUserProfile?: () => void;
   isFriend?: boolean;
+  blockUser?: () => void;
 };
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ userData, type = 'user', onAddFriend, fetchUserProfile, isFriend }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ userData, type = 'user', onAddFriend, fetchUserProfile, isFriend, blockUser}) => {
   return (
-    <MDBCard className="profile-board-card">
+    <div className="profile-board-container">
 
-      <ProfileHeader type={type} isFriend={isFriend} onAddFriend={onAddFriend} />
+      <ProfileHeader type={type} isFriend={isFriend} onAddFriend={onAddFriend} blockUser={blockUser} />
 
       {type != 'edit' && (
         <>
           <ProfilePicContainer userData={userData} />
           <DisplayData userData={userData} />
-          <DisplayStats userData={userData} />
         </>
       )}
 
@@ -39,7 +37,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, type = 'user', onAd
           <EditUserFormValidation userData={userData} />
         </>
       )}
-    </MDBCard>
+    </div>
   );
 };
 

@@ -1,9 +1,7 @@
-import React from "react";
 import { useEffect, useState } from "react";
-import { UserData } from "services/User/User";
 import PlayButton from "./components/PlayButton";
 import { useNavigate } from "react-router-dom";
-import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
+import { APP_ROUTES } from "utils/routing/routing";
 import { useWebsocketContext } from "services/Websocket/Websocket";
 import './css/JoinGame.scss'
 import LoadingAnimation from "./components/LoadingAnimation";
@@ -11,7 +9,6 @@ import LoadingAnimation from "./components/LoadingAnimation";
 const JoinGame = () => {
   const [socketData, setSocketData] = useState('');
   const [inQueue, setInQueue] = useState(0);
-  const [errMsg, setErrMsg] = useState('');
   const socket = useWebsocketContext();
   const history = useNavigate();
 

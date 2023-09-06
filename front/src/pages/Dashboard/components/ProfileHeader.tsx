@@ -1,18 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
-import React, { useState, useEffect } from 'react';
-import { FaArrowRightFromBracket } from "react-icons/fa6";
+import { APP_ROUTES } from "utils/routing/routing";
+import { useState, useEffect } from 'react';
 import { MDBCardText } from 'mdb-react-ui-kit';
-import ProgressBar from "utils/progressBar/ProgressBar";
 import LogoutParent from "layout/LogoutButton/LogoutParent";
-import { useAxios } from "utils/axiosConfig/axiosConfig";
 import { UserData } from "services/User/User";
 import { useWebsocketContext } from "services/Websocket/Websocket";
 import getProgressBarClass from "utils/progressBar/ProgressBar";
 
 const ProfileHeader = () => {
-  const [userDataString, setUserDataString] = useState<string | null>(null);
-  const [userDataHeader, setUserDataHeader] = useState<UserData | null>(null);
   const history = useNavigate();
   const [profilePicture, setProfilePicture] = useState('/images/game.png');  // Set default picture
   const [errMsg, setErrMsg] = useState('');
@@ -20,9 +15,6 @@ const ProfileHeader = () => {
   const [parsedUserLevel, setParsedUserLevel] = useState(1);
   const [winRatio, setWinRatio] = useState<number>(0);
   const [gamesPlayed, setGamesPlayed] = useState<number | null>(null);
-  const customAxiosInstance = useAxios();
-  const [loaded, setLoaded] = useState(false);
-  const [fetchedData, setFetchedData] = useState<any>();
   const socket = useWebsocketContext();
 
   const [userDataSocket, setUserDataSocket] = useState<UserData | null>(null);

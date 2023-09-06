@@ -1,7 +1,4 @@
 import React from 'react';
-import { FaHeart } from 'react-icons/fa6';
-import { IconContext } from 'react-icons';
-import User from "../../../services/User/User";
 import { useWebsocketContext } from 'services/Websocket/Websocket';
 
 interface OnlineGameInstanceProps {

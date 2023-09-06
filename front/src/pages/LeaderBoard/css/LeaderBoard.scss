@@ -110,6 +110,7 @@
         transition: transform .25s cubic-bezier(.7, .98, .86, .98), box-shadow .25s cubic-bezier(.7, .98, .86, .98);
         background-color: transparent;
         height: 70px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
 
         &:hover {
           transform: scale(1.1);
@@ -128,7 +129,8 @@
         overflow: hidden;
         display: flex;
         object-fit: cover;
-        box-shadow: 0 0 0 10px #4b4b4b, 0 0 0 22px #404041;
+        background-color: rgba(255, 255, 255, 0.5)
+
       }
       &__picture.online {	
         box-shadow: 0 0 0 5px var(--online-color);	

@@ -1,4 +1,3 @@
-import { Point } from "../models/point";
 
 const boardWidth = 600;
 const boardHeight = 300;

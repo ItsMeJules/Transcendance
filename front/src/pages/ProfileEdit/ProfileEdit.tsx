@@ -4,9 +4,7 @@ import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { UserData } from "services/User/User";
 import { useNavigate } from "react-router-dom";
-import { MDBContainer } from 'mdb-react-ui-kit';
 import ToastError from "layout/ToastError/ToastError";
-import UserProfileContainer from "pages/Profile/components/UserProfileContainer";
 import ProfileCard from "pages/Profile/components/ProfileCard";
 
 export const ProfileEdit: React.FC = () => {
@@ -56,12 +54,10 @@ export const ProfileEdit: React.FC = () => {
   }, []);
 
   return (
-    <main className="profile-main-container">
-      <MDBContainer className="profile-board-container">
+    <section className="profile-board-container">
         <ProfileCard userData={userData} type="edit" fetchUserProfile={fetchUserProfile} />
         <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
-      </MDBContainer>
-    </main>
+    </section>
   );
 }
 
