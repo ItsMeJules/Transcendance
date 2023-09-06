@@ -12,7 +12,6 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
@@ -20,14 +19,13 @@ import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SocketEvents } from 'src/websocket/websocket.gateway';
-import { CustomExceptionFilter } from './module/CustomExceptionFilter';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Multer, multer, diskStorage } from 'multer';
-import { MulterModule } from '@nestjs/platform-express';
-import { editFileName, imageFileFilter } from './module';
+import { diskStorage } from 'multer';
+import { editFileName } from './module';
 import { Response } from 'express';
 import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
-import { copyFileSync } from 'fs';
+import handleJwtError from '@utils/jwt.error';
+import handlePrismaError from '@utils/prisma.error';
 
 
 @UseGuards(JwtGuard)
@@ -42,7 +40,6 @@ export class UserController {
 
   @Get('current-chat')
   getCurrentChat(@GetUser() user: User): string {
-    // console.log('user :', user);
     return user.currentRoom;
   }
 
@@ -77,7 +74,7 @@ export class UserController {
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) id: number,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<any> {
     try {
       const userMain = await this.prisma.user.findUnique({
         where: { id: userId },
@@ -99,15 +96,16 @@ export class UserController {
       data.isFriend = 'false';
       if (userMain.friends.length !== 0) data.isFriend = 'true';
       return { data };
-    } catch (err) {}
+    } catch (error) {
+      handlePrismaError(error);
+    }
   }
 
   @Patch('add-friend/:id')
   async addFriend(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) friendId: number,
-  ) {
-    console.log('FRIEND TOGGLE:', userId, ' friendId:', friendId);
+  ): Promise<any> {
     return this.userService.addFriendToggler(userId, friendId);
   }
 
@@ -126,7 +124,6 @@ export class UserController {
     }),
   )
 
-  // @UseFilters(CustomExceptionFilter)
   async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
     return this.userService.uploadProfilePic(user, file);
   }

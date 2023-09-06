@@ -5,6 +5,7 @@ import { APP_ROUTES } from "utils/routing/routing";
 import { useWebsocketContext } from "services/Websocket/Websocket";
 import './css/JoinGame.scss'
 import LoadingAnimation from "./components/LoadingAnimation";
+import { HttpStatus } from "utils/HttpStatus/HttpStatus";
 
 const JoinGame = () => {
   const [socketData, setSocketData] = useState('');
@@ -29,8 +30,6 @@ const JoinGame = () => {
         localStorage.setItem('player2', JSON.stringify(dataJSON.player2));
         localStorage.setItem('gameChannel', JSON.stringify(dataJSON.gameChannel));
         setInQueue(0);
-        console.log("OKKKKKKKKKKK GOOOODDDDD");
-        // setLeftContent(APP_SCREENS.PLAY);
         history(APP_ROUTES.PLAY_ABSOLUTE);
       }
     }
@@ -42,9 +41,14 @@ const JoinGame = () => {
       console.log('SOCKET ON JOIN RECEIVED:', data);
       setSocketData(data);
     });
-    socket.game?.emit('joinGameQueue', { gameMode: 'query' });
+    // socket.game?.on('gameError', (data: any) => {
+    //   console.log('SOCKET ON JOIN RECEIVED:', data);
+    //   if (data.errorStatus === HttpStatus.UNAUTHORIZED)
+    //   navigate("/login?error=unauthorized");
+    // });
     return () => {
       socket.game?.off('joinGameQueue');
+      socket.game?.off('gameError');
     };
   }, [socket.game]);
 

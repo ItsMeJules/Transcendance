@@ -26,6 +26,30 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     });
   }
 
+  /* Initilization */
+  async onModuleInit(): Promise<Room> {
+    await this.$connect();
+    try {
+      let generalChat = await this.room.findUnique({
+        where: { id: 1 },
+      });
+      if (!generalChat) {
+        generalChat = await this.room.create({
+          data: {
+            name: 'general',
+            //rajouter tous les users sur la creation de chaque chat generals!
+          },
+        });
+      }
+      return generalChat;
+    } catch (error) { handlePrismaError(error); }
+  }
+
+  /* Shutdown */
+  async onApplicationShutdown(signal?: string): Promise<void> {
+    await this.$disconnect();
+  }
+
   /* Main function to get user by id and return without hash - error management ok */
   async findUserById(id: number): Promise<User | null> {
     if (!id) return null;
@@ -50,36 +74,79 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async onModuleInit(): Promise<Room> {
-    await this.$connect();
-    let generalChat = await this.room.findUnique({
-      where: { id: 1 },
-    });
-    if (!generalChat) {
-      generalChat = await this.room.create({
-        data: {
-          name: 'general',
-          //rajouter tous les users sur la creation de chaque chat generals!
-        },
-      });
-    }
-    return generalChat;
-  }
-
-  async onApplicationShutdown(signal?: string): Promise<void> {
-    await this.$disconnect();
-  }
-
+  /* Find user by email and delete hash - error management ok */
   async getUserById(userId: number): Promise<User | null> {
-    return await this.user.findUnique({
-      where: { id: userId },
-      include: { friends: true },
-    });
+    try {
+      return await this.user.findUnique({
+        where: { id: userId },
+        include: { friends: true },
+      });
+    } catch (error) {
+      handlePrismaError(error);
+    }
   }
 
   async findUserByUsername(username: string): Promise<User> {
-    return this.user.findUnique({ where: { username } });
+    try {
+      return this.user.findUnique({ where: { username } });
+    } catch (error) {
+      handlePrismaError(error);
+    }
   }
+
+    /* Return all room infos - error management ok */
+    async returnCompleteRoom(roomName: string): Promise<CompleteRoom> {
+      try {
+        const room = await this.room.findUnique({
+          where: { name: roomName },
+          include: {
+            users: true,
+            bans: true,
+            admins: true,
+            mutes: true,
+            messages: true,
+            usersOnRoom: true,
+          },
+        });
+        if (!room)
+          throw new BadRequestException('no room');
+        return room;
+      } catch (error) {
+        handlePrismaError(error);
+        throw (error);
+      }
+    }
+  
+    /* Return all information about a user without the hash - error management ok */
+    async returnCompleteUser(userId: number): Promise<CompleteUser> {
+      try {
+        const user = await this.user.findUnique({
+          where: { id: userId },
+          include: {
+            friends: true,
+            friendsOf: true,
+            player1Games: true,
+            player2Games: true,
+            wonGames: true,
+            lostGames: true,
+            mutedRooms: true,
+            adminRooms: true,
+            activeRooms: true,
+            ownedRooms: true,
+            bannedRooms: true,
+            messages: true,
+            blockedUsers: true,
+            blockedByUser: true,
+          },
+        });
+        if (!user)
+          throw new BadRequestException('No user');
+        return user;
+      } catch (error) {
+        handlePrismaError(error);
+        throw (error);
+      }
+    }
 
   /* OAuth find or create user if not existing - error management ok */
   async findOrCreateUserOAuth(data: Prisma.UserCreateInput): Promise<User> {
@@ -217,60 +284,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  /* Return all room infos - error management ok */
-  async returnCompleteRoom(roomName: string): Promise<CompleteRoom> {
-    try {
-      const room = await this.room.findUnique({
-        where: { name: roomName },
-        include: {
-          users: true,
-          bans: true,
-          admins: true,
-          mutes: true,
-          messages: true,
-          usersOnRoom: true,
-        },
-      });
-      if (!room)
-        throw new BadRequestException('no room');
-      return room;
-    } catch (error) {
-      handlePrismaError(error);
-      throw (error);
-    }
-  }
-
   /* Return all information about a user without the hash - error management ok */
-  async returnCompleteUser(userId: number): Promise<CompleteUser> {
-    try {
-      const user = await this.user.findUnique({
-        where: { id: userId },
-        include: {
-          friends: true,
-          friendsOf: true,
-          player1Games: true,
-          player2Games: true,
-          wonGames: true,
-          lostGames: true,
-          mutedRooms: true,
-          adminRooms: true,
-          activeRooms: true,
-          ownedRooms: true,
-          bannedRooms: true,
-          messages: true,
-          blockedUsers: true,
-          blockedByUser: true,
-        },
-      });
-      if (!user)
-        throw new BadRequestException('No user');
-      return user;
-    } catch (error) {
-      handlePrismaError(error);
-      throw (error);
-    }
-  }
-
   async allBannedUsersFromRoom(roomName: string): Promise<User[]> {
     try {
       const room = await this.returnCompleteRoom(roomName);
@@ -283,7 +297,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         throw new Error('no bans');
       }
     } catch (error) {
-      console.log(error);
+      handlePrismaError(error);
+      throw (error);
     }
   }
 
@@ -299,7 +314,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         throw new Error('no muted users');
       }
     } catch (error) {
-      console.log(error);
+      handlePrismaError(error);
+      throw (error);
     }
   }
 
@@ -311,7 +327,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       }
       return room.admins;
     } catch (error) {
-      console.log(error);
+      handlePrismaError(error);
+      throw (error);
     }
   }
 
@@ -323,7 +340,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       }
       return room.messages;
     } catch (error) {
-      console.log(error);
+      handlePrismaError(error);
+      throw (error);
     }
   }
 
@@ -335,7 +353,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       }
       return user.blockedUsers;
     } catch (error) {
-      console.log(error);
+      handlePrismaError(error);
+      throw (error);
     }
   }
 
@@ -347,7 +366,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       }
       return user.activeRooms;
     } catch (error) {
-      console.log(error);
+      handlePrismaError(error);
+      throw (error);
     }
   }
 
@@ -361,7 +381,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         throw new Error('no users on this room' + roomName);
       return room.usersOnRoom;
     } catch (error) {
-      console.log(error);
+      handlePrismaError(error);
+      throw (error);
     }
   }
 }
