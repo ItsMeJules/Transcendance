@@ -2,38 +2,32 @@ import {
   Body,
   Controller,
   Get,
-  Patch,
-  Req,
-  Post,
-  UseInterceptors,
-  UploadedFile,
-  Res,
   Param,
   ParseIntPipe,
+  Patch,
+  Post,
+  Req,
+  Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
+import { Response } from 'express';
+import { diskStorage } from 'multer';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
+import { SocketEvents } from 'src/websocket/websocket.gateway';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
+import { editFileName } from './module';
 import { UserService } from './user.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { SocketEvents } from 'src/websocket/websocket.gateway';
-import { CustomExceptionFilter } from './module/CustomExceptionFilter';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { Multer, multer, diskStorage } from 'multer';
-import { MulterModule } from '@nestjs/platform-express';
-import { editFileName, imageFileFilter } from './module';
-import { Response } from 'express';
-import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
-import { copyFileSync } from 'fs';
-
 
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
-
   constructor(
     private userService: UserService,
     private prisma: PrismaService,
@@ -42,7 +36,6 @@ export class UserController {
 
   @Get('current-chat')
   getCurrentChat(@GetUser() user: User): string {
-    // console.log('user :', user);
     return user.currentRoom;
   }
 
@@ -91,8 +84,7 @@ export class UserController {
       const user: User | null = await this.prisma.user.findUnique({
         where: { id: id },
       });
-      if (userId === id)
-        user.id = -1;
+      if (userId === id) user.id = -1;
       const data: any = {};
       delete user.hash;
       data.user = { user };

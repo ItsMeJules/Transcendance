@@ -16,7 +16,7 @@ export default function ChannelListPopup() {
   const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([]);
   const [searchText, setSearchText] = useState("");
 
-  const { currentRoom: activeChannelName } = useAppSelector(store => store.user.userData)
+  const { currentRoom: activeChannelName, id: userId } = useAppSelector(store => store.user.userData)
   const sendData: null | ((action: string, data: any) => void) = useContext(SendDataContext)
 
   useEffect(() => {
@@ -25,7 +25,12 @@ export default function ChannelListPopup() {
         const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, {
           withCredentials: true,
         });
-        setVisibleChannels(response.data.filter((channel: ChannelInfoInList) => channel.name !== activeChannelName));
+        const filteredChannels = response.data.filter(
+          (channel: ChannelInfoInList) =>
+            channel.name !== activeChannelName &&
+            channel.type !== ChannelType.DIRECT)
+
+        setVisibleChannels(filteredChannels);
       } catch (error) {
         console.log(error);
       }
@@ -34,12 +39,16 @@ export default function ChannelListPopup() {
     requestVisibleChannels()
   }, [activeChannelName])
 
-  const channelHasPassword = (name: string | null) => {
-    if (name === null)
-      return false
+  const userRequirePassword = (userId: number, channelName: string): boolean => {
+    const channel: ChannelInfoInList | undefined = visibleChannels.find(value => value.name === channelName)
 
-    return visibleChannels.find(value => value.name === name)
-      ?.type === ChannelType.PROTECTED
+    if (channel?.type !== ChannelType.PROTECTED)
+      return false
+    if (channel?.ownerId === userId)
+      return false
+    if (channel?.adminsId.find(adminId => adminId === userId) !== undefined)
+      return false
+    return true
   }
 
   const joinChannel = (channelName: string | null) => {
@@ -73,33 +82,30 @@ export default function ChannelListPopup() {
         <ChannelsList
           channels={visibleChannels}
           onClickElement={(channelName: string) => {
-            if (!channelHasPassword(channelName))
+            if (userId !== null && !userRequirePassword(parseInt(userId), channelName))
               joinChannel(channelName)
             else
               setSelectedChannelName(channelName)
           }}
-          filter={(channelName) => channelName.includes(searchText)}
+          filter={(channelName) => channelName.toLowerCase().includes(searchText.toLowerCase())}
         />
       </Popup>
 
-      {channelHasPassword(selectedChannelName)
+      {selectedChannelName !== null
         ? (
           <div className="password-popup">
-            <div className="password-popup-content">
+            <div className="infos">
+              <h3>Join<br />{selectedChannelName}</h3>
+              <input placeholder="Enter password..."
+                onChange={(e) => setPasswordValue(e.target.value)}
+                value={passwordValue}
+                onKeyDown={(e) => handleEnterPressed(e)}
+              />
+            </div>
 
-              <div className="infos">
-                <h3>Rejoindre<br />{selectedChannelName}</h3>
-                <input placeholder="Entrez le mdp..."
-                  onChange={(e) => setPasswordValue(e.target.value)}
-                  value={passwordValue}
-                  onKeyDown={(e) => handleEnterPressed(e)}
-                />
-              </div>
-
-              <div className="buttons">
-                <button className="cancel" onClick={() => setSelectedChannelName(null)}>Annuler</button>
-                <button className="validate" onClick={() => joinChannel(null)}>Rejoindre</button>
-              </div>
+            <div className="buttons">
+              <button className="cancel" onClick={() => setSelectedChannelName(null)}>Cancel</button>
+              <button className="validate" onClick={() => joinChannel(null)}>Join</button>
             </div>
           </div>
         ) : undefined}

@@ -13,6 +13,11 @@ export class UserSocketsService {
     return this.userSockets[userId];
   }
 
+  getArrayUserSockets(userIds: number[]): Socket[] | undefined {
+    const userIdsSet = userIds.map((userId) => String(userId));
+    return userIdsSet.map((userId) => this.userSockets[userId]);
+  }
+
   removeUserSocket(userId: string): void {
     this.userSockets[userId] = null;
   }

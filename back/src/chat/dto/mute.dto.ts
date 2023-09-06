@@ -1,4 +1,5 @@
 import { IsString, IsNumber } from 'class-validator';
+import { Server } from 'socket.io';
 
 export class MuteDto {
   @IsString()
@@ -6,4 +7,6 @@ export class MuteDto {
 
   @IsNumber()
   targetId: number;
+
+  server: Server;
 }

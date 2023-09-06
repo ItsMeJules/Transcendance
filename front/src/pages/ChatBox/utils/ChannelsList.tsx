@@ -24,9 +24,9 @@ const ChannelsList: React.FC<ChannelListProps> = ({ channels, onClickElement, fi
     <div className="channel-list">
       {filteredChannels.map((channel, index) => {
         return (
-          <div className="channel-container" onClick={() => onClickElement(channel.name)}>
+          <div key={index} className="channel-container" onClick={() => onClickElement(channel.name)}>
 
-            <div key={index} className="channel">
+            <div className="channel">
               <div className="type-picture">
                 {getIconFromType(channel.type)}
               </div>

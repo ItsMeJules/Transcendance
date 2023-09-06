@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { APP_ROUTES } from "utils/routing/routing";
 import User from "../../../services/User/User";
-import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES } from 'utils/routing/routing';
 
 interface AllUsersInstanceProps {
   user: any;

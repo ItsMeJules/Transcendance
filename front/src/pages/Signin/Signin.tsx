@@ -68,7 +68,6 @@ export const Signin = () => {
       <div className="main-login-container">
         <div className="secondary-login-container">
           <div className="form-master-container">
-
             <div className="form-sub-container">
               <form onSubmit={handleSubmit} action="POST" className="signin-form">
                 <label htmlFor="email" className="form-text-login-first">
@@ -80,9 +79,10 @@ export const Signin = () => {
                   id="emailaddress"
                   value={email}
                   className="input-text-login"
-                  style={{ marginTop: '10px' }}
+                  style={{ marginTop: "10px" }}
                   onChange={(e) => setEmail(e.target.value)}
-                  required />
+                  required
+                />
 
                 <span className="cd-error-message">Error message here!</span>
 
@@ -90,17 +90,22 @@ export const Signin = () => {
                   Password
                 </label>
 
-                <input type="password"
+                <input
+                  type="password"
                   id="password"
                   name="password"
                   value={password}
                   className="input-text-login"
-                  style={{ marginTop: '10px' }}
+                  style={{ marginTop: "10px" }}
                   onChange={(e) => setPassword(e.target.value)}
                   maxLength={100}
-                  required />
+                  required
+                />
 
-                <div className="flex justify-center items-center" style={{ marginTop: '10px' }}>
+                <div
+                  className="flex justify-center items-center"
+                  style={{ marginTop: "10px" }}
+                >
                   <button type="submit" className=" signin-submit-form-button">
                     Sign in
                   </button>
@@ -109,8 +114,15 @@ export const Signin = () => {
             </div>
 
             <div className="signin-buttons-main">
-              <button className="loginBtn loginBtn--42" onClick={RequestURI42}>Continue with 42</button>
-              <button className="loginBtn loginBtn--google text-white" onClick={RequestURIGoogle}>Continue with Google</button>
+              <button className="loginBtn loginBtn--42" onClick={RequestURI42}>
+                Continue with 42
+              </button>
+              <button
+                className="loginBtn loginBtn--google text-white"
+                onClick={RequestURIGoogle}
+              >
+                Continue with Google
+              </button>
             </div>
 
             <article className="signin-switch-to-signup">
@@ -119,7 +131,6 @@ export const Signin = () => {
                 Create an account.
               </Link>
             </article>
-
           </div>
         </div>
       </div>

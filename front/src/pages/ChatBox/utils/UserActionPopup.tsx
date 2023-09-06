@@ -1,11 +1,11 @@
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
 
-import User from "services/User/User";
 import { SendDataContext } from "pages/ChatBox/ChatBox";
 import PayloadAction from "pages/ChatBox/models/PayloadSocket";
 import { ChatSocketActionType, RoomSocketActionType } from "pages/ChatBox/models/TypesActionsEvents";
-import Popup from "./Popup";
+import User from "services/User/User";
 import { useAppSelector } from "utils/redux/Store";
+import Popup from "./Popup";
 
 interface UserActionProps {
   user: User;
@@ -127,35 +127,35 @@ export default function UserActionPopup(props: UserActionProps) {
         <>
           {localIsBanned === true ? (
             <div className="ban" onClick={() => onBan(!localIsBanned)}>
-              Bannir
+              Ban
             </div>
           ) : (
             <div className="unban" onClick={() => onBan(!localIsBanned)}>
-              Débannir
+                Unban
             </div>
           )}
 
           <div className="kick" onClick={() => onKick()}>
-            Expulser
+            Kick
           </div>
 
           {localIsMuted === true ? (
             <div className="mute" onClick={() => onMute(!localIsMuted)}>
-              Rendre muet
+              Mute
             </div>
           ) : (
             <div className="unmute" onClick={() => onMute(!localIsMuted)}>
-              Rendre la parole
+              Unmute
             </div>
           )}
 
           {localIsAdmin === true ? (
             <div className="promote" onClick={() => onPromote(!localIsAdmin)}>
-              Définir administrateur
+              Add to administrators
             </div>
           ) : (
             <div className="demote" onClick={() => onPromote(!localIsAdmin)}>
-              Supprimer des administrateurs
+              Delete from administrateurs
             </div>
           )}
         </>
