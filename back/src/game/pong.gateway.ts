@@ -921,19 +921,19 @@ export class PongEvents {
         time: Date.now(),
         countdown: data.countdown,
       });
-//    const users = await this.server.in(data.room).fetchSockets();
-//    users.forEach((user) => {
-//      if (user.id !== data.playerId && user.id !== data.opponentId) {
-//        user.emit(data.channel, {
-//          gameStatus: data.gameStatus,
-//          gameParams: data.gameParams,
-//          playerStatus: data.playerStatus,
-//          opponentStatus: data.opponentStatus,
-//          time: Date.now(),
-//          countdown: data.countdown,
-//        });
-//      }
-//    });
+    const users = await this.server.in(data.room).fetchSockets();
+    users.forEach((user) => {
+      if (user.id !== data.playerId && user.id !== data.opponentId) {
+        user.emit(data.channel, {
+          gameStatus: data.gameStatus,
+          gameParams: data.gameParams,
+          playerStatus: data.playerStatus,
+          opponentStatus: data.opponentStatus,
+          time: Date.now(),
+          countdown: data.countdown,
+        });
+      }
+    });
   }
 
   /* Utils */
