@@ -13,7 +13,7 @@ const ChatContainer: React.FC = () => {
 
   const chatSocket = useWebsocketContext().chat;
   const dispatch = useAppDispatch();
-  const { id: userId, currentRoom: activeChannelName } = useAppSelector(
+  const { id: userId, currentRoom: activeChannelName, blockedUsers } = useAppSelector(
     (store) => store.user.userData
   );
 
@@ -28,18 +28,17 @@ const ChatContainer: React.FC = () => {
       authorId: message.authorId,
       profilePicture: message.profilePicture,
       userName: message.userName,
+      blocked: blockedUsers.some(id => id === message.authorId) ,
     });
     return chatMessages;
   }, []);
 
   useEffect(() => {
-    const onNewMessage = (payload: any) => {
+    chatSocket?.on(ChatSocketEventType.MESSAGE, (payload: any) => {
       if (activeChannelName === null) return;
 
       dispatch(addMessageToActiveChannel(payload));
-    };
-
-    chatSocket?.on(ChatSocketEventType.MESSAGE, onNewMessage);
+    });
 
     return () => {
       chatSocket?.off(ChatSocketEventType.MESSAGE);

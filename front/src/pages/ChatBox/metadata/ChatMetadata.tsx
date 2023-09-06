@@ -1,7 +1,6 @@
 import { useState } from "react";
-
 import { useAppSelector } from "utils/redux/Store";
-import { ChannelType, transformToChannelData } from "../models/Channel";
+import { ChannelType, transformSliceToChannelData } from "../models/Channel";
 import OutsideClickHandler from "../utils/OutsideClickHandler";
 import ChannelManager from "./channel_manager/ChannelManager";
 import MorePopup from "./more/MorePopup";
@@ -17,22 +16,28 @@ interface ChatMetadataProps {
 }
 
 export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
-  const [isMoreActive, setIsMoreActive] = useState(false)
-  const [popupType, setPopupActive] = useState<PopupType | null>(null)
+  const [isMoreActive, setIsMoreActive] = useState(false);
+  const [popupType, setPopupActive] = useState<PopupType | null>(null);
 
-  const activeChannel = transformToChannelData(useAppSelector(store => store.channels.activeChannel))
+  let ProtectedIcon = require("../assets/padlock.png");
+  let PrivateIcon = require("../assets/private.png");
+  let DmIcon = require("../assets/dm.png");
+  let PublicIcon = require("../assets/globe.png");
+
+  const activeChannel = transformSliceToChannelData(
+    useAppSelector((store) => store.channels.activeChannel)
+  );
 
   const handleMoreClick = () => {
-    if (!isMoreActive)
-      setPopupActive(null);
+    if (!isMoreActive) setPopupActive(null);
 
-    setIsMoreActive(prev => !prev);
+    setIsMoreActive((prev) => !prev);
   };
 
   const handleOutsideClick = () => {
-    setIsMoreActive(false)
-    setPopupActive(null)
-  }
+    setIsMoreActive(false);
+    setPopupActive(null);
+  };
 
   const getIconFromType = (type: ChannelType) => {
     let iconSrc = "/images/globe.png";
@@ -41,12 +46,20 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
     else if (type === ChannelType.PRIVATE)
       iconSrc = "/images/private.png";
 
-    return (<img alt="Channel Type" src={iconSrc} />)
-  }
+    if (type === ChannelType.PROTECTED) iconSrc = ProtectedIcon;
+    else if (type === ChannelType.PRIVATE) iconSrc = PrivateIcon;
+    else if (type === ChannelType.DIRECT) iconSrc = DmIcon;
+
+    return <img alt="Channel Type" src={iconSrc} />;
+  };
 
   return (
     <div className="metadata-container" style={{ zIndex: chatToggled ? 2 : 0 }}>
-      <OutsideClickHandler className="more" onInsideClick={handleMoreClick} onOutsideClick={handleOutsideClick}>
+      <OutsideClickHandler
+        className="more"
+        onInsideClick={handleMoreClick}
+        onOutsideClick={handleOutsideClick}
+      >
         <div className="more-symbol-container">
 
           {/* <div className={"more-symbol " + (isMoreActive ? "active" : "")}>
@@ -62,15 +75,11 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
           </ul>
         </div>
 
-        {isMoreActive && (
-          <MorePopup popupType={popupType} setPopupActive={setPopupActive} />
-        )}
+        {isMoreActive && <MorePopup popupType={popupType} setPopupActive={setPopupActive} />}
       </OutsideClickHandler>
 
       <div className="channel-manager">
-        {activeChannel
-          ? <ChannelManager channelData={activeChannel} />
-          : undefined}
+        {activeChannel ? <ChannelManager channelData={activeChannel} /> : undefined}
       </div>
 
       <div className="channel-icon">

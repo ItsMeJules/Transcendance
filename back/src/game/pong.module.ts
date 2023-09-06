@@ -11,7 +11,15 @@ import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [ScheduleModule.forRoot()],
   controllers: [],
-  providers: [PongEvents, JwtService, AuthService, UserService, PongService, PrismaService, SocketEvents],
-  exports: [PongEvents], 
+  providers: [
+    PongEvents,
+    JwtService,
+    AuthService,
+    UserService,
+    PongService,
+    PrismaService,
+    SocketEvents,
+  ],
+  exports: [PongEvents],
 })
 export class PongModule {}

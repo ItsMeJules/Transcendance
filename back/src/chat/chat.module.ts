@@ -5,9 +5,11 @@ import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ChatEventsGateway } from './chat.gateway';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
+import { PongEvents } from 'src/game/pong.gateway';
+import { PongModule } from 'src/game/pong.module';
 
 @Module({
-  imports: [],
+  imports: [PongModule],
   controllers: [ChatController],
   providers: [
     ChatEventsGateway,
