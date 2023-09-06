@@ -11,6 +11,7 @@ import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 import * as ChatDtos from './dto';
 import { BlockDto } from './dto/block.dto';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
+import { PongEvents } from 'src/game/pong.gateway';
 
 // Optis if time:
 // dont return complete tables, only relation fields needed for checks.
@@ -23,6 +24,7 @@ export class ChatService {
   constructor(
     private prismaService: PrismaService,
     private userSocketsService: UserSocketsService,
+    private pongEvents: PongEvents,
   ) {}
 
   async sendInviteToUser(
@@ -55,7 +57,7 @@ export class ChatService {
     }
   }
 
-  async acceptInvitation( 
+  async acceptInvitation(
     client: Socket,
     acceptInvitationDto: ChatDtos.AcceptInvitationDto,
   ): Promise<void> {
@@ -65,6 +67,17 @@ export class ChatService {
       });
       const targetUser = await this.prismaService.user.findUnique({
         where: { id: acceptInvitationDto.targetId },
+      });
+      const socketTarget = this.userSocketsService.getUserSocket(
+        String(acceptInvitationDto.targetId),
+      );
+      // client.emit('answerInvitation', { message: 'yes' });
+      // socketTarget.emit('answerInvitation', { message: 'yes' });
+      await this.pongEvents.startDual({
+        player1Id: actingUser.id,
+        player2Id: targetUser.id,
+        socketPlayer1: client,
+        socketPlayer2: socketTarget,
       });
     } catch (error) {
       this.sendError(client, error);
@@ -178,6 +191,12 @@ export class ChatService {
           `${targetUser.username} blocked you, you can't invite him.`,
         );
       // more exclusions here like if target/acting is in a game and if he didn't answered yet.
+      if (
+        this.pongEvents.playersMap.get(targetUser.id) ||
+        this.pongEvents.playersMap.get(actingUser.id)
+      )
+        throw new Error('You or the target are already in a game');
+
       await this.sendInviteToUser(
         client,
         `Waiting for ${targetUser.username} to answer...`,

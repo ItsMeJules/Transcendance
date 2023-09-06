@@ -7,6 +7,7 @@ import { UserService } from 'src/user/user.service';
 import { GameStruct } from './game.class';
 import { Player } from './models/player.model';
 import { gameEvents } from './game.class';
+import { DualDto } from './dto/dual.dto';
 import { EventEmitter } from 'events';
 
 export type UserQueue = Map<number, string>;
@@ -19,14 +20,15 @@ export class PongService {
   private connectedSockets: Map<number, Socket> = new Map();
   private maxQueuesize = 1000;
   public userQueue: UserQueue = new Map<number, string>();
-  public onlineGames: OnlineGameMap = new Map<number, GameStruct>;
+  public onlineGames: OnlineGameMap = new Map<number, GameStruct>();
 
   constructor(
     public prismaService: PrismaService,
-    private userService: UserService) {
+    private userService: UserService,
+  ) {
     gameEvents.on('serviceEndGame', (data) => {
       if (data.action === 'endGame')
-        this.endGame(data.gameStruct, data.winner, data.loser)
+        this.endGame(data.gameStruct, data.winner, data.loser);
     });
   }
 
@@ -36,10 +38,8 @@ export class PongService {
     const gameModeInt = parseInt(gameMode.gameMode, 10);
     if (gameModeInt !== 1 && gameModeInt !== 2) return null;
     this.userQueue.forEach((value, key) => {
-      if (!player1Id && value === gameMode.gameMode)
-        player1Id = key;
-      else if (!player2Id && value === gameMode.gameMode)
-        player2Id = key;
+      if (!player1Id && value === gameMode.gameMode) player1Id = key;
+      else if (!player2Id && value === gameMode.gameMode) player2Id = key;
     });
     if (player1Id && player2Id) {
       // add try and catch + error handling
@@ -53,9 +53,32 @@ export class PongService {
       this.userQueue.delete(player1Id);
       this.userQueue.delete(player2Id);
       const gameChannel = `game_${gameData.id}`;
-      return { gameId: gameData.id, player1Id: player1Id, player2Id: player2Id, gameChannel: gameChannel };
+      return {
+        gameId: gameData.id,
+        player1Id: player1Id,
+        player2Id: player2Id,
+        gameChannel: gameChannel,
+      };
     }
     return null;
+  }
+
+  async dualCreate(dualDto: DualDto): Promise<any> {
+    const gameData = await this.prismaService.game.create({
+      data: {
+        gameMode: 1,
+        player1: { connect: { id: dualDto.player1Id } },
+        player2: { connect: { id: dualDto.player2Id } },
+      },
+    });
+    const gameChannel = `game_${gameData.id}`;
+    return {
+      message: 'yes',
+      gameId: gameData.id,
+      player1Id: dualDto.player1Id,
+      player2Id: dualDto.player2Id,
+      gameChannel: gameChannel,
+    };
   }
 
   removeFromQueue(userId: number): void {
@@ -73,20 +96,18 @@ export class PongService {
   getUsersInQueueForGameMode(gameMode: string): number {
     let count = 0;
     for (const mode of this.userQueue.values()) {
-      if (mode === gameMode)
-        count++;
+      if (mode === gameMode) count++;
     }
     return count;
   }
 
   // Set a queue limit?
   queueIsFull(): boolean {
-    return (this.userQueue.size >= this.maxQueuesize);
+    return this.userQueue.size >= this.maxQueuesize;
   }
 
   addToQueue(user: User, gameMode: GameDto): UserQueue {
-    if (this.queueIsFull())
-      return null;
+    if (this.queueIsFull()) return null;
     this.userQueue.set(user.id, gameMode.gameMode);
     return this.userQueue;
   }
@@ -108,9 +129,8 @@ export class PongService {
         if (value.pl1.id === userId) {
           match = 1;
           return match;
-        }
-        else if (value.pl2.id === userId) {
-          match = 2
+        } else if (value.pl2.id === userId) {
+          match = 2;
           return match;
         }
       }
@@ -118,10 +138,17 @@ export class PongService {
     return match;
   }
 
-  async giveUpGame(gameStruct: GameStruct, winner: Player, loser: Player, giveUp: boolean) {
+  async giveUpGame(
+    gameStruct: GameStruct,
+    winner: Player,
+    loser: Player,
+    giveUp: boolean,
+  ) {
     try {
       loser.score = giveUp ? -1 : loser.score;
-      const game = await this.prismaService.game.findUnique({ where: { id: gameStruct.prop.id } });
+      const game = await this.prismaService.game.findUnique({
+        where: { id: gameStruct.prop.id },
+      });
       if (!game) {
         console.log('Game not found'); // set error accordingly
         return;
@@ -132,12 +159,18 @@ export class PongService {
         data: {
           winner: { connect: { id: winner.id } },
           loser: { connect: { id: loser.id } },
-          player1Score: game.player1Id === winner.id ? winner.score : loser.score,
-          player2Score: game.player2Id === winner.id ? winner.score : loser.score,
+          player1Score:
+            game.player1Id === winner.id ? winner.score : loser.score,
+          player2Score:
+            game.player2Id === winner.id ? winner.score : loser.score,
         },
       });
-      const winnerPrisma = await this.prismaService.user.findUnique({ where: { id: winner.id } });
-      const loserPrisma = await this.prismaService.user.findUnique({ where: { id: loser.id } });
+      const winnerPrisma = await this.prismaService.user.findUnique({
+        where: { id: winner.id },
+      });
+      const loserPrisma = await this.prismaService.user.findUnique({
+        where: { id: loser.id },
+      });
       // Protect if not found
       this.onlineGames.delete(gameStruct.prop.id);
       await this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
@@ -150,20 +183,28 @@ export class PongService {
   async endGame(gameStruct: GameStruct, winner: Player, loser: Player) {
     try {
       console.log('inside game end');
-      const game = await this.prismaService.game.findUnique({ where: { id: gameStruct.prop.id } });
+      const game = await this.prismaService.game.findUnique({
+        where: { id: gameStruct.prop.id },
+      });
       if (!game) {
         console.log('Game not found'); // set error accordingly
         return;
       }
-      const winnerPrisma = await this.prismaService.user.findUnique({ where: { id: winner.id } });
-      const loserPrisma = await this.prismaService.user.findUnique({ where: { id: loser.id } });
+      const winnerPrisma = await this.prismaService.user.findUnique({
+        where: { id: winner.id },
+      });
+      const loserPrisma = await this.prismaService.user.findUnique({
+        where: { id: loser.id },
+      });
       await this.prismaService.game.update({
         where: { id: gameStruct.prop.id },
         data: {
           winner: { connect: { id: winner.id } },
           loser: { connect: { id: loser.id } },
-          player1Score: game.player1Id === winner.id ? winner.score : loser.score,
-          player2Score: game.player2Id === winner.id ? winner.score : loser.score,
+          player1Score:
+            game.player1Id === winner.id ? winner.score : loser.score,
+          player2Score:
+            game.player2Id === winner.id ? winner.score : loser.score,
         },
       });
       // Protect if not found
@@ -182,13 +223,18 @@ export class PongService {
     const loserLevel = Math.round(loser.userLevel.toNumber());
 
     // Ladder logic
-    const points = Math.round(Math.sqrt(((11 - winnerLevel) * (1 + loserLevel) + 1)));
+    const points = Math.round(
+      Math.sqrt((11 - winnerLevel) * (1 + loserLevel) + 1),
+    );
 
     let winnerPoints = winner.userPoints + points;
-    let loserPoints = loser.userPoints - points < 0 ? 0 : loser.userPoints - points;
+    let loserPoints =
+      loser.userPoints - points < 0 ? 0 : loser.userPoints - points;
 
-    const winnerNewLevel = winnerLevel >= 10 ? winnerLevel : winnerLevel + winnerPoints * 0.01;
-    const loserNewLevel = loserLevel >= 10 ? loserLevel : loserLevel + loserPoints * 0.0025;
+    const winnerNewLevel =
+      winnerLevel >= 10 ? winnerLevel : winnerLevel + winnerPoints * 0.01;
+    const loserNewLevel =
+      loserLevel >= 10 ? loserLevel : loserLevel + loserPoints * 0.0025;
 
     const updateWinnerData = {
       gamesPlayed: winner.gamesPlayed + 1,
@@ -217,5 +263,4 @@ export class PongService {
       console.error('Error updating game:', error);
     }
   }
-
 }
