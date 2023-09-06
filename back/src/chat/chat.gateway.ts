@@ -94,6 +94,7 @@ export class ChatEventsGateway {
 
   async handleDisconnect(client: Socket): Promise<void> {
     try {
+      if (!client.data.id) throw new Error('socket not instanciated');
       const userClient = await this.prismaService.user.findUnique({
         where: { id: client.data.id },
       });
