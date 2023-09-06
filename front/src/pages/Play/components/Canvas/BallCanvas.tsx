@@ -14,7 +14,6 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    let previousTimestamp = 0;
     if (ctx && game.isEnded) {
       console.log('here okkkkkkkkkk');
       continueAnimation.current = false;
@@ -24,18 +23,9 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
 
     const animateBall = (timestamp: number) => {
       if (!game.isPlaying && !game.isEnded) return;
-      const deltaTime = (timestamp - previousTimestamp) / 1000;
-      previousTimestamp = timestamp;
       if (ctx) {
         ctx.clearRect(0, 0, game.board.width, game.board.height);
         if (game.isEnded) return;
-        //////////////////////////////////////////
-        // GAME MODE 2
-        // ball.pos.x = ball.pos.x + ball.dir.x * ball.speed * deltaTime * game.board.width / game.board.gridWidth;
-        // ball.pos.y = ball.pos.y + ball.dir.y * ball.speed * deltaTime * game.board.width / game.board.gridWidth;
-        // ball.tip.x = ball.pos.x - ball.size * 0.5;
-        // ball.tip.y = ball.pos.y - ball.size * 0.5;
-        /////////////////////////////////////////
         ctx.fillStyle = 'white';
         ctx.fillRect(ball.tip.x, ball.tip.y, ball.size, ball.size);
         ctx.setLineDash([]);
@@ -59,10 +49,6 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
     requestAnimationFrame(animateBall);
 
     window.addEventListener('resize', handleResize);
-    // if (game.isEnded && ctx) {
-    //   ctx.clearRect(0, 0, game.board.width, game.board.height);
-    //   return;
-    // }
     return () => {
       window.removeEventListener('resize', handleResize);
     };

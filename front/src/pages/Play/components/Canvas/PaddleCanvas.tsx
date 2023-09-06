@@ -65,7 +65,6 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       if (!previousTimestamp) {
         previousTimestamp = timestamp;
       }
-      const deltaTime = (timestamp - previousTimestamp) / 1000;
       previousTimestamp = timestamp;
       if (ctx) {
         ctx.clearRect(0, 0, game.board.width, game.board.height);
