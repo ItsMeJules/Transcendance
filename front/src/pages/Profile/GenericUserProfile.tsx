@@ -7,6 +7,7 @@ import getProgressBarClass from 'utils/progressBar/ProgressBar';
 import { UserData } from 'services/User/User';
 import ProfileCard from './components/ProfileCard';
 import { useWebsocketContext } from 'services/Websocket/Websocket';
+import { useAppSelector } from 'utils/redux/Store';
 
 import './css/ProgressBar.scss'
 import './css/UserProfile.scss'
@@ -24,11 +25,13 @@ const GenericUserProfile = () => {
   const [isFriend, setIsFriend] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const location = useLocation();
+  const isBlocked = useAppSelector(state => state.user.userData.blockedUsers)?.some(blockedId => id !== undefined ? blockedId === parseInt(id) : false);
   getProgressBarClass(level);
 
 const blockUser = () => {
+  const targetId = parseInt(id!);
   if (chatSocket) {
-    chatSocket.emit("chat-action", {action: "block", targetId: id});
+    chatSocket.emit("chat-action", {action: "block", targetId: targetId});
   } else {
     console.log("chatSocket is null");
   }
@@ -98,7 +101,7 @@ const blockUser = () => {
   }
 
   return (
-        <ProfileCard userData={userData} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} blockUser={blockUser} />
+        <ProfileCard userData={userData} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} blockUser={blockUser} isBlocked={isBlocked} />
   );
 };
 

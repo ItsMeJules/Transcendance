@@ -145,10 +145,10 @@ export default function UserActionPopup({
             </div>
           ) : undefined}
           <div
-            className={isBlocked === true ? "unblock-user" : "block-user"}
+            className={isBlocked === true ? "block-user" : "unblock-user"}
             onClick={onBlock}
           >
-            {isBlocked === true ? "Block" : "Unblock"}
+            {isBlocked === true ? "Unblock" : "Block"}
           </div>
         </>
       ) : undefined}
