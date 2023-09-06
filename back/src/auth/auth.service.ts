@@ -26,7 +26,7 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private config: ConfigService,
-  ) { }
+  ) {}
 
   /* Signup */
   async signup(dto: AuthDtoUp) {
@@ -70,7 +70,7 @@ export class AuthService {
     if (!user || user.hash === '')
       throw new ForbiddenException('Credentials incorrect');
     const pwMatches = await argon.verify(user.hash, dto.password);
-    if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
+    if (!pwMatches) throw new ForbiddenException('Password incorrect');
     return this.login(user);
   }
 

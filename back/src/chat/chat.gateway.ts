@@ -93,16 +93,20 @@ export class ChatEventsGateway {
   }
 
   async handleDisconnect(client: Socket): Promise<void> {
-    const userClient = await this.prismaService.user.findUnique({
-      where: { id: client.data.id },
-    });
+    try {
+      const userClient = await this.prismaService.user.findUnique({
+        where: { id: client.data.id },
+      });
 
-    await this.leaveRoomAndRemoveUser(
-      client,
-      userClient.currentRoom,
-      userClient.id,
-    );
-    this.removeEventListeners(client);
+      await this.leaveRoomAndRemoveUser(
+        client,
+        userClient.currentRoom,
+        userClient.id,
+      );
+      this.removeEventListeners(client);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async leaveRoomAndRemoveUser(

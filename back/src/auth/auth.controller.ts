@@ -49,12 +49,6 @@ export class AuthController {
     return user;
   }
 
-
-
-
-
-  
-
   @HttpCode(HttpStatus.OK)
   @Post('signin')
   async signin(
