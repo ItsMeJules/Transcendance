@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React from 'react';
 import { UserData } from '../../../services/User/User';
 
 interface ProfilePicContainerProps {

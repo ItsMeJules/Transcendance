@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { API_ROUTES } from 'utils/routing/routing';
@@ -24,7 +24,6 @@ const GenericUserProfile = () => {
   const [isFriend, setIsFriend] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const location = useLocation();
-  const history = useNavigate();
   getProgressBarClass(level);
 
 const blockUser = () => {

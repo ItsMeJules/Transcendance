@@ -1,5 +1,4 @@
 import React from 'react';
-import LogoutParent from "../../../layout/LogoutButton/LogoutParent";
 
 interface LeaderboardHeaderProps {
   setErrMsg: React.Dispatch<React.SetStateAction<string>>;

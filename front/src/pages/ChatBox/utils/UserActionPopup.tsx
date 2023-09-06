@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 
 import User from "services/User/User";
 import { SendDataContext } from "pages/ChatBox/ChatBox";

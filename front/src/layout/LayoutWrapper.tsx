@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { useLocation } from 'react-router-dom';
 import BackgroundLinking from "layout/BackgroundLinking/BackgroundLinking";
 
@@ -7,7 +7,6 @@ export interface LayoutWrapperProps {
 }
 
 const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
-  const location = useLocation();
 
   return (
     <>

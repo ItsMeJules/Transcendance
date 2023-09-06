@@ -2,15 +2,12 @@ import { useEffect, useState } from "react";
 import axios, { } from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
-import ToastError from "layout/ToastError/ToastError";
 import ToastMessage from "layout/ToastMessage/ToastMessage";
 import { UserArray } from "services/User/UserArray";
 import { UserData } from "services/User/User";
 import User from "services/User/User";
 import { MDBContainer } from 'mdb-react-ui-kit';
-import FriendsHeader from "./Components/FriendsHeader";
 import UserProfileList from "./Components/UserProfileList";
-import FriendsContainer from "./Components/FriendsContainer";
 import { useWebsocketContext } from "services/Websocket/Websocket";
 
 import './css/Friends.scss';
@@ -18,8 +15,6 @@ import './css/Friends.scss';
 const Friends = () => {
   const [friendsData, setFriendsData] = useState<any>({});
   const [friendsList, setFriendsList] = useState<any[]>([]);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [users, setUsers] = useState<UserArray>([]);
   const [removeFlag, setRemoveFlag] = useState(false);
   const history = useNavigate();
   const [notifMsg, setNotifMsg] = useState('');

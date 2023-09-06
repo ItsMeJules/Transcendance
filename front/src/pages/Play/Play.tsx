@@ -1,18 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Ball } from "./models/Ball";
 import { Player } from "./models/Player";
-import BoardCanvas from "./components/Canvas/BoardCanvas";
-import BallCanvas from "./components/Canvas/BallCanvas";
-import PaddleCanvas from "./components/Canvas/PaddleCanvas";
 import { useWebsocketContext } from "services/Websocket/Websocket";
 import { useNavigate } from "react-router-dom";
 import { GameProperties } from "./models/Properties";
 import getParseLocalStorage from "utils/getParseLocalStorage/getParseLocalStorage";
 import { UserData } from "services/User/User";
 import ConfettisComponent from "./components/Confettis/ConfettisComponent";
-import LeftPlayerProfile from "./components/PlayersProfile/LeftPlayerProfile";
-import RightPlayerProfile from "./components/PlayersProfile/RightPlayerProfile";
-import MainText from "./components/MainText/MainText";
 import GiveUp from "./components/GiveUp/GiveUp";
 import ScoreBoard from "./components/ScoreBoard/ScoreBoard";
 import './css/Play.scss'
@@ -52,17 +46,11 @@ const Play = () => {
   const [gameStatePrepare, setGameStatePrepare] = useState<GameSocket>();
   const [gameStatePlay, setGameStatePlay] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
-  const [gameIsEnded, setGameIsEnded] = useState(false);
   const [noGame, setNoGame] = useState(false);
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
   const [centralText, setCentralText] = useState('');
   const history = useNavigate();
-
-  const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
-  const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
-  const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
-  const paddle2CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
 
   // Data parsing
   useEffect(() => {
