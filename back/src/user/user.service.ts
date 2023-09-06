@@ -4,7 +4,6 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { EditUserDto } from './dto';
-import { User, Prisma } from '@prisma/client';
 import { Game, User, Prisma } from '@prisma/client';
 import * as fs from 'fs';
 import { PrismaService } from '../prisma/prisma.service';
