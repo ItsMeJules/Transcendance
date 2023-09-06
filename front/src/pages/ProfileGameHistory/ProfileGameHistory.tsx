@@ -68,13 +68,13 @@ const ProfileGameHistory = () => {
                   gameHistory.map((game: GameHistoryData) => (
                     <ul className="game-history" key={game.id}>
                       <li className="game">
-                        <img className="pp1" src={game.player1?.profilePicture ?? ''} alt={game.player1?.username ?? ''} />
+                        <img className="pp1" src={game.player1?.getProfilePicture()} alt={game.player1?.getUsername()} />
                         <article className='central-text'>
-                          <span className="p1">{game.player1?.username ?? 'Unknown Player'}</span>
+                          <span className="p1">{game.player1?.getUsername()}</span>
                           <span className="score ">{game.player1Score} - {game.player2Score}</span>
-                          <span className="p2 ">{game.player2?.username ?? 'Unknown Player'}</span>
+                          <span className="p2 ">{game.player2?.getUsername()}</span>
                         </article>
-                        <img className="pp2" src={game.player2?.profilePicture ?? ''} alt={game.player2?.username ?? ''} />
+                        <img className="pp2" src={game.player2?.getProfilePicture()} alt={game.player2?.getUsername()} />
                       </li>
                     </ul>
                   ))
