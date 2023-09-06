@@ -48,7 +48,7 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
         </section>}
 
       {/* Spectators messages */}
-      {(gameStatus != 'playing' && whichPlayer === 0) &&
+      {(gameStatus !== 'playing' && whichPlayer === 0) &&
         <section className="text-container-style">
           {textToDisplay}
         </section>}

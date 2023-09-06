@@ -23,14 +23,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ userData, type = 'user', onAd
 
       <ProfileHeader type={type} isFriend={isFriend} onAddFriend={onAddFriend} blockUser={blockUser} />
 
-      {type != 'edit' && (
+      {type !== 'edit' && (
         <>
           <ProfilePicContainer userData={userData} />
           <DisplayData userData={userData} />
         </>
       )}
 
-      {type == 'edit' && (
+      {type === 'edit' && (
         <>
           <ProfilePicContainer userData={userData} />
           <ImageChange fetchUserProfile={fetchUserProfile!} />
