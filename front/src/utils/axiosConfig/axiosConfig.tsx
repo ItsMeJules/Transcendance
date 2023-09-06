@@ -77,13 +77,11 @@ export function useAxios() {
 
   /* Components handler functions */
   const handleLoginErrors = (err: any, toastId: string) => {
-
     if (err.response.status === HttpStatus.BAD_REQUEST
       && err.response.data.message) {
       toast.error(extractErrorMessage(err), { toastId });
       return ERROR.YES;
     }
-
     return ERROR.NO;
   }
 
@@ -98,6 +96,10 @@ export function useAxios() {
       navigate("/dashboard/profile/me?error=alreadyverified");
       // navigate("/dashboard/profile/me");
     }
+            // if (error.response && error.response.status === 499) {
+        //   console.log("You have to connect with 2FA");
+        //   navigate("/profile/me/two-fa");
+        // }
 
 //     if (err.response && err.response.status === 450) {
 //   console.log("You don't have 2FA enabled");
