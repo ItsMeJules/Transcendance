@@ -29,7 +29,6 @@ export default function ChannelListPopup() {
           (channel: ChannelInfoInList) =>
             channel.name !== activeChannelName &&
             channel.type !== ChannelType.DIRECT)
-
         setVisibleChannels(filteredChannels);
       } catch (error) {
         console.log(error);
