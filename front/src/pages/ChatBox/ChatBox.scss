@@ -124,57 +124,78 @@ $font-color: rgba(255, 255, 255, 0.7);
           }
         }
 
+
         .password-popup {
-          position: relative;
+          position: absolute;
+          top: 100%;
+          left: 0%;
 
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          width: 120px;
 
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+
+          border: $border;
           border-radius: 5px;
+          font-size: 10px;
 
-          .password-popup-content {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+
+          .infos {
+            h3 {
+              font-family: "dune", Arial, sans-serif;
+              color: $font-color;
+            }
+
+            input {
+              width: 110px;
+              margin-bottom: 10px;
+              padding: 8px;
+
+              font-size: 14px;
+              color: $font-color;
+
+              background: transparent;
+              border: $border;
+              border-radius: 5px;
+            }
+          }
+
+          .buttons {
+            width: 100%;
+
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
 
-            .infos {
-              input {
-                width: 90%;
+            button {
+              width: 50%;
+              padding: 8px 16px;
+              border-radius: 5px;
+              cursor: pointer;
+              margin: 5px;
+            }
 
-                margin-bottom: 10px;
-                padding: 8px;
+            .cancel {
+              background-color: rgba(255, 0, 0, 0.5);
 
-                border: $border;
-                border-radius: 5px;
+              &:hover {
+                color: $hover-color;
               }
             }
 
-            .buttons {
-              button {
-                padding: 8px 16px;
-                border-radius: 5px;
-                cursor: pointer;
-                margin: 5px;
-              }
+            .validate {
+              background-color: rgba(0, 255, 0, 0.5);
 
-              .cancel {
-                &:hover {
-                  color: $hover-color;
-                  background-color: #dd3c49;
-                }
-              }
-
-              .validate {
-                background-color: rgba(0, 0, 255, 0.3);
-                color: rgb(255, 255, 255, 0.3);
-
-                &:hover {
-                  color: $hover-color;
-                  background-color: rgba(0, 128, 0, 0.3);
-                }
+              &:hover {
+                color: $hover-color;
               }
             }
           }
@@ -486,7 +507,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             }
 
             .unblock-user {
-                background-color: rgba(0, 255, 0, 0.2);
+              background-color: rgba(0, 255, 0, 0.2);
             }
 
             .unblock-user:hover {
@@ -625,34 +646,22 @@ $font-color: rgba(255, 255, 255, 0.7);
 
         height: 100%;
         width: 88%;
+        max-width: 160px;
 
         .channel-name {
           display: flex;
           flex-direction: row;
           justify-content: flex-start;
           column-gap: 10px;
-          width: 50px;
 
+          width: 80%;
           height: 50%;
 
           p {
             font-family: "dune", Arial, sans-serif;
             font-size: 14px;
             margin: 0;
-          }
-
-          img {
-            width: auto;
-            height: 50%;
-            filter: invert(100%);
-            cursor: pointer;
-            transition: transform 0.3s;
-            border-radius: 5px;
-            border: white;
-
-            &:hover {
-              transform: scale(1.1);
-            }
+            overflow: hidden;
           }
         }
 
@@ -977,6 +986,7 @@ $font-color: rgba(255, 255, 255, 0.7);
           .cancel {
             border: $border;
             background-color: rgba(255, 0, 0, 0.2);
+
             &:hover {
               color: white;
               background-color: rgba(255, 0, 0, 0.5);
@@ -1000,16 +1010,34 @@ $font-color: rgba(255, 255, 255, 0.7);
         position: relative;
         justify-content: center;
         align-items: center;
-        width: 30px;
-        height: 50%;
+        max-width: 30px;
+        width: 20%;
 
-        img {
-          justify-content: center;
-          align-items: center;
-          filter: invert(40%);
-          height: 30px;
-          width: 30px;
+        .manage-img {
+          height: 50%;
+
+          img {
+            justify-content: center;
+            align-items: center;
+            filter: invert(40%);
+            height: 30px;
+            width: 30px;
+            cursor: pointer;
+          }
+        }
+
+        .banned-img {
+          width: auto;
+          height: 50%;
+          filter: invert(100%);
           cursor: pointer;
+          transition: transform 0.3s;
+          border-radius: 5px;
+          border: white;
+
+          &:hover {
+            transform: scale(1.1);
+          }
         }
 
         .channel-popup {
@@ -1018,7 +1046,7 @@ $font-color: rgba(255, 255, 255, 0.7);
           align-items: center;
           justify-content: space-evenly;
           position: relative;
-          top: 80%;
+          top: 150%;
           left: -220%;
           height: 300px;
           width: 160px;

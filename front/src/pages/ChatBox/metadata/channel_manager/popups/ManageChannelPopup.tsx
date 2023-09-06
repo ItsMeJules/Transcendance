@@ -51,8 +51,8 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = ({
       <div className="confirm">
         <button onClick={changeChannel}>
           {channelData.type !== ChannelType.PROTECTED
-            ? "Ajouter un mot de passe"
-            : "Changer le mot de passe"}
+            ? "Add a password"
+            : "Change password"}
         </button>
       </div>
 

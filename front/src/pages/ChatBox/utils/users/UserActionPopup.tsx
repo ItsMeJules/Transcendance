@@ -125,30 +125,30 @@ export default function UserActionPopup({
             Expulser
           </div>
           <div className={isMuted ? "mute" : "unmute"} onClick={onMute}>
-            {isMuted ? "Rendre la parole" : "Rendre muet"}
+            {isMuted ? "Mute" : "Unmute"}
           </div>
           <div className={isAdmin ? "demote" : "promote"} onClick={onPromote}>
-            {isAdmin ? "Supprimer des administrateurs" : "Définir administrateur"}
+            {isAdmin ? "Remove from administrators" : "Add to administrators"}
           </div>
         </>
       ) : buttonClicked === 0 ? (
         <>
           <div className="dm" onClick={onDm}>
-            Envoyer un message privé
+            Send a dm
           </div>
           <div className="invite-to-play" onClick={onInviteToPlay}>
-            Inviter à jouer
+            Invite to play
           </div>
           {channelInvite ? (
             <div className="invite-to-channel" onClick={onInviteChannel}>
-              Inviter dans le channel
+              Invite in the channel
             </div>
           ) : undefined}
           <div
             className={isBlocked === true ? "unblock-user" : "block-user"}
             onClick={onBlock}
           >
-            {isBlocked === true ? "Débloquer" : "Bloquer"}
+            {isBlocked === true ? "Block" : "Unblock"}
           </div>
         </>
       ) : undefined}

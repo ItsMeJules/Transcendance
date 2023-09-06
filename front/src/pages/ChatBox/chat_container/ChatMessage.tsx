@@ -24,7 +24,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ messagesReceived }) => {
               <img src={message.blocked ? BlockedImg : message.profilePicture} alt="Profile" />
             ) : undefined}
             <div className={messageClassName}>
-              <p>{message.blocked ? "Utilisateur bloqué" : message.message}</p>
+              <p>{message.blocked ? "User blocked" : message.message}</p>
             </div>
           </div>
         );

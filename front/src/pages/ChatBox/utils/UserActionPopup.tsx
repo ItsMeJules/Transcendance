@@ -127,35 +127,35 @@ export default function UserActionPopup(props: UserActionProps) {
         <>
           {localIsBanned === true ? (
             <div className="ban" onClick={() => onBan(!localIsBanned)}>
-              Bannir
+              Ban
             </div>
           ) : (
             <div className="unban" onClick={() => onBan(!localIsBanned)}>
-              Débannir
+                Unban
             </div>
           )}
 
           <div className="kick" onClick={() => onKick()}>
-            Expulser
+            Kick
           </div>
 
           {localIsMuted === true ? (
             <div className="mute" onClick={() => onMute(!localIsMuted)}>
-              Rendre muet
+              Mute
             </div>
           ) : (
             <div className="unmute" onClick={() => onMute(!localIsMuted)}>
-              Rendre la parole
+              Unmute
             </div>
           )}
 
           {localIsAdmin === true ? (
             <div className="promote" onClick={() => onPromote(!localIsAdmin)}>
-              Définir administrateur
+              Add to administrators
             </div>
           ) : (
             <div className="demote" onClick={() => onPromote(!localIsAdmin)}>
-              Supprimer des administrateurs
+              Delete from administrateurs
             </div>
           )}
         </>

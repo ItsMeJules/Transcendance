@@ -66,7 +66,7 @@ export default function BannedUsersPopup({ channelData }: BannedUsersPopupProps)
       <UsersList users={bannedUsers} onUserClick={onUserClick} />
       {userClicked !== null ? (
         <div className="unban-confirm">
-          <h3>{`Débannir ${userClicked.username} ?`}</h3>
+          <h3>{`Unban ${userClicked.username} ?`}</h3>
           <button className="confirm" onClick={() => unBan()}>
             Confirmer
           </button>

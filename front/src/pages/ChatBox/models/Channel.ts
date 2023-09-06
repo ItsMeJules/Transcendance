@@ -96,7 +96,6 @@ export function createChannelUser(userData: UserData, channelData: ChannelData):
   } as ChannelUser;
 }
 
-// TODO Finish this type
 export function transformSliceToChannelData(data: any): ChannelData {
   if (data === null) return {} as ChannelData;
 

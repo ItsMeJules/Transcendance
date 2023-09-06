@@ -28,7 +28,7 @@ const ChatContainer: React.FC = () => {
       authorId: message.authorId,
       profilePicture: message.profilePicture,
       userName: message.userName,
-      blocked: blockedUsers.some(id => id === message.authorId) ,
+      blocked: blockedUsers.some(id => id === message.authorId),
     });
     return chatMessages;
   }, []);
@@ -45,10 +45,9 @@ const ChatContainer: React.FC = () => {
     };
   }, [chatSocket, userId, activeChannelName, dispatch]);
 
-  // SCROLL ISSUE HERE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-  // useEffect(() => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [messages]);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+  }, [messages]);
 
   return (
     <div className="messages-container">

@@ -29,7 +29,7 @@ export default function ChannelListPopup() {
           (channel: ChannelInfoInList) =>
             channel.name !== activeChannelName &&
             channel.type !== ChannelType.DIRECT)
-            
+
         setVisibleChannels(filteredChannels);
       } catch (error) {
         console.log(error);
@@ -94,21 +94,18 @@ export default function ChannelListPopup() {
       {selectedChannelName !== null
         ? (
           <div className="password-popup">
-            <div className="password-popup-content">
+            <div className="infos">
+              <h3>Join<br />{selectedChannelName}</h3>
+              <input placeholder="Enter password..."
+                onChange={(e) => setPasswordValue(e.target.value)}
+                value={passwordValue}
+                onKeyDown={(e) => handleEnterPressed(e)}
+              />
+            </div>
 
-              <div className="infos">
-                <h3>Rejoindre<br />{selectedChannelName}</h3>
-                <input placeholder="Entrez le mdp..."
-                  onChange={(e) => setPasswordValue(e.target.value)}
-                  value={passwordValue}
-                  onKeyDown={(e) => handleEnterPressed(e)}
-                />
-              </div>
-
-              <div className="buttons">
-                <button className="cancel" onClick={() => setSelectedChannelName(null)}>Annuler</button>
-                <button className="validate" onClick={() => joinChannel(null)}>Rejoindre</button>
-              </div>
+            <div className="buttons">
+              <button className="cancel" onClick={() => setSelectedChannelName(null)}>Cancel</button>
+              <button className="validate" onClick={() => joinChannel(null)}>Join</button>
             </div>
           </div>
         ) : undefined}

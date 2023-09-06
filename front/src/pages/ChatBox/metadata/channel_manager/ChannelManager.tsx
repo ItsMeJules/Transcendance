@@ -31,16 +31,6 @@ export default function ChannelManager(props: ChannelManagerProps) {
       <div className="channel-infos">
         <div className="channel-name">
           <p>{channelData?.displayname}</p>
-          {channelData.type !== ChannelType.DIRECT &&
-            channelData.name !== "general" &&
-            channelData.punishments?.some(punishment => punishment.type === PunishmentType.BAN) ? (
-            <img
-              alt="Banned"
-              src={BannedIcon}
-              ref={excludeRef}
-              onClick={() => toggleBannedUsersList(!bannedUsersList)}
-            ></img>
-          ) : undefined}
         </div>
 
         {channelData.type !== ChannelType.DIRECT ? (
@@ -49,7 +39,7 @@ export default function ChannelManager(props: ChannelManagerProps) {
             onOutsideClick={() => toggleChannelUsersList(false)}
             onInsideClick={() => toggleChannelUsersList(!channelUsersList)}
           >
-            <div className="channel-users-count">{"Membres total: " + usersSize}</div>
+            <div className="channel-users-count">{"Total members: " + usersSize}</div>
             {channelUsersList ? <ChannelUsersPopup channelData={channelData} /> : undefined}
           </OutsideClickHandler>
         ) : undefined}
@@ -69,8 +59,9 @@ export default function ChannelManager(props: ChannelManagerProps) {
       {channelData.type !== ChannelType.DIRECT &&
         channelData.name !== "general"
         ?
+        <div className="manage">
           <OutsideClickHandler
-            className="manage"
+            className="manage-img"
             onOutsideClick={() => setManageChannel(false)}
             onInsideClick={() => setManageChannel(!manageChannel)}
           >
@@ -78,6 +69,17 @@ export default function ChannelManager(props: ChannelManagerProps) {
 
             {manageChannel && <ManageChannelPopup channelData={channelData} />}
           </OutsideClickHandler>
+
+          {channelData.punishments?.some(punishment => punishment.type === PunishmentType.BAN) ? (
+            <img
+              className="banned-img"
+              alt="Banned"
+              src={BannedIcon}
+              ref={excludeRef}
+              onClick={() => toggleBannedUsersList(!bannedUsersList)}
+            ></img>
+          ) : undefined}
+        </div>
         : undefined}
     </>
   );
