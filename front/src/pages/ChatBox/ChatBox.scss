@@ -338,7 +338,7 @@ $font-color: rgba(255, 255, 255, 0.7);
           background: rgba(0, 0, 0, 0.8); // Transparent background
 
           width: 200px;
-          height: 320px;
+          height: 400px;
 
           border-radius: 5px;
           border: $border;
@@ -429,6 +429,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             font-family: "dune", Arial, sans-serif;
             font-size: 8pt;
             justify-content: center;
+            margin-top: 10px;
             padding: 10px;
             background: black;
             border-radius: 5px;
@@ -444,6 +445,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             }
 
             .dm,
+            .invite-to-channel,
             .invite-to-play,
             .block-user,
             .unblock-user {
@@ -454,11 +456,9 @@ $font-color: rgba(255, 255, 255, 0.7);
             }
 
             .dm:hover,
-            .invite-to-chat:hover,
             .invite-to-play:hover,
-            .invite-to-channel:hover,
-            .block-user:hover {
-              background-color: rgba(255, 0, 0, 0.3);
+            .invite-to-channel:hover {
+              background-color: rgba(255, 255, 255, 0.3);
             }
 
             .dm {
@@ -478,11 +478,19 @@ $font-color: rgba(255, 255, 255, 0.7);
             }
 
             .block-user {
-              background-color: rgba(0, 255, 0, 0.3);
+              background-color: rgba(255, 0, 0, 0.2);
+            }
+
+            .block-user:hover {
+              background-color: rgba(255, 0, 0, 0.5);
+            }
+
+            .unblock-user {
+                background-color: rgba(0, 255, 0, 0.2);
             }
 
             .unblock-user:hover {
-              background-color: rgba(0, 255, 0, 0.3);
+              background-color: rgba(0, 255, 0, 0.5);
             }
           }
         }
@@ -623,6 +631,7 @@ $font-color: rgba(255, 255, 255, 0.7);
           flex-direction: row;
           justify-content: flex-start;
           column-gap: 10px;
+          width: 50px;
 
           height: 50%;
 
@@ -635,9 +644,11 @@ $font-color: rgba(255, 255, 255, 0.7);
           img {
             width: auto;
             height: 50%;
-
+            filter: invert(100%);
             cursor: pointer;
             transition: transform 0.3s;
+            border-radius: 5px;
+            border: white;
 
             &:hover {
               transform: scale(1.1);
@@ -768,7 +779,12 @@ $font-color: rgba(255, 255, 255, 0.7);
                     }
 
                     .username {
-                      margin: 0px 0px 0px 10px;
+                      margin: 0px 10px 0px 10px;
+                    }
+
+                    .role-picture {
+                      width: 10%;
+                      height: auto;
                     }
                   }
                 }
@@ -932,20 +948,22 @@ $font-color: rgba(255, 255, 255, 0.7);
         }
 
         .unban-confirm {
-          position: fixed;
+          position: relative;
+          font-family: "dune", Arial, sans-serif;
+          font-size: 10pt;
+          width: 80%;
+          top: 20%;
+          left: 10%;
 
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-
-          background-color: white;
-
+          background-color: rgba(0, 0, 0, 0.72);
+          border: $border;
           border-radius: 5px;
           z-index: 10;
 
           text-align: center;
 
           h3 {
+            color: $font-color;
           }
 
           button {
@@ -957,21 +975,22 @@ $font-color: rgba(255, 255, 255, 0.7);
           }
 
           .cancel {
-            background-color: lightgray;
-
+            border: $border;
+            background-color: rgba(255, 0, 0, 0.2);
             &:hover {
               color: white;
-              background-color: #dd3c49;
+              background-color: rgba(255, 0, 0, 0.5);
             }
           }
 
           .confirm {
-            background-color: blue;
             color: white;
+            background-color: rgba(0, 255, 0, 0.2);
+            border: $border;
 
             &:hover {
               color: white;
-              background-color: green;
+              background-color: rgba(0, 255, 0, 0.5);
             }
           }
         }

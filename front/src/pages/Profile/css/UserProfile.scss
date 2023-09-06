@@ -19,6 +19,7 @@ $png-background-color: rgba(250, 250, 250, 0.5);
       }
 
       .profile-pic-container {
+        min-width: 100px;
         width:50%;
         height: auto;
         display: flex;

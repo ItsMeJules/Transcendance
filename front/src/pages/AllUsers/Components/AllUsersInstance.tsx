@@ -20,12 +20,6 @@ const AllUsersInstance: React.FC<AllUsersInstanceProps> = ({ user, currentUserId
 
   return (
     <main className="allusers__profile" key={user.id}>
-      <img
-        src={user.profilePicture}
-        alt={user.username}
-        className={`allusers__picture ${user.isOnline ? "online" : "offline"}`}
-        title={`${user.isOnline ? "online" : "offline"}`}
-      />
 
       <img src={user.profilePicture} alt={user.username}
         className={`allusers__picture ${user.isOnline ? 'online' : 'offline'}`}
