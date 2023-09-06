@@ -37,21 +37,30 @@ interface SpectateProps {
 }
 
 const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
+  const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
+  const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
+  const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
+  const paddle2CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const socket = useWebsocketContext();
   const whichPlayer = 0;
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const [isOpponentReady, setIsOpponentReady] = useState(false);
 
+  // const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameState, setGameState] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
+  // const [noGame, setNoGame] = useState(false);
   const [gameStatus, setGameStatus] = useState('');
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
   const [centralText, setCentralText] = useState('Waiting for players');
+  const history = useNavigate();
 
   // Data parsing
   useEffect(() => {
+    const userData = getParseLocalStorage('userDataWatch');
     const player1Data = getParseLocalStorage('player1Watch');
     const player2Data = getParseLocalStorage('player2Watch');
     setPlayer1Data(player1Data);
@@ -117,6 +126,7 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
   useEffect(() => {
     if (gameStatus === 'noGame') {
       setCentralText('Select a game to watch');
+      // history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
     if (gameState?.gameStatus) setGameStatus(gameState?.gameStatus);
     if (gameState?.gameStatus === 'pending' || gameState?.gameStatus === 'pending') {
@@ -128,6 +138,9 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
         setCentralText('Get ready!');
     } else if (gameState?.gameStatus === 'timeout') {
       setCentralText('Timeout - game canceled')
+      // setTimeout(() => {
+      // history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
+      // }, 3 * 1000);
     } else if (gameState?.gameStatus === 'playing') {
       socket.game?.off('prepareToPlay'); // dont off and use for status?
       setGame({ ...game, isPlaying: true });
@@ -162,6 +175,7 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
         isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
 
     <NoGameSpectate noGame={noGame} />
+      {/* <NoGameSpectate noGame={noGame} /> */}
     </div >
   );
 

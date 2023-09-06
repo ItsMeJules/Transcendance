@@ -73,16 +73,13 @@ export const ChatBox = () => {
     chatSocket?.emit(eventType, data);
   };
 
-  const togglerTransition = {
-    height: chatToggled ? "50vh" : "0vh",
-  };
 
   return (
     <div className="chat-container">
       <SendDataContext.Provider value={sendData}>
         <ChatMetadata chatToggled={chatToggled} />
         <ChatContainer />
-        <ChatBar chatToggled={chatToggled} setChatToggled={setChatToggled} />
+        <ChatBar chatToggled={chatToggled}/>
       </SendDataContext.Provider>
     </div>
   );

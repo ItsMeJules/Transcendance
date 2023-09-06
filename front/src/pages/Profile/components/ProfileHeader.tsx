@@ -2,10 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "utils/routing/routing";
 import { IconContext } from 'react-icons';
-import { FaHeart } from 'react-icons/fa6';
-import { FaLeftLong } from 'react-icons/fa6';
-import { FaUserPen } from 'react-icons/fa6';
-import { FaUserLock } from 'react-icons/fa6';
+import { FaHeart, FaLeftLong, FaUserPen, FaUserLock } from 'react-icons/fa6';
 
 type ProfileType = 'user' | 'generic' | 'edit';
 
