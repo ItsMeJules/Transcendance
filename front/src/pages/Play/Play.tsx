@@ -59,7 +59,7 @@ const Play = () => {
     const player2Data = getParseLocalStorage('player2');
     setPlayer1Data(player1Data);
     setPlayer2Data(player2Data);
-    if (player1Data !== null && player2Data != null) {
+    if (player1Data !== null && player2Data !== null) {
       if (player1Data.id === userData.id)
         setWhichPlayer(1);
       else

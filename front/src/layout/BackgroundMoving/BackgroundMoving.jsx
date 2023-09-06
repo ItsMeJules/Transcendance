@@ -174,7 +174,7 @@ function BackgroundMoving() {
                         },
                         random: false,
                         size: true,
-                        speed: 5,
+                        speed: 200,
                         spin: {
                             acceleration: 0,
                             enable: false
@@ -200,7 +200,7 @@ function BackgroundMoving() {
                         value: 80,
                     },
                     opacity: {
-                        value: 0.5,
+                        value: 0.9,
                     },
                     shape: {
                         type: "square",
@@ -212,8 +212,8 @@ function BackgroundMoving() {
                             speed: { min: 0.1, max: 1 },
                             startValue: "min",
                             destroy: "max",
-                            minimumValue: 10, // Minimum size of the particle
-                            maximumValue: 50, // Maximum size of the particle (the size at the end of its lifetime)
+                            minimumValue: 100, // Minimum size of the particle
+                            maximumValue: 500, // Maximum size of the particle (the size at the end of its lifetime)
                             // size_min: 4,
                             sync: false
                         }

@@ -10,6 +10,7 @@ import Spectate from 'pages/Spectate/Spectate';
 import Play from 'pages/Play/Play';
 import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
 import GenericUserProfile from 'pages/Profile/GenericUserProfile';
+import ProfileGameHistory from 'pages/ProfileGameHistory/ProfileGameHistory';
 import JoinGame from 'pages/JoinGame/JoinGame';
 import Websocket from 'services/Websocket/Websocket';
 import NotFoundPageDashboard from 'pages/NotFoundPage/NotFoundDashboard';
@@ -36,6 +37,7 @@ const Dashboard = () => {
               <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
               <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
               <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id"} element={<GenericUserProfile />} />
+              <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id" + APP_ROUTES.GAME_HISTORY_SUFFIX} element={<ProfileGameHistory />} />
               <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
               <Route path={APP_ROUTES.PLAY} element={<Play />} />
               <Route path={APP_ROUTES.SPECTATE} element={<Spectate noGame={noGame} setNoGame={setNoGame} />} />

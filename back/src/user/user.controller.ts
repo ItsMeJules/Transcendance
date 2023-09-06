@@ -32,7 +32,7 @@ export class UserController {
     private userService: UserService,
     private prisma: PrismaService,
     private socketEvents: SocketEvents,
-  ) {}
+  ) { }
 
   @Get('current-chat')
   getCurrentChat(@GetUser() user: User): string {
@@ -91,7 +91,13 @@ export class UserController {
       data.isFriend = 'false';
       if (userMain.friends.length !== 0) data.isFriend = 'true';
       return { data };
-    } catch (err) {}
+    } catch (err) { }
+  }
+
+  @Get(':id/game-history')
+  async getUserGameHistory(@Param('id', ParseIntPipe) id: number) {
+    const gameHistory = await this.userService.getUserGameHistory(id);
+    return { id: id, gameHistory: gameHistory };
   }
 
   @Patch('add-friend/:id')

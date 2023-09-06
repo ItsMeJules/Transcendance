@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { EditUserDto } from './dto';
 import { User, Prisma } from '@prisma/client';
+import { Game, User, Prisma } from '@prisma/client';
 import * as fs from 'fs';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -217,4 +218,29 @@ export class UserService {
       // console.error('Error adding friend:', error);
     }
   }
+
+    // >>>>>>>>>>>>>>> GAME HISTORY <<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    async getUserGameHistory(id: number): Promise<Game[]> {
+      const gameHistory = await this.prisma.game.findMany({
+        where: {
+          OR: [
+            { player1Id: id },
+            { player2Id: id },
+          ],
+        },
+        orderBy: {
+          updatedAt: 'desc',
+        },
+        include: {
+          player1: true, // Include the related player1 user data
+          player2: true, // Include the related player2 user data
+        },
+      });
+    
+      return gameHistory;
+    }
+    
+  
+    // >>>>>>>><<<<<<>>>>>>>>>><<<<<<>>>>>>>>>>><<<<<<<<<<<<
 }

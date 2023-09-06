@@ -52,7 +52,7 @@ export default function ChannelListPopup() {
   }
 
   const joinChannel = (channelName: string | null) => {
-    if (sendData != null) {
+    if (sendData !== null) {
       channelName = channelName === null ? selectedChannelName : channelName;
       sendData(ChatSocketActionType.SWITCH_CHANNEL, {
         action: "joinRoom",

@@ -3,6 +3,7 @@ export {default as Signin} from './Signin/Signin';
 export {default as Signup} from './Signup/Signup';
 export {default as Profile} from './Profile/Profile';
 export {default as ProfileEdit} from './ProfileEdit/ProfileEdit';
+export {default as ProfileGameHistory} from './ProfileGameHistory/ProfileGameHistory';
 export {default as Friends} from './Friends/Friends';
 export {default as LeaderBoard} from './LeaderBoard/LeaderBoard';
 export {default as Play} from './Play/Play';
