@@ -300,12 +300,10 @@ export const ChatBox = () => {
       <ToastContainer />
       <div className="chat-container">
         <SendDataContext.Provider value={sendData}>
-          <div className="toggler" style={togglerTransition}>
             <ChatMetadata chatToggled={chatToggled} />
             <ChatContainer />
-          </div>
 
-          <ChatBar chatToggled={chatToggled} setChatToggled={setChatToggled} />
+          <ChatBar chatToggled={chatToggled} />
         </SendDataContext.Provider>
       </div>
       {/* <div className="errors">lol</div>
