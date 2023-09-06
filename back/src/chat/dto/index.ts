@@ -18,3 +18,5 @@ export * from './send-message-room.dto';
 export * from './payload-action.dto';
 export * from './users-room.dto';
 export * from './invite-to-play.dto';
+export * from './accept-invitation.dto';
+export * from './refuse-invitation.dto';

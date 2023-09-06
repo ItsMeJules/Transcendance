@@ -31,8 +31,6 @@ export class ChatEventsGateway {
   ) {}
 
   private async setupConnection(client: Socket): Promise<User | null> {
-    console.log('> chat connection in');
-
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -52,6 +50,7 @@ export class ChatEventsGateway {
   }
 
   async handleConnection(client: Socket): Promise<void> {
+    console.log('connection');
     const user = this.setupConnection(client);
 
     user
@@ -168,8 +167,6 @@ export class ChatEventsGateway {
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
     const newPayload = { ...payload, server: this.server };
-    console.log(' ');
-    console.log(' ');
     console.log('room action payload: ', payload);
     await ActionRoomHandlers[payload.action](
       this.chatService,

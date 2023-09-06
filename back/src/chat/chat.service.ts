@@ -25,15 +25,20 @@ export class ChatService {
     private userSocketsService: UserSocketsService,
   ) {}
 
-  sendInviteToUser(client: Socket, message: string, targetId: number): void {
+  async sendInviteToUser(
+    client: Socket,
+    message: string,
+    targetId: number,
+  ): Promise<void> {
+    const targetUser = await this.prismaService.returnCompleteUser(targetId);
     const payloadSender: AcknowledgementPayload = {
-      userId: client.data.id,
-      message: message,
+      userId: targetId,
+      message: targetUser.username,
       type: AcknowledgementType.PENDING_INVITE,
     };
     const payloadTarget: AcknowledgementPayload = {
-      userId: targetId,
-      message: 'You have been invited by ' + client.data.username,
+      userId: client.data.id,
+      message: `You have been invited by ${client.data.username}`,
       type: AcknowledgementType.INVITATION,
     };
     try {
@@ -41,10 +46,41 @@ export class ChatService {
         String(targetId),
       );
       if (!targetSocket) {
-        throw new Error("User isn't online"); // add nick
+        throw new Error(targetUser.username + ' is not online'); // add nick
       }
       client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payloadSender);
-      targetSocket.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payloadSender);
+      targetSocket.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payloadTarget);
+    } catch (error) {
+      this.sendError(client, error);
+    }
+  }
+
+  async acceptInvitation( 
+    client: Socket,
+    acceptInvitationDto: ChatDtos.AcceptInvitationDto,
+  ): Promise<void> {
+    try {
+      const actingUser = await this.prismaService.user.findUnique({
+        where: { id: client.data.id },
+      });
+      const targetUser = await this.prismaService.user.findUnique({
+        where: { id: acceptInvitationDto.targetId },
+      });
+    } catch (error) {
+      this.sendError(client, error);
+    }
+  }
+
+  async refuseInvitation(
+    client: Socket,
+    acceptInvitationDto: ChatDtos.RefuseInvitationDto,
+  ): Promise<void> {
+    try {
+      const socketTarget = this.userSocketsService.getUserSocket(
+        String(acceptInvitationDto.targetId),
+      );
+      client.emit('answerInvitation', { message: 'no' });
+      socketTarget.emit('answerInvitation', { message: 'no' });
     } catch (error) {
       this.sendError(client, error);
     }
@@ -141,8 +177,8 @@ export class ChatService {
         throw new Error(
           `${targetUser.username} blocked you, you can't invite him.`,
         );
-      // more exclusions here like if target/acting is in a game, if he didn't answered yet.
-      this.sendInviteToUser(
+      // more exclusions here like if target/acting is in a game and if he didn't answered yet.
+      await this.sendInviteToUser(
         client,
         `Waiting for ${targetUser.username} to answer...`,
         targetUser.id,

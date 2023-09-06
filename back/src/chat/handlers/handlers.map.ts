@@ -45,6 +45,16 @@ export const ActionChatHandlers = {
     client: Socket,
     inviteToPlayDto: ChatDtos.InviteToPlayDto,
   ): Promise<void> => chatService.inviteToPlay(client, inviteToPlayDto),
+  acceptInvitation: async (
+    chatService: ChatService,
+    client: Socket,
+    acceptInvitationDto: ChatDtos.AcceptInvitationDto,
+  ): Promise<void> => chatService.acceptInvitation(client, acceptInvitationDto),
+  refuseInvitation: async (
+    chatService: ChatService,
+    client: Socket,
+    acceptInvitationDto: ChatDtos.RefuseInvitationDto,
+  ): Promise<void> => chatService.refuseInvitation(client, acceptInvitationDto),
 };
 
 export const ActionRoomHandlers = {

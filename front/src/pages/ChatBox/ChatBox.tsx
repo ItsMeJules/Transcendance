@@ -1,5 +1,6 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 
+import "./ChatBox.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useWebsocketContext } from "services/Websocket/Websocket";
@@ -19,19 +20,22 @@ import {
   removeUserBlocked,
   setUserActiveChannel,
 } from "utils/redux/reducers/UserSlice";
-import "./ChatBox.scss";
 import ChatContainer from "./chat_container/ChatContainer";
 import ChatBar from "./chatbar/ChatBar";
 import ChatMetadata from "./metadata/ChatMetadata";
-import { ChannelMessageData } from "./models/Channel";
 import PayloadAction from "./models/PayloadSocket";
 import {
   ChatSocketActionType,
   ChatSocketEventType,
   RoomSocketActionType,
 } from "./models/TypesActionsEvents";
+import { ChannelMessageData } from "./models/Channel";
+import { useNavigate } from "react-router-dom";
+import { APP_ROUTES } from "utils/routing/routing";
 
-export const SendDataContext = createContext<null | ((action: string, data: PayloadAction) => void)>(null);
+export const SendDataContext = createContext<
+  null | ((action: string, data: PayloadAction) => void)
+>(null);
 
 interface SocketAcknowledgements {
   actionType: string;
@@ -40,11 +44,39 @@ interface SocketAcknowledgements {
   type: string;
 }
 
+interface PendingAcceptation {
+  resolve: () => void;
+  reject: () => void;
+}
+
+interface PayloadAnswerInvitation {
+  message: string;
+  gameData: any;
+  player1: any;
+  player2: any;
+  gameChannel: any;
+}
+
 export const ChatBox = () => {
+  const [socketData, setSocketData] = useState("");
   const [chatToggled, setChatToggled] = useState<boolean>(true);
+  const pendingAcceptation = useRef<PendingAcceptation | null>(null);
   const chatSocket = useWebsocketContext().chat;
   const dispatch = useAppDispatch();
   const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (socketData === "") return;
+    console.log("hello");
+    const dataString = JSON.stringify(socketData);
+    const dataJSON = JSON.parse(dataString);
+    localStorage.setItem("gameData", JSON.stringify(dataJSON.game));
+    localStorage.setItem("player1", JSON.stringify(dataJSON.player1));
+    localStorage.setItem("player2", JSON.stringify(dataJSON.player2));
+    localStorage.setItem("gameChannel", JSON.stringify(dataJSON.gameChannel));
+    navigate(APP_ROUTES.PLAY_ABSOLUTE); // check GPT ou nouvelle page redir
+  }, [socketData]);
 
   const displayAcknowledgements = (payload: SocketAcknowledgements) => {
     switch (payload.type) {
@@ -58,7 +90,7 @@ export const ChatBox = () => {
           draggable: true,
           progress: undefined,
           theme: "colored",
-        }); //information
+        });
         break;
       case "error":
         toast.error(`Error: ${payload.message}`, {
@@ -70,7 +102,7 @@ export const ChatBox = () => {
           draggable: true,
           progress: undefined,
           theme: "colored",
-        }); //information
+        });
         break;
       case "success":
         toast.success(`${payload.message}`, {
@@ -82,7 +114,7 @@ export const ChatBox = () => {
           draggable: true,
           progress: undefined,
           theme: "colored",
-        }); //information
+        });
         break;
       case "warning":
         toast.warning(`${payload.message}`, {
@@ -94,31 +126,91 @@ export const ChatBox = () => {
           draggable: true,
           progress: undefined,
           theme: "colored",
-        }); //information
+        });
         break;
       case "invitation":
-        toast.info(`${payload.message}`, {
+        chatSocket?.on("answerInvitation", (payload2: any) => {
+          console.log("answer invite is ", payload2);
+          if (payload2.message === "yes") {
+            chatSocket?.off("answerInvitation"); // Remove the listener
+            setSocketData(payload2);
+          } else {
+            chatSocket?.off("answerInvitation"); // Remove the listener
+          }
+        });
+        const handleAccept = () => {
+          const payloadInvite: PayloadAction = {
+            action: "acceptInvitation",
+            targetId: payload.userId,
+          };
+          chatSocket?.emit(ChatSocketEventType.CHAT_ACTION, payloadInvite);
+          toast.dismiss();
+        };
+
+        const handleDecline = () => {
+          const payloadInvite: PayloadAction = {
+            action: "refuseInvitation",
+            targetId: payload.userId,
+          };
+          chatSocket?.emit(ChatSocketEventType.CHAT_ACTION, payloadInvite);
+          toast.dismiss();
+        };
+
+        const InviteActions = () => (
+          <div>
+            {payload.message}
+            <div className="btn-container">
+              <button className="btn accept" onClick={handleAccept}>
+                ✓
+              </button>
+              <button className="btn decline" onClick={handleDecline}>
+                ✗
+              </button>
+            </div>
+          </div>
+        );
+
+        toast(<InviteActions />, {
           position: "bottom-center",
-          autoClose: 3000,
+          autoClose: 15000,
           hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
+          closeOnClick: false,
+          pauseOnHover: false,
           draggable: true,
           progress: undefined,
-          theme: "colored",
-        }); //information
+          theme: "light",
+        });
         break;
       case "pending_invite":
-        toast.info(`${payload.message}`, {
-          position: "bottom-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        }); //information
+        const conditionAcceptation = () => {
+          return new Promise<void>((resolve, reject) => {
+            const timeoutId = setTimeout(() => {
+              chatSocket?.off("answerInvitation");
+              reject();
+            }, 15000);
+
+            const listener = (payload2: any) => {
+              console.log("answer invite is ", payload2);
+              if (payload2.message === "yes") {
+                clearTimeout(timeoutId);
+                chatSocket?.off("answerInvitation");
+                resolve();
+                setSocketData(payload2);
+              } else {
+                clearTimeout(timeoutId);
+                chatSocket?.off("answerInvitation");
+                reject();
+              }
+            };
+
+            chatSocket?.on("answerInvitation", listener);
+          });
+        };
+        toast.promise(conditionAcceptation(), {
+          pending: "Waiting for " + payload.message + " to accept the invitation...",
+          success: payload.message + " accepted the invitation",
+          error: payload.message + " declined the invitation.",
+        });
         break;
       default:
         break;
@@ -145,8 +237,8 @@ export const ChatBox = () => {
           dispatch(activeChannelAddUserBanned(payload.userId));
           break;
         case RoomSocketActionType.UNBAN:
-          dispatch(activeChannelRemoveUserBanned(payload.userId));
           dispatch(activeChannelAddUser(payload.userId));
+          dispatch(activeChannelRemoveUserBanned(payload.userId));
           break;
         case ChatSocketActionType.BLOCK:
           dispatch(addUserBlocked(payload.userId));
@@ -162,7 +254,7 @@ export const ChatBox = () => {
       }
       displayAcknowledgements(payload);
     });
-
+    console.log("on success", chatSocket);
     chatSocket?.on(ChatSocketEventType.FETCH_MESSAGES, (payload: ChannelMessageData[]) => {
       dispatch(setActiveChannelMessages(payload)); // faire fonction
     });
@@ -173,6 +265,7 @@ export const ChatBox = () => {
       chatSocket?.off(ChatSocketEventType.ACKNOWLEDGEMENTS);
       chatSocket?.off(ChatSocketEventType.SUCCESS);
       chatSocket?.off(ChatSocketEventType.ERRORS);
+      chatSocket?.off("answerInvitation");
     };
   }, [dispatch, chatSocket, activeChannelName]);
 
@@ -190,7 +283,6 @@ export const ChatBox = () => {
     if (isChatSocketActionType(action)) {
       eventType = ChatSocketEventType.CHAT_ACTION;
     }
-  
     if (isRoomSocketActionType(action)) {
       if (!activeChannelName) return;
       data = { ...data, roomName: activeChannelName };

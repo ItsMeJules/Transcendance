@@ -14,7 +14,6 @@ $font-color: rgba(255, 255, 255, 0.7);
   background: $background;
   border-radius: 20px;
 
-
   .metadata-container {
     display: flex;
     flex-direction: row;
@@ -26,15 +25,12 @@ $font-color: rgba(255, 255, 255, 0.7);
 
     z-index: 2;
 
-
     .more {
-
       display: flex;
       height: 90px;
       width: 50px;
 
       .more-symbol-container {
-
         margin-top: 15px;
         justify-content: center;
         align-items: center;
@@ -47,7 +43,6 @@ $font-color: rgba(255, 255, 255, 0.7);
         align-items: center;
 
         .more-symbol {
-
           flex-direction: column;
           justify-content: center;
           align-items: center;
@@ -84,7 +79,6 @@ $font-color: rgba(255, 255, 255, 0.7);
             position: relative;
             left: -5px;
           }
-
         }
       }
 
@@ -137,7 +131,6 @@ $font-color: rgba(255, 255, 255, 0.7);
           left: 50%;
           transform: translate(-50%, -50%);
 
-
           border-radius: 5px;
 
           .password-popup-content {
@@ -168,7 +161,6 @@ $font-color: rgba(255, 255, 255, 0.7);
               }
 
               .cancel {
-
                 &:hover {
                   color: $hover-color;
                   background-color: #dd3c49;
@@ -213,7 +205,6 @@ $font-color: rgba(255, 255, 255, 0.7);
             border-radius: 5px;
 
             .selected-text {
-
               height: 80px;
               padding: 10px;
               width: 100%;
@@ -239,7 +230,6 @@ $font-color: rgba(255, 255, 255, 0.7);
             }
 
             .images {
-
               display: flex;
               flex-direction: row;
               justify-content: space-evenly;
@@ -398,7 +388,6 @@ $font-color: rgba(255, 255, 255, 0.7);
               }
             }
 
-
             .user-container {
               border-bottom: $border;
 
@@ -437,7 +426,6 @@ $font-color: rgba(255, 255, 255, 0.7);
           }
 
           .user-actions {
-
             font-family: "dune", Arial, sans-serif;
             font-size: 8pt;
             justify-content: center;
@@ -652,7 +640,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             transition: transform 0.3s;
 
             &:hover {
-              transform: scale(1.1)
+              transform: scale(1.1);
             }
           }
         }
@@ -684,7 +672,6 @@ $font-color: rgba(255, 255, 255, 0.7);
             width: 150px;
 
             .invited {
-
               background: rgba(0, 0, 0, 0.72);
               display: flex;
               justify-content: center;
@@ -853,11 +840,11 @@ $font-color: rgba(255, 255, 255, 0.7);
           }
         }
       }
-      
+
       .users-list-banned {
         position: absolute;
         top: 100%;
-        
+
         background: rgba(0, 0, 0, 0.72);
         color: white;
         display: flex;
@@ -867,7 +854,7 @@ $font-color: rgba(255, 255, 255, 0.7);
         overflow-y: scroll;
         // Style the scrollbar
         scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
-        
+
         &:hover {
           scrollbar-color: rgba(128, 128, 128, 0.6) rgba(0, 0, 0, 0.2); // Show scrollbar thumb and border on hover
         }
@@ -895,14 +882,14 @@ $font-color: rgba(255, 255, 255, 0.7);
 
         border-radius: 5px;
         border: $border;
-        
+
         h3 {
           font-size: 14pt;
           padding: 10px;
           margin: 0px;
           color: black;
         }
-        
+
         .users-list {
           display: flex;
           flex-direction: column;
@@ -958,7 +945,8 @@ $font-color: rgba(255, 255, 255, 0.7);
 
           text-align: center;
 
-          h3 {}
+          h3 {
+          }
 
           button {
             padding: 8px 16px;
@@ -1098,13 +1086,11 @@ $font-color: rgba(255, 255, 255, 0.7);
       filter: invert(40%);
 
       img {
-
         height: 70%;
         width: auto;
 
         border-radius: 50%;
       }
-
     }
   }
 
@@ -1114,7 +1100,6 @@ $font-color: rgba(255, 255, 255, 0.7);
 
     overflow-y: scroll;
     z-index: 1;
-
 
     // Style the scrollbar
     scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
@@ -1288,4 +1273,40 @@ $font-color: rgba(255, 255, 255, 0.7);
       }
     }
   }
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  font-size: 16px;
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.accept {
+  background-color: #4caf50;
+  color: white;
+}
+
+.decline {
+  background-color: #f44336;
+  color: white;
+}
+
+/* Hover effect */
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* Active click effect */
+.btn:active {
+  transform: scale(1);
 }

@@ -10,7 +10,6 @@ export class UserSocketsService {
   }
 
   getUserSocket(userId: string): Socket | undefined {
-    console.log('6');
     return this.userSockets[userId];
   }
 
