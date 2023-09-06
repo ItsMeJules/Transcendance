@@ -1,0 +1,188 @@
+diff --git a/back/src/chat/chat.gateway.ts b/back/src/chat/chat.gateway.ts
+index b14691a..45b7a65 100644
+--- a/back/src/chat/chat.gateway.ts
++++ b/back/src/chat/chat.gateway.ts
+@@ -31,6 +31,8 @@ export class ChatEventsGateway {
+   ) {}
+ 
+   private async setupConnection(client: Socket): Promise<User | null> {
++    console.log('> chat connection in');
++
+     const access_token = extractAccessTokenFromCookie(client);
+     if (!access_token) {
+       client.disconnect();
+@@ -50,7 +52,6 @@ export class ChatEventsGateway {
+   }
+ 
+   async handleConnection(client: Socket): Promise<void> {
+-    console.log('connection');
+     const user = this.setupConnection(client);
+ 
+     user
+@@ -167,6 +168,8 @@ export class ChatEventsGateway {
+     @MessageBody() payload: PayloadActionDto,
+   ): Promise<void> {
+     const newPayload = { ...payload, server: this.server };
++    console.log(' ');
++    console.log(' ');
+     console.log('room action payload: ', payload);
+     await ActionRoomHandlers[payload.action](
+       this.chatService,
+diff --git a/back/src/chat/chat.service.ts b/back/src/chat/chat.service.ts
+index 2e33d5d..5f410ba 100644
+--- a/back/src/chat/chat.service.ts
++++ b/back/src/chat/chat.service.ts
+@@ -25,20 +25,15 @@ export class ChatService {
+     private userSocketsService: UserSocketsService,
+   ) {}
+ 
+-  async sendInviteToUser(
+-    client: Socket,
+-    message: string,
+-    targetId: number,
+-  ): Promise<void> {
+-    const targetUser = await this.prismaService.returnCompleteUser(targetId);
++  sendInviteToUser(client: Socket, message: string, targetId: number): void {
+     const payloadSender: AcknowledgementPayload = {
+-      userId: targetId,
+-      message: targetUser.username,
++      userId: client.data.id,
++      message: message,
+       type: AcknowledgementType.PENDING_INVITE,
+     };
+     const payloadTarget: AcknowledgementPayload = {
+-      userId: client.data.id,
+-      message: `You have been invited by ${client.data.username}`,
++      userId: targetId,
++      message: 'You have been invited by ' + client.data.username,
+       type: AcknowledgementType.INVITATION,
+     };
+     try {
+@@ -46,41 +41,10 @@ export class ChatService {
+         String(targetId),
+       );
+       if (!targetSocket) {
+-        throw new Error(targetUser.username + ' is not online'); // add nick
++        throw new Error("User isn't online"); // add nick
+       }
+       client.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payloadSender);
+-      targetSocket.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payloadTarget);
+-    } catch (error) {
+-      this.sendError(client, error);
+-    }
+-  }
+-
+-  async acceptInvitation( 
+-    client: Socket,
+-    acceptInvitationDto: ChatDtos.AcceptInvitationDto,
+-  ): Promise<void> {
+-    try {
+-      const actingUser = await this.prismaService.user.findUnique({
+-        where: { id: client.data.id },
+-      });
+-      const targetUser = await this.prismaService.user.findUnique({
+-        where: { id: acceptInvitationDto.targetId },
+-      });
+-    } catch (error) {
+-      this.sendError(client, error);
+-    }
+-  }
+-
+-  async refuseInvitation(
+-    client: Socket,
+-    acceptInvitationDto: ChatDtos.RefuseInvitationDto,
+-  ): Promise<void> {
+-    try {
+-      const socketTarget = this.userSocketsService.getUserSocket(
+-        String(acceptInvitationDto.targetId),
+-      );
+-      client.emit('answerInvitation', { message: 'no' });
+-      socketTarget.emit('answerInvitation', { message: 'no' });
++      targetSocket.emit(ChatSocketEventType.ACKNOWLEDGEMENTS, payloadSender);
+     } catch (error) {
+       this.sendError(client, error);
+     }
+@@ -177,8 +141,8 @@ export class ChatService {
+         throw new Error(
+           `${targetUser.username} blocked you, you can't invite him.`,
+         );
+-      // more exclusions here like if target/acting is in a game and if he didn't answered yet.
+-      await this.sendInviteToUser(
++      // more exclusions here like if target/acting is in a game, if he didn't answered yet.
++      this.sendInviteToUser(
+         client,
+         `Waiting for ${targetUser.username} to answer...`,
+         targetUser.id,
+diff --git a/back/src/chat/dto/accept-invitation.dto.ts b/back/src/chat/dto/accept-invitation.dto.ts
+deleted file mode 100644
+index bb642ee..0000000
+--- a/back/src/chat/dto/accept-invitation.dto.ts
++++ /dev/null
+@@ -1,9 +0,0 @@
+-import { IsNumber } from 'class-validator';
+-import { Server } from 'socket.io';
+-
+-export class AcceptInvitationDto {
+-  @IsNumber()
+-  targetId: number;
+-
+-  server: Server;
+-}
+diff --git a/back/src/chat/dto/index.ts b/back/src/chat/dto/index.ts
+index 4dd52f9..38f367e 100644
+--- a/back/src/chat/dto/index.ts
++++ b/back/src/chat/dto/index.ts
+@@ -18,5 +18,3 @@ export * from './send-message-room.dto';
+ export * from './payload-action.dto';
+ export * from './users-room.dto';
+ export * from './invite-to-play.dto';
+-export * from './accept-invitation.dto';
+-export * from './refuse-invitation.dto';
+diff --git a/back/src/chat/dto/refuse-invitation.dto.ts b/back/src/chat/dto/refuse-invitation.dto.ts
+deleted file mode 100644
+index d6b8b0a..0000000
+--- a/back/src/chat/dto/refuse-invitation.dto.ts
++++ /dev/null
+@@ -1,9 +0,0 @@
+-import { IsNumber } from 'class-validator';
+-import { Server } from 'socket.io';
+-
+-export class RefuseInvitationDto {
+-  @IsNumber()
+-  targetId: number;
+-
+-  server: Server;
+-}
+diff --git a/back/src/chat/handlers/handlers.map.ts b/back/src/chat/handlers/handlers.map.ts
+index 36276ca..5ce9ef4 100644
+--- a/back/src/chat/handlers/handlers.map.ts
++++ b/back/src/chat/handlers/handlers.map.ts
+@@ -45,16 +45,6 @@ export const ActionChatHandlers = {
+     client: Socket,
+     inviteToPlayDto: ChatDtos.InviteToPlayDto,
+   ): Promise<void> => chatService.inviteToPlay(client, inviteToPlayDto),
+-  acceptInvitation: async (
+-    chatService: ChatService,
+-    client: Socket,
+-    acceptInvitationDto: ChatDtos.AcceptInvitationDto,
+-  ): Promise<void> => chatService.acceptInvitation(client, acceptInvitationDto),
+-  refuseInvitation: async (
+-    chatService: ChatService,
+-    client: Socket,
+-    acceptInvitationDto: ChatDtos.RefuseInvitationDto,
+-  ): Promise<void> => chatService.refuseInvitation(client, acceptInvitationDto),
+ };
+ 
+ export const ActionRoomHandlers = {
+diff --git a/back/src/chat/user-sockets/user-sockets.service.ts b/back/src/chat/user-sockets/user-sockets.service.ts
+index 1d05177..44dbca8 100644
+--- a/back/src/chat/user-sockets/user-sockets.service.ts
++++ b/back/src/chat/user-sockets/user-sockets.service.ts
+@@ -10,6 +10,7 @@ export class UserSocketsService {
+   }
+ 
+   getUserSocket(userId: string): Socket | undefined {
++    console.log('6');
+     return this.userSockets[userId];
+   }
+ 

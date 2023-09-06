@@ -5,7 +5,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { User } from '@prisma/client';
+import { RoomType, User } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { ChatSocketEventType, extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
@@ -16,6 +16,7 @@ import {
   ActionRoomHandlers,
 } from './handlers/handlers.map';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 // @UseGuards(JwtGuard) // add jwt guard for chat auth
 @WebSocketGateway({ namespace: 'chat' })
@@ -26,11 +27,10 @@ export class ChatEventsGateway {
     private authService: AuthService,
     private chatService: ChatService,
     private userSocketsService: UserSocketsService,
+    private prismaService: PrismaService,
   ) {}
 
   private async setupConnection(client: Socket): Promise<User | null> {
-    // console.log('> chat connection in');
-
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -50,6 +50,7 @@ export class ChatEventsGateway {
   }
 
   async handleConnection(client: Socket): Promise<void> {
+    console.log('connection');
     const user = this.setupConnection(client);
 
     user
@@ -67,9 +68,21 @@ export class ChatEventsGateway {
             server: this.server,
           });
 
-        this.server
-          .to(client.id)
-          .emit(ChatSocketEventType.JOIN_ROOM, currentCompleteRoom);
+        let roomDisplayname = currentCompleteRoom.name;
+        if (currentCompleteRoom.type === RoomType.DIRECT) {
+          const [_, topId, lowId] = currentCompleteRoom.name
+            .split('-')
+            .map(Number);
+          const targetId = topId === user.id ? lowId : topId;
+          roomDisplayname = currentCompleteRoom.users.find(
+            (user) => user.id === targetId,
+          )?.username;
+        }
+
+        this.server.to(client.id).emit(ChatSocketEventType.JOIN_ROOM, {
+          ...currentCompleteRoom,
+          displayname: roomDisplayname,
+        });
 
         this.server
           .to(client.id)
@@ -79,16 +92,43 @@ export class ChatEventsGateway {
       .catch((reason) => console.log(reason));
   }
 
-  handleDisconnect(client: Socket): void {
-    this.userSocketsService.removeUserSocket(client.data.id);
-    // console.log('removed socket data of user id : ', client.data.id);
-    client.off(ChatSocketEventType.MESSAGE, () => console.log('chat !'));
-    client.off(ChatSocketEventType.CHAT_ACTION, () =>
-      console.log('chat action !'),
+  async handleDisconnect(client: Socket): Promise<void> {
+    const userClient = await this.prismaService.user.findUnique({
+      where: { id: client.data.id },
+    });
+
+    await this.leaveRoomAndRemoveUser(
+      client,
+      userClient.currentRoom,
+      userClient.id,
     );
-    client.off(ChatSocketEventType.ROOM_ACTION, () =>
-      console.log('room action !'),
-    );
+    this.removeEventListeners(client);
+  }
+
+  async leaveRoomAndRemoveUser(
+    client: Socket,
+    room: string,
+    userId: number,
+  ): Promise<void> {
+    try {
+      await client.leave(room);
+      this.userSocketsService.removeUserSocket(String(userId));
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  removeEventListeners(client: Socket): void {
+    const eventTypes = [
+      ChatSocketEventType.MESSAGE,
+      ChatSocketEventType.CHAT_ACTION,
+      ChatSocketEventType.ROOM_ACTION,
+    ];
+
+    eventTypes.forEach((eventType) => {
+      client.off(eventType, () => console.log(`${eventType} action !`));
+    });
   }
 
   @SubscribeMessage(ChatSocketEventType.MESSAGE)
@@ -127,8 +167,6 @@ export class ChatEventsGateway {
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
     const newPayload = { ...payload, server: this.server };
-    console.log(' ');
-    console.log(' ');
     console.log('room action payload: ', payload);
     await ActionRoomHandlers[payload.action](
       this.chatService,

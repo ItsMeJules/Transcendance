@@ -54,10 +54,10 @@ export const ProfileEdit: React.FC = () => {
   }, []);
 
   return (
-    <section className="profile-board-container">
-        <ProfileCard userData={userData} type="edit" fetchUserProfile={fetchUserProfile} />
-        <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
-    </section>
+    <>
+    <ProfileCard userData={userData} type="edit" fetchUserProfile={fetchUserProfile} />
+    <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
+    </>
   );
 }
 

@@ -73,7 +73,7 @@ export default function ChannelCreationPopup() {
       {channelType === ChannelType.PROTECTED && (
         <div className="password-input">
           <input
-            placeholder="Entrez le mdp du channel."
+            placeholder="Enter channel password."
             onChange={(e) => setChannelPassword(e.target.value)}
             value={channelPassword}
             required

@@ -1,35 +1,33 @@
 $png-background-color: rgba(250, 250, 250, 0.5);
 
   .profile-board-container {
-    align-items: center;
-    justify-content: space-evenly;
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    height: 100%;
+    
     border-radius: 40px;
-    padding: 20px;
+    padding: 50px;
     background-color: transparent;
 
       .profile-board-header {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        flex-direction: row;
         align-self: start;
-        padding-left: 20px;
-        padding-top: 20px;
+        width: 100%;
       }
 
       .profile-pic-container {
-        width: 100%;
+        min-width: 100px;
+        width:50%;
         height: auto;
         display: flex;
-        padding-bottom: 20px;
         justify-content: center;
 
-        .profile-pic-circle {
-          width: 15%;
+        .profile-pic-circle,
+        .empty-profile-pic-circle {
+          width: 100%;
           height: 100%;
           border-radius: 50%;
           overflow: hidden;
@@ -39,19 +37,13 @@ $png-background-color: rgba(250, 250, 250, 0.5);
           background-color: $png-background-color;
         }
 
-        .empty-profile-pic-circle {
-          width: 15%;
-          height: 100%;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          font-weight: bold;
+        .profile-pic-circle {
+          .profile-pic-img-class {
+            height: 100%;
+            width: 100%;
+          }
         }
       
-
-
     }
 
     .profil-board-header-edit-profile {
@@ -252,6 +244,7 @@ $png-background-color: rgba(250, 250, 250, 0.5);
     }
 
     .stats-first-container {
+
       @mixin fields-name-sub-font-color {
         font-family: "dune", Arial, sans-serif;
         font-weight: bold;
@@ -269,6 +262,7 @@ $png-background-color: rgba(250, 250, 250, 0.5);
     }
 
     .stats-second-container {
+
       @mixin fields-name-sub-font-color {
         font-family: "dune", Arial, sans-serif;
         font-weight: bold;
