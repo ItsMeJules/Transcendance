@@ -35,14 +35,6 @@ export const Signin = () => {
     }
   }, [success]);
 
-  useEffect(() => {
-    console.log('error message:', errorMessage);
-    if (errorMessage === 'nouser')
-      toast.error('No user found');
-      if (errorMessage === 'passwordrequired')
-      toast.error('This account has a password provided, please sign in via the form.');
-  }, [])
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -58,6 +50,16 @@ export const Signin = () => {
       setSuccess(true);
     } catch (err: any) { }
   }
+
+  useEffect(() => {
+    console.log('error message:', errorMessage);
+    if (errorMessage === 'nouser')
+      toast.error('No user found');
+    if (errorMessage === 'passwordrequired')
+      toast.error('This account has a password provided, please sign in via the form.');
+    if (errorMessage === 'unauthorized')
+      toast.error('Unauthorized. Please log in again.');
+  }, [])
 
   return (
     <div className="login-container">

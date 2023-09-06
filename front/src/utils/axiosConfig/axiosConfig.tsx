@@ -47,6 +47,7 @@ export function useAxios() {
 
       case 401: // Unauthorized
         toast.error(errorMessage || "Unauthorized. Please log in again.", { toastId });
+        // navigate("/login?error=unauthorized");
         break;
 
       case 403: // Forbidden
@@ -74,7 +75,6 @@ export function useAxios() {
     }
   }
 
-
   /* Components handler functions */
   const handleLoginErrors = (err: any, toastId: string) => {
     if (err.response.status === HttpStatus.BAD_REQUEST
@@ -86,25 +86,17 @@ export function useAxios() {
   }
 
   const handle2FAErrors = (err: any, toastId: string) => {
-
+    console.log('error here 2fa:', err);
     if (err.response && err.response.status === 450) {
-      // toast.error(extractErrorMessage(err), { toastId });
       navigate("/dashboard/profile/me?error=no2fa");
       return ERROR.YES;
     } else if (err.response && err.response.status === 451) {
-      // console.log("You are already verified!! What are you trying to do???");
       navigate("/dashboard/profile/me?error=alreadyverified");
-      // navigate("/dashboard/profile/me");
+      return ERROR.YES;
+    } else if (err.response && err.response.status === 499) {
+      navigate("/profile/me/two-fa");
+      return ERROR.YES;
     }
-            // if (error.response && error.response.status === 499) {
-        //   console.log("You have to connect with 2FA");
-        //   navigate("/profile/me/two-fa");
-        // }
-
-//     if (err.response && err.response.status === 450) {
-//   console.log("You don't have 2FA enabled");
-//   navigate("/dashboard/profile/me");
-// }
 
 
     return ERROR.NO;
@@ -121,10 +113,12 @@ export function useAxios() {
       if (toast.isActive(toastId)) return;
 
       console.log('err:', error.response);
+
       if (config.url.includes(APP_ROUTES.SIGN_UP))          // Sign up ok
         errorValue = handleLoginErrors(error, toastId);
-      if (config.url.includes(APP_ROUTES.SIGN_IN))
+      if (config.url.includes(APP_ROUTES.SIGN_IN))          // Sign in ok
         errorValue = handleLoginErrors(error, toastId);
+      errorValue = handle2FAErrors(error, toastId);
       if (!errorValue) handleGlobalErrors(error, toastId);
 
       return Promise.reject(error);

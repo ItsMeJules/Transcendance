@@ -13,12 +13,6 @@ export class TwoFaService {
     twoFactorAuthenticationCode: string,
     user: User,
   ): boolean {
-    console.log(
-      'twoFactorAuthenticationCode :',
-      twoFactorAuthenticationCode,
-      'user.twoFactorAuthenticationSecret :',
-      user.twoFactorAuthenticationSecret,
-    );
     return authenticator.verify({
       token: twoFactorAuthenticationCode,
       secret: user.twoFactorAuthenticationSecret,
@@ -47,10 +41,8 @@ export class TwoFaService {
     }
   }
 
+  /* Generate QR code + URL */
   public async pipeQrCodeStream(stream: Response, otpAuthUrl: string) {
-    console.log('otpAuthUrl :', otpAuthUrl);
-    console.log('\n :');
-    console.log('stream :', stream);
     return toFileStream(stream, otpAuthUrl);
   }
 }

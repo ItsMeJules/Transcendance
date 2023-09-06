@@ -1,15 +1,18 @@
 import { useRef, useState, useEffect, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAxios } from "../../utils/axiosConfig/axiosConfig";
-import { API_ROUTES } from "../../utils/routing/routing";
+import { API_ROUTES, APP_ROUTES } from "../../utils/routing/routing";
 import TwoFaContainer from './components/2faContainer';
 import AuthenticationHeader from './components/AuthentificationHeader';
 import ErrorMessage from './components/ErrorMessage';
 import AuthentificationForm from './components/AuthentificationForm';
-
+import { toast } from 'react-toastify'
 import './css/AuthentificationForm.scss';
 
 export const Auth2factor = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const errorMessage = queryParams.get('error');
   const errRef = useRef<HTMLParagraphElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
   const history = useNavigate();
@@ -25,14 +28,15 @@ export const Auth2factor = () => {
         { twoFactorAuthentificationCode: "" },
         { withCredentials: true }
       );
-    } catch (err: any) {}
+    } catch (err: any) { }
   };
 
   useEffect(() => {
     fetchUserProfile();
-    if (codeRef.current) {
+    if (codeRef.current)
       codeRef.current.focus();
-    }
+    if (errorMessage === 'need2fa')
+      toast.error('You have to connect with 2FA');
   }, []);
 
   useEffect(() => {
@@ -40,11 +44,9 @@ export const Auth2factor = () => {
   }, [code]);
 
   useEffect(() => {
-    console.log("success is !!!!!:", success);
     if (success) {
-      history("/dashboard/profile/me");
+      history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
 
   const customAxiosInstance = useAxios();

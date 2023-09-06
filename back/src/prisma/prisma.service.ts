@@ -15,6 +15,7 @@ import { CompleteRoom, CompleteUser } from 'src/utils/complete.type';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
+
   constructor(config: ConfigService) {
     super({
       datasources: {
@@ -23,6 +24,30 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         },
       },
     });
+  }
+
+  /* Main function to get user by id and return without hash - error management ok */
+  async findUserById(id: number): Promise<User | null> {
+    if (!id) return null;
+    try {
+      const user = await this.user.findUnique({
+        where: { id: id },
+      });
+      if (user) delete user.hash;
+      return user;
+    } catch (error) {
+      handlePrismaError(error);
+    }
+  }
+
+  /* Find user by email and delete hash - error management ok */
+  async findUserByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.user.findUnique({ where: { email } });
+      return user;
+    } catch (error) {
+      handlePrismaError(error);
+    }
   }
 
   async onModuleInit(): Promise<Room> {
@@ -52,54 +77,53 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     });
   }
 
-  async isUsernameTaken(username: string): Promise<User> {
+  async findUserByUsername(username: string): Promise<User> {
     return this.user.findUnique({ where: { username } });
   }
 
-  async findUserById(id: number): Promise<User | null> {
-    if (!id) return null;
-    const user = await this.user.findUnique({
-      where: { id: id },
-    });
-    if (user) delete user.hash;
-    return user;
-  }
-
-  async findUserByEmail(email: string): Promise<User> {
-    return this.user.findUnique({ where: { email } });
-  }
-
+  /* OAuth find or create user if not existing - error management ok */
   async findOrCreateUserOAuth(data: Prisma.UserCreateInput): Promise<User> {
     const user: User = await this.findUserByEmail(data.email);
-    if (user) {
-      return user;
-    }
+    if (user) return user;
+    // User doesn't exist, now check if the username is not already taken to protect 2FA sign up
     let usernameAvailable = false;
     let modifiedUsername = data.username;
-    // Check if username is taken
     while (!usernameAvailable) {
-      const userNameCheck = await this.isUsernameTaken(modifiedUsername);
-      // console.log('test:', userNameCheck);
+      const userNameCheck = await this.findUserByUsername(modifiedUsername);
       if (!userNameCheck) {
         usernameAvailable = true;
       } else {
-        const randomSuffix = Math.floor(Math.random() * 9); // You can adjust the range of the random number as needed
+        const randomSuffix = Math.floor(Math.random() * 9);
         modifiedUsername = data.username + randomSuffix;
       }
     }
     data.username = modifiedUsername;
-    // console.log('username:', data.username);
     try {
       const createdUser = await this.user.create({ data });
       return createdUser;
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          // Add more errors handlers or a default one?
-          throw new ForbiddenException('Username taken');
-        }
-      }
-      throw error;
+      handlePrismaError(error);
+    }
+  }
+
+  /* 2FA */
+  /* Set 2FA secret - error management ok */
+  async setTwoFactorAuthenticationSecret(
+    secret: string,
+    userId: number,
+  ): Promise<User> {
+    try {
+      const user = await this.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          twoFactorAuthenticationSecret: secret,
+        },
+      });
+      return user;
+    } catch (error) {
+      handlePrismaError(error);
     }
   }
 
@@ -118,29 +142,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       return user;
     } catch (error) {
       handlePrismaError(error);
-      throw (error);
-    }
-  }
-
-  /* 2FA */
-  /* Turn on 2FA - error management ok */
-  async setTwoFactorAuthenticationSecret(
-    secret: string,
-    userId: number,
-  ): Promise<User> {
-    try {
-      const user = await this.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          twoFactorAuthenticationSecret: secret,
-        },
-      });
-      return user;
-    } catch (error) {
-      handlePrismaError(error);
-      throw (error);
     }
   }
 
@@ -159,7 +160,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       return user;
     } catch (error) {
       handlePrismaError(error);
-      throw (error);
     }
   }
 

@@ -15,13 +15,13 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     });
   }
 
+  /* 42 OAuth strategy validation - error management ok */
   async validate(
     accessToken: string,
     refreshToken: string,
     profile: any,
     @Res({ passthrough: true }) res: Response,
   ): Promise<User | null> {
-    //promise? <any?> void?
     try {
       const user = await this.prismaService.findOrCreateUserOAuth({
         username: profile._json.login,
@@ -31,20 +31,13 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
         profilePicture: profile._json.image.link,
         hash: '',
       });
-      // if (user.hash === '')
-      //   console.log('EMPTY HASH');
-      // else
+      // Uncomment to force a user with a 42 or google mail that has a password
+      // to sign in via the form instead of bypassing the password via OAuth
+      // if (user.hash !== '')
       //   throw new BadRequestException('Password needed, please sign in via the form');
-      // console.log('user:', user);
       return user;
     } catch (error) {
-      // res.redirect('/dashboard/profile/me');
-      // res.status(HttpStatus.BAD_REQUEST).json({
-      //   statusCode: HttpStatus.BAD_REQUEST,
-      //   message: 'Google authentication failed', // Provide a meaningful error message
-      // });
       throw (error);
-      // return null;
     }
   }
 }

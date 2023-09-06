@@ -61,7 +61,6 @@ export class AuthService {
       return this.login(user);
     } catch (error) {
       handlePrismaError(error);
-      throw (error);
     }
   }
 
@@ -99,7 +98,6 @@ export class AuthService {
     } catch (err) {
       handleJwtError(err);
       handlePrismaError(err);
-      throw (error);
     }
   }
 
@@ -127,7 +125,6 @@ export class AuthService {
       await Promise.all(updates);
     } catch (error) {
       handlePrismaError(error);
-      throw (error);
     }
   }
 }

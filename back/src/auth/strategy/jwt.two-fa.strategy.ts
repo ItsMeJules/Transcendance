@@ -23,14 +23,13 @@ export class JwtTwoFactorStrategy extends PassportStrategy(
     });
   }
 
+  /* Jwt-2FA strategy validation - error management ok */
   async validate(payload: PayloadDto): Promise<User> {
     const user = await this.prismaService.findUserById(payload.id);
-    if (payload.isTwoFactorAuthenticationVerified === true) {
+    if (payload.isTwoFactorAuthenticationVerified === true)
       throw new TwoFaEnabledException();
-    }
-    if (!user) {
+    if (!user)
       throw new UnauthorizedException('User not found');
-    }
     delete user.hash;
     return user;
   }

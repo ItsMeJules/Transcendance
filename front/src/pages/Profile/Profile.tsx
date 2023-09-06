@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "utils/routing/routing";
+import { useLocation } from "react-router-dom";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
-import ToastError from "layout/ToastError/ToastError";
 import User from "services/User/User";
 import { UserData } from "services/User/User";
 import './css/UserProfile.scss';
@@ -10,18 +8,15 @@ import './css/ProgressBar.scss';
 import ProfileCard from "./components/ProfileCard";
 import { useAppDispatch } from "utils/redux/Store";
 import { setUser } from "utils/redux/reducers/UserSlice";
+import { toast } from 'react-toastify';
 
 export const Profile: React.FC = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const errorMessage = queryParams.get('error');
   const [userDataProfile, setUserDataProfile] = useState<UserData | null>(null);
-  const [errMsg, setErrMsg] = useState('');
-  const [level, setLevel] = useState(0);
-  const history = useNavigate();
   const dispatchUser = useAppDispatch();
   const customAxiosInstance = useAxios();
-
-  const resetErrMsg = () => {
-    setErrMsg(''); // Reset errMsg to an empty string
-  };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -39,34 +34,31 @@ export const Profile: React.FC = () => {
         localStorage.setItem("userData", JSON.stringify(userData));
         setUserDataProfile(userData);
         User.getInstance().setUserFromResponseData(userData);
-        setLevel(User.getInstance().getUserLevel());
       } catch (err: any) {
-        if (!err?.response) {
-          setErrMsg('No Server Response');
-        } else if (err.response?.status === 400) {
-          setErrMsg('Bad request');
-        } else if (err.response?.status === 401) {
-          setErrMsg('Unauthorized');
-          history(APP_ROUTES.HOME);
-        }
-        else {
-          setErrMsg('Error');
-        }
+        console.log('errror profile:', err);
+        // if (!err?.response) {
+        //   setErrMsg('No Server Response');
+        // } else if (err.response?.status === 400) {
+        //   setErrMsg('Bad request');
+        // } else if (err.response?.status === 401) {
+        //   setErrMsg('Unauthorized');
+        //   history(APP_ROUTES.HOME);
+        // }
+        // else {
+        //   setErrMsg('Error');
+        // }
       }
     };
-
+    if (errorMessage === 'alreadyverified')
+      toast.error('You are already verified!');
+    if (errorMessage === 'no2fa')
+      toast.error("You don't have 2FA enabled");
     fetchUserProfile();
   }, []);
 
-  const handleLogoutError = (error: string) => {
-    setErrMsg(error);
-    console.log("Error", error);
-  };
-
   return (
     <>
-        <ProfileCard userData={userDataProfile} />
-        <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
+      <ProfileCard userData={userDataProfile} />
     </>
   );
 }

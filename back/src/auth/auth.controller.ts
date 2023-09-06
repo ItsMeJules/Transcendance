@@ -9,7 +9,6 @@ import {
   UseGuards,
   Res,
   Req,
-  ForbiddenException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
@@ -23,7 +22,6 @@ import { JwtService } from '@nestjs/jwt';
 import { NoTwoFaException } from './exceptions/no-two-fa.exception';
 import JwtTwoFactorGuard from './guard/jwt.two-fa.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { error } from 'console';
 import handleJwtError from '@utils/jwt.error';
 
 @Controller('auth')
@@ -162,7 +160,6 @@ export class AuthController {
       return this.twoFaService.pipeQrCodeStream(res, otpAuthUrlOne.otpAuthUrl);
     } catch (error) {
       handleJwtError(error);
-      throw (error);
     }
   }
 
@@ -172,32 +169,37 @@ export class AuthController {
   async authenticate(
     @GetUser() user: User,
     @Res({ passthrough: true }) res: Response,
-    @Body() body: any, //type this
+    @Body() body: any,
   ): Promise<void> {
+
     const code = body.twoFactorAuthentificationCode;
     if (!user.isTwoFactorAuthenticationEnabled)
       throw new NoTwoFaException();
+    if (code === '') return;
     const isCodeValid = this.twoFaService.isTwoFactorAuthenticationCodeValid(
       code,
       user,
     );
-    if (!isCodeValid) {
+    if (!isCodeValid)
       throw new UnauthorizedException('Wrong authentication code');
+
+    try {
+      const accessTokenCookie = this.jwtService.sign({
+        id: user.id,
+        isTwoFactorAuthenticationVerified: true,
+      });
+
+      res.cookie('access_token', accessTokenCookie, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 150,
+        sameSite: 'lax',
+      });
+    } catch (error) {
+      handleJwtError(error);
     }
-
-    const accessTokenCookie = this.jwtService.sign({
-      id: user.id,
-      isTwoFactorAuthenticationVerified: true,
-    });
-
-    res.cookie('access_token', accessTokenCookie, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 150,
-      sameSite: 'lax',
-    });
   }
 
-  /* Turn off 2FA - */
+  /* Turn off 2FA - error management ok */
   @Post('turn-off')
   @UseGuards(JwtGuard)
   async turnoff(
@@ -206,15 +208,19 @@ export class AuthController {
   ): Promise<void> {
     await this.prismaService.turnOffTwoFactorAuthentication(user.id);
 
-    const accessTokenCookie = this.jwtService.sign({
-      id: user.id,
-      isTwoFactorAuthenticationVerified: false,
-    });
+    try {
+      const accessTokenCookie = this.jwtService.sign({
+        id: user.id,
+        isTwoFactorAuthenticationVerified: false,
+      });
 
-    res.cookie('access_token', accessTokenCookie, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 150,
-      sameSite: 'lax',
-    });
+      res.cookie('access_token', accessTokenCookie, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 150,
+        sameSite: 'lax',
+      });
+    } catch (error) {
+      handleJwtError(error);
+    }
   }
 }

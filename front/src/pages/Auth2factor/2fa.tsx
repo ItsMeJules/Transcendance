@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import { API_ROUTES } from "utils/routing/routing";
-
 import "./css/2faButton.scss";
 
 export const TwoFa = () => {
@@ -41,7 +40,6 @@ export const TwoFa = () => {
     if (success) {
       history("");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
 
   const customAxiosInstance = useAxios();

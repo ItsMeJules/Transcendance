@@ -1,18 +1,9 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { Profile, Strategy } from 'passport-google-oauth20';
-import { UserService } from 'src/user/user.service';
 import { AuthService } from '../auth.service';
 import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Get,
-  UseGuards,
   Res,
-  Req,
   Injectable,
   ForbiddenException,
 } from '@nestjs/common';
@@ -41,7 +32,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   ): Promise<User> {
     try {
       const user = await this.prismaService.findOrCreateUserOAuth({
-        // protect with try catch
         username: profile._json.name,
         firstName: profile._json.given_name,
         lastName: profile._json.family_name,
@@ -49,9 +39,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         profilePicture: profile._json.picture,
         hash: '',
       });
+      // Uncomment to force a user with a 42 or google mail that has a password
+      // to sign in via the form instead of bypassing the password via OAuth
+      // if (user.hash !== '')
+      //   throw new BadRequestException('Password needed, please sign in via the form');
       return user;
     } catch (error) {
-      throw new ForbiddenException(error);
+      throw (error);
     }
   }
 }

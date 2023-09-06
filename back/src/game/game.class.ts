@@ -241,7 +241,7 @@ export class GameStruct {
     let dFullX = dFull * this.ball.dir.x / this.ball.dir.y;
     let tmpBallPos = new Point(this.ball.pos.x + dPartialX, this.ball.pos.y + dPartial);
     tmpBallPos.round();
-    if (!this.isBallInFrontOfPaddleUpDown(player, tmpBallPos)) return 1; /// to do
+    if (!this.isBallInFrontOfPaddleUpDown(player, tmpBallPos)) return 1;
     this.ball.dir.y *= -1;
     let dNorm = Math.sqrt(Math.pow((dFull - dPartial), 2) + Math.pow((dFullX - dPartialX), 2));
     let tmpBall2 = new Point(
@@ -276,7 +276,6 @@ export class GameStruct {
     if (this.update === 2) this.sendUpdateToRoom(this.pl1.id, 'playing', this.pl2.id, 'playing', -1, 'refreshGame');
     return -1;
   }
-  /* */
 
   /* Functions to check if the ball and paddles are overlapping leading to collision */
   private isPointInBall(p: Point) {
@@ -351,7 +350,6 @@ export class GameStruct {
       return true;
     return false;
   }
-  /* */
 
   /* Function to compute the angle of reflection on paddle collision */
   private getCollisionPercentage(player: Player, ballPos: Point) {
@@ -457,5 +455,4 @@ export class GameStruct {
     player.isMoving = true;
     player.movingDir = 'down';
   }
-  /* */
 }
