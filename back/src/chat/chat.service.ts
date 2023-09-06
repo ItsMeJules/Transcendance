@@ -12,6 +12,8 @@ import * as ChatDtos from './dto';
 import { BlockDto } from './dto/block.dto';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
 import { PongEvents } from 'src/game/pong.gateway';
+import { InviteLimiterService } from './invite-limiter/invite-limiter.service';
+import * as argon from 'argon2';
 
 // Optis if time:
 // dont return complete tables, only relation fields needed for checks.
@@ -19,12 +21,16 @@ import { PongEvents } from 'src/game/pong.gateway';
 // refacto all function especially create room.
 // ? add time mutes ?
 // move sends to an other service
+
+const RATE_LIMIT_TIME = 15000; // 15 seconds
+
 @Injectable()
 export class ChatService {
   constructor(
     private prismaService: PrismaService,
     private userSocketsService: UserSocketsService,
     private pongEvents: PongEvents,
+    private limiter: InviteLimiterService,
   ) {}
 
   async sendInviteToUser(
@@ -32,18 +38,22 @@ export class ChatService {
     message: string,
     targetId: number,
   ): Promise<void> {
-    const targetUser = await this.prismaService.returnCompleteUser(targetId);
-    const payloadSender: AcknowledgementPayload = {
-      userId: targetId,
-      message: targetUser.username,
-      type: AcknowledgementType.PENDING_INVITE,
-    };
-    const payloadTarget: AcknowledgementPayload = {
-      userId: client.data.id,
-      message: `You have been invited by ${client.data.username}`,
-      type: AcknowledgementType.INVITATION,
-    };
     try {
+      const targetUser = await this.prismaService.returnCompleteUser(targetId);
+      const actingUser = await this.prismaService.user.findUnique({
+        where: { id: client.data.id },
+      });
+      const payloadSender: AcknowledgementPayload = {
+        userId: targetId,
+        message: targetUser.username,
+        type: AcknowledgementType.PENDING_INVITE,
+      };
+      const payloadTarget: AcknowledgementPayload = {
+        userId: actingUser.id,
+        message: `You have been invited by ${actingUser.username}`,
+        type: AcknowledgementType.INVITATION,
+      };
+
       const targetSocket = this.userSocketsService.getUserSocket(
         String(targetId),
       );
@@ -191,12 +201,49 @@ export class ChatService {
           `${targetUser.username} blocked you, you can't invite him.`,
         );
       // more exclusions here like if target/acting is in a game and if he didn't answered yet.
-      if (
-        this.pongEvents.playersMap.get(targetUser.id) ||
-        this.pongEvents.playersMap.get(actingUser.id)
-      )
-        throw new Error('You or the target are already in a game');
+      if (this.pongEvents.playersMap.get(targetUser.id))
+        throw new Error(`${targetUser.username} is already in a game`);
+      if (this.pongEvents.playersMap.get(actingUser.id))
+        throw new Error('You are already in a game');
+      if (targetUser.id === actingUser.id)
+        throw new Error('What are you doing');
+      if (this.pongEvents.idToSocketMap[targetUser.id])
+        throw new Error(`${targetUser.username} is not online`);
 
+      ///////////////// CHECK TIMES LAST INVITES \\\\\\\\\\\\\\\\\\\\\\\
+
+      const currentTime = Date.now();
+
+      const actingLimits = this.limiter.getRateLimit(actingUser.id);
+      const targetLimits = this.limiter.getRateLimit(targetUser.id);
+      if (currentTime < actingLimits.timeUntilNextOutgoingInvite) {
+        throw new Error(
+          'You must wait ' +
+            (actingLimits.timeUntilNextOutgoingInvite - currentTime) / 1000 +
+            ' seconds before sending another invitation.',
+        );
+      }
+      if (currentTime < targetLimits.timeUntilNextIncomingInvite) {
+        throw new Error(
+          "You can't spam " +
+            targetUser.username +
+            ' with invitations. Please wait ' +
+            (targetLimits.timeUntilNextIncomingInvite - currentTime) / 1000 +
+            ' seconds.',
+        );
+      }
+
+      //////// UPDATE USERS INVOLVED SPAM LIMITS \\\\\\\\\
+      this.limiter.updateRateLimit(actingUser.id, {
+        timeUntilNextIncomingInvite: actingLimits.timeUntilNextIncomingInvite,
+        timeUntilNextOutgoingInvite: Date.now() + RATE_LIMIT_TIME,
+      });
+      this.limiter.updateRateLimit(targetUser.id, {
+        timeUntilNextIncomingInvite: Date.now() + RATE_LIMIT_TIME,
+        timeUntilNextOutgoingInvite: targetLimits.timeUntilNextOutgoingInvite,
+      });
+
+      ///////////////////// SENDING INVITES \\\\\\\\\\\\\\\\\\\\\\\\
       await this.sendInviteToUser(
         client,
         `Waiting for ${targetUser.username} to answer...`,
@@ -283,7 +330,6 @@ export class ChatService {
     client: Socket,
     createRoomDto: ChatDtos.CreateRoomDto,
   ): Promise<Room> {
-    // encode pw later add functions
     try {
       console.log('createRoom function beginning');
       let room = await this.prismaService.room.findUnique({
@@ -337,6 +383,11 @@ export class ChatService {
         });
         console.log('createRoom for DMs function ending');
         return room;
+      }
+
+      if (createRoomDto.password) {
+        createRoomDto.password = await argon.hash(createRoomDto.password);
+        console.log('password :', createRoomDto.password);
       }
 
       room = await this.prismaService.room.create({
@@ -490,14 +541,19 @@ export class ChatService {
           server: joinRoomDto.server,
         },
       );
+      let pwMatches = true;
 
       if (!room || !user) throw new Error('error name');
+      console.log('room password : ', room.password);
+      if (room.password) {
+        pwMatches = await argon.verify(room.password, joinRoomDto.password);
+        console.log(pwMatches);
+      }
 
       if (
         room.ownerId !== user.id &&
         room.admins.find((admin) => admin.id === user.id) === undefined &&
-        room.password &&
-        room.password !== joinRoomDto.password
+        !pwMatches
       )
         throw new Error('wrong password'); // change this
       if (room.bans.some((banned) => banned.id === user.id))
