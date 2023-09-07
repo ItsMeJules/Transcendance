@@ -9,6 +9,7 @@ export const API_ROUTES = {
   USER_PIC_CHANGE: `${API_URL}/users/pf`,
   USER_FRIENDS: `${API_URL}/users/me/friends`,
   GENERIC_USER_PROFILE: `${API_URL}/users/`,
+  GAME_HISTORY_SUFFIX: "/game-history",
   UPLOAD_PROFILE_PIC: `${API_URL}/users/upload-profile-picture`,
   ADD_FRIEND: `${API_URL}/users/add-friend/`,
   GET_LEADERBOARD: `${API_URL}/users/leaderboard`,
@@ -39,6 +40,7 @@ export const APP_ROUTES = {
   USER_PROFILE_EDIT: "profile/me/edit",
   USER_PROFILE_EDIT_ABSOLUTE: "/dashboard/profile/me/edit",
   GENERIC_USER_PROFILE: "profile/",
+  GENERIC_USER_PROFILE_ABSOLUTE: "/dashboard/profile/",
   MATCHMAKING: "matchmaking",
   MATCHMAKING_ABSOLUTE: "/dashboard/matchmaking",
   PLAY: "play",
@@ -48,6 +50,7 @@ export const APP_ROUTES = {
   USER_FRIENDS: "/profile/me/friends",
   AUTH_2FA: "/profile/me/two-fa",
   LEADERBOARD: "/leaderboard",
+  GAME_HISTORY_SUFFIX: "/game-history",
 };
 
 export enum APP_SCREENS {

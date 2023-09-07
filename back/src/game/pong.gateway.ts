@@ -68,12 +68,11 @@ export class PongEvents {
   async handleConnection(client: Socket) {
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
-      // handle with error !!!!
       client.disconnect();
       return;
     }
-    const user = await this.authService.validateJwtToken(access_token, true);
-    if (!user) { // handle with error !!!!
+    const user = await this.authService.validateJwtToken(access_token, false);
+    if (!user) {
       client.disconnect();
       return;
     }
@@ -117,7 +116,10 @@ export class PongEvents {
     if (!user) return;
     const gameId = this.playersMap.get(user.id);
     if (gameId !== undefined) {
-      this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'INGAME', gameMode: 0 });
+      console.log('2 RETURN game existing id:', gameId);
+      this.server
+        .to(`user_${user.id}`)
+        .emit(`joinGameQueue`, { status: 'INGAME', gameMode: 0 });
       return;
     }
     if (gameDto.gameMode === 'query') return;
@@ -138,7 +140,35 @@ export class PongEvents {
         gameData.gameChannel,
       );
       this.pongService.onlineGames.set(game.prop.id, game);
-      await this.setupNewGameEmitUpdate(game, gameData);
+      const player1 = await this.userService.findOneById(game.pl1.id);
+      const player2 = await this.userService.findOneById(game.pl2.id);
+      const player1socket = this.idToSocketMap.get(game.pl1.id);
+      const player2socket = this.idToSocketMap.get(game.pl2.id);
+      if (player1socket === undefined || player2socket === undefined) {
+        console.log('ERRROOOOOOOORRRRRRR HEREEEEEEEEEEEEEEE');
+        this.pongService.deleteGamePrismaAndList(game.prop.id);
+        return;
+      }
+      await this.socketJoin(player1socket, `game_${game.prop.id}`);
+      await this.socketJoin(player2socket, `game_${game.prop.id}`);
+      this.playersMap.delete(player1.id);
+      this.playersMap.delete(player2.id);
+      this.playersMap.set(player1.id, game.prop.id);
+      this.playersMap.set(player2.id, game.prop.id);
+      const data = {
+        status: 'START',
+        gameChannel: game.prop.room,
+        game: gameData,
+        player1: player1,
+        player2: player2,
+      };
+      // this.printUsersInRoom(`game_${game.prop.id}`);
+      this.server.to(`user_${game.pl1.id}`).emit(`joinGameQueue`, data);
+      this.server.to(`user_${game.pl2.id}`).emit(`joinGameQueue`, data);
+      this.updateEmitOnlineGames('toRoom', 0);
+      this.emitUpdateAllUsers('toAll', 0);
+      this.emitUpdateFriendsOf(player1.id);
+      this.emitUpdateFriendsOf(player2.id);
     }
   }
 

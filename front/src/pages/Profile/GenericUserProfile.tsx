@@ -59,17 +59,15 @@ const blockUser = () => {
         if (err.response?.status === 400) setUserNotFound(true);
       }
     };
-    console.log("Inside useEffect, id:", id);
-
     fetchUserProfile(id);
   }, [id, location]);
 
-    useEffect(() => {
-      console.log("isFriend:", isFriend);
-    }, [isFriend]);
+    // useEffect(() => {
+    //   console.log("isFriend:", isFriend);
+    // }, [isFriend]);
 
   const addFriend = async (id: string | undefined) => {
-     console.log("addFriend called with id:", id);
+    //  console.log("addFriend called with id:", id);
     const dataToSend: any = {};
     if (id)
       dataToSend.id = id;
@@ -80,10 +78,10 @@ const blockUser = () => {
         {
           withCredentials: true
         });
-        console.log('ADD RESPONSE:', response.data);
+        // console.log('ADD RESPONSE:', response.data);
       setIsFriend(false);
       if (response.data.isFriend === 'true') {
-        console.log('OK INSIDE TRUE');
+        // console.log('OK INSIDE TRUE');
         setIsFriend(true);
       }
     } catch (err: any) {
@@ -91,7 +89,7 @@ const blockUser = () => {
     }
   }
 
-  console.log('Rendering GenericUserProfile with isFriend:', isFriend);
+  // console.log('Rendering GenericUserProfile with isFriend:', isFriend);
   
   if (userNotFound) {
     return <NotFoundPageDashboard />;
