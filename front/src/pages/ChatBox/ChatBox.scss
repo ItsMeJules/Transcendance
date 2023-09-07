@@ -470,6 +470,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             .invite-to-play,
             .block-user,
             .unblock-user {
+              cursor: pointer;
               color: white;
               border: $border;
               border-radius: 5px;
@@ -851,6 +852,7 @@ $font-color: rgba(255, 255, 255, 0.7);
               .invite-to-channel,
               .block-user,
               .unblock-user {
+                cursor: pointer;
                 padding: 8px;
                 font-size: 8pt;
                 border: $border;
