@@ -23,7 +23,7 @@ const ConfettisComponent: React.FC<ConfettisComponentProps> = ({ gameIsEnded, us
         userIsWinner && (
           <canvas ref={confettiCanvasRef}
             id="confettis"
-            style={{ position: 'absolute', zIndex: '2', width: '100%', height: '100%' }}></canvas>
+            style={{ display: 'flex', position: 'absolute', zIndex: '10', width: '20%', height: '50%' }}></canvas>
         )
       }
     </div>
