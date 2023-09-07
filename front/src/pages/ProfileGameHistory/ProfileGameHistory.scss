@@ -9,7 +9,30 @@
   min-height: 420px;
   border-radius: 20px;
   padding: 10px;
+  overflow-y: scroll;
 
+  // Style the scrollbar
+  scrollbar-color: transparent rgba(128, 128, 128, 0.2); // Transparent thumb, gray background
+  &:hover {
+    scrollbar-color: rgba(128, 128, 128, 0.6) rgba(0, 0, 0, 0.2); // Show scrollbar thumb and border on hover
+  }
+  &::-webkit-scrollbar {
+    width: 10px; // Adjust the width as needed
+  }
+  &::-webkit-scrollbar-track {
+    background-color: rgba(128, 128, 128, 0.2); // Gray transparent background
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(128, 128, 128, 0.3); // Transparent scrollbar thumb
+    border-radius: 5px; // Rounded corners for the thumb
+    border: 2px solid rgba(0, 0, 0, 0); // Hide the border initially
+  }
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(128, 128, 128, 0.6); // Show scrollbar thumb on hover
+      border-color: rgba(0, 0, 0, 0.2); // Show border on hover
+    }
+  }
   .header {
     width:100%;
     display: flex;
