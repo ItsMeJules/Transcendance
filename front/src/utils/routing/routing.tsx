@@ -5,6 +5,7 @@ export const API_ROUTES = {
   SIGN_IN: `${API_URL}/auth/signin`,
   LOG_OUT: `${API_URL}/users/logout`,
   USER_PROFILE: `${API_URL}/users/me`,
+  USER_COMPLETE: `${API_URL}/users/complete-user`,
   USER_PROFILE_EDIT: `${API_URL}/users`,
   USER_PIC_CHANGE: `${API_URL}/users/pf`,
   USER_FRIENDS: `${API_URL}/users/me/friends`,
@@ -20,7 +21,8 @@ export const API_ROUTES = {
   STATE_2FA: `${API_URL}/users/me/2fa-state`,
   CURRENT_CHAT: `${API_URL}/users/current-chat`,
   COMPLETE_ROOM: `${API_URL}/users/complete-room`,
-  VISIBLE_CHANNELS: `${API_URL}/chat/visible-rooms`
+  VISIBLE_CHANNELS: `${API_URL}/chat/visible-rooms`,
+  HOME_CHECK_TOKEN: `${API_URL}/auth/home`,
 };
 
 export const APP_URL = "http://localhost:8000";

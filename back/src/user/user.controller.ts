@@ -12,7 +12,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
@@ -24,6 +23,11 @@ import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { editFileName } from './module';
 import { UserService } from './user.service';
+import handleJwtError from '@utils/jwt.error';
+import handlePrismaError from '@utils/prisma.error';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -70,7 +74,7 @@ export class UserController {
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) id: number,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<any> {
     try {
       const userMain = await this.prisma.user.findUnique({
         where: { id: userId },
@@ -91,21 +95,23 @@ export class UserController {
       data.isFriend = 'false';
       if (userMain.friends.length !== 0) data.isFriend = 'true';
       return { data };
-    } catch (err) { }
+    } catch (error) {
+      handlePrismaError(error);
+    }
   }
 
   @Get(':id/game-history')
   async getUserGameHistory(@Param('id', ParseIntPipe) id: number) {
     const gameHistory = await this.userService.getUserGameHistory(id);
     return { id: id, gameHistory: gameHistory };
+
   }
 
   @Patch('add-friend/:id')
   async addFriend(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) friendId: number,
-  ) {
-    console.log('FRIEND TOGGLE:', userId, ' friendId:', friendId);
+  ): Promise<any> {
     return this.userService.addFriendToggler(userId, friendId);
   }
 
@@ -124,7 +130,6 @@ export class UserController {
     }),
   )
 
-  // @UseFilters(CustomExceptionFilter)
   async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
     return this.userService.uploadProfilePic(user, file);
   }

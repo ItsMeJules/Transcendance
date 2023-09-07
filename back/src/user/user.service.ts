@@ -17,6 +17,7 @@ import {
 import { Response } from 'express';
 import { hash } from 'argon2';
 import { EventEmitter } from 'events';
+import handlePrismaError from '@utils/prisma.error';
 
 export const userServiceEmitter = new EventEmitter();
 
@@ -24,7 +25,7 @@ const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as ne
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prismaService: PrismaService) { }
 
   async editUser(userId: number, dto: EditUserDto) {
     if (dto.username && dto.username.length > 100)
@@ -34,7 +35,7 @@ export class UserService {
     else if (dto.lastName && dto.lastName.length > 100)
       throw new ForbiddenException('Last name too long');
     try {
-      const user = await this.prisma.user.update({
+      const user = await this.prismaService.user.update({
         where: {
           id: userId,
         },
@@ -56,10 +57,10 @@ export class UserService {
   }
 
   async findAll() {
-    return this.prisma.user.findMany();
+    return this.prismaService.user.findMany();
   }
 
-  async uploadProfilePic(user: User, file: any) {
+  async uploadProfilePic(user: User, file: any): Promise<any> {
     const response = {
       originalname: file.originalname,
       filename: file.filename,
@@ -81,13 +82,13 @@ export class UserService {
           compressionLevel: 9,
         };
       } else {
-        throw new Error('File format not supported'); // better redirection
+        throw new Error('File format not supported');
       }
       await sharp(file.path)
         .toFormat(fileExtension)
         .jpeg(compressionOptions)
         .toFile(newPicPath);
-      await this.prisma.user.update({
+      await this.prismaService.user.update({
         where: {
           id: user.id,
         },
@@ -95,87 +96,48 @@ export class UserService {
           profilePicture: newPicUrl,
         },
       });
-      // console.log('file path:', file.path);
       fs.unlinkSync(file.path);
-    } catch (err: any) {
-      console.log(err);
-      // better error redirection
-      throw new InternalServerErrorException('Failed to compress the image.');
-    }
-
-    // Delete the previous profile picture from the file system
+    } catch (error) { }
     try {
       const pathToDelete =
         '/workspace/back/public' + oldPictureObj.replace('/api', '');
-      if (pathToDelete !== '/workspace/back/public/images/logo.png') {
-        // console.log('path to delete:',pathToDelete);
+      if (pathToDelete !== '/workspace/back/public/images/logo.png')
         fs.unlinkSync(pathToDelete);
-      }
     } catch (err: any) { }
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    if (!!(await this.isUserNameTaken(data.username))) return null;
-    const user = await this.prisma.user.create({ data });
+  async isUserNameTaken(username: string): Promise<User> {
+    const user = await this.prismaService.user.findUnique({ where: { username } });
     if (user) delete user.hash;
     return user;
   }
 
-  async isUserNameTaken(username: string): Promise<User> {
-    const user = await this.prisma.user.findUnique({ where: { username } });
+  async createUser(data: Prisma.UserCreateInput): Promise<User> {
+    if (!!(await this.isUserNameTaken(data.username))) return null;
+    const user = await this.prismaService.user.create({ data });
     if (user) delete user.hash;
     return user;
   }
 
   async isEmailTaken(email: string): Promise<User> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prismaService.user.findUnique({ where: { email } });
     if (user) delete user.hash;
     return user;
-  }
-
-  async findOrCreateUserOAuth(data: Prisma.UserCreateInput): Promise<User> {
-    const user: User = await this.isEmailTaken(data.email);
-    if (user) return user;
-    let usernameAvailable = false;
-    let modifiedUsername = data.username;
-    // Check if username is taken
-    while (!usernameAvailable) {
-      const userNameCheck = await this.isUserNameTaken(modifiedUsername);
-      // console.log('test:', userNameCheck);
-      if (!userNameCheck) {
-        usernameAvailable = true;
-      } else {
-        const randomSuffix = Math.floor(Math.random() * 9); // You can adjust the range of the random number as needed
-        modifiedUsername = data.username + randomSuffix;
-      }
-    }
-    data.username = modifiedUsername;
-    // console.log('username:', data.username);
-    try {
-      const createdUser = await this.prisma.user.create({ data });
-      return createdUser;
-    } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          // Add more errors handlers or a default one?
-          throw new ForbiddenException('Username taken');
-        }
-      }
-      throw error;
-    }
   }
 
   async findOneById(id: number): Promise<User | null> {
     if (!id) return null;
-    const user = await this.prisma.user.findUnique({
-      where: { id: id },
-    });
-    if (user) delete user.hash;
-    return user;
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { id: id },
+      });
+      if (user) delete user.hash;
+      return user;
+    } catch (error) { handlePrismaError(error); }
   }
 
   async getLeaderboard(): Promise<User[]> {
-    const leaderboard = await this.prisma.user.findMany({
+    const leaderboard = await this.prismaService.user.findMany({
       orderBy: {
         userPoints: 'desc', // Sorting by the 'score' field in descending order (highest to lowest)
       },
@@ -186,10 +148,10 @@ export class UserService {
     return leaderboard;
   }
 
-  async addFriendToggler(userId: number, friendId: number) {
+  async addFriendToggler(userId: number, friendId: number): Promise<any> {
     try {
       if (userId === friendId) return;
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prismaService.user.findUnique({
         where: { id: userId },
         select: {
           friends: {
@@ -199,23 +161,21 @@ export class UserService {
         },
       });
       if (user.friends.length === 0) {
-        await this.prisma.user.update({
+        await this.prismaService.user.update({
           where: { id: userId },
           data: { friends: { connect: { id: friendId } } },
         });
         userServiceEmitter.emit('updateFriendsOfUser', { userId: userId })
         return { isFriend: 'true' };
       } else {
-        await this.prisma.user.update({
+        await this.prismaService.user.update({
           where: { id: userId },
           data: { friends: { disconnect: { id: friendId } } },
         });
         userServiceEmitter.emit('updateFriendsOfUser', { userId: userId })
         return { isFriend: 'false' };
       }
-    } catch (error) {
-      // console.error('Error adding friend:', error);
-    }
+    } catch (error) { handlePrismaError(error); }
   }
 
     // >>>>>>>>>>>>>>> GAME HISTORY <<<<<<<<<<<<<<<<<<<<<<<<<<

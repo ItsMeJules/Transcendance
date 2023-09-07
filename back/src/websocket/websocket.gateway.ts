@@ -23,7 +23,7 @@ export class SocketEvents {
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
-      return;
+      return; 
     }
     const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) {

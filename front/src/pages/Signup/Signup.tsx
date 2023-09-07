@@ -35,6 +35,20 @@ export const Signup = () => {
     } catch (err: any) { }
   }
 
+  useEffect(() => {
+    const verifyToken = async () => {
+      try {
+        const response = await customAxiosInstance.get(API_ROUTES.HOME_CHECK_TOKEN,
+          {
+            withCredentials: true
+          })
+        if (response.data.tokenState === 'HAS_TOKEN')
+          return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
+      } catch (error) { };
+    }
+    // verifyToken();
+  }, [])
+
   return (
     <div className="signup-container">
       <GlowTextSignin className="signup-header">sign up</GlowTextSignin>
@@ -91,19 +105,19 @@ export const Signup = () => {
                   maxLength={100}
                   required />
 
-                  <button type="submit" className="signup-submit-form-button" style={{ marginTop: '10px' }}>
-                    Sign up
-                  </button>
+                <button type="submit" className="signup-submit-form-button" style={{ marginTop: '10px' }}>
+                  Sign up
+                </button>
 
               </form>
             </div>
 
-              <article className="signup-switch-to-signin">
-                Already registered?&nbsp;
-                <Link to={APP_ROUTES.SIGN_IN} className="link">
-                  Sign in.
-                </Link>
-              </article>
+            <article className="signup-switch-to-signin">
+              Already registered?&nbsp;
+              <Link to={APP_ROUTES.SIGN_IN} className="link">
+                Sign in.
+              </Link>
+            </article>
 
           </div>
         </div>

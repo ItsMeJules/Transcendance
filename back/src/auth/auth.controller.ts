@@ -9,6 +9,7 @@ import {
   UseGuards,
   Res,
   Req,
+  Headers
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
@@ -23,6 +24,11 @@ import { NoTwoFaException } from './exceptions/no-two-fa.exception';
 import JwtTwoFactorGuard from './guard/jwt.two-fa.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
 import handleJwtError from '@utils/jwt.error';
+import * as cookieParser from 'cookie-parser';
+
+interface RequestWithCookies extends Request {
+  cookies: { [key: string]: string };
+}
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +38,18 @@ export class AuthController {
     private twoFaService: TwoFaService,
     private jwtService: JwtService,
   ) { }
+
+  /* Token verif on page home - error management ok */
+  @Get('home')
+  async homeTokenVerification(
+    @Req() req: RequestWithCookies,
+  ): Promise<{ tokenState: string }> {
+    const token = req.cookies['access_token'];
+    if (!token) return { tokenState: 'NO_TOKEN' };
+    const isTokenValid = this.authService.validateJwtToken(token, true);
+    if (!isTokenValid) return { tokenState: 'NO_TOKEN' };
+    return { tokenState: 'HAS_TOKEN' };
+  }
 
   /* Signup - error management ok */
   @Post('signup')

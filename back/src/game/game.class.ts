@@ -421,6 +421,20 @@ export class GameStruct {
     });
   }
 
+  sendUpdateToRoomInterval() {
+    gameEvents.emit('gatewayUpdateRoom', {
+      room: this.prop.room,
+      channel: 'refreshGame',
+      gameStatus: this.prop.status,
+      gameParams: this.getState(),
+      playerId: this.pl1.id,
+      playerStatus: this.pl1.status,
+      opponentId: this.pl2.id,
+      opponentStatus: this.pl2.status,
+      countdown: -1,
+    });
+  }
+
   updateOnlineGames() {
     gameEvents.emit('gatewayUpdateOnlineGames', { action: 'update' });
   }
