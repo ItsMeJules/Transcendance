@@ -28,7 +28,7 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private config: ConfigService,
-  ) { }
+  ) {}
 
   /* Login - error management ok */
   async login(user: any): Promise<any> {
