@@ -5,11 +5,11 @@ import getProgressBarClass from 'utils/progressBar/ProgressBar';
 import { UserData } from 'services/User/User';
 import ProfileCard from './components/ProfileCard';
 import { useWebsocketContext } from 'services/Websocket/Websocket';
-import { useAppSelector } from 'utils/redux/Store';
-
 import { toast } from 'react-toastify';
 import NotFoundPageDashboard from 'pages/NotFoundPage/NotFoundDashboard';
 import { useAxios } from 'utils/axiosConfig/axiosConfig';
+import { useAppSelector, useAppDispatch } from 'utils/redux/Store';
+import { removeUserBlocked, addUserBlocked } from 'utils/redux/reducers/UserSlice';
 import './css/ProgressBar.scss'
 import './css/UserProfile.scss'
 
@@ -21,6 +21,7 @@ const GenericUserProfile = () => {
   const [userNotFound, setUserNotFound] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
   const location = useLocation();
+  const dispatch = useAppDispatch();
   const isBlocked = useAppSelector(state => state.user.userData.blockedUsers)?.some(blockedId => id !== undefined ? blockedId === parseInt(id) : false);
   getProgressBarClass(level);
   const customAxiosInstance = useAxios();
@@ -78,7 +79,8 @@ const GenericUserProfile = () => {
   const blockUser = async (id: string | undefined) => {
     const targetId = parseInt(id!);
     if (chatSocket) {
-      chatSocket.emit("chat-action", { action: "block", targetId: targetId });
+      chatSocket.emit("chat-action", {action: "block", targetId: targetId});
+      isBlocked === true ? dispatch(removeUserBlocked(targetId)) : dispatch(addUserBlocked(targetId));
     } else {
       console.log("chatSocket is null");
     }
