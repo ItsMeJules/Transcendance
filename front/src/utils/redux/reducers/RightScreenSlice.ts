@@ -7,7 +7,8 @@ interface RightScreenState {
 }
 
 const initialState = {
-  rightScreenState: APP_SCREENS.CHAT
+  rightScreenState: APP_SCREENS.CHAT,
+  noGame: false,
 } as RightScreenState
 
 export const setRightScreenState = createAction<APP_SCREENS>("rightScreen/setRightScreenState")

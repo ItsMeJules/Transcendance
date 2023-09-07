@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { Socket } from 'socket.io-client';
 import './GiveUp.scss'
 import { GameProperties } from 'pages/Play/models/Properties';
+import { useAppSelector } from 'utils/redux/Store';
 
 interface GiveUpProps {
   socket: Socket | null;
   whichPlayer: number;
   game: GameProperties;
-  noGame: boolean;
   gameStatus: string;
 }
 
-const GiveUp: React.FC<GiveUpProps> = ({ socket, whichPlayer, game, noGame, gameStatus }) => {
+const GiveUp: React.FC<GiveUpProps> = ({ socket, whichPlayer, game, gameStatus }) => {
   const [giveUp, setGiveUp] = useState(false);
+  const { noGame } = useAppSelector(store => store.rightScreen)
 
   const handleQuitGame = () => {
     if (!giveUp) {

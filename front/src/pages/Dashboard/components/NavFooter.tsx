@@ -16,7 +16,7 @@ const NavFooter: React.FC = () => {
   });
 
   const dispatchScreenState = (state: APP_SCREENS) => {
-    debounce(() => dispatch(setRightScreenState(state)), 10)
+    dispatch(setRightScreenState(state))
   }
 
   useEffect(() => {

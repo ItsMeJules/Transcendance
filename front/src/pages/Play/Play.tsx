@@ -197,16 +197,16 @@ const Play = () => {
 
       <ConfettisComponent gameIsEnded={game.isEnded} userIsWinner={game.isUserWinner} />
 
-      <ProfilesHeader game={game} player1Data={player1Data} player2Data={player2Data} noGame={noGame} />
+      <ProfilesHeader game={game} player1Data={player1Data} player2Data={player2Data} />
 
-      <ScoreBoard game={game} noGame={noGame} />
+      <ScoreBoard game={game} />
 
       <AllCanvas game={game} socket={socket.game} whichPlayer={whichPlayer} centralText={centralText}
-        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
+        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} />
 
-      <GiveUp socket={socket.game} whichPlayer={whichPlayer} game={game} noGame={noGame} gameStatus={game.status} />
+      <GiveUp socket={socket.game} whichPlayer={whichPlayer} game={game} gameStatus={game.status} />
 
-      <NoGame noGame={noGame} />
+      <NoGame />
 
     </div >
   );

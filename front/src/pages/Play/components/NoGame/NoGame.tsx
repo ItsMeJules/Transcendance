@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "utils/routing/routing";
 import './NoGame.scss'
+import { useAppSelector } from "utils/redux/Store";
 
-interface NoGameProps {
-  noGame: boolean;
-}
-
-const NoGame: React.FC<NoGameProps> = ({ noGame }) => {
+const NoGame: React.FC = () => {
+  const { noGame } = useAppSelector(store => store.rightScreen)
 
   return (
     <>
