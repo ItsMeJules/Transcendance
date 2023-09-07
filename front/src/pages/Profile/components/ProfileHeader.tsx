@@ -13,9 +13,10 @@ type ProfileHeaderProps = {
   isFriend?: boolean;
   onAddFriend?: () => void;
   blockUser?: () => void;
+  isBlocked?: boolean;
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData, type, onAddFriend, isFriend, blockUser }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData, type, onAddFriend, isFriend, blockUser, isBlocked}) => {
 
   const [userId, setUserId] = useState<string>();
   useEffect(() => {
@@ -54,7 +55,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData, type, onAddFrie
           </button>
 
           <button onClick={blockUser}>
-            <IconContext.Provider value={{ color: 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
+<IconContext.Provider value={{ color: isBlocked ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
               <FaUserLock />
             </IconContext.Provider>
           </button>

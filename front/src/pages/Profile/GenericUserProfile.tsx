@@ -7,6 +7,7 @@ import getProgressBarClass from 'utils/progressBar/ProgressBar';
 import { UserData } from 'services/User/User';
 import ProfileCard from './components/ProfileCard';
 import { useWebsocketContext } from 'services/Websocket/Websocket';
+import { useAppSelector } from 'utils/redux/Store';
 
 import './css/ProgressBar.scss'
 import './css/UserProfile.scss'
@@ -14,7 +15,6 @@ import NotFoundPageDashboard from 'pages/NotFoundPage/NotFoundDashboard';
 
 
 const GenericUserProfile = () => {
-
 
   const chatSocket = useWebsocketContext().chat;  
   const { id } = useParams();
@@ -24,15 +24,8 @@ const GenericUserProfile = () => {
   const [isFriend, setIsFriend] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const location = useLocation();
+  const isBlocked = useAppSelector(state => state.user.userData.blockedUsers)?.some(blockedId => id !== undefined ? blockedId === parseInt(id) : false);
   getProgressBarClass(level);
-
-const blockUser = () => {
-  if (chatSocket) {
-    chatSocket.emit("chat-action", {action: "block", targetId: id});
-  } else {
-    console.log("chatSocket is null");
-  }
-}
 
   const resetErrMsg = () => {
     setErrMsg('');
@@ -62,12 +55,7 @@ const blockUser = () => {
     fetchUserProfile(id);
   }, [id, location]);
 
-    // useEffect(() => {
-    //   console.log("isFriend:", isFriend);
-    // }, [isFriend]);
-
   const addFriend = async (id: string | undefined) => {
-    //  console.log("addFriend called with id:", id);
     const dataToSend: any = {};
     if (id)
       dataToSend.id = id;
@@ -78,25 +66,30 @@ const blockUser = () => {
         {
           withCredentials: true
         });
-        // console.log('ADD RESPONSE:', response.data);
       setIsFriend(false);
       if (response.data.isFriend === 'true') {
-        // console.log('OK INSIDE TRUE');
         setIsFriend(true);
       }
     } catch (err: any) {
-      // adequate error management
+      if (err.response?.status === 400) setUserNotFound(true);
     }
   }
 
-  // console.log('Rendering GenericUserProfile with isFriend:', isFriend);
-  
+  const blockUser = async (id: string | undefined)  => {
+    const targetId = parseInt(id!);
+    if (chatSocket) {
+      chatSocket.emit("chat-action", {action: "block", targetId: targetId});
+    } else {
+      console.log("chatSocket is null");
+    }
+  }
+
   if (userNotFound) {
     return <NotFoundPageDashboard />;
   }
 
   return (
-        <ProfileCard userData={userData} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} blockUser={blockUser} />
+        <ProfileCard userData={userData} type="generic" isFriend={isFriend} onAddFriend={() => addFriend(id)} blockUser={() => blockUser(id)} isBlocked={isBlocked} />
   );
 };
 

@@ -7,6 +7,7 @@ import { ChatEventsGateway } from './chat.gateway';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
 import { PongEvents } from 'src/game/pong.gateway';
 import { PongModule } from 'src/game/pong.module';
+import { InviteLimiterService } from './invite-limiter/invite-limiter.service';
 
 @Module({
   imports: [PongModule],
@@ -17,6 +18,7 @@ import { PongModule } from 'src/game/pong.module';
     AuthService,
     ChatService,
     UserSocketsService,
+    InviteLimiterService,
   ],
   exports: [],
 })
