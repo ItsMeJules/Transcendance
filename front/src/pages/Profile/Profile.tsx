@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
-import User from "services/User/User";
+// import User from "services/User/User";
 import { UserData } from "services/User/User";
 import './css/UserProfile.scss';
 import './css/ProgressBar.scss';
@@ -33,7 +33,7 @@ export const Profile: React.FC = () => {
         dispatchUser(setUser(userData));
         localStorage.setItem("userData", JSON.stringify(userData));
         setUserDataProfile(userData);
-        User.getInstance().setUserFromResponseData(userData);
+        // User.getInstance().setUserFromResponseData(userData);
       } catch (err: any) {
         console.log('errror profile:', err);
         // if (!err?.response) {

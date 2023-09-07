@@ -18,9 +18,9 @@ const ProfileGameHistory = () => {
   const { id } = useParams();
   const location = useLocation();
 
+  const [uid, setUid] = useState<string>("-1");
   const [gameHistory, setGameHistory] = useState<GameHistoryData[]>([]);
   const [isLoadingGameHistory, setIsLoadingGameHistory] = useState(true);
-
 
   useEffect(() => {
 
@@ -29,9 +29,7 @@ const ProfileGameHistory = () => {
       try {
         const response = await axios.get(API_ROUTES.GENERIC_USER_PROFILE + id + API_ROUTES.GAME_HISTORY_SUFFIX,
         { withCredentials: true });
-        // console.log('response:', response);
         setGameHistory(response.data.gameHistory);
-        // console.log('gameHistory:', gameHistory);
         setIsLoadingGameHistory(false);
 
       } catch (err: any) {
@@ -41,19 +39,37 @@ const ProfileGameHistory = () => {
 
     fetchUserGameHistory(id);
   
-  }, [id, location]);
+    const userDataJSON = localStorage.getItem("userData");
+    const userData = userDataJSON ? JSON.parse(userDataJSON) : null;
+
+    if (userData) {
+      setUid(userData.id.toString());
+    }
+
+  }, [uid, id, location]);
 
   return (
     <>
       <section className="profile-main-container">
 
-        <section className='header'>
-          <Link className="icon" title="Back to profile" to={APP_ROUTES.GENERIC_USER_PROFILE_ABSOLUTE + id} style={{ padding: '0px' }}>
-            <IconContext.Provider value={{ color: 'rgba(255, 255, 255, 0.5)', size: '30px' }}>
-              <FaLeftLong />
-            </IconContext.Provider>
-          </Link>
-        </section>
+        { uid === id ? (
+            <section className='header'>
+              <Link className="icon" title="Back to profile" to={APP_ROUTES.USER_PROFILE_ABSOLUTE} style={{ padding: '0px' }}>
+                <IconContext.Provider value={{ color: 'rgba(255, 255, 255, 0.5)', size: '30px' }}>
+                  <FaLeftLong />
+                </IconContext.Provider>
+              </Link>
+            </section>
+          ) : (
+            <section className='header'>
+              <Link className="icon" title="Back to profile" to={APP_ROUTES.GENERIC_USER_PROFILE_ABSOLUTE + id} style={{ padding: '0px' }}>
+                <IconContext.Provider value={{ color: 'rgba(255, 255, 255, 0.5)', size: '30px' }}>
+                  <FaLeftLong />
+                </IconContext.Provider>
+              </Link>
+            </section>
+          )
+        }
 
         {
           isLoadingGameHistory ? (
