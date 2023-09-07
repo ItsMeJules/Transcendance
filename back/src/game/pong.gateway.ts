@@ -740,7 +740,7 @@ export class PongEvents {
     else if (type === 'toRoom')
       this.server.to('onlineGames').emit('onlineGames', dataObject);
   }
-
+  
   /* Main profile header dashboard */
   @SubscribeMessage('userDataSocket')
   async serveUserProfileData(
@@ -778,7 +778,7 @@ export class PongEvents {
         this.spectatorsMap.delete(userId);
       }
     }
-  }
+  } 
 
   playersMapDeleteGameById(gameIdToDelete: number) {
     for (const [userId, gameId] of this.playersMap.entries()) {

@@ -53,6 +53,7 @@ export const APP_ROUTES = {
   AUTH_2FA: "/profile/me/two-fa",
   LEADERBOARD: "/leaderboard",
   GAME_HISTORY_SUFFIX: "/game-history",
+  REDIRECT_PLAY: "/dashboard/redirect-play",
 };
 
 export enum APP_SCREENS {

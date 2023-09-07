@@ -26,7 +26,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('resize', updateDimension);
     };
-  }, []);
+  }, []); 
 
   const  handleButtonClick = async () => {
     // try {

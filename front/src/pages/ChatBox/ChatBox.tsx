@@ -75,7 +75,11 @@ export const ChatBox = () => {
     localStorage.setItem("player1", JSON.stringify(dataJSON.player1));
     localStorage.setItem("player2", JSON.stringify(dataJSON.player2));
     localStorage.setItem("gameChannel", JSON.stringify(dataJSON.gameChannel));
-    navigate(APP_ROUTES.PLAY_ABSOLUTE); // check GPT ou nouvelle page redir
+    if (window.location.pathname === APP_ROUTES.PLAY_ABSOLUTE) {
+      navigate(APP_ROUTES.REDIRECT_PLAY);
+    } else {
+      navigate(APP_ROUTES.PLAY_ABSOLUTE);
+    }
   }, [socketData]);
 
   const displayAcknowledgements = (payload: SocketAcknowledgements) => {
@@ -105,6 +109,7 @@ export const ChatBox = () => {
         });
         break;
       case "success":
+        console.log("doubleAcknowledgements");
         toast.success(`${payload.message}`, {
           position: "bottom-center",
           autoClose: 3000,
@@ -294,14 +299,12 @@ export const ChatBox = () => {
     chatSocket?.emit(eventType, data);
   };
 
-
   return (
     <>
-      <ToastContainer />
       <div className="chat-container">
         <SendDataContext.Provider value={sendData}>
-            <ChatMetadata chatToggled={chatToggled} />
-            <ChatContainer />
+          <ChatMetadata chatToggled={chatToggled} />
+          <ChatContainer />
 
           <ChatBar chatToggled={chatToggled} />
         </SendDataContext.Provider>
