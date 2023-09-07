@@ -15,7 +15,6 @@ const AllUsers = () => {
   // Socket on + emit
   useEffect(() => {
     socket.game?.on('allUsers', (data: any) => {
-      console.log('ALL USERS data:', data);
       setUserId(data.userId);
       setUsersData(data.allUsers);
     });

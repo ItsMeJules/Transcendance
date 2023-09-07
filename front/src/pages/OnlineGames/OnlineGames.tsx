@@ -19,7 +19,6 @@ const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
   // Socket on
   useEffect(() => {
     socket.game?.on('onlineGames', (data: any) => {
-      console.log('ONLINE GAMES RECEIVED:', data);
       setNoGame(false);
       setGamesData(data);
     });

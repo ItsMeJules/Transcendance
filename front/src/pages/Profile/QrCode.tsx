@@ -80,10 +80,6 @@ const QrCode: React.FC = () => {
       try {
         const response = await customAxiosInstance.get(API_ROUTES.STATE_2FA);
         setIs2FAActive(response.data);
-        console.log(
-          "response.data.isTwoFactorAuthenticationEnabled",
-          response.data
-        );
       } catch (error) {
         console.log("Error: ", error);
       }

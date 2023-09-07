@@ -16,7 +16,6 @@ const JoinGame = () => {
     if (socketData) {
       const dataString = JSON.stringify(socketData);
       const dataJSON = JSON.parse(dataString);
-      console.log('Received:', dataJSON);
       if (dataJSON.status === "JOINED")
         setInQueue(dataJSON.gameMode);
       else if (dataJSON.status === "LEAVE")
@@ -29,7 +28,6 @@ const JoinGame = () => {
         localStorage.setItem('player2', JSON.stringify(dataJSON.player2));
         localStorage.setItem('gameChannel', JSON.stringify(dataJSON.gameChannel));
         setInQueue(0);
-        console.log("OKKKKKKKKKKK GOOOODDDDD");
         // setLeftContent(APP_SCREENS.PLAY);
         history(APP_ROUTES.PLAY_ABSOLUTE);
       }
@@ -37,9 +35,7 @@ const JoinGame = () => {
   }, [socketData]);
 
   useEffect(() => {
-    console.log('SOCKET id:', socket.game?.id);
     socket.game?.on('joinGameQueue', (data: any) => {
-      console.log('SOCKET ON JOIN RECEIVED:', data);
       setSocketData(data);
     });
     socket.game?.emit('joinGameQueue', { gameMode: 'query' });

@@ -174,7 +174,6 @@ export class PongService {
       // Protect if not found
       this.onlineGames.delete(gameStruct.prop.id);
       await this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
-      console.log('Game updated successfully');
     } catch (error) {
       console.error('Error updating game:', error);
     }
@@ -182,7 +181,6 @@ export class PongService {
 
   async endGame(gameStruct: GameStruct, winner: Player, loser: Player) {
     try {
-      console.log('inside game end');
       const game = await this.prismaService.game.findUnique({
         where: { id: gameStruct.prop.id },
       });
@@ -210,7 +208,6 @@ export class PongService {
       // Protect if not found
       this.onlineGames.delete(gameStruct.prop.id);
       await this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
-      console.log('Game updated successfully');
       pongServiceEmitter.emit('serviceEndGame', { action: 'emitOnlineGames' });
       // emit to front room
     } catch (error) {

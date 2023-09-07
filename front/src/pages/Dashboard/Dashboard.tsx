@@ -20,7 +20,6 @@ const Dashboard = () => {
   const [noGame, setNoGame] = useState(false);
 
   useEffect(() => {
-    // console.log('leftcntent:', rightContent);
   }, [rightContent]);
 
   return (

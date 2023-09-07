@@ -15,9 +15,6 @@ restart:
 down:
 	docker compose -f docker-compose.yml down
 
-prod:
-	docker compose -f docker-compose.prod.yml up --build --attach backend --attach frontend --attach bdd
-
 clean: down
 	docker system prune -af
 

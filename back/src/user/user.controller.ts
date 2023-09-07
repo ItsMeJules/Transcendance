@@ -105,7 +105,6 @@ export class UserController {
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) friendId: number,
   ) {
-    console.log('FRIEND TOGGLE:', userId, ' friendId:', friendId);
     return this.userService.addFriendToggler(userId, friendId);
   }
 

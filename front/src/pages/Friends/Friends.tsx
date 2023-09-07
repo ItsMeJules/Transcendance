@@ -28,7 +28,6 @@ const Friends = () => {
   // Socket on + emit
   useEffect(() => {
     socket.game?.on('friends', (data: any) => {
-      console.log('friends received:', data.friends);
       setFriendsData(data.friends);
     });
     socket.game?.emit('friends', { action: 'status' });
@@ -63,7 +62,6 @@ const Friends = () => {
   };
 
   useEffect(() => {
-    console.log('RMOVE FREND FLAG:', removeFlag, ' id to rm:', idToRemove);
     const removeUser = async (id: string | undefined) => {
       const dataToSend: any = {};
       if (id) dataToSend.id = id;
@@ -89,7 +87,6 @@ const Friends = () => {
   const handleProfileClick = (user: User) => {
     setIdToRemove('none');
     resetNotifMsg();
-    console.log('Profile clicked');
     history(APP_ROUTES.GENERIC_USER_PROFILE + user.id);
   }
 

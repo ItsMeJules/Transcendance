@@ -36,7 +36,6 @@ export const TwoFa = () => {
   }, [code]);
 
   useEffect(() => {
-    console.log("success is !!:", success);
     if (success) {
       history("");
     }

@@ -95,7 +95,6 @@ export class UserService {
           profilePicture: newPicUrl,
         },
       });
-      // console.log('file path:', file.path);
       fs.unlinkSync(file.path);
     } catch (err: any) {
       console.log(err);
@@ -108,7 +107,6 @@ export class UserService {
       const pathToDelete =
         '/workspace/back/public' + oldPictureObj.replace('/api', '');
       if (pathToDelete !== '/workspace/back/public/images/logo.png') {
-        // console.log('path to delete:',pathToDelete);
         fs.unlinkSync(pathToDelete);
       }
     } catch (err: any) { }
@@ -141,7 +139,6 @@ export class UserService {
     // Check if username is taken
     while (!usernameAvailable) {
       const userNameCheck = await this.isUserNameTaken(modifiedUsername);
-      // console.log('test:', userNameCheck);
       if (!userNameCheck) {
         usernameAvailable = true;
       } else {
@@ -150,7 +147,6 @@ export class UserService {
       }
     }
     data.username = modifiedUsername;
-    // console.log('username:', data.username);
     try {
       const createdUser = await this.prisma.user.create({ data });
       return createdUser;

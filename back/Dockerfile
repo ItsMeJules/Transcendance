@@ -13,8 +13,6 @@ COPY package*.json ./
 COPY entrypoint.sh .
 # COPY package-lock.json ./
 
-# RUN apt-get install nginx
-
 RUN npm install
 
 # COPY . .

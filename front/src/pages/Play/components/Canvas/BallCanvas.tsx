@@ -15,7 +15,6 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (ctx && game.isEnded) {
-      console.log('here okkkkkkkkkk');
       continueAnimation.current = false;
       ctx.clearRect(0, 0, game.board.width, game.board.height);
       return;

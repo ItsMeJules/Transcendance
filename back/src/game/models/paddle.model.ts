@@ -90,12 +90,9 @@ export class Paddle {
 
   collisionUpdate(playerNum: number) {
     if (playerNum === 1) {
-      // console.log('p1:', new Point(this.pos.x + this.width, this.pos.y));
-      // console.log('p2:', new Point(this.pos.x + this.width, this.pos.y + this.height));
       this.colPtsSide = new CollisionPointsPaddle(
         new Point(this.pos.x + this.width, this.pos.y),
         new Point(this.pos.x + this.width, this.pos.y + this.height));
-      // console.log('colpts in paddle:', this.colPtsSide);
     } else if (playerNum === 2) {
       this.colPtsSide = new CollisionPointsPaddle(
         new Point(this.pos.x, this.pos.y),

@@ -50,7 +50,6 @@ export class ChatEventsGateway {
   }
 
   async handleConnection(client: Socket): Promise<void> {
-    console.log('connection');
     const user = this.setupConnection(client);
 
     user
@@ -87,7 +86,6 @@ export class ChatEventsGateway {
         this.server
           .to(client.id)
           .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
-        // console.log('just emitted' ,  currentCompleteRoom, messagesWithClientId)
       })
       .catch((reason) => console.log(reason));
   }
@@ -132,7 +130,8 @@ export class ChatEventsGateway {
     ];
 
     eventTypes.forEach((eventType) => {
-      client.off(eventType, () => console.log(`${eventType} action !`));
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      client.off(eventType, () => {});
     });
   }
 
@@ -145,7 +144,6 @@ export class ChatEventsGateway {
       roomName: string;
     },
   ): Promise<void> {
-    console.log('Received payload: ', payload);
     await this.chatService.sendMessageToRoom(client, payload, this.server);
   }
 
@@ -155,7 +153,6 @@ export class ChatEventsGateway {
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
     const newPayload = { ...payload, server: this.server };
-    console.log('chat action payload: ', payload);
     if (newPayload.action === 'createRoom' && newPayload.type === 'PROTECTED') {
       newPayload.type = 'PUBLIC'; // careful
     }
@@ -172,7 +169,6 @@ export class ChatEventsGateway {
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
     const newPayload = { ...payload, server: this.server };
-    console.log('room action payload: ', payload);
     await ActionRoomHandlers[payload.action](
       this.chatService,
       client,

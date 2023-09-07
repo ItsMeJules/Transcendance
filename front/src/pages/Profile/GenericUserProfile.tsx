@@ -79,8 +79,6 @@ const GenericUserProfile = () => {
     const targetId = parseInt(id!);
     if (chatSocket) {
       chatSocket.emit("chat-action", {action: "block", targetId: targetId});
-    } else {
-      console.log("chatSocket is null");
     }
   }
 

@@ -86,7 +86,6 @@ export function useAxios() {
   }
 
   const handle2FAErrors = (err: any, toastId: string) => {
-    console.log('error here 2fa:', err);
     if (err.response && err.response.status === 450) {
       navigate("/dashboard/profile/me?error=no2fa");
       return ERROR.YES;
@@ -111,8 +110,6 @@ export function useAxios() {
       const toastId = 'error';
 
       if (toast.isActive(toastId)) return;
-
-      console.log('err:', error.response);
 
       if (config.url.includes(APP_ROUTES.SIGN_UP))          // Sign up ok
         errorValue = handleLoginErrors(error, toastId);

@@ -15,7 +15,6 @@ const LeaderBoard: React.FC = () => {
   // Socket on + emit
   useEffect(() => {
     socket.game?.on('leaderboard', (data: any) => {
-      console.log('Leadbd:', data);
       setUserId(data.userId);
       setLeaderboardData(data.leaderboard);
     });

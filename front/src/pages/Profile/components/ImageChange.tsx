@@ -9,20 +9,19 @@ interface ImageChangeProps {
 const ImageChange: React.FC<ImageChangeProps> = ({ fetchUserProfile }) => {
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("IMAGE:", API_ROUTES.USER_PIC_CHANGE);
     const imageFile = e.target.files?.[0];
     if (imageFile) {
       const formData = new FormData();
       formData.append("profilePicture", imageFile);
       try {
         
+        //a quoi ca sert ca ?
         const response = await axios.post(API_ROUTES.USER_PIC_CHANGE, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
           withCredentials: true, // Add this line to include the withCredentials option
         });
-        console.log('err:',response);
         fetchUserProfile();
       } catch (err: any) {
         // catch unauthorized too!!!

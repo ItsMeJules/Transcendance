@@ -32,11 +32,9 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
         event.preventDefault();
         if (event.key === 'ArrowUp') {
-          console.log('OK up');
           movingUp = true;
           socket?.emit('moveUp', { player: whichPlayer, action: 'pressed' });
         } else if (event.key === 'ArrowDown') {
-          console.log('OK down');
           movingDown = true;
           socket?.emit('moveDown', { player: whichPlayer, action: 'pressed' });
         }
