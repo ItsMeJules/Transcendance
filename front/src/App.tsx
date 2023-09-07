@@ -11,6 +11,7 @@ import { Home, Signin, Signup, Dashboard, NotFoundPage, Auth2factor } from "page
 import ErrorBoundary from "services/ErrorBoundary/ErrorBoundary";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RedirectPlay from "pages/Redirections/RedirectPlay";
 
 const App: React.FC = () => {
   return (
@@ -53,6 +54,7 @@ const App: React.FC = () => {
                   </LayoutWrapper>
                 }
               />
+              <Route path={APP_ROUTES.REDIRECT_PLAY} element={<RedirectPlay />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </PersistGate>

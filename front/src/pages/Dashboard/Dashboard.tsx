@@ -32,7 +32,6 @@ const Dashboard = () => {
           <div className="left-screen-container">
             <Routes>
               <Route index element={<NotFoundPageDashboard />} />
-              <Route path={APP_ROUTES.REDIRECT_PLAY} element={<RedirectPlay />} />
               <Route path={APP_ROUTES.USER_PROFILE} element={<Profile />} />
               <Route path={APP_ROUTES.USER_PROFILE_EDIT} element={<ProfileEdit />} />
               <Route
