@@ -5,8 +5,8 @@ export interface UserData {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
-  username: string | null;
-  profilePicture: string | null;
+  username: string;
+  profilePicture: string;
   gamesPlayed: number | null;
   gamesWon: number | null;
   userPoints: number | null;
@@ -26,8 +26,8 @@ class User {
   private email: string | null = null;
   private firstName: string | null = null;
   private lastName: string | null = null;
-  private username: string | null = null;
-  private profilePicture: string | null = null;
+  private username: string = "";
+  private profilePicture: string = "";
   private gamesPlayed: number | null = null;
   private gamesWon: number | null = null;
   private userPoints: number | null = null;
@@ -50,8 +50,8 @@ class User {
     this.email = data.email || null;
     this.firstName = data.firstName || null;
     this.lastName = data.lastName || null;
-    this.username = data.username || null;
-    this.profilePicture = data.profilePicture || null;
+    this.username = data.username;
+    this.profilePicture = data.profilePicture;
     this.gamesPlayed = data.gamesPlayed;
     this.gamesWon = data.gamesWon;
     this.userPoints = data.userPoints;
