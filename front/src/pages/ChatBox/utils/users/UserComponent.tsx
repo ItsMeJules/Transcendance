@@ -25,7 +25,6 @@ export default function UserComponent({
           className="profile-picture"
           src={userData.profilePicture === null ? "" : userData.profilePicture}
           alt="Profile"
-          style={{ border: "1px solid " + (userData.isOnline ? "lime" : "red") }}
         />
         <p className="username">{userData.username}</p>
       </div>
