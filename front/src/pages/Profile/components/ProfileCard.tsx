@@ -18,12 +18,12 @@ type ProfileCardProps = {
   isBlocked?: boolean;
 };
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ userData, type = 'user', onAddFriend, fetchUserProfile, isFriend }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ userData, type = 'user', onAddFriend, fetchUserProfile, isFriend, blockUser, isBlocked }) => {
 
   return (
     <div className="profile-board-container">
 
-      <ProfileHeader userData={userData} type={type} isFriend={isFriend} onAddFriend={onAddFriend} isBlocked={isBlocked} />
+      <ProfileHeader userData={userData} type={type} isFriend={isFriend} onAddFriend={onAddFriend} blockUser={blockUser} isBlocked={isBlocked} />
 
       {type !== 'edit' && (
         <>
