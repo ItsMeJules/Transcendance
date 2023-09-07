@@ -19,7 +19,7 @@ export const API_ROUTES = {
   STATE_2FA: `${API_URL}/users/me/2fa-state`,
   CURRENT_CHAT: `${API_URL}/users/current-chat`,
   COMPLETE_ROOM: `${API_URL}/users/complete-room`,
-  VISIBLE_CHANNELS: `${API_URL}/chat/visible-rooms`
+  VISIBLE_CHANNELS: `${API_URL}/chat/visible-rooms`,
 };
 
 export const APP_URL = "http://localhost:8000";
@@ -48,6 +48,7 @@ export const APP_ROUTES = {
   USER_FRIENDS: "/profile/me/friends",
   AUTH_2FA: "/profile/me/two-fa",
   LEADERBOARD: "/leaderboard",
+  REDIRECT_PLAY: "/dashboard/redirect-play",
 };
 
 export enum APP_SCREENS {
