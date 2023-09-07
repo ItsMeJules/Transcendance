@@ -105,6 +105,7 @@ export const ChatBox = () => {
         });
         break;
       case "success":
+        console.log("doubleAcknowledgements");
         toast.success(`${payload.message}`, {
           position: "bottom-center",
           autoClose: 3000,
@@ -128,90 +129,90 @@ export const ChatBox = () => {
           theme: "colored",
         });
         break;
-      case "invitation":
-        chatSocket?.on("answerInvitation", (payload2: any) => {
-          console.log("answer invite is ", payload2);
-          if (payload2.message === "yes") {
-            chatSocket?.off("answerInvitation"); // Remove the listener
-            setSocketData(payload2);
-          } else {
-            chatSocket?.off("answerInvitation"); // Remove the listener
-          }
-        });
-        const handleAccept = () => {
-          const payloadInvite: PayloadAction = {
-            action: "acceptInvitation",
-            targetId: payload.userId,
-          };
-          chatSocket?.emit(ChatSocketEventType.CHAT_ACTION, payloadInvite);
-          toast.dismiss();
-        };
+      // case "invitation":
+      //   chatSocket?.on("answerInvitation", (payload2: any) => {
+      //     console.log("answer invite is ", payload2);
+      //     if (payload2.message === "yes") {
+      //       chatSocket?.off("answerInvitation"); // Remove the listener
+      //       setSocketData(payload2);
+      //     } else {
+      //       chatSocket?.off("answerInvitation"); // Remove the listener
+      //     }
+      //   });
+      //   const handleAccept = () => {
+      //     const payloadInvite: PayloadAction = {
+      //       action: "acceptInvitation",
+      //       targetId: payload.userId,
+      //     };
+      //     chatSocket?.emit(ChatSocketEventType.CHAT_ACTION, payloadInvite);
+      //     toast.dismiss();
+      //   };
 
-        const handleDecline = () => {
-          const payloadInvite: PayloadAction = {
-            action: "refuseInvitation",
-            targetId: payload.userId,
-          };
-          chatSocket?.emit(ChatSocketEventType.CHAT_ACTION, payloadInvite);
-          toast.dismiss();
-        };
+      //   const handleDecline = () => {
+      //     const payloadInvite: PayloadAction = {
+      //       action: "refuseInvitation",
+      //       targetId: payload.userId,
+      //     };
+      //     chatSocket?.emit(ChatSocketEventType.CHAT_ACTION, payloadInvite);
+      //     toast.dismiss();
+      //   };
 
-        const InviteActions = () => (
-          <div>
-            {payload.message}
-            <div className="btn-container">
-              <button className="btn accept" onClick={handleAccept}>
-                ✓
-              </button>
-              <button className="btn decline" onClick={handleDecline}>
-                ✗
-              </button>
-            </div>
-          </div>
-        );
+      //   const InviteActions = () => (
+      //     <div>
+      //       {payload.message}
+      //       <div className="btn-container">
+      //         <button className="btn accept" onClick={handleAccept}>
+      //           ✓
+      //         </button>
+      //         <button className="btn decline" onClick={handleDecline}>
+      //           ✗
+      //         </button>
+      //       </div>
+      //     </div>
+      //   );
 
-        toast(<InviteActions />, {
-          position: "bottom-center",
-          autoClose: 15000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        break;
-      case "pending_invite":
-        const conditionAcceptation = () => {
-          return new Promise<void>((resolve, reject) => {
-            const timeoutId = setTimeout(() => {
-              chatSocket?.off("answerInvitation");
-              reject();
-            }, 15000);
+      //   toast(<InviteActions />, {
+      //     position: "bottom-center",
+      //     autoClose: 15000,
+      //     hideProgressBar: false,
+      //     closeOnClick: false,
+      //     pauseOnHover: false,
+      //     draggable: true,
+      //     progress: undefined,
+      //     theme: "light",
+      //   });
+      //   break;
+      // case "pending_invite":
+      //   const conditionAcceptation = () => {
+      //     return new Promise<void>((resolve, reject) => {
+      //       const timeoutId = setTimeout(() => {
+      //         chatSocket?.off("answerInvitation");
+      //         reject();
+      //       }, 15000);
 
-            const listener = (payload2: any) => {
-              console.log("answer invite is ", payload2);
-              if (payload2.message === "yes") {
-                clearTimeout(timeoutId);
-                chatSocket?.off("answerInvitation");
-                resolve();
-                setSocketData(payload2);
-              } else {
-                clearTimeout(timeoutId);
-                chatSocket?.off("answerInvitation");
-                reject();
-              }
-            };
+      //       const listener = (payload2: any) => {
+      //         console.log("answer invite is ", payload2);
+      //         if (payload2.message === "yes") {
+      //           clearTimeout(timeoutId);
+      //           chatSocket?.off("answerInvitation");
+      //           resolve();
+      //           setSocketData(payload2);
+      //         } else {
+      //           clearTimeout(timeoutId);
+      //           chatSocket?.off("answerInvitation");
+      //           reject();
+      //         }
+      //       };
 
-            chatSocket?.on("answerInvitation", listener);
-          });
-        };
-        toast.promise(conditionAcceptation(), {
-          pending: "Waiting for " + payload.message + " to accept the invitation...",
-          success: payload.message + " accepted the invitation",
-          error: payload.message + " declined the invitation.",
-        });
-        break;
+      //       chatSocket?.on("answerInvitation", listener);
+      //     });
+      //   };
+      //   toast.promise(conditionAcceptation(), {
+      //     pending: "Waiting for " + payload.message + " to accept the invitation...",
+      //     success: payload.message + " accepted the invitation",
+      //     error: payload.message + " declined the invitation.",
+      //   });
+      //   break;
       default:
         break;
     }
@@ -294,14 +295,12 @@ export const ChatBox = () => {
     chatSocket?.emit(eventType, data);
   };
 
-
   return (
     <>
-      <ToastContainer />
       <div className="chat-container">
         <SendDataContext.Provider value={sendData}>
-            <ChatMetadata chatToggled={chatToggled} />
-            <ChatContainer />
+          <ChatMetadata chatToggled={chatToggled} />
+          <ChatContainer />
 
           <ChatBar chatToggled={chatToggled} />
         </SendDataContext.Provider>
