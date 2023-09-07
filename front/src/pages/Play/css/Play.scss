@@ -38,16 +38,16 @@
     
     .profile-game-card-l {
       @include profile-game-card();
-      justify-content: left;
+      justify-content: flex-start;
       margin-left: 10px
     }
     
     .profile-game-card-r {
       @include profile-game-card();
-      justify-content: right;
+      justify-content: flex-end;
     }
     
-    .profile-picture {
+    .profile-picture img {
       min-width: 50px;
       width: 50px;
       height: 50px;
@@ -55,6 +55,8 @@
       overflow: hidden;
       margin-right: 10px;
       background-color: rgba(255, 255, 255, 0.5);
+      object-fit: cover;
+      object-position: 50% 0%;
     }
     
     @mixin player-profile-information {
