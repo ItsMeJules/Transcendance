@@ -26,7 +26,7 @@ export type PlayersMap = Map<number, number>; // <userId, gameId>
 @WebSocketGateway({ namespace: 'game' })
 export class PongEvents {
   @WebSocketServer()
-  server: Server;
+  server: Server; 
   public idToSocketMap = new Map<number, Socket>();
   public spectatorsMap = new Map<number, number>;
   public playersMap = new Map<number, number>;

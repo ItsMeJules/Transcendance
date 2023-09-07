@@ -29,16 +29,16 @@ const Home = () => {
   }, []);
 
   const  handleButtonClick = async () => {
-    try {
-      const response = await customAxiosInstance.get(API_ROUTES.HOME_CHECK_TOKEN,
-        {
-          withCredentials: true
-        })
-        if (response.data.tokenState === 'HAS_TOKEN')
-          return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
+    // try {
+    //   const response = await customAxiosInstance.get(API_ROUTES.HOME_CHECK_TOKEN,
+    //     {
+    //       withCredentials: true
+    //     })
+    //     if (response.data.tokenState === 'HAS_TOKEN')
+    //       return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
         return history(APP_ROUTES.SIGN_IN, { state: { key: Date.now() } });
         
-    } catch (error) { };
+    // } catch (error) { };
   };
 
   return (

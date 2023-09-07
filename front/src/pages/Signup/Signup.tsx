@@ -46,7 +46,7 @@ export const Signup = () => {
           return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
       } catch (error) { };
     }
-    verifyToken();
+    // verifyToken();
   }, [])
 
   return (

@@ -69,7 +69,7 @@ export const Signin = () => {
       toast.error('This account has a password provided, please sign in via the form.');
     if (errorMessage === 'unauthorized')
       toast.error('Unauthorized. Please log in again.');
-    verifyToken();
+    // verifyToken();
   }, [])
 
   return (
