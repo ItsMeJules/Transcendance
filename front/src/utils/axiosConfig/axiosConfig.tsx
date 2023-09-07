@@ -46,8 +46,8 @@ export function useAxios() {
         break;
 
       case 401: // Unauthorized
-        toast.error(errorMessage || "Unauthorized. Please log in again.", { toastId });
-        // navigate("/login?error=unauthorized");
+        // toast.error(errorMessage || "Unauthorized. Please log in again.", { toastId });
+        navigate("/login?error=unauthorized");
         break;
 
       case 403: // Forbidden

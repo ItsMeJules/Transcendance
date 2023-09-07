@@ -65,23 +65,18 @@ const Play = () => {
       else
         setWhichPlayer(2);
     }
-    // Retrieve the height value
-
   }, []);
 
   // Sockets on
   useEffect(() => {
     socket.game?.on('prepareToPlay', (data: GameSocket) => {
-      console.log('prepare:', data);
       setGameStatePrepare(data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
-      console.log('Play:', data);
       setGameStatePlay(data);
     });
     socket.game?.on('noGame', (data: noGame) => {
       if (data.status === 'noGame') {
-        console.log('NoGame on');
         setNoGame(true);
         setGame({ ...game, status: 'noGame' })
       }
@@ -138,25 +133,20 @@ const Play = () => {
 
   // Prepare useEffect
   useEffect(() => {
-    // console.log('Prepare:', gameStatePrepare);
     if (gameStatePlay?.gameStatus === 'ended'
       || gameStatePlay?.gameStatus === 'giveUp') return;
     if (game.status === 'noGame')
-      console.log('thhhhhhhhhhhhhhhhhhhhhhhhhis')
     if (gameStatePrepare?.gameStatus) setGame({ ...game, status: gameStatePrepare?.gameStatus });
     if (gameStatePrepare?.gameStatus === 'pending'
       || (gameStatePrepare?.gameStatus === 'waiting' && gameStatePrepare.playerStatus === 'pending')
       || (gameStatePrepare?.playerStatus === 'pending' && gameStatePrepare.gameStatus !== 'timeout')) {
-      console.log('1 P READY');
       setCentralText('Ready?');
     } else if (gameStatePrepare?.gameStatus === 'waiting'
       && gameStatePrepare.playerStatus === 'ready'
       && gameStatePrepare.opponentStatus === 'pending') {
-      console.log('1 P WAITING');
       setIsPlayerReady(true);
       setCentralText('Waiting for opponent');
     } else if (gameStatePrepare?.gameStatus === 'countdown') {
-      console.log('1 P COUNTDOWN');
       setIsOpponentReady(true);
       setIsPlayerReady(true);
       if (gameStatePrepare.countdown) {
@@ -164,14 +154,11 @@ const Play = () => {
       } else
         setCentralText('Get ready!');
     } else if (gameStatePrepare?.gameStatus === 'timeout') {
-      console.log('1 P TIMEOUT');
       setCentralText('Timeout - game canceled')
       setTimeout(() => {
-        console.log('thhhhhhhhhhhhhhhhhhhhhhhhhaaaaaaaaaaaaaaaaaaaats')
         history(APP_ROUTES.MATCHMAKING_ABSOLUTE);
       }, 3 * 1000);
     } else if (gameStatePrepare?.gameStatus === 'playing') {
-      console.log('1 P ELSE');
       if (socket.game) socket.game.off('prepareToPlay');
       setGame({ ...game, isPlaying: true });
     }
@@ -180,7 +167,6 @@ const Play = () => {
   // Window resizing
   useEffect(() => {
     const handleResize = () => {
-      // Adapter la largeur ici a celle de lecran total vs le conteneur
       const newWidth = window.innerWidth * 0.4;
       const factor = game.board.updateDimensions(newWidth);
       setGame({ ...game });
@@ -195,7 +181,7 @@ const Play = () => {
   return (
     <div className='pong-main-container'>
 
-      <ConfettisComponent gameIsEnded={game.isEnded} userIsWinner={game.isUserWinner} />
+      {/* <ConfettisComponent gameIsEnded={game.isEnded} userIsWinner={game.isUserWinner} /> */}
 
       <ProfilesHeader game={game} player1Data={player1Data} player2Data={player2Data} noGame={noGame} />
 

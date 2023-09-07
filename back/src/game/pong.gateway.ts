@@ -43,8 +43,7 @@ export class PongEvents {
       this.emitUpdateAllUsers('toAll', 0);
       this.emitUpdateFriendsOf(parseInt(data.pl1Id));
       this.emitUpdateFriendsOf(parseInt(data.pl1Id));
-      this.emitUpdateProfileHeader(parseInt(data.pl1Id));
-      this.emitUpdateProfileHeader(parseInt(data.pl2Id));
+      
     });
     /* Update room */
     gameEvents.on('gatewayUpdateRoom', (data) => {
@@ -57,6 +56,8 @@ export class PongEvents {
     pongServiceEmitter.on('serviceEndGame', (data) => {
       this.updateEmitOnlineGames('toRoom', 0);
       this.emitUpdateLeaderboard('toRoom', 0);
+      this.emitUpdateProfileHeader(parseInt(data.player1Id));
+      this.emitUpdateProfileHeader(parseInt(data.player2Id));
     });
     userServiceEmitter.on('updateFriendsOfUser', (data) => {
       this.emitUpdateFriends('toUser', parseInt(data.userId));
@@ -433,6 +434,14 @@ export class PongEvents {
     return true;
   }
 
+  /* Refresh the front state */
+  @Interval(2000) // 
+  refreshAllGames() {
+    this.pongService.onlineGames.forEach((game, key) => {
+      game.sendUpdateToRoomInterval();
+    })
+  }
+
   /* Clean unactive games */
   @Interval(5000) // every 5 seconds
   cleanTimedOutOnlineGames() {
@@ -490,7 +499,7 @@ export class PongEvents {
 
   /* Right screen updater functions */
   /* Friends */
-  @SubscribeMessage('friends') // This decorator listens for messages with the event name 'message'
+  @SubscribeMessage('friends')
   async friendsHandler(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { action: string }): Promise<void> {

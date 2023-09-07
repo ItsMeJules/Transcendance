@@ -29,7 +29,6 @@ const QrCode: React.FC = () => {
       setLoadingQRCode(false);
     } catch (error) {
       setLoadingQRCode(false);
-      console.log("Error:", error);
     }
   };
 
@@ -43,9 +42,7 @@ const QrCode: React.FC = () => {
         }
       );
       setIs2FAActive(false);
-    } catch (error) {
-      console.log("Error:", error);
-    }
+    } catch (error) { }
   };
 
   const changeVisibleBlock = (event: React.MouseEvent<HTMLButtonElement>) => {

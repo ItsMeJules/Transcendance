@@ -9,6 +9,7 @@ import ProfileCard from "./components/ProfileCard";
 import { useAppDispatch } from "utils/redux/Store";
 import { setUser } from "utils/redux/reducers/UserSlice";
 import { toast } from 'react-toastify';
+import { API_ROUTES } from "utils/routing/routing";
 
 export const Profile: React.FC = () => {
   const location = useLocation();
@@ -23,7 +24,7 @@ export const Profile: React.FC = () => {
       try {
         console.log('here');
         const response = await customAxiosInstance.get(
-          "http://localhost:8000/api/users/complete-user",
+          API_ROUTES.USER_COMPLETE,
           {
             withCredentials: true,
           }
@@ -34,20 +35,7 @@ export const Profile: React.FC = () => {
         localStorage.setItem("userData", JSON.stringify(userData));
         setUserDataProfile(userData);
         User.getInstance().setUserFromResponseData(userData);
-      } catch (err: any) {
-        console.log('errror profile:', err);
-        // if (!err?.response) {
-        //   setErrMsg('No Server Response');
-        // } else if (err.response?.status === 400) {
-        //   setErrMsg('Bad request');
-        // } else if (err.response?.status === 401) {
-        //   setErrMsg('Unauthorized');
-        //   history(APP_ROUTES.HOME);
-        // }
-        // else {
-        //   setErrMsg('Error');
-        // }
-      }
+      } catch (err: any) { }
     };
     if (errorMessage === 'alreadyverified')
       toast.error('You are already verified!');

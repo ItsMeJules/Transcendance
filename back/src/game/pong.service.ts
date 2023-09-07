@@ -148,7 +148,7 @@ export class PongService {
       });
       this.onlineGames.delete(gameStruct.prop.id);
       await this.updatePlayersAfterGame(winnerPrisma, loserPrisma);
-      pongServiceEmitter.emit('serviceEndGame', { action: 'emitOnlineGames' });
+      pongServiceEmitter.emit('serviceEndGame', { action: 'emitOnlineGames', player1Id: winner.id, player2Id: loser.id });
     } catch (error) { handlePrismaError(error); }
   }
 

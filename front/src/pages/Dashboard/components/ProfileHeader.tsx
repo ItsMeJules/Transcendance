@@ -22,7 +22,6 @@ const ProfileHeader = () => {
   // Socket on
   useEffect(() => {
     socket.game?.on('userDataSocket', (data: any) => {
-      console.log('userDataSocket RECEIVED:', data);
       setUserDataSocket(data);
     });
     socket.game?.emit('userDataSocket', { action: 'query' });
@@ -32,7 +31,7 @@ const ProfileHeader = () => {
   }, [socket.game]);
 
   useEffect(() => {
-    console.log('userDataSocket RECEIVED:', userDataSocket);
+    // console.log('userDataSocket RECEIVED:', userDataSocket);
     if (!userDataSocket) return;
     if (userDataSocket.profilePicture)
       setProfilePicture(userDataSocket.profilePicture);
