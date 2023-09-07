@@ -23,6 +23,7 @@ import { NoTwoFaException } from './exceptions/no-two-fa.exception';
 import JwtTwoFactorGuard from './guard/jwt.two-fa.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
 import handleJwtError from '@utils/jwt.error';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -31,7 +32,7 @@ export class AuthController {
     private prismaService: PrismaService,
     private twoFaService: TwoFaService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   /* Signup - error management ok */
   @Post('signup')
@@ -39,13 +40,21 @@ export class AuthController {
     @Body() dto: AuthDtoUp,
     @Res({ passthrough: true }) res: Response,
   ): Promise<User> {
-    const access_token = await this.authService.signup(dto);
-    res.cookie('access_token', access_token, {
+    const tokens = await this.authService.signup(dto);
+    res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 150,
+      maxAge: 15 * 60 * 1000,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(access_token, true);
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+    });
+    const user = await this.authService.validateJwtToken(
+      tokens.access_token,
+      true,
+    );
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
     return user;
   }
@@ -57,15 +66,22 @@ export class AuthController {
     @Body() dto: AuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<User> {
-    const access_token = await this.authService.signin(dto);
-    res.cookie('access_token', access_token, {
+    const tokens = await this.authService.signin(dto);
+    res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 150,
+      maxAge: 15 * 60 * 1000,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(access_token, true);
-    if (user) delete user.hash;
-    await this.authService.connectUserToAllPublicRooms(user.id);
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+    });
+    const user = await this.authService.validateJwtToken(
+      tokens.access_token,
+      true,
+    );
+    if (user) await this.authService.connectUserToAllPublicRooms(user.id);
     return user;
   }
 
@@ -84,13 +100,21 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    const access_token = await this.authService.login(req.user);
-    res.cookie('access_token', access_token, {
+    const tokens = await this.authService.login(req.user);
+    res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 15000,
+      maxAge: 15 * 60 * 1000,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(access_token, false);
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+    });
+    const user = await this.authService.validateJwtToken(
+      tokens.access_token,
+      false,
+    );
     if (!user) {
       const errorMessage = 'nouser';
       return res.redirect(`/login?error=${errorMessage}`);
@@ -117,13 +141,21 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    const access_token = await this.authService.login(req.user);
-    res.cookie('access_token', access_token, {
+    const tokens = await this.authService.login(req.user);
+    res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 150,
+      maxAge: 15 * 60 * 1000,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(access_token, false);
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+    });
+    const user = await this.authService.validateJwtToken(
+      tokens.access_token,
+      false,
+    );
     if (!user) {
       const errorMessage = 'nouser';
       return res.redirect(`/login?error=${errorMessage}`);
@@ -134,6 +166,39 @@ export class AuthController {
     }
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
     return res.redirect('/dashboard/profile/me');
+  }
+
+  @Post('refresh-token')
+  async refreshToken(
+    @Body() refreshTokenDto: RefreshTokenDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<any> {
+    const refresh_token = refreshTokenDto.refresh_token;
+
+    const userPayload = await this.authService.verifyRefreshToken(
+      refresh_token,
+    );
+
+    if (!userPayload) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    const accessToken = this.jwtService.sign({
+      id: userPayload.id,
+      isTwoFactorAuthenticationVerified:
+        userPayload.isTwoFactorAuthenticationVerified,
+    });
+
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      maxAge: 15 * 60 * 1000,
+      sameSite: 'lax',
+    });
+
+    return {
+      accessToken: accessToken,
+      message: 'Access token refreshed successfully',
+    };
   }
 
   /* 2FA */
@@ -148,15 +213,19 @@ export class AuthController {
       await this.prismaService.turnOnTwoFactorAuthentication(user.id);
       const otpAuthUrlOne =
         await this.twoFaService.generateTwoFactorAuthenticationSecret(user);
-      const accessTokenCookie = this.jwtService.sign({
-        id: user.id,
-        isTwoFactorAuthenticationVerified: true,
-      });
-      res.cookie('access_token', accessTokenCookie, {
+      const tokens = await this.authService.login(user, true);
+      res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
-        maxAge: 60 * 60 * 24 * 150,
+        maxAge: 15 * 60 * 1000,
         sameSite: 'lax',
       });
+
+      res.cookie('refresh_token', tokens.refresh_token, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: 'lax',
+      });
+
       return this.twoFaService.pipeQrCodeStream(res, otpAuthUrlOne.otpAuthUrl);
     } catch (error) {
       handleJwtError(error);
@@ -171,10 +240,8 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() body: any,
   ): Promise<void> {
-
     const code = body.twoFactorAuthentificationCode;
-    if (!user.isTwoFactorAuthenticationEnabled)
-      throw new NoTwoFaException();
+    if (!user.isTwoFactorAuthenticationEnabled) throw new NoTwoFaException();
     if (code === '') return;
     const isCodeValid = this.twoFaService.isTwoFactorAuthenticationCodeValid(
       code,
@@ -184,14 +251,16 @@ export class AuthController {
       throw new UnauthorizedException('Wrong authentication code');
 
     try {
-      const accessTokenCookie = this.jwtService.sign({
-        id: user.id,
-        isTwoFactorAuthenticationVerified: true,
-      });
+      const tokens = await this.authService.login(user.id, true);
 
-      res.cookie('access_token', accessTokenCookie, {
+      res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
-        maxAge: 60 * 60 * 24 * 150,
+        maxAge: 15 * 60 * 1000,
+        sameSite: 'lax',
+      });
+      res.cookie('refresh_token', tokens.refresh_token, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
         sameSite: 'lax',
       });
     } catch (error) {
@@ -209,14 +278,16 @@ export class AuthController {
     await this.prismaService.turnOffTwoFactorAuthentication(user.id);
 
     try {
-      const accessTokenCookie = this.jwtService.sign({
-        id: user.id,
-        isTwoFactorAuthenticationVerified: false,
-      });
+      const tokens = await this.authService.login(user.id, false);
 
-      res.cookie('access_token', accessTokenCookie, {
+      res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
-        maxAge: 60 * 60 * 24 * 150,
+        maxAge: 15 * 60 * 1000,
+        sameSite: 'lax',
+      });
+      res.cookie('refresh_token', tokens.refresh_token, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
         sameSite: 'lax',
       });
     } catch (error) {

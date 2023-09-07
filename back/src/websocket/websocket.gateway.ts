@@ -1,7 +1,4 @@
-import {
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
@@ -17,7 +14,8 @@ export class SocketEvents {
   constructor(
     private prismaService: PrismaService,
     private authService: AuthService,
-    private userService: UserService,) { }
+    private userService: UserService,
+  ) {}
 
   async handleConnection(client: Socket) {
     const access_token = extractAccessTokenFromCookie(client);

@@ -106,7 +106,7 @@ export class ChatEventsGateway {
       );
       this.removeEventListeners(client);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
