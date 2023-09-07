@@ -22,14 +22,9 @@ const GenericUserProfile = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userNotFound, setUserNotFound] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
   const location = useLocation();
   const isBlocked = useAppSelector(state => state.user.userData.blockedUsers)?.some(blockedId => id !== undefined ? blockedId === parseInt(id) : false);
   getProgressBarClass(level);
-
-  const resetErrMsg = () => {
-    setErrMsg('');
-  }
 
   useEffect(() => {
     const fetchUserProfile = async (id: string | undefined) => {

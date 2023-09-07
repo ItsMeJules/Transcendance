@@ -1,6 +1,6 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
-import "./ChatBox.scss";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useWebsocketContext } from "services/Websocket/Websocket";
@@ -20,18 +20,18 @@ import {
   removeUserBlocked,
   setUserActiveChannel,
 } from "utils/redux/reducers/UserSlice";
+import { APP_ROUTES } from "utils/routing/routing";
+import "./ChatBox.scss";
 import ChatContainer from "./chat_container/ChatContainer";
 import ChatBar from "./chatbar/ChatBar";
 import ChatMetadata from "./metadata/ChatMetadata";
+import { ChannelMessageData } from "./models/Channel";
 import PayloadAction from "./models/PayloadSocket";
 import {
   ChatSocketActionType,
   ChatSocketEventType,
   RoomSocketActionType,
 } from "./models/TypesActionsEvents";
-import { ChannelMessageData } from "./models/Channel";
-import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "utils/routing/routing";
 
 export const SendDataContext = createContext<
   null | ((action: string, data: PayloadAction) => void)
@@ -44,23 +44,8 @@ interface SocketAcknowledgements {
   type: string;
 }
 
-interface PendingAcceptation {
-  resolve: () => void;
-  reject: () => void;
-}
-
-interface PayloadAnswerInvitation {
-  message: string;
-  gameData: any;
-  player1: any;
-  player2: any;
-  gameChannel: any;
-}
-
 export const ChatBox = () => {
   const [socketData, setSocketData] = useState("");
-  const [chatToggled, setChatToggled] = useState<boolean>(true);
-  const pendingAcceptation = useRef<PendingAcceptation | null>(null);
   const chatSocket = useWebsocketContext().chat;
   const dispatch = useAppDispatch();
   const { currentRoom: activeChannelName } = useAppSelector((store) => store.user.userData);
@@ -294,14 +279,12 @@ export const ChatBox = () => {
       <ToastContainer />
       <div className="chat-container">
         <SendDataContext.Provider value={sendData}>
-            <ChatMetadata chatToggled={chatToggled} />
+            <ChatMetadata />
             <ChatContainer />
 
-          <ChatBar chatToggled={chatToggled} />
+          <ChatBar />
         </SendDataContext.Provider>
       </div>
-      {/* <div className="errors">lol</div>
-      <div className="acknowledgements">lol</div> */}
     </>
   );
 };

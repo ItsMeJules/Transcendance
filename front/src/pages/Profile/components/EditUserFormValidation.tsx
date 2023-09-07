@@ -14,7 +14,7 @@ interface EditUserFormValidationProps {
 
 const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ userData }) => {
 
-  const [userDataNew, setUserDataNew] = useState<UserData | null>();
+  // const [userDataNew, setUserDataNew] = useState<UserData | null>();
   const [username, setUsername] = useState<string>('');
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
@@ -32,6 +32,7 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ userDat
       dataToSend.lastName = lastName;
 
     try {
+      // a quoi ca sert ca ?
       const response = await axios.patch(
         API_ROUTES.USER_PROFILE_EDIT,
         dataToSend,
@@ -39,7 +40,7 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ userDat
           withCredentials: true
         });
       localStorage.setItem('userData', JSON.stringify(userData));
-      setUserDataNew(response.data);
+      // setUserDataNew(response.data);
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     } catch (err: any) {
       console.log(err.response?.data.message);

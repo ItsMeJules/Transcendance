@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 
 import { useAppSelector } from "utils/redux/Store";
 import { SendDataContext } from "../../../ChatBox";
-import { ChannelData, ChannelType, ChannelTypeDescription } from "../../../models/Channel";
+import { ChannelData, ChannelType } from "../../../models/Channel";
 import PayloadAction from "../../../models/PayloadSocket";
 import { ChatSocketActionType } from "../../../models/TypesActionsEvents";
 import Popup from "../../../utils/Popup";

@@ -16,7 +16,6 @@ export default function ChannelManager(props: ChannelManagerProps) {
 
   const excludeRef = useRef<HTMLImageElement | null>(null);
   let BannedIcon = require("../../assets/banned.png");
-  let SettingsIcon = require("../../assets/settings.png");
 
   const { channelData }: ChannelManagerProps = props;
   const usersSize = channelData?.usersId?.length || 0;

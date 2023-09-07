@@ -1,6 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
-import { UserData } from "services/User/User";
 
 interface UserDataState {
   userData: {

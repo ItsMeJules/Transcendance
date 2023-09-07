@@ -105,6 +105,7 @@ export function useAxios() {
   customAxiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
+      // a quoi ca sert ca ?
       const { response, config } = error;
       let errorValue: number = ERROR.NO;
       const toastId = 'error';

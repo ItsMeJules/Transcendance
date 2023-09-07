@@ -1,6 +1,5 @@
-import React from "react";
-import { useLocation } from 'react-router-dom';
 import BackgroundLinking from "layout/BackgroundLinking/BackgroundLinking";
+import React from "react";
 
 export interface LayoutWrapperProps {
   children: React.ReactNode;

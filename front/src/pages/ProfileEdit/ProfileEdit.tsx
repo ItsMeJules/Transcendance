@@ -10,9 +10,6 @@ import ProfileCard from "pages/Profile/components/ProfileCard";
 export const ProfileEdit: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
-  const [username, setUsername] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const history = useNavigate();
 
   const resetErrMsg = () => {
@@ -28,9 +25,6 @@ export const ProfileEdit: React.FC = () => {
       const userData = response.data;
       localStorage.setItem('userData', JSON.stringify(userData));
       setUserData(userData);
-      setUsername(userData.username);
-      setFirstName(userData.firstName);
-      setLastName(userData.lastName);
     } catch (err: any) {
       console.log("Error:" + err.response.data.message);
       if (!err?.response) {

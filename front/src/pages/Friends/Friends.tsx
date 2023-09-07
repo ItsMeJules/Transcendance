@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
-import axios, { } from "axios";
-import { useNavigate } from "react-router-dom";
-import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
+import axios from "axios";
 import ToastMessage from "layout/ToastMessage/ToastMessage";
-import { UserArray } from "services/User/UserArray";
-import { UserData } from "services/User/User";
-import User from "services/User/User";
 import { MDBContainer } from 'mdb-react-ui-kit';
-import UserProfileList from "./Components/UserProfileList";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import User, { UserData } from "services/User/User";
 import { useWebsocketContext } from "services/Websocket/Websocket";
+import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
+import UserProfileList from "./Components/UserProfileList";
 
 import './css/Friends.scss';
 
@@ -66,6 +64,7 @@ const Friends = () => {
       const dataToSend: any = {};
       if (id) dataToSend.id = id;
       try {
+        // a quoi ca sert ?
         const response = await axios.patch(
           API_ROUTES.ADD_FRIEND + id,
           dataToSend,

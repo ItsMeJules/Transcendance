@@ -380,7 +380,6 @@ export class PongEvents {
       if (gameStruct.prop.status === 'giveUp') return;
       gameStruct.prop.status = 'playing';
       gameStruct.prop.tStart = Date.now();
-      this.printUsersInRoom(gameStruct.prop.room);
       gameStruct.sendUpdateToRoom(
         player.id,
         player.status,

@@ -40,6 +40,7 @@ const Play = () => {
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
+  // a quoi ca sert ca ?
   const [isOpponentReady, setIsOpponentReady] = useState(false);
 
   // const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
@@ -48,6 +49,7 @@ const Play = () => {
   const [game, setGame] = useState(new GameProperties());
   const [noGame, setNoGame] = useState(false);
 
+  // a quoi ca sert ca ?
   const [profileCardHeight, setProfileCardHeight] = useState(0);
   const [centralText, setCentralText] = useState('');
   const history = useNavigate();

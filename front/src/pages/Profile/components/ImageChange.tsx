@@ -1,5 +1,5 @@
-import React from 'react';
 import axios from 'axios';
+import React from 'react';
 import { API_ROUTES } from 'utils/routing/routing';
 
 interface ImageChangeProps {

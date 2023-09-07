@@ -11,18 +11,13 @@ export enum PopupType {
   CHANNEL_LIST = "channel list",
 }
 
-interface ChatMetadataProps {
-  chatToggled: boolean;
-}
-
-export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
+export default function ChatMetadata() {
   const [isMoreActive, setIsMoreActive] = useState(false);
   const [popupType, setPopupActive] = useState<PopupType | null>(null);
 
   let ProtectedIcon = require("../assets/padlock.png");
   let PrivateIcon = require("../assets/private.png");
   let DmIcon = require("../assets/dm.png");
-  let PublicIcon = require("../assets/globe.png");
 
   const activeChannel = transformSliceToChannelData(
     useAppSelector((store) => store.channels.activeChannel)
@@ -54,7 +49,7 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
   };
 
   return (
-    <div className="metadata-container" style={{ zIndex: chatToggled ? 2 : 0 }}>
+    <div className="metadata-container">
       <OutsideClickHandler
         className="more"
         onInsideClick={handleMoreClick}

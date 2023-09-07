@@ -2,15 +2,11 @@ import React from "react";
 
 import TextInput from "./TextInput";
 
-interface ChatBarProps {
-  chatToggled: boolean;
-}
-
-const ChatBar: React.FC<ChatBarProps> = ({ chatToggled }) => {
+const ChatBar: React.FC = () => {
 
   return (
     <div className="chatbar-container">
-      <div className="text">{chatToggled && <TextInput />}</div>
+      <div className="text"><TextInput /></div>
     </div>
   );
 };

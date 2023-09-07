@@ -39,7 +39,7 @@ export const ActionChatHandlers = {
     chatService: ChatService,
     client: Socket,
     modifyPasswordDto: ChatDtos.ModifyPasswordDto,
-  ): Promise<string> => chatService.modifyPassword(client, modifyPasswordDto),
+  ): Promise<void> => chatService.modifyPassword(client, modifyPasswordDto),
   inviteToPlay: async (
     chatService: ChatService,
     client: Socket,
