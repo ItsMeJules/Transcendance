@@ -1,24 +1,21 @@
 import { ChatBox, LeaderBoard, Friends, OnlineGames, AllUsers } from 'pages';
+import { useAppSelector } from 'utils/redux/Store';
 import { APP_SCREENS } from 'utils/routing/routing';
 
-interface RightScreenProps {
-  rightContent: number;
-  noGame: boolean;
-  setNoGame: (noGame: boolean) => void;
-}
+const RightScreen: React.FC = () => {
 
-const RightScreen: React.FC<RightScreenProps> = ({ rightContent, noGame, setNoGame }) => {
-  
-  if (rightContent === APP_SCREENS.ALL_USERS) {
+  const { rightScreenState } = useAppSelector(store => store.rightScreen)
+
+  if (rightScreenState === APP_SCREENS.ALL_USERS) {
     return <AllUsers />;
-  } else if (rightContent === APP_SCREENS.CHAT) {
+  } else if (rightScreenState === APP_SCREENS.CHAT) {
     return <ChatBox />;
-  } else if (rightContent === APP_SCREENS.FRIENDS) {
+  } else if (rightScreenState === APP_SCREENS.FRIENDS) {
     return <Friends />;
-  } else if (rightContent === APP_SCREENS.LEADERBOARD) {
+  } else if (rightScreenState === APP_SCREENS.LEADERBOARD) {
     return <LeaderBoard />;
-  } else if (rightContent === APP_SCREENS.ONLINE_GAMES) {
-    return <OnlineGames noGame={noGame} setNoGame={setNoGame} />;
+  } else if (rightScreenState === APP_SCREENS.ONLINE_GAMES) {
+    return <OnlineGames />;
   } else {
     return <div></div>;
   }

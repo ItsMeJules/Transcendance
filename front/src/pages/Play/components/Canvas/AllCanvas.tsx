@@ -1,10 +1,11 @@
-import { useRef } from "react";
 import { GameProperties } from "pages/Play/models/Properties";
+import { useRef } from "react";
 import { Socket } from "socket.io-client";
 import MainText from "../MainText/MainText";
-import BoardCanvas from "./BoardCanvas";
 import BallCanvas from "./BallCanvas";
+import BoardCanvas from "./BoardCanvas";
 import PaddleCanvas from "./PaddleCanvas";
+import { useAppSelector } from "utils/redux/Store";
 
 interface AllCanvasProps {
   game: GameProperties;
@@ -13,14 +14,15 @@ interface AllCanvasProps {
   centralText: string;
   isPlayerReady: boolean;
   profileCardHeight: number;
-  noGame: boolean;
 }
 
-const AllCanvas: React.FC<AllCanvasProps> = ({ game, socket, whichPlayer, centralText, isPlayerReady, profileCardHeight, noGame }) => {
+const AllCanvas: React.FC<AllCanvasProps> = ({ game, socket, whichPlayer, centralText, isPlayerReady, profileCardHeight }) => {
   const boardCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const ballCanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle1CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
   const paddle2CanvasRef = useRef<HTMLCanvasElement | null | undefined>();
+  const { noGame } = useAppSelector(store => store.rightScreen)
+
   return (
     <>
       {!noGame && 

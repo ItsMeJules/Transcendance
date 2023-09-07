@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Player } from "pages/Play/models/Player";
-import { useWebsocketContext } from "services/Websocket/Websocket";
-import { GameProperties } from "pages/Play/models/Properties";
-import getParseLocalStorage from "utils/getParseLocalStorage/getParseLocalStorage";
-import { UserData } from "services/User/User";
+import AllCanvas from "pages/Play/components/Canvas/AllCanvas";
 import ConfettisComponent from "pages/Play/components/Confettis/ConfettisComponent";
+import ProfilesHeader from "pages/Play/components/PlayersProfile/ProfilesHeader";
 import ScoreBoard from "pages/Play/components/ScoreBoard/ScoreBoard";
 import { Ball } from "pages/Play/models/Ball";
-import AllCanvas from "pages/Play/components/Canvas/AllCanvas";
-import ProfilesHeader from "pages/Play/components/PlayersProfile/ProfilesHeader";
+import { Player } from "pages/Play/models/Player";
+import { GameProperties } from "pages/Play/models/Properties";
+import React, { useEffect, useState } from "react";
+import { UserData } from "services/User/User";
+import { useWebsocketContext } from "services/Websocket/Websocket";
+import getParseLocalStorage from "utils/getParseLocalStorage/getParseLocalStorage";
+import { useAppDispatch } from "utils/redux/Store";
+import { setRightScreenNoGame } from "utils/redux/reducers/RightScreenSlice";
 import NoGameSpectate from "./Components/NoGame/NoGameSpectate";
 
 interface GameParams {
@@ -30,12 +32,7 @@ interface noGame {
   status: string;
 }
 
-interface SpectateProps {
-  noGame: boolean;
-  setNoGame: (noGame: boolean) => void;
-}
-
-const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
+const Spectate: React.FC = () => {
   const socket = useWebsocketContext();
   const whichPlayer = 0;
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
@@ -48,6 +45,8 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
 
   const [profileCardHeight, setProfileCardHeight] = useState(0);
   const [centralText, setCentralText] = useState('Waiting for players');
+  
+  const dispatch = useAppDispatch()
 
   // Data parsing
   useEffect(() => {
@@ -60,19 +59,19 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
   // Sockets on
   useEffect(() => {
     socket.game?.on('prepareToPlay', (data: GameSocket) => {
-      setNoGame(false);
+      dispatch(setRightScreenNoGame(false));
       console.log('DATA PREPARE', data);
       setGameState(data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
       console.log('DATA game', data);
-      setNoGame(false);
+      dispatch(setRightScreenNoGame(false));
       setGameState(data);
     });
     socket.game?.on('noGame', (data: noGame) => {
       console.log('DATA no game', data);
       if (data.status === 'noGame') {
-        setNoGame(true);
+        dispatch(setRightScreenNoGame(true));
         setGameStatus('noGame');
       }
     });
@@ -153,14 +152,14 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
 
       <ConfettisComponent gameIsEnded={game.isEnded} userIsWinner={game.isUserWinner} />
 
-      <ProfilesHeader game={game} player1Data={player1Data} player2Data={player2Data} noGame={noGame} />
+      <ProfilesHeader game={game} player1Data={player1Data} player2Data={player2Data} />
 
-      <ScoreBoard game={game} noGame={noGame} />
+      <ScoreBoard game={game} />
 
       <AllCanvas game={game} socket={socket.game} whichPlayer={whichPlayer} centralText={centralText}
-        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
+        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} />
 
-    <NoGameSpectate noGame={noGame} />
+    <NoGameSpectate />
     </div >
   );
 

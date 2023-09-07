@@ -8,6 +8,7 @@ import { FLUSH,
 import storage from 'redux-persist/lib/storage';
 
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { rightScreenReducer } from './reducers/RightScreenSlice';
 import ChannelSlice from './reducers/ChannelSlice';
 import { userReducer } from './reducers/UserSlice';
 
@@ -16,6 +17,7 @@ const reduxPersistActions = [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER];
 const appReducer = combineReducers({
   channels: ChannelSlice,
   user: persistReducer({ key: "user", storage }, userReducer),
+  rightScreen: persistReducer({ key: "rightScreen", storage }, rightScreenReducer),
 })
 
 const rootReducer: Reducer = (state: RootState, action: AnyAction) => {

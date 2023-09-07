@@ -1,12 +1,13 @@
 import React from 'react';
 import { GameProperties } from '../../models/Properties';
+import { useAppSelector } from 'utils/redux/Store';
 
 interface ScoreBoardProps {
   game: GameProperties;
-  noGame: boolean;
 }
 
-const ScoreBoard: React.FC<ScoreBoardProps> = ({ game, noGame }) => {
+const ScoreBoard: React.FC<ScoreBoardProps> = ({ game }) => {
+  const { noGame } = useAppSelector(store => store.rightScreen)
 
   return (
     <>

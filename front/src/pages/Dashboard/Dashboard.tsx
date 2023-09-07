@@ -1,28 +1,20 @@
-import { useEffect, useState } from 'react';
+import JoinGame from 'pages/JoinGame/JoinGame';
+import NotFoundPageDashboard from 'pages/NotFoundPage/NotFoundDashboard';
+import Play from 'pages/Play/Play';
+import GenericUserProfile from 'pages/Profile/GenericUserProfile';
+import Profile from 'pages/Profile/Profile';
+import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
+import ProfileGameHistory from 'pages/ProfileGameHistory/ProfileGameHistory';
+import Spectate from 'pages/Spectate/Spectate';
+import { Route, Routes } from 'react-router-dom';
+import Websocket from 'services/Websocket/Websocket';
+import { APP_ROUTES } from 'utils/routing/routing';
+import NavFooter from './components/NavFooter';
 import ProfileHeader from './components/ProfileHeader';
 import RightScreen from './components/RightScreen';
-import NavFooter from './components/NavFooter';
 import './css/Dashboard.scss';
-import { Route, Routes } from 'react-router-dom';
-import { APP_ROUTES, APP_SCREENS } from 'utils/routing/routing';
-import Profile from 'pages/Profile/Profile';
-import Spectate from 'pages/Spectate/Spectate';
-import Play from 'pages/Play/Play';
-import ProfileEdit from 'pages/ProfileEdit/ProfileEdit';
-import GenericUserProfile from 'pages/Profile/GenericUserProfile';
-import ProfileGameHistory from 'pages/ProfileGameHistory/ProfileGameHistory';
-import JoinGame from 'pages/JoinGame/JoinGame';
-import Websocket from 'services/Websocket/Websocket';
-import NotFoundPageDashboard from 'pages/NotFoundPage/NotFoundDashboard';
 
 const Dashboard = () => {
-  const [rightContent, setRightContent] = useState<number>(APP_SCREENS.CHAT);
-  const [noGame, setNoGame] = useState(false);
-
-  useEffect(() => {
-    // console.log('leftcntent:', rightContent);
-  }, [rightContent]);
-
   return (
     <Websocket>
       <main className="dashboard-main-container">
@@ -40,17 +32,17 @@ const Dashboard = () => {
               <Route path={APP_ROUTES.GENERIC_USER_PROFILE + ":id" + APP_ROUTES.GAME_HISTORY_SUFFIX} element={<ProfileGameHistory />} />
               <Route path={APP_ROUTES.MATCHMAKING} element={<JoinGame />} />
               <Route path={APP_ROUTES.PLAY} element={<Play />} />
-              <Route path={APP_ROUTES.SPECTATE} element={<Spectate noGame={noGame} setNoGame={setNoGame} />} />
+              <Route path={APP_ROUTES.SPECTATE} element={<Spectate />} />
               <Route path="*" element={<NotFoundPageDashboard />} />
             </Routes>
           </div>
 
           <div className="right-screen-container">
-            <RightScreen rightContent={rightContent} noGame={noGame} setNoGame={setNoGame} />
+            <RightScreen />
           </div>
         </article>
 
-        <NavFooter setRightContent={setRightContent} />
+        <NavFooter />
 
 
       </main>

@@ -2,16 +2,17 @@ import { UserData } from "services/User/User";
 import LeftPlayerProfile from "./LeftPlayerProfile";
 import RightPlayerProfile from "./RightPlayerProfile";
 import { GameProperties } from "pages/Play/models/Properties";
+import { useAppSelector } from "utils/redux/Store";
 
 interface ProfilesHeaderProps {
   game: GameProperties;
   player1Data: UserData | null;
   player2Data: UserData | null;
-  noGame: boolean;
 }
 
-const ProfilesHeader: React.FC<ProfilesHeaderProps> = ({ game, player1Data, player2Data, noGame }) => {
-
+const ProfilesHeader: React.FC<ProfilesHeaderProps> = ({ game, player1Data, player2Data }) => {
+  const { noGame } = useAppSelector(store => store.rightScreen)
+  
   return (
     <>
       {!noGame &&

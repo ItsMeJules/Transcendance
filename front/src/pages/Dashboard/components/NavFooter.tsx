@@ -1,22 +1,23 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from "react-router-dom";
-import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
 import debounce from 'lodash.debounce';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from 'utils/redux/Store';
+import { setRightScreenState } from 'utils/redux/reducers/RightScreenSlice';
+import { APP_ROUTES, APP_SCREENS } from "utils/routing/routing";
 
 
-interface LeftNavFooterProps {
-  setRightContent: (option: number) => void;
-}
-
-const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
-  const debouncedSetRightContent = useCallback(debounce(setRightContent, 10), [setRightContent]);
+const NavFooter: React.FC = () => {
+  const dispatch = useAppDispatch()
   const history = useNavigate();
+  const [showFooter, setShowFooter] = useState(false);
 
   const handleMatchMakingClick = (() => {
     history(APP_ROUTES.MATCHMAKING)
   });
 
-  const [showFooter, setShowFooter] = useState(false);
+  const dispatchScreenState = (state: APP_SCREENS) => {
+    debounce(() => dispatch(setRightScreenState(state)), 10)
+  }
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -47,19 +48,19 @@ const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
         <button onClick={handleMatchMakingClick}>
           <img src="/images/game.png" alt="game" />
         </button>
-        <button onClick={() => debouncedSetRightContent(APP_SCREENS.ALL_USERS)}>
+        <button onClick={() => dispatchScreenState(APP_SCREENS.ALL_USERS)}>
           <img src="/images/allusers.png" alt="allusers" />
         </button>
-        <button onClick={() => debouncedSetRightContent(APP_SCREENS.CHAT)}>
+        <button onClick={() => dispatchScreenState(APP_SCREENS.CHAT)}>
           <img src="/images/chat.png" alt="chat" />
         </button>
-        <button onClick={() => debouncedSetRightContent(APP_SCREENS.FRIENDS)}>
+        <button onClick={() => dispatchScreenState(APP_SCREENS.FRIENDS)}>
           <img src="/images/friends.png" alt="friends" />
         </button>
-        <button onClick={() => debouncedSetRightContent(APP_SCREENS.LEADERBOARD)}>
+        <button onClick={() => dispatchScreenState(APP_SCREENS.LEADERBOARD)}>
           <img src="/images/leaderboard.png" alt="leaderboard" />
         </button>
-        <button onClick={() => debouncedSetRightContent(APP_SCREENS.ONLINE_GAMES)}>
+        <button onClick={() => dispatchScreenState(APP_SCREENS.ONLINE_GAMES)}>
           <img src="/images/gamesonline.png" alt="gamesonline" />
         </button>
       </div>

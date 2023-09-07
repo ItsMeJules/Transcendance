@@ -1,17 +1,14 @@
+import { MDBContainer } from 'mdb-react-ui-kit';
 import { useEffect, useState } from "react";
 import { useWebsocketContext } from "services/Websocket/Websocket";
-import { MDBContainer } from 'mdb-react-ui-kit';
 import OnlineGamesList from "./Components/OnlineGamesList";
 
-import './css/OnlineGames.scss'
+import { useAppDispatch } from "utils/redux/Store";
+import { setRightScreenNoGame } from "utils/redux/reducers/RightScreenSlice";
+import './css/OnlineGames.scss';
 
-interface OnlineGamesProps {
-  noGame: boolean;
-  setNoGame: (noGame: boolean) => void;
-}
-
-
-const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
+const OnlineGames: React.FC = () => {
+  const dispatch = useAppDispatch()
   const socket = useWebsocketContext();
   const [gamesData, setGamesData] = useState<any>({})
   const [gameList, setGameList] = useState<any[]>([]);
@@ -20,14 +17,14 @@ const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
   useEffect(() => {
     socket.game?.on('onlineGames', (data: any) => {
       console.log('ONLINE GAMES RECEIVED:', data);
-      setNoGame(false);
+      dispatch(setRightScreenNoGame(false));
       setGamesData(data);
     });
     socket.game?.emit('onlineGames', { action: 'query' });
     return () => {
       socket.game?.off('onlineGames');
     }
-  }, [socket.game]);
+  }, [socket.game, dispatch]);
 
   useEffect(() => {
     const tmpGameList = (Object.entries(gamesData) as Array<[string, any]>).map(

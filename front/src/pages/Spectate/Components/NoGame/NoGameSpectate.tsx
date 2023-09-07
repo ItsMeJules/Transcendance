@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "utils/routing/routing";
 import './NoGameSpectate.scss'
+import { useAppSelector } from "utils/redux/Store";
 
-interface NoGameSpectateProps {
-  noGame: boolean;
-}
-
-const NoGameSpectate: React.FC<NoGameSpectateProps> = ({ noGame }) => {
+const NoGameSpectate: React.FC = () => {
+  const { noGame } = useAppSelector(store => store.rightScreen)
 
   return (
     <>
