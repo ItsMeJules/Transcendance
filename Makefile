@@ -15,7 +15,7 @@ restart:
 down:
 	docker compose -f docker-compose.yml down
 
-prod:
+prod: node_modules
 	docker compose -f docker-compose.prod.yml up --build --attach backend --attach frontend --attach bdd
 
 clean: down
@@ -31,11 +31,7 @@ log :
 	docker compose -f docker-compose.yml logs
 
 node_modules:
-	@if [ ! -d "./front/node_modules" ]; then \
-		cd ./front && npm install; \
-	fi
-	@if [ ! -d "./back/node_modules" ]; then \
-		cd ./back && npm install; \
-	fi
+	cd ./front && npm install
+	cd ./back && npm install
 
 .PHONY: all build stop start down clean fclean re log
