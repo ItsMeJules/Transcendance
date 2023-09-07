@@ -787,22 +787,4 @@ export class PongEvents {
       }
     }
   }
-<<<<<<< HEAD
-
-  async printUsersInRoom(room: string) {
-    const sockets = await this.server.in(room).fetchSockets();
-    console.log('Users in room:', room);
-    sockets.forEach((Socket) => {
-      console.log('id:', Socket.data.id, ' sockt id:', Socket.id);
-    });
-    console.log(' ');
-  }
 }
-
-// const sockets = await this.server.in(gameStruct.prop.room).fetchSockets();
-// sockets.forEach((Socket) => {
-//   console.log('IN room user:', Socket.data);
-// });
-=======
-}
->>>>>>> iguscett/invite_game

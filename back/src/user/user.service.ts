@@ -181,7 +181,7 @@ export class UserService {
     // >>>>>>>>>>>>>>> GAME HISTORY <<<<<<<<<<<<<<<<<<<<<<<<<<
 
     async getUserGameHistory(id: number): Promise<Game[]> {
-      const gameHistory = await this.prisma.game.findMany({
+      const gameHistory = await this.prismaService.game.findMany({
         where: {
           OR: [
             { player1Id: id },
