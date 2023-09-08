@@ -1,5 +1,8 @@
 .give-up-main-container {
-  z-index: 100000;
+  z-index: 10;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.9);
 
   .give-up-button-text {
     font-weight: bold;

@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   min-width: 400px;
+  height: 100%;
+  width: 100%;
   align-items: center;
 
   .profile-infos-container {
@@ -36,16 +38,16 @@
     
     .profile-game-card-l {
       @include profile-game-card();
-      justify-content: left;
+      justify-content: flex-start;
       margin-left: 10px
     }
     
     .profile-game-card-r {
       @include profile-game-card();
-      justify-content: right;
+      justify-content: flex-end;
     }
     
-    .profile-picture {
+    .profile-picture img {
       min-width: 50px;
       width: 50px;
       height: 50px;
@@ -53,6 +55,8 @@
       overflow: hidden;
       margin-right: 10px;
       background-color: rgba(255, 255, 255, 0.5);
+      object-fit: cover;
+      object-position: 50% 0%;
     }
     
     @mixin player-profile-information {
@@ -132,6 +136,7 @@
     align-items: center;
     text-align: center;
     width: 85%;
+    height: 60%;
     margin-top: 20px;
     color: white;
   }
@@ -139,6 +144,8 @@
   .pong-game-canvas {
     position: relative;
     display: flex;
+    height: 100%;
+    width: 100%;
     top: 50;
     left: 50%;
     transform: translateX(-50%);

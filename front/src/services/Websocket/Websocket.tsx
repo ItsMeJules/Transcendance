@@ -1,6 +1,8 @@
 import { io, Socket } from "socket.io-client";
 import { ReactElement, createContext, useEffect, useState, useContext } from "react";
 import { useAppSelector } from "utils/redux/Store";
+import { useAxios } from "utils/axiosConfig/axiosConfig";
+import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 
 interface WebsocketProps {
   children: ReactElement;
@@ -43,18 +45,25 @@ const OpenSocket = (namespace: string): Socket => {
 };
 
 export default function Websocket({ children }: WebsocketProps): JSX.Element {
+  const customAxiosInstance = useAxios();
   const [socketInstances, setSocketInstances] = useState<OpenedSockets>({
     general: null,
     chat: null,
     game: null,
   });
-  const { id: userId } = useAppSelector(state => state.user.userData);
+  const { id: userId } = useAppSelector((state) => state.user.userData);
   // console.log("render-------------------", socketInstances.game)
   useEffect((): (() => void) => {
+    const checkToken = async () => {
+      console.log("fayaman");
+      await customAxiosInstance.get(API_ROUTES.USER_FRIENDS, {
+        withCredentials: true,
+      });
+    };
+    checkToken();
     if (!userId) {
-      console.log('>>>>>>>>>>>>>>>>> PROBLEM on socket <<<<<<<<<<<<<<');
-    }
-    else if (userId) {
+      console.log(">>>>>>>>>>>>>>>>> PROBLEM on socket <<<<<<<<<<<<<<");
+    } else if (userId) {
       // console.log("yo")
       // console.log("yo" , OpenSocket("http://localhost:8000/chat"));
       const general =
@@ -74,7 +83,7 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
     } else {
       closeOpenSockets(socketInstances);
       setSocketInstances({ general: null, chat: null, game: null });
-      console.log()
+      console.log();
     }
 
     return (): void => {

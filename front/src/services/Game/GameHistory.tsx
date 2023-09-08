@@ -1,4 +1,4 @@
-import User from 'services/User/User';
+import User, { UserData } from 'services/User/User';
 
 export interface GameHistoryData {
   id: number | null;
@@ -7,10 +7,10 @@ export interface GameHistoryData {
   gameMode: number | null;
   player1Score: number | null;
   player2Score: number | null;
-  player1: User | null;
-  player2: User | null;
-  winner: User | null;
-  loser: User | null;
+  player1: UserData | null;
+  player2: UserData | null;
+  winner: UserData | null;
+  loser: UserData | null;
 }
 
 class GameHistory {
@@ -22,10 +22,10 @@ class GameHistory {
   public gameMode: number | null = null;
   public player1Score: number | null = null;
   public player2Score: number | null = null;
-  public player1: User | null = null;
-  public player2: User | null = null;
-  public winner: User | null = null;
-  public loser: User | null = null;
+  public player1: UserData | null = null;
+  public player2: UserData | null = null;
+  public winner: UserData | null = null;
+  public loser: UserData | null = null;
 
   static getInstance() {
       if (!GameHistory.instance) {
@@ -110,7 +110,7 @@ class GameHistory {
     }
   }
 
-  getPlayer1(): User | null {
+  getPlayer1(): UserData | null {
     if (this.player1) {
       return this.player1;
     } else {
@@ -118,7 +118,7 @@ class GameHistory {
     }
   }
 
-  getPlayer2(): User | null {
+  getPlayer2(): UserData | null {
     if (this.player2) {
       return this.player2;
     } else {
@@ -126,7 +126,7 @@ class GameHistory {
     }
   }
 
-  getWinner(): User | null {
+  getWinner(): UserData | null {
     if (this.winner) {
       return this.winner;
     } else {
@@ -134,7 +134,7 @@ class GameHistory {
     }
   }
 
-  getLoser(): User | null {
+  getLoser(): UserData | null {
     if (this.loser) {
       return this.loser;
     } else {

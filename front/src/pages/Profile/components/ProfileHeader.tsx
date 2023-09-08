@@ -49,13 +49,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData, type, onAddFrie
         <>
 
           <button onClick={onAddFriend}>
-            <IconContext.Provider value={{ color: isFriend ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
+            <IconContext.Provider value={{ color: isFriend ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.5)', size: '30px' }}>
               <FaHeart />
             </IconContext.Provider>
           </button>
 
           <button onClick={blockUser}>
-<IconContext.Provider value={{ color: isBlocked ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)', size: '30px' }}>
+<IconContext.Provider value={{ color: isBlocked ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.5)', size: '30px' }}>
               <FaUserLock />
             </IconContext.Provider>
           </button>

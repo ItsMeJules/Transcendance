@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackgroundMoving from 'layout/BackgroundMoving/BackgroundMoving';
-import VideoSection from './VideoSection';
 import TextSection from './TextSection';
+import { useAxios } from "utils/axiosConfig/axiosConfig";
+import { API_ROUTES, APP_ROUTES } from 'utils/routing/routing';
 
 const Home = () => {
-  const [playSecondVideo, setPlaySecondVideo] = useState(false);
+  const customAxiosInstance = useAxios();
   const history = useNavigate();
-  
+
   const [screenSize, setScreenSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
@@ -25,14 +26,19 @@ const Home = () => {
     return () => {
       window.removeEventListener('resize', updateDimension);
     };
-  }, []);
+  }, []); 
 
-  const handleButtonClick = () => {
-    setPlaySecondVideo(true);
-  };
-
-  const handleTimeUpdate = () => {
-    history('/login', { state: { key: Date.now() } });
+  const  handleButtonClick = async () => {
+    // try {
+    //   const response = await customAxiosInstance.get(API_ROUTES.HOME_CHECK_TOKEN,
+    //     {
+    //       withCredentials: true
+    //     })
+    //     if (response.data.tokenState === 'HAS_TOKEN')
+    //       return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
+        return history(APP_ROUTES.SIGN_IN, { state: { key: Date.now() } });
+        
+    // } catch (error) { };
   };
 
   return (
@@ -41,7 +47,6 @@ const Home = () => {
         <BackgroundMoving />
       </div>
       <div style={{ position: 'relative', zIndex: 2 }}>
-        <VideoSection playSecondVideo={playSecondVideo} handleTimeUpdate={handleTimeUpdate} />
         <TextSection screenSize={screenSize} handleButtonClick={handleButtonClick} />
       </div>
     </div>

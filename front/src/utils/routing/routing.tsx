@@ -3,8 +3,10 @@ export const API_URL = "/api";
 export const API_ROUTES = {
   SIGN_UP: `${API_URL}/auth/signup`,
   SIGN_IN: `${API_URL}/auth/signin`,
+  REFRESH_TOKEN: `${API_URL}/auth/refresh-token`,
   LOG_OUT: `${API_URL}/users/logout`,
   USER_PROFILE: `${API_URL}/users/me`,
+  USER_COMPLETE: `${API_URL}/users/complete-user`,
   USER_PROFILE_EDIT: `${API_URL}/users`,
   USER_PIC_CHANGE: `${API_URL}/users/pf`,
   USER_FRIENDS: `${API_URL}/users/me/friends`,
@@ -20,7 +22,8 @@ export const API_ROUTES = {
   STATE_2FA: `${API_URL}/users/me/2fa-state`,
   CURRENT_CHAT: `${API_URL}/users/current-chat`,
   COMPLETE_ROOM: `${API_URL}/users/complete-room`,
-  VISIBLE_CHANNELS: `${API_URL}/chat/visible-rooms`
+  VISIBLE_CHANNELS: `${API_URL}/chat/visible-rooms`,
+  HOME_CHECK_TOKEN: `${API_URL}/auth/home`,
 };
 
 export const APP_URL = "http://localhost:8000";
@@ -51,6 +54,7 @@ export const APP_ROUTES = {
   AUTH_2FA: "/profile/me/two-fa",
   LEADERBOARD: "/leaderboard",
   GAME_HISTORY_SUFFIX: "/game-history",
+  REDIRECT_PLAY: "/dashboard/redirect-play",
 };
 
 export enum APP_SCREENS {

@@ -3,7 +3,7 @@ import { API_ROUTES } from "../../utils/routing/routing";
 import Popup from "./components/Popup";
 import { useAxios } from "../../utils/axiosConfig/axiosConfig";
 
-import '../Auth2factor/css/2faButton.scss';
+import "../Auth2factor/css/2faButton.scss";
 
 const QrCode: React.FC = () => {
   const popupRef = React.createRef<HTMLDivElement>();
@@ -29,12 +29,12 @@ const QrCode: React.FC = () => {
       setLoadingQRCode(false);
     } catch (error) {
       setLoadingQRCode(false);
-      console.log("Error:", error);
     }
   };
 
   const turnOff = async () => {
     try {
+      console.log("turnOff");
       await customAxiosInstance.post(
         API_ROUTES.DEACTIVATE_2FA,
         {},
@@ -43,9 +43,7 @@ const QrCode: React.FC = () => {
         }
       );
       setIs2FAActive(false);
-    } catch (error) {
-      console.log("Error:", error);
-    }
+    } catch (error) {}
   };
 
   const changeVisibleBlock = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -59,11 +57,7 @@ const QrCode: React.FC = () => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (
-      popupRef &&
-      popupRef.current &&
-      !popupRef.current.contains(event.target as Node)
-    ) {
+    if (popupRef && popupRef.current && !popupRef.current.contains(event.target as Node)) {
       changeVisibleNone(event as any);
     }
   };
@@ -80,10 +74,7 @@ const QrCode: React.FC = () => {
       try {
         const response = await customAxiosInstance.get(API_ROUTES.STATE_2FA);
         setIs2FAActive(response.data);
-        console.log(
-          "response.data.isTwoFactorAuthenticationEnabled",
-          response.data
-        );
+        console.log("response.data.isTwoFactorAuthenticationEnabled", response.data);
       } catch (error) {
         console.log("Error: ", error);
       }
@@ -110,7 +101,12 @@ const QrCode: React.FC = () => {
         {is2FAActive ? "Deactivate 2FA" : "Activate 2FA"}
       </button>
 
-     <Popup ref={popupRef} isLoading={isLoadingQRCode} image={image} onClose={changeVisibleNone} /> 
+      <Popup
+        ref={popupRef}
+        isLoading={isLoadingQRCode}
+        image={image}
+        onClose={changeVisibleNone}
+      />
     </div>
   );
 };
