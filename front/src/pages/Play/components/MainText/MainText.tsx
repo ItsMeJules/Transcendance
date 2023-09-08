@@ -37,8 +37,12 @@ const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer,
       {/* Get ready button */}
       {(gameStatus === 'pending' || gameStatus === 'waiting') && !finalPlayerReady && whichPlayer !== 0 &&
         <button className="text-button-style" onClick={handleReadyClick}
-          style={{ maxWidth: `${game.board.width - 100}px` }}>
-          {textToDisplay}
+          style={{ maxWidth: `${game.board.width - 50}px` }}>
+          {textToDisplay === 'Ready?' ?
+            <>
+              Ready? Press here! <br />
+              Move with ↑ and ↓ keys <br />
+              First to 11 pts wins!</> : textToDisplay}
         </button>}
       {/* Display text */}
       {(((!gameIsPlaying && finalPlayerReady) || gameStatus === 'giveUp'

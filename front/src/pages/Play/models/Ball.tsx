@@ -11,6 +11,7 @@ export class Ball {
     public dir: Vector;
   
     constructor(board: Board) {
+      console.log('BALL CONSTRUTOR');
       this.size = 0;
       this.speed = 0;
       this.pos = new Point(0, 0);

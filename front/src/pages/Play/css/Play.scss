@@ -164,10 +164,11 @@
     
       .text-button-style {
         // Adapt size here
-        font-size: clamp(16px, 3%, 35px);
+        font-size: clamp(14px, 15%, 35px);
+        font-weight: bold;
         color: white;
         -webkit-text-fill-color: transparent;
-        animation: glow-text-animation 2s infinite;
+        animation: glow-text-animation-soft 2s infinite;
       }
     
       .text-container-style {
@@ -195,6 +196,20 @@
     
         100% {
           text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
+        }
+      }
+
+      @keyframes glow-text-animation-soft {
+        0% {
+          text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+        }
+    
+        50% {
+          text-shadow: 0 0 2px rgba(255, 255, 255, 0.6);
+        }
+    
+        100% {
+          text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
         }
       }
     }

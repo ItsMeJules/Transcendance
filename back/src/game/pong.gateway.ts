@@ -544,7 +544,7 @@ export class PongEvents {
   }
 
   /* Refresh the front state */
-  @Interval(2000) // 
+  @Interval(500) // 
   refreshAllGames() {
     this.pongService.onlineGames.forEach((game, key) => {
       game.sendUpdateToRoomInterval();

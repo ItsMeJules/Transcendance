@@ -41,6 +41,7 @@ const Play = () => {
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isOpponentReady, setIsOpponentReady] = useState(false);
+  // const ballFront = useState<Ball | null>(null);
 
   // const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameStatePrepare, setGameStatePrepare] = useState<GameSocket>();
