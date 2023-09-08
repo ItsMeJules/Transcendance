@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Injectable,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -17,7 +18,7 @@ import { PayloadDto } from './dto/payload.dto';
 import { AuthDtoUp } from './dto/authup.dto';
 import * as jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
 import handlePrismaError from '@utils/prisma.error';
 import handleJwtError from '@utils/jwt.error';
 import { error } from 'console';
@@ -31,6 +32,7 @@ export class AuthService {
   ) {}
 
   /* Login - error management ok */
+  /* Its actually a sign Tokens function */
   async login(
     user: any,
     isTwoFactorAuthenticationVerified = false,
@@ -40,13 +42,19 @@ export class AuthService {
       isTwoFactorAuthenticationVerified: isTwoFactorAuthenticationVerified,
     };
     const access_token = this.jwtService.sign(payload, {
-      expiresIn: '15m', // 15 minutes
+      expiresIn: '15m',
     });
 
     const refreshPayload = { id: user.id };
+
+    console.log(
+      'my process envs: ',
+      process.env.jwtRefreshSecret,
+      process.env.jwtSecret,
+    );
     const refresh_token = this.jwtService.sign(refreshPayload, {
-      secret: process.env.REFRESH_TOKEN_SECRET, // Ensure a separate secret for refresh tokens
-      expiresIn: '7d', // 7 days
+      secret: process.env.jwtRefreshSecret, // Ensure a separate secret for refresh tokens
+      expiresIn: '7d',
     });
 
     return { access_token, refresh_token };
@@ -109,7 +117,7 @@ export class AuthService {
         where: { id },
         include: { friends: true },
       });
-      if (!user) throw new Error('problem');
+      if (!user) throw new Error('Problem token');
       if (user && deleteHash) delete user.hash;
       return user;
     } catch (err) {
@@ -118,13 +126,23 @@ export class AuthService {
     }
   }
 
-  async verifyRefreshToken(refreshToken: string): Promise<any> {
+  async verifyRefreshToken(refreshToken: string): Promise<User> {
     try {
-      const payload = await this.jwtService.verifyAsync(refreshToken);
+      console.log('my jwtRefresh Secret', process.env.jwtRefreshSecret);
+      const secret = process.env.jwtRefreshSecret; 
+      const decodedToken: any = jwt.verify(refreshToken, secret);
+      const { id } = decodedToken;
+      console.log('id = ', id);
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        include: { friends: true },
+      });
+      console.log('user : ', user);
+      if (!user) throw new UnauthorizedException('User does not exist');
 
-      return payload;
+      return user;
     } catch (error) {
-      return null;
+      throw new UnauthorizedException('Invalid refresh token');
     }
   }
 

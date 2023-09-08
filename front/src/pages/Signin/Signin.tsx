@@ -1,31 +1,29 @@
 import { useState, useEffect, FormEvent } from "react";
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { APP_ROUTES, API_ROUTES } from "utils/routing/routing";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
-import './Signin.scss'
+import "./Signin.scss";
 import { toast } from "react-toastify";
 
 export const Signin = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const errorMessage = queryParams.get('error');
+  const errorMessage = queryParams.get("error");
   const history = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const customAxiosInstance = useAxios();
 
   function RequestURI42() {
-    let url = '/api/auth/42/login';
-    if (url)
-      document.location = (url)
+    let url = "/api/auth/42/login";
+    if (url) document.location = url;
   }
 
   function RequestURIGoogle() {
-    let url = '/api/auth/google/login';
-    if (url)
-      window.location.href = url;
+    let url = "/api/auth/google/login";
+    if (url) window.location.href = url;
   }
 
   useEffect(() => {
@@ -37,32 +35,31 @@ export const Signin = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await customAxiosInstance.post(API_ROUTES.SIGN_IN,
+      const response = await customAxiosInstance.post(
+        API_ROUTES.SIGN_IN,
         JSON.stringify({ email: email, password: password }),
         {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        })
-      localStorage.setItem('userData', JSON.stringify(response.data));
-      setEmail('');
-      setPassword('');
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      localStorage.setItem("userData", JSON.stringify(response.data));
+      setEmail("");
+      setPassword("");
       setSuccess(true);
-    } catch (err: any) { }
-  }
+    } catch (err: any) {}
+  };
 
   useEffect(() => {
-    console.log('error message:', errorMessage);
-    if (errorMessage === 'nouser')
-      toast.error('No user found');
-    if (errorMessage === 'passwordrequired')
-      toast.error('This account has a password provided, please sign in via the form.');
-    if (errorMessage === 'unauthorized')
-      toast.error('Unauthorized. Please log in again.');
-  }, [])
+    console.log("error message:", errorMessage);
+    if (errorMessage === "nouser") toast.error("No user found");
+    if (errorMessage === "passwordrequired")
+      toast.error("This account has a password provided, please sign in via the form.");
+    if (errorMessage === "unauthorized") toast.error("Unauthorized. Please log in again.");
+  }, []);
 
   return (
     <div className="login-container">
-
       <GlowTextSignin className="signin-header">sign in</GlowTextSignin>
 
       <div className="main-login-container">
@@ -74,7 +71,8 @@ export const Signin = () => {
                   Email address
                 </label>
 
-                <input type="email"
+                <input
+                  type="email"
                   placeholder="youremail@email.com"
                   id="emailaddress"
                   value={email}
@@ -134,9 +132,8 @@ export const Signin = () => {
           </div>
         </div>
       </div>
-
-    </div >
-  )
-}
+    </div>
+  );
+};
 
 export default Signin;

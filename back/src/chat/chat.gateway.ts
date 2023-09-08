@@ -17,8 +17,9 @@ import {
 } from './handlers/handlers.map';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UseGuards } from '@nestjs/common';
+import { WsJwtGuard } from 'src/auth/strategy/ws.jwt.strategy';
 
-// @UseGuards(JwtGuard) // add jwt guard for chat auth
 @WebSocketGateway({ namespace: 'chat' })
 export class ChatEventsGateway {
   @WebSocketServer() server: Server;
@@ -34,13 +35,13 @@ export class ChatEventsGateway {
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
-      return Promise.reject('no access_token');
+      throw new Error('No token, log again');
     }
 
     const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) {
       client.disconnect();
-      return Promise.reject('no user');
+      throw new Error('Unidentified token');
     }
     client.data = { id: user.id };
 

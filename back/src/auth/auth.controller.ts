@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthDtoUp } from './dto/authup.dto';
 import { TwoFaService } from './two-fa.service';
 import { GetUser } from './decorator';
@@ -23,7 +23,9 @@ import { NoTwoFaException } from './exceptions/no-two-fa.exception';
 import JwtTwoFactorGuard from './guard/jwt.two-fa.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
 import handleJwtError from '@utils/jwt.error';
+import * as cookieParser from 'cookie-parser';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { decode } from 'punycode';
 
 @Controller('auth')
 export class AuthController {
@@ -34,6 +36,7 @@ export class AuthController {
     private jwtService: JwtService,
   ) {}
 
+  // fix: globalise logic threw one function for cookies
   /* Signup - error management ok */
   @Post('signup')
   async signup(
@@ -41,6 +44,11 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<User> {
     const tokens = await this.authService.signup(dto);
+    const user = await this.authService.validateJwtToken(
+      tokens.access_token,
+      true,
+    );
+    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       maxAge: 15 * 60 * 1000,
@@ -51,10 +59,10 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(
-      tokens.access_token,
-      true,
-    );
+    res.cookie('expire_date_access_token', expirationTimestamp, {
+      maxAge: 15 * 60 * 1000,
+      sameSite: 'lax',
+    });
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
     return user;
   }
@@ -67,6 +75,11 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<User> {
     const tokens = await this.authService.signin(dto);
+    const user = await this.authService.validateJwtToken(
+      tokens.access_token,
+      true,
+    );
+    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       maxAge: 15 * 60 * 1000,
@@ -77,10 +90,10 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(
-      tokens.access_token,
-      true,
-    );
+    res.cookie('expire_date_access_token', expirationTimestamp, {
+      maxAge: 15 * 60 * 1000,
+      sameSite: 'lax',
+    }); // PARTOUT
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
     return user;
   }
@@ -101,6 +114,19 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
     const tokens = await this.authService.login(req.user);
+    const user = await this.authService.validateJwtToken(
+      tokens.access_token,
+      false,
+    );
+    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+    if (!user) {
+      const errorMessage = 'nouser'; // pourquoi ce check ici iacopo?
+      return res.redirect(`/login?error=${errorMessage}`);
+    }
+    if (user.hash !== '') {
+      const errorMessage = 'passwordrequired';
+      return res.redirect(`/login?error=${errorMessage}`);
+    }
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       maxAge: 15 * 60 * 1000,
@@ -111,18 +137,10 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(
-      tokens.access_token,
-      false,
-    );
-    if (!user) {
-      const errorMessage = 'nouser';
-      return res.redirect(`/login?error=${errorMessage}`);
-    }
-    if (user.hash !== '') {
-      const errorMessage = 'passwordrequired';
-      return res.redirect(`/login?error=${errorMessage}`);
-    }
+    res.cookie('expire_date_access_token', expirationTimestamp, {
+      maxAge: 15 * 60 * 1000,
+      sameSite: 'lax',
+    });
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
     return res.redirect('/dashboard/profile/me');
   }
@@ -142,6 +160,19 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
     const tokens = await this.authService.login(req.user);
+    const user = await this.authService.validateJwtToken(
+      tokens.access_token,
+      false,
+    );
+    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+    if (!user) {
+      const errorMessage = 'nouser';
+      return res.redirect(`/login?error=${errorMessage}`);
+    }
+    if (user.hash !== '') {
+      const errorMessage = 'passwordrequired';
+      return res.redirect(`/login?error=${errorMessage}`);
+    }
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       maxAge: 15 * 60 * 1000,
@@ -152,49 +183,43 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'lax',
     });
-    const user = await this.authService.validateJwtToken(
-      tokens.access_token,
-      false,
-    );
-    if (!user) {
-      const errorMessage = 'nouser';
-      return res.redirect(`/login?error=${errorMessage}`);
-    }
-    if (user.hash !== '') {
-      const errorMessage = 'passwordrequired';
-      return res.redirect(`/login?error=${errorMessage}`);
-    }
+    res.cookie('expire_date_access_token', expirationTimestamp, {
+      maxAge: 15 * 60 * 1000,
+      sameSite: 'lax',
+    });
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
     return res.redirect('/dashboard/profile/me');
   }
 
   @Post('refresh-token')
   async refreshToken(
-    @Body() refreshTokenDto: RefreshTokenDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<any> {
-    const refresh_token = refreshTokenDto.refresh_token;
-
+  ): Promise<{ accessToken: string; message: string }> {
+    const refresh_token = req.cookies['refresh_token'];
+    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
     const userPayload = await this.authService.verifyRefreshToken(
       refresh_token,
     );
-
+    console.log('userPayload : ', userPayload);
     if (!userPayload) {
       throw new UnauthorizedException('Invalid refresh token');
     }
-
     const accessToken = this.jwtService.sign({
       id: userPayload.id,
-      isTwoFactorAuthenticationVerified:
-        userPayload.isTwoFactorAuthenticationVerified,
+      isTwoFactorAuthenticationVerified: true,
     });
-
+    console.log('new accessToken : ', accessToken);
     res.cookie('access_token', accessToken, {
       httpOnly: true,
       maxAge: 15 * 60 * 1000,
       sameSite: 'lax',
     });
-
+    res.cookie('expire_date_access_token', expirationTimestamp, {
+      maxAge: 15 * 60 * 1000,
+      sameSite: 'lax',
+    });
+    console.log('end');
     return {
       accessToken: accessToken,
       message: 'Access token refreshed successfully',
