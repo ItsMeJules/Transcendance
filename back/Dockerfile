@@ -5,11 +5,7 @@ WORKDIR /workspace/back
 RUN apt-get update \
 	&& npm i -g @nestjs/cli
 
-COPY package.json ./
-
-COPY entrypoint.sh .
-
-COPY src .
+COPY . .
 
 RUN npm install
 

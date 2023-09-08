@@ -6,7 +6,7 @@ set -m
 npx prisma generate
 
 # Run database migrations
-npx prisma migrate dev --name init
+npx prisma migrate deploy
 
 # Start NestJS app in watch mode
 npm run start &
