@@ -119,16 +119,16 @@ export default function UserActionPopup({
       {buttonClicked === 1 ? (
         <>
           <div className="ban" onClick={onBan}>
-            Bannir
+            Ban
           </div>
           <div className="kick" onClick={onKick}>
-            Expulser
+            Kick
           </div>
           <div className={isMuted ? "mute" : "unmute"} onClick={onMute}>
             {isMuted ? "Mute" : "Unmute"}
           </div>
           <div className={isAdmin ? "demote" : "promote"} onClick={onPromote}>
-            {isAdmin ? "Remove from administrators" : "Add to administrators"}
+            {isAdmin ? "Remove from admins" : "Add to admins"}
           </div>
         </>
       ) : buttonClicked === 0 ? (

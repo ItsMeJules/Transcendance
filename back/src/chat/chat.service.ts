@@ -300,7 +300,7 @@ export class ChatService {
   async getCompleteRoom(roomName: string): Promise<CompleteRoom> {
     try {
       return this.prismaService.returnCompleteRoom(roomName);
-    } catch (error) { }
+    } catch (error) {}
   }
 
   async createOrReturnGeneralChat(): Promise<Room> {
@@ -1132,10 +1132,11 @@ export class ChatService {
         });
         this.sendSuccess(client, 'You removed the password');
       } else {
+        const hashedPassword = await argon.hash(password);
         await this.prismaService.room.update({
           where: { name: currentRoom.name },
           data: {
-            password: password,
+            password: hashedPassword,
           },
         });
         this.sendSuccess(client, 'You modified the password');
