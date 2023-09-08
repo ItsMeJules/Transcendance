@@ -86,9 +86,9 @@ const ProfileGameHistory = () => {
                       <li className="game">
                         <img className="pp1" src={game.player1?.profilePicture} alt={game.player1?.username} />
                         <article className='central-text'>
-                          <span className="p1">{game.player1?.username}</span>
+                          <span className="p1" title={game.player1?.username}>{game.player1?.username}</span>
                           <span className="score ">{game.player1Score === -1 ? "Gave up" : game.player1Score} - {game.player2Score === -1 ? "Gave up" : game.player2Score}</span>
-                          <span className="p2 ">{game.player2?.username}</span>
+                          <span className="p2 " title={game.player2?.username}>{game.player2?.username}</span>
                         </article>
                         <img className="pp2" src={game.player2?.profilePicture} alt={game.player2?.username} />
                       </li>
