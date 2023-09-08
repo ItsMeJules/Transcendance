@@ -42,7 +42,7 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = ({
   return (
     <Popup className="channel-popup">
       <input
-        placeholder="Entrez le mdp."
+        placeholder="Enter password..."
         onChange={(e) => setChannelPassword(e.target.value)}
         value={channelPassword}
         required
@@ -57,7 +57,7 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = ({
       </div>
 
       <div className="quit-channel">
-        <button onClick={quitChannel}>Quitter le channel</button>
+        <button onClick={quitChannel}>quit channel</button>
       </div>
     </Popup>
   );

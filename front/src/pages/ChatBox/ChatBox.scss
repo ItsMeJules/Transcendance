@@ -140,25 +140,33 @@ $font-color: rgba(255, 255, 255, 0.7);
 
           border: $border;
           border-radius: 5px;
-          font-size: 10px;
-
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+          padding: 2px;
 
           .infos {
             h3 {
               font-family: "dune", Arial, sans-serif;
-              color: $font-color;
+              color: white;
+              font-size: 10pt;
+              padding: 10px;
+              max-width: 120px;
+              align-items: center;
+              justify-content: center;
+              text-align: center;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
             }
 
             input {
               width: 110px;
               margin-bottom: 10px;
               padding: 8px;
+              color: white;
 
-              font-size: 14px;
-              color: $font-color;
+              font-size: 10px;
 
               background: transparent;
               border: $border;
@@ -168,7 +176,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
           .buttons {
             width: 100%;
-
+            height: 100px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -176,26 +184,29 @@ $font-color: rgba(255, 255, 255, 0.7);
             text-align: center;
 
             button {
-              width: 50%;
-              padding: 8px 16px;
+              font-family: "dune", Arial, sans-serif;
+              color: white;
+              font-size: 8pt;
+              width: 80%;
+              padding: 10px;
               border-radius: 5px;
               cursor: pointer;
-              margin: 5px;
+              border: 1px solid rgb(255, 255, 255, 0.3);
             }
 
             .cancel {
-              background-color: rgba(255, 0, 0, 0.5);
+              background-color: rgba(255, 0, 0, 0.2);
 
               &:hover {
-                color: $hover-color;
+                background-color: rgba(255, 0, 0, 0.5);
               }
             }
 
             .validate {
-              background-color: rgba(0, 255, 0, 0.5);
-
+              background-color: rgba(0, 255, 0, 0.2);
+              
               &:hover {
-                color: $hover-color;
+                background-color: rgba(0, 255, 0, 0.5);
               }
             }
           }
@@ -289,6 +300,15 @@ $font-color: rgba(255, 255, 255, 0.7);
             padding: 5px;
             font-size: 10pt;
             color: rgba(255, 255, 255, 1);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+            p {
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
 
             input {
               height: 30px;
@@ -420,7 +440,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                 justify-content: flex-start;
                 align-items: center;
                 padding: 5px;
-                overflow-x: hidden;
+
 
                 transition: background-color;
 
@@ -430,9 +450,11 @@ $font-color: rgba(255, 255, 255, 0.7);
                 }
 
                 .profile-picture {
-                  width: 30%;
-                  height: auto;
-                  margin: 5px 0px 5px 5px;
+                  width: 40px;
+                  height: 40px;
+                  object-fit: cover;
+                  object-position: center;
+                  margin: 5px;
 
                   border-radius: 50%;
                   box-shadow: 7px 10px 10px -6px rgba(0, 0, 0, 0.72);
@@ -441,6 +463,9 @@ $font-color: rgba(255, 255, 255, 0.7);
                 .username {
                   margin: 0px 0px 0px 10px;
                   color: white;
+                  overflow: hidden;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
                 }
               }
             }
@@ -530,6 +555,9 @@ $font-color: rgba(255, 255, 255, 0.7);
           height: 320px;
 
           overflow-x: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+
           overflow-y: scroll;
 
           // Style the scrollbar
@@ -586,8 +614,14 @@ $font-color: rgba(255, 255, 255, 0.7);
                 flex-direction: row;
                 justify-content: flex-start;
                 align-items: center;
-
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
                 transition: background-color;
+
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
 
                 &:hover {
                   background-color: $hover-color;
@@ -605,14 +639,22 @@ $font-color: rgba(255, 255, 255, 0.7);
                 }
 
                 .channel-info {
+
                   overflow: hidden;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                  padding: 5px;
 
                   p {
                     font-family: "dune", Arial, sans-serif;
                     color: white;
                     line-height: 12px;
                     font-size: 12px;
-                    margin: 10px;
+                    padding: 5px;
+                    margin: 0;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
                   }
                 }
               }
@@ -663,6 +705,8 @@ $font-color: rgba(255, 255, 255, 0.7);
             font-size: 14px;
             margin: 0;
             overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
         }
 
@@ -759,7 +803,9 @@ $font-color: rgba(255, 255, 255, 0.7);
                 flex-direction: column;
                 justify-content: flex-start;
 
-                overflow-x: hidden;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
 
                 .user-container {
                   position: relative;
@@ -772,6 +818,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                     flex-direction: row;
                     justify-content: flex-start;
                     align-items: center;
+                    padding:5px;
 
                     transition: background-color 0.3s;
 
@@ -780,21 +827,25 @@ $font-color: rgba(255, 255, 255, 0.7);
                     }
 
                     .profile-picture {
-                      width: 30%;
-                      height: auto;
-                      margin: 5px 0px 5px 5px;
-
+                      width: 30px;
+                      height: 30px;
+                      margin: 3px;
+                      
                       border-radius: 50%;
                       box-shadow: 7px 10px 10px -6px rgba(0, 0, 0, 0.72);
                     }
 
                     .username {
-                      margin: 0px 10px 0px 10px;
+                      margin: 5px;
+                      overflow: hidden;
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
                     }
-
+                    
                     .role-picture {
-                      width: 10%;
-                      height: auto;
+                      width: 5px;
+                      height: 5px;
+                      margin: 5px;
                     }
                   }
                 }
@@ -816,12 +867,17 @@ $font-color: rgba(255, 255, 255, 0.7);
               padding: 10px;
               flex-direction: column;
               justify-content: space-evenly;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
 
               h4 {
                 padding: 10px;
                 font-size: 12pt;
                 margin: 0px;
-                cursor: default;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
               }
 
               .kick:hover,
@@ -834,8 +890,7 @@ $font-color: rgba(255, 255, 255, 0.7);
               .dm:hover,
               .invite-to-chat:hover,
               .invite-to-play:hover,
-              .invite-to-channel:hover,
-              .block-user:hover {
+              .invite-to-channel:hover {
                 background-color: $hover-color;
               }
 
@@ -850,8 +905,8 @@ $font-color: rgba(255, 255, 255, 0.7);
               .invite-to-chat,
               .invite-to-play,
               .invite-to-channel,
-              .block-user,
-              .unblock-user {
+              .unblock-user,
+              .block-user {
                 cursor: pointer;
                 padding: 8px;
                 font-size: 8pt;
@@ -863,6 +918,21 @@ $font-color: rgba(255, 255, 255, 0.7);
                   background-color: rgba(255, 255, 255, 0.3);
                 }
               }
+
+
+              .block-user {
+                background-color: rgba(255, 0, 0, 0.2);
+                &:hover {
+                  background-color: rgba(255, 0, 0, 0.5);
+                }
+              }
+              .unblock-user {
+                background-color: rgba(0, 255, 0, 0.2);
+                &:hover {
+                  background-color: rgba(0, 255, 0, 0.5);
+                }
+              }
+
             }
           }
         }
@@ -1050,7 +1120,7 @@ $font-color: rgba(255, 255, 255, 0.7);
           position: relative;
           top: 150%;
           left: -220%;
-          height: 300px;
+          height: 220px;
           width: 160px;
           border-radius: 5px;
           border: $border;
@@ -1061,7 +1131,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             width: 85%;
             height: 30px;
 
-            font-size: 12px;
+            font-size: 10pt;
             padding: 3px;
             border: $border;
             background: transparent;
@@ -1090,6 +1160,7 @@ $font-color: rgba(255, 255, 255, 0.7);
 
             button {
               font-family: "dune", Arial, sans-serif;
+              font-size: 10pt;
               color: $font-color;
               margin: 0;
               cursor: pointer;
@@ -1102,6 +1173,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             overflow: hidden;
             width: 80%;
 
+            font-size: 10pt;
             border: $border;
             border-radius: 5px;
             padding: 10px;
@@ -1109,7 +1181,7 @@ $font-color: rgba(255, 255, 255, 0.7);
             transition: background-color;
 
             &:hover {
-              background-color: rgba(255, 0, 0, 0.3);
+              background-color: rgba(255, 0, 0, 0.5);
             }
 
             button {
@@ -1203,11 +1275,31 @@ $font-color: rgba(255, 255, 255, 0.7);
       display: flex;
       flex-direction: column;
 
-      img {
-        height: auto;
-        width: 8%;
-        border-radius: 50%;
-        margin: 20px 0 0 5px;
+      .profile-details {
+
+        width: 80%;
+        height: 20%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        
+        img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          margin: 5px;
+        }
+  
+        .username {
+          color: white;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          margin:5px;
+        }
       }
 
       .message-self,
