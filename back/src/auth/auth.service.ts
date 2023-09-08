@@ -43,7 +43,7 @@ export class AuthService {
       isTwoFactorAuthenticationVerified: isTwoFactorAuthenticationVerified,
     };
     const access_token = this.jwtService.sign(payload, {
-      expiresIn: '15m',
+      expiresIn: '90m',
     });
 
     const refreshPayload = { id: user.id };

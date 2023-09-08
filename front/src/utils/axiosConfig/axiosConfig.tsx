@@ -112,7 +112,7 @@ export function useAxios() {
 
     const tokenExpiration = new Date(Number(tokenExpirationValue) * 1000);
     const currentTime = new Date();
-    return Number(currentTime) >= Number(tokenExpiration);
+    return Number(currentTime) + 50000 >= Number(tokenExpiration);
   }
 
   customAxiosInstance.interceptors.request.use(
@@ -127,7 +127,7 @@ export function useAxios() {
             }
           );
         } catch (error) {
-          navigate("/login?error=token_refresh_failed"); // gerer cette query ou remplacer la query par "/login?error=unauthorized"
+          navigate("/login?error=token_refresh_failed");
         }
       }
       return config;

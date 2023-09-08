@@ -5,7 +5,7 @@ import Popup from "../../../utils/Popup";
 import UsersList from "pages/ChatBox/utils/users/UsersList";
 import UserActionPopup from "pages/ChatBox/utils/users/UserActionPopup";
 import { useAppSelector } from "utils/redux/Store";
-import { useAxios } from "utils/axiosConfig/axiosConfig";
+import axios from "axios";
 
 export default function AllUsers() {
   const [searchText, setSearchText] = useState("");
@@ -42,10 +42,9 @@ export default function AllUsers() {
 }
 
 export const fetchAllUsers = async (): Promise<User[]> => {
-  const customAxiosInstance = useAxios();
   
   try {
-    const response = await customAxiosInstance.get(API_ROUTES.GET_ALL_USERS, { withCredentials: true });
+    const response = await axios.get(API_ROUTES.GET_ALL_USERS, { withCredentials: true });
     const frontUsers = response.data.map((data: UserData) => {
       const frontUser = new User();
       frontUser.setUserFromResponseData(data);
