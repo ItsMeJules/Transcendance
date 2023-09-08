@@ -858,6 +858,7 @@ $font-color: rgba(255, 255, 255, 0.7);
                 border: $border;
                 border-radius: 5px;
                 color: white;
+                text-overflow: ellipsis;
 
                 &:hover {
                   background-color: rgba(255, 255, 255, 0.3);
