@@ -22,7 +22,7 @@
   font-family: "dune", Arial, sans-serif;
   font-weight: bold;
   max-width: 300px;
-  color: black;
+  color: white;
   background: rgba(197, 0, 0, 0.678);
   border-radius: 12px;
   display: flex;
@@ -33,14 +33,14 @@
 }
 
 .close {
-  color : black;
+  color : white;
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
 
   &:hover,
   &:focus {
-    color: white;
+    color: black;
     text-decoration: none;
   }
 }
