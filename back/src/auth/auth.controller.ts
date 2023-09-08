@@ -218,7 +218,6 @@ export class AuthController {
     const userPayload = await this.authService.verifyRefreshToken(
       refresh_token,
     );
-    console.log('userPayload : ', userPayload);
     if (!userPayload) {
       throw new UnauthorizedException('Invalid refresh token');
     }
@@ -226,7 +225,6 @@ export class AuthController {
       id: userPayload.id,
       isTwoFactorAuthenticationVerified: true,
     });
-    console.log('new accessToken : ', accessToken);
     res.cookie('access_token', accessToken, {
       httpOnly: true,
       maxAge: 15 * 60 * 1000,
@@ -236,7 +234,7 @@ export class AuthController {
       maxAge: 15 * 60 * 1000,
       sameSite: 'lax',
     });
-    console.log('end');
+    console.log('RENEWING TOKEN');
     return {
       accessToken: accessToken,
       message: 'Access token refreshed successfully',
@@ -282,6 +280,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() body: any,
   ): Promise<void> {
+    // problem
     const code = body.twoFactorAuthentificationCode;
     if (!user.isTwoFactorAuthenticationEnabled) throw new NoTwoFaException();
     if (code === '') return;
@@ -291,9 +290,10 @@ export class AuthController {
     );
     if (!isCodeValid)
       throw new UnauthorizedException('Wrong authentication code');
-
     try {
-      const tokens = await this.authService.login(user.id, true);
+      console.log('userId:', user.id);
+      const tokens = await this.authService.login(user, true);
+      console.log('access token:', tokens.access_token);
 
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
@@ -305,6 +305,7 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         sameSite: 'lax',
       });
+      console.log('give the token 2fa');
     } catch (error) {
       handleJwtError(error);
     }

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  
   UnauthorizedException,
 } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
@@ -36,6 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     id: number;
     isTwoFactorAuthenticationVerified: boolean;
   }): Promise<User | { status: string }> {
+    console.log('validate jwt strategy');
     const user = await this.prismaService.findUserById(payload.id);
     if (!user) throw new BadRequestException('Bad token');
     if (

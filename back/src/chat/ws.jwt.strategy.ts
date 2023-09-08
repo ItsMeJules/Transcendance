@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
-import { TwoFactorException } from '../exceptions/two-factor.exception';
+import { TwoFactorException } from 'src/auth/exceptions/two-factor.exception';
 import * as jwt from 'jsonwebtoken';
 import handlePrismaError from '@utils/prisma.error';
 import { extractAccessTokenFromCookie } from '@utils/utils';
@@ -19,18 +19,24 @@ interface JwtPayload {
 
 @Injectable()
 export class WsJwtGuard implements CanActivate {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) {
+    console.log('guard constructor');
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('guard');
     const client = context.switchToWs().getClient();
     const token = extractAccessTokenFromCookie(client);
     let user;
+    console.log('canActivate begin');
     if (!token) {
       throw new UnauthorizedException('No token provided');
     }
 
     try {
+      console.log('juste avant');
       const payload = jwt.verify(token, process.env.jwtSecret);
+      console.log('try catch guard WebSocket');
       if (
         typeof payload === 'object' &&
         'id' in payload &&
@@ -61,7 +67,7 @@ export class WsJwtGuard implements CanActivate {
   }): Promise<User | { status: string }> {
     console.log('validate socket');
     const user = await this.prismaService.findUserById(payload.id);
-    if (!user) throw new BadRequestException('Bad token');
+    if (!user) throw new BadRequestException('Bad token!!!!!');
     if (
       user.isTwoFactorAuthenticationEnabled &&
       !payload.isTwoFactorAuthenticationVerified

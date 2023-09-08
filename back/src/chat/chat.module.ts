@@ -9,6 +9,7 @@ import { PongEvents } from 'src/game/pong.gateway';
 import { PongModule } from 'src/game/pong.module';
 import { InviteLimiterService } from './invite-limiter/invite-limiter.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { WsJwtGuard } from './ws.jwt.strategy';
 
 @Module({
   imports: [PongModule, AuthModule],
@@ -20,6 +21,7 @@ import { AuthModule } from 'src/auth/auth.module';
     ChatService,
     UserSocketsService,
     InviteLimiterService,
+    WsJwtGuard,
   ],
   exports: [],
 })

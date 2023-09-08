@@ -27,8 +27,6 @@ import handleJwtError from '@utils/jwt.error';
 import handlePrismaError from '@utils/prisma.error';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-
-
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
@@ -36,7 +34,7 @@ export class UserController {
     private userService: UserService,
     private prisma: PrismaService,
     private socketEvents: SocketEvents,
-  ) { }
+  ) {}
 
   @Get('current-chat')
   getCurrentChat(@GetUser() user: User): string {
@@ -104,7 +102,6 @@ export class UserController {
   async getUserGameHistory(@Param('id', ParseIntPipe) id: number) {
     const gameHistory = await this.userService.getUserGameHistory(id);
     return { id: id, gameHistory: gameHistory };
-
   }
 
   @Patch('add-friend/:id')
@@ -129,7 +126,6 @@ export class UserController {
       }),
     }),
   )
-
   async uploadProfilePic(@GetUser() user: User, @UploadedFile() file) {
     return this.userService.uploadProfilePic(user, file);
   }

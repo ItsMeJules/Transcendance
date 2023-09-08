@@ -7,6 +7,7 @@ import {
   Injectable,
   Req,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -129,7 +130,7 @@ export class AuthService {
   async verifyRefreshToken(refreshToken: string): Promise<User> {
     try {
       console.log('my jwtRefresh Secret', process.env.jwtRefreshSecret);
-      const secret = process.env.jwtRefreshSecret; 
+      const secret = process.env.jwtRefreshSecret;
       const decodedToken: any = jwt.verify(refreshToken, secret);
       const { id } = decodedToken;
       console.log('id = ', id);
