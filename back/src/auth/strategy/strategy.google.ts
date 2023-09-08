@@ -2,11 +2,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { Profile, Strategy } from 'passport-google-oauth20';
 import { AuthService } from '../auth.service';
-import {
-  Res,
-  Injectable,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Res, Injectable, ForbiddenException } from '@nestjs/common';
 import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -45,7 +41,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       //   throw new BadRequestException('Password needed, please sign in via the form');
       return user;
     } catch (error) {
-      throw (error);
+      throw error;
     }
   }
 }

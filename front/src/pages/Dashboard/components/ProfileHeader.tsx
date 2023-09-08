@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "utils/routing/routing";
-import { useState, useEffect } from 'react';
-import { MDBCardText } from 'mdb-react-ui-kit';
+import { useState, useEffect } from "react";
+import { MDBCardText } from "mdb-react-ui-kit";
 import LogoutParent from "layout/LogoutButton/LogoutParent";
 import { UserData } from "services/User/User";
 import { useWebsocketContext } from "services/Websocket/Websocket";
@@ -21,30 +21,32 @@ const ProfileHeader = () => {
 
   // Socket on
   useEffect(() => {
-    socket.game?.on('userDataSocket', (data: any) => {
+    socket.game?.on("userDataSocket", (data: any) => {
       setUserDataSocket(data);
     });
-    socket.game?.emit('userDataSocket', { action: 'query' });
+    socket.game?.emit("userDataSocket", { action: "query" });
     return () => {
-      socket.game?.off('userDataSocket');
-    }
+      socket.game?.off("userDataSocket");
+    };
   }, [socket.game]);
 
   useEffect(() => {
     if (!userDataSocket) return;
-    if (userDataSocket.profilePicture)
-      setProfilePicture(userDataSocket.profilePicture);
-    if (userDataSocket.userLevel)
-      setParsedUserLevel(userDataSocket.userLevel);
-    if (userDataSocket.gamesPlayed && userDataSocket.gamesWon && userDataSocket.gamesPlayed > 0)
+    if (userDataSocket.profilePicture) setProfilePicture(userDataSocket.profilePicture);
+    if (userDataSocket.userLevel) setParsedUserLevel(userDataSocket.userLevel);
+    if (
+      userDataSocket.gamesPlayed &&
+      userDataSocket.gamesWon &&
+      userDataSocket.gamesPlayed > 0
+    )
       setWinRatio((userDataSocket.gamesWon / userDataSocket.gamesPlayed) * 100);
     setGamesPlayed(userDataSocket.gamesPlayed);
     setProgressBarClass(getProgressBarClass(userDataSocket.userLevel));
   }, [userDataSocket]);
 
-  const handleProfileClick = (() => {
-    history(APP_ROUTES.USER_PROFILE)
-  });
+  const handleProfileClick = () => {
+    history(APP_ROUTES.USER_PROFILE);
+  };
 
   return (
     <main className="profile-header-container">
@@ -56,7 +58,9 @@ const ProfileHeader = () => {
         </div>
         <div className="WinLossRatio">
           <MDBCardText className="small text-muted mb-0 custom-text-color text-center">
-            {gamesPlayed !== null ? `Win Rate: ${winRatio.toFixed(2)}%` : "No games played yet"}
+            {gamesPlayed !== null
+              ? `Win Rate: ${winRatio.toFixed(2)}%`
+              : "No games played yet"}
           </MDBCardText>
         </div>
 

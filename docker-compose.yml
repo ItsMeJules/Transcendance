@@ -1,5 +1,4 @@
 services:
-
   frontend:
     container_name: frontend
     build:
@@ -27,10 +26,11 @@ services:
       context: ./back
       dockerfile: ./Dockerfile
     env_file:
-    - ./back/.env
+      - ./back/.env
     environment:
       DATABASE_URL: ${DATABASE_URL}
       jwtSecret: ${jwtSecret}
+      jwtRefreshSecret: ${jwtRefreshSecret}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       FORTYTWO_CLIENT_ID: ${FORTYTWO_CLIENT_ID}

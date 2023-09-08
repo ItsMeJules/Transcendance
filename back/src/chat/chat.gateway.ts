@@ -1,4 +1,9 @@
 import {
+  BadRequestException,
+  CanActivate,
+  UnauthorizedException,
+} from '@nestjs/common';
+import {
   ConnectedSocket,
   MessageBody,
   SubscribeMessage,
@@ -6,7 +11,10 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { RoomType, User } from '@prisma/client';
+import * as jwt from 'jsonwebtoken';
 import { Server, Socket } from 'socket.io';
+import { TwoFactorException } from 'src/auth/exceptions/two-factor.exception';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { ChatSocketEventType, extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
 import { ChatService } from './chat.service';
@@ -16,80 +24,120 @@ import {
   ActionRoomHandlers,
 } from './handlers/handlers.map';
 import { UserSocketsService } from './user-sockets/user-sockets.service';
-import { PrismaService } from 'src/prisma/prisma.service';
 
-// @UseGuards(JwtGuard) // add jwt guard for chat auth
+interface JwtPayload {
+  id: number;
+  isTwoFactorAuthenticationVerified: boolean;
+}
+
+// @UseGuards(JwtGuard)
 @WebSocketGateway({ namespace: 'chat' })
 export class ChatEventsGateway {
   @WebSocketServer() server: Server;
 
   constructor(
-    private authService: AuthService,
     private chatService: ChatService,
     private userSocketsService: UserSocketsService,
     private prismaService: PrismaService,
   ) {}
 
-  private async setupConnection(client: Socket): Promise<User | null> {
-    const access_token = extractAccessTokenFromCookie(client);
-    if (!access_token) {
-      client.disconnect();
-      return Promise.reject('no access_token');
-    }
-
-    const user = await this.authService.validateJwtToken(access_token, true);
-    if (!user) {
-      client.disconnect();
-      return Promise.reject('no user');
-    }
-    client.data = { id: user.id };
-
-    this.userSocketsService.addUserSocket(client.data.id, client);
-
+  async validate(payload: {
+    id: number;
+    isTwoFactorAuthenticationVerified: boolean;
+  }): Promise<User | { status: string }> {
+    console.log('validate socket');
+    const user = await this.prismaService.findUserById(payload.id);
+    if (!user) throw new BadRequestException('Bad token!!!!!');
+    delete user.hash;
+    console.log('validate end');
     return user;
   }
 
+  async setupConnection(client: Socket): Promise<User | null> {
+    console.log('guard');
+    const token = extractAccessTokenFromCookie(client);
+    let user;
+    console.log('canActivate begin');
+    if (!token) {
+      client.disconnect();
+      return;
+    }
+
+    try {
+      console.log('juste avant');
+      const payload = jwt.verify(token, process.env.jwtSecret) as JwtPayload;
+      console.log('try catch guard WebSocket');
+      console.log(' !!!!!!!!!!!!   payload: ', payload);
+      if (
+        typeof payload === 'object' &&
+        'id' in payload &&
+        'isTwoFactorAuthenticationVerified' in payload
+      ) {
+        user = await this.validate(payload as JwtPayload);
+      } else {
+        throw new UnauthorizedException('Invalid token payload');
+      }
+      console.log('canActivate end');
+      return user;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // if (!access_token) {
+  //   client.disconnect();
+  //   throw new Error('No token, log again');
+  // }
+
+  // const user = await this.authService.validateJwtToken(access_token, true);
+  // if (!user) {
+  //   client.disconnect();
+  //   throw new Error('Unidentified token');
+  // }
+  // client.data = { id: user.id };
+
+  // this.userSocketsService.addUserSocket(client.data.id, client);
+
+  // return user;
   async handleConnection(client: Socket): Promise<void> {
-    console.log('connection');
-    const user = this.setupConnection(client);
+    console.log('connection FDPPPPP');
 
-    user
-      .then(async (user) => {
-        await client.join(user.currentRoom);
+    const user = await this.setupConnection(client);
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    client.data = { id: user.id };
+    await client.join(user.currentRoom);
+    this.userSocketsService.addUserSocket(client.data.id, client);
+    const currentCompleteRoom = await this.chatService.getCompleteRoom(
+      user.currentRoom,
+    );
+    currentCompleteRoom.messages = [];
 
-        const currentCompleteRoom = await this.chatService.getCompleteRoom(
-          user.currentRoom,
-        );
-        currentCompleteRoom.messages = [];
+    const messagesWithClientId =
+      await this.chatService.fetchMessagesOnRoomForUser(client, {
+        roomName: user.currentRoom,
+        server: this.server,
+      });
 
-        const messagesWithClientId =
-          await this.chatService.fetchMessagesOnRoomForUser(client, {
-            roomName: user.currentRoom,
-            server: this.server,
-          });
+    let roomDisplayname = currentCompleteRoom.name;
+    if (currentCompleteRoom.type === RoomType.DIRECT) {
+      const [_, topId, lowId] = currentCompleteRoom.name.split('-').map(Number);
+      const targetId = topId === user.id ? lowId : topId;
+      roomDisplayname = currentCompleteRoom.users.find(
+        (user) => user.id === targetId,
+      )?.username;
+    }
 
-        let roomDisplayname = currentCompleteRoom.name;
-        if (currentCompleteRoom.type === RoomType.DIRECT) {
-          const [_, topId, lowId] = currentCompleteRoom.name
-            .split('-')
-            .map(Number);
-          const targetId = topId === user.id ? lowId : topId;
-          roomDisplayname = currentCompleteRoom.users.find(
-            (user) => user.id === targetId,
-          )?.username;
-        }
+    this.server.to(client.id).emit(ChatSocketEventType.JOIN_ROOM, {
+      ...currentCompleteRoom,
+      displayname: roomDisplayname,
+    });
 
-        this.server.to(client.id).emit(ChatSocketEventType.JOIN_ROOM, {
-          ...currentCompleteRoom,
-          displayname: roomDisplayname,
-        });
-
-        this.server
-          .to(client.id)
-          .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
-        // console.log('just emitted' ,  currentCompleteRoom, messagesWithClientId)
-      })
-      .catch((reason) => console.log(reason));
+    this.server
+      .to(client.id)
+      .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId);
   }
 
   async handleDisconnect(client: Socket): Promise<void> {
@@ -106,7 +154,7 @@ export class ChatEventsGateway {
       );
       this.removeEventListeners(client);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 

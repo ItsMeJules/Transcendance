@@ -3,6 +3,7 @@ export const API_URL = "/api";
 export const API_ROUTES = {
   SIGN_UP: `${API_URL}/auth/signup`,
   SIGN_IN: `${API_URL}/auth/signin`,
+  REFRESH_TOKEN: `${API_URL}/auth/refresh-token`,
   LOG_OUT: `${API_URL}/users/logout`,
   USER_PROFILE: `${API_URL}/users/me`,
   USER_COMPLETE: `${API_URL}/users/complete-user`,

@@ -6,6 +6,8 @@ import {
   HttpStatus,
   Injectable,
   Req,
+  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -17,7 +19,7 @@ import { PayloadDto } from './dto/payload.dto';
 import { AuthDtoUp } from './dto/authup.dto';
 import * as jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
 import handlePrismaError from '@utils/prisma.error';
 import handleJwtError from '@utils/jwt.error';
 import { error } from 'console';
@@ -31,12 +33,32 @@ export class AuthService {
   ) {}
 
   /* Login - error management ok */
-  async login(user: any): Promise<any> {
+  /* Its actually a sign Tokens function */
+  async login(
+    user: any,
+    isTwoFactorAuthenticationVerified = false,
+  ): Promise<any> {
     const payload: PayloadDto = {
       id: user.id,
-      isTwoFactorAuthenticationVerified: false,
+      isTwoFactorAuthenticationVerified: isTwoFactorAuthenticationVerified,
     };
-    return this.jwtService.sign(payload);
+    const access_token = this.jwtService.sign(payload, {
+      expiresIn: '15m',
+    });
+
+    const refreshPayload = { id: user.id };
+
+    console.log(
+      'my process envs: ',
+      process.env.jwtRefreshSecret,
+      process.env.jwtSecret,
+    );
+    const refresh_token = this.jwtService.sign(refreshPayload, {
+      secret: process.env.jwtRefreshSecret, // Ensure a separate secret for refresh tokens
+      expiresIn: '7d',
+    });
+
+    return { access_token, refresh_token };
   }
 
   /* Signup - error management ok */
@@ -79,25 +101,49 @@ export class AuthService {
       return this.login(user);
     } catch (error) {
       handlePrismaError(error);
-      throw (error);
+      throw error;
     }
   }
 
   /* Validate JWT token - error management ok */
-  async validateJwtToken(token: string, deleteHash: boolean): Promise<User | any | null> {
+  async validateJwtToken(
+    token: string,
+    deleteHash: boolean,
+  ): Promise<User | any | null> {
     try {
       const jwtSecret = process.env.jwtSecret;
       const decodedToken: any = jwt.verify(token, jwtSecret);
       const { id } = decodedToken;
-      let user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { id },
         include: { friends: true },
       });
+      if (!user) throw new Error('Problem token');
       if (user && deleteHash) delete user.hash;
       return user;
     } catch (err) {
-      handleJwtError(err);
+      // handleJwtError(err);
       handlePrismaError(err);
+    }
+  }
+
+  async verifyRefreshToken(refreshToken: string): Promise<User> {
+    try {
+      console.log('my jwtRefresh Secret', process.env.jwtRefreshSecret);
+      const secret = process.env.jwtRefreshSecret;
+      const decodedToken: any = jwt.verify(refreshToken, secret);
+      const { id } = decodedToken;
+      console.log('id = ', id);
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        include: { friends: true },
+      });
+      console.log('user : ', user);
+      if (!user) throw new UnauthorizedException('User does not exist');
+
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
     }
   }
 

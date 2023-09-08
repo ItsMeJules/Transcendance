@@ -103,8 +103,8 @@ export default function ChannelListPopup() {
             </div>
 
             <div className="buttons">
-              <button className="cancel" onClick={() => setSelectedChannelName(null)}>Cancel</button>
               <button className="validate" onClick={() => joinChannel(null)}>Join</button>
+              <button className="cancel" onClick={() => setSelectedChannelName(null)}>Cancel</button>
             </div>
           </div>
         ) : undefined}

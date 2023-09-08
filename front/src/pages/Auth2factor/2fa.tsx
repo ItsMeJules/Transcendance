@@ -1,11 +1,15 @@
 import { useRef, useState, useEffect, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAxios } from "utils/axiosConfig/axiosConfig";
 import { GlowTextSignin } from "utils/cssAnimation/cssAnimation";
 import { API_ROUTES } from "utils/routing/routing";
 import "./css/2faButton.scss";
+import { toast } from "react-toastify";
 
 export const TwoFa = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const errorMessage = queryParams.get("error");
   const errRef = useRef<HTMLParagraphElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
   const history = useNavigate();
@@ -29,6 +33,8 @@ export const TwoFa = () => {
     if (codeRef.current) {
       codeRef.current.focus();
     }
+    if (errorMessage === "unauthorized")
+      toast.error("Enter your token from your authenticator app");
   }, []);
 
   useEffect(() => {

@@ -8,9 +8,11 @@ import { UserSocketsService } from './user-sockets/user-sockets.service';
 import { PongEvents } from 'src/game/pong.gateway';
 import { PongModule } from 'src/game/pong.module';
 import { InviteLimiterService } from './invite-limiter/invite-limiter.service';
+import { AuthModule } from 'src/auth/auth.module';
+import { WsJwtGuard } from './ws.jwt.strategy';
 
 @Module({
-  imports: [PongModule],
+  imports: [PongModule, AuthModule],
   controllers: [ChatController],
   providers: [
     ChatEventsGateway,
@@ -19,6 +21,7 @@ import { InviteLimiterService } from './invite-limiter/invite-limiter.service';
     ChatService,
     UserSocketsService,
     InviteLimiterService,
+    WsJwtGuard,
   ],
   exports: [],
 })
