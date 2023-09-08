@@ -10,10 +10,9 @@ interface MainTextProps {
   isPlayerReady: boolean;
   game: GameProperties;
   gameStatus: string | undefined;
-  elementHeight: number | null;
 }
 
-const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer, gameIsPlaying, isPlayerReady, game, gameStatus, elementHeight }) => {
+const MainText: React.FC<MainTextProps> = ({ textToDisplay, socket, whichPlayer, gameIsPlaying, isPlayerReady, game, gameStatus }) => {
   const [isPlayerReadyComponent, setIsPlayerReadyComponent] = useState(false);
   const [finalPlayerReady, setFinalPlayerReady] = useState(false);
 

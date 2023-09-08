@@ -158,7 +158,7 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
       <ScoreBoard game={game} noGame={noGame} />
 
       <AllCanvas game={game} socket={socket.game} whichPlayer={whichPlayer} centralText={centralText}
-        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
+        isPlayerReady={isPlayerReady} noGame={noGame} />
 
     <NoGameSpectate noGame={noGame} />
     </div >

@@ -64,6 +64,9 @@ export class PongEvents {
     userServiceEmitter.on('updateFriendsOfUser', (data) => {
       this.emitUpdateFriends('toUser', parseInt(data.userId));
     });
+    userServiceEmitter.on('refreshHeader', (data) => {
+      this.emitUpdateProfileHeader(parseInt(data.userId));
+    });
   }
 
   /* Connect main */
