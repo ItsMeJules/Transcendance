@@ -64,6 +64,9 @@ export class PongEvents {
     userServiceEmitter.on('updateFriendsOfUser', (data) => {
       this.emitUpdateFriends('toUser', parseInt(data.userId));
     });
+    userServiceEmitter.on('refreshHeader', (data) => {
+      this.emitUpdateProfileHeader(parseInt(data.userId));
+    });
   }
 
   /* Connect main */
@@ -544,7 +547,7 @@ export class PongEvents {
   }
 
   /* Refresh the front state */
-  @Interval(2000) // 
+  @Interval(500) // 
   refreshAllGames() {
     this.pongService.onlineGames.forEach((game, key) => {
       game.sendUpdateToRoomInterval();

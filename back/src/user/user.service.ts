@@ -12,10 +12,7 @@ import * as sharp from 'sharp';
 import {
   constructPictureUrl,
   constructPicturePath,
-  constructPicturePathNoImage,
 } from './module';
-import { Response } from 'express';
-import { hash } from 'argon2';
 import { EventEmitter } from 'events';
 import handlePrismaError from '@utils/prisma.error';
 
@@ -96,6 +93,7 @@ export class UserService {
           profilePicture: newPicUrl,
         },
       });
+      userServiceEmitter.emit('refreshHeader', { userId: user.id });
       fs.unlinkSync(file.path);
     } catch (error) { }
     try {
@@ -178,28 +176,28 @@ export class UserService {
     } catch (error) { handlePrismaError(error); }
   }
 
-    // >>>>>>>>>>>>>>> GAME HISTORY <<<<<<<<<<<<<<<<<<<<<<<<<<
+  // >>>>>>>>>>>>>>> GAME HISTORY <<<<<<<<<<<<<<<<<<<<<<<<<<
 
-    async getUserGameHistory(id: number): Promise<Game[]> {
-      const gameHistory = await this.prismaService.game.findMany({
-        where: {
-          OR: [
-            { player1Id: id },
-            { player2Id: id },
-          ],
-        },
-        orderBy: {
-          updatedAt: 'desc',
-        },
-        include: {
-          player1: true, // Include the related player1 user data
-          player2: true, // Include the related player2 user data
-        },
-      });
-    
-      return gameHistory;
-    }
-    
-  
-    // >>>>>>>><<<<<<>>>>>>>>>><<<<<<>>>>>>>>>>><<<<<<<<<<<<
+  async getUserGameHistory(id: number): Promise<Game[]> {
+    const gameHistory = await this.prismaService.game.findMany({
+      where: {
+        OR: [
+          { player1Id: id },
+          { player2Id: id },
+        ],
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+      include: {
+        player1: true, // Include the related player1 user data
+        player2: true, // Include the related player2 user data
+      },
+    });
+
+    return gameHistory;
+  }
+
+
+  // >>>>>>>><<<<<<>>>>>>>>>><<<<<<>>>>>>>>>>><<<<<<<<<<<<
 }

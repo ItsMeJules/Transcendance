@@ -26,7 +26,6 @@ export interface GameSocket {
   gameParams: GameParams;
   playerStatus: string;
   opponentStatus: string;
-  time: number;
   countdown: string;
 }
 
@@ -42,7 +41,6 @@ const Play = () => {
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isOpponentReady, setIsOpponentReady] = useState(false);
 
-  // const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameStatePrepare, setGameStatePrepare] = useState<GameSocket>();
   const [gameStatePlay, setGameStatePlay] = useState<GameSocket>();
   const [game, setGame] = useState(new GameProperties());
@@ -99,10 +97,8 @@ const Play = () => {
       setGame({ ...game, status: gameStatePlay?.gameStatus });
     }
     if (gameStatePlay?.gameStatus === 'giveUp') {
-      console.log('1 P GIVEUP whichPlayer:', whichPlayer);
       if ((gameStatePlay.gameParams.pl1.status === 'givenUp' && whichPlayer === 2)
         || (gameStatePlay.gameParams.pl2.status === 'givenUp' && whichPlayer === 1)) {
-        console.log('1 OP GAVE UP OK');
         setCentralText('Your opponent gave up!');
         setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false, status: 'giveUp' });
       } else {
@@ -131,7 +127,7 @@ const Play = () => {
     }
   }, [gameStatePlay]);
 
-  // Prepare useEffect
+  // Prepare useEffect: ready, waiting, timeout and give up before game start
   useEffect(() => {
     if (gameStatePlay?.gameStatus === 'ended'
       || gameStatePlay?.gameStatus === 'giveUp') return;
@@ -188,7 +184,7 @@ const Play = () => {
       <ScoreBoard game={game} noGame={noGame} />
 
       <AllCanvas game={game} socket={socket.game} whichPlayer={whichPlayer} centralText={centralText}
-        isPlayerReady={isPlayerReady} profileCardHeight={profileCardHeight} noGame={noGame} />
+        isPlayerReady={isPlayerReady} noGame={noGame} />
 
       <GiveUp socket={socket.game} whichPlayer={whichPlayer} game={game} noGame={noGame} gameStatus={game.status} />
 
