@@ -87,7 +87,6 @@ export function useAxios() {
   };
 
   const handle2FAErrors = (err: any, toastId: string) => {
-    console.log("error here 2fa:", err);
     if (err.response && err.response.status === 450) {
       navigate("/dashboard/profile/me?error=no2fa");
       return ERROR.YES;
@@ -107,15 +106,12 @@ export function useAxios() {
       .split(";")
       .find((row) => row.trim().startsWith("expire_date_access_token="));
 
-    console.log("cookies are : ", document.cookie);
     if (!expireDateCookie) return false;
 
     const tokenExpirationValue = expireDateCookie.split("=")[1];
 
     const tokenExpiration = new Date(Number(tokenExpirationValue) * 1000);
     const currentTime = new Date();
-    console.log("current : ", currentTime, " tokenExpiration : ", tokenExpiration);
-    console.log("moins les deux ", Number(tokenExpiration) - Number(currentTime));
     return Number(currentTime) >= Number(tokenExpiration);
   }
 
@@ -123,7 +119,6 @@ export function useAxios() {
     async (config) => {
       if (needsTokenRefresh()) {
         try {
-          console.log("oulala");
           await axios.post(
             API_ROUTES.REFRESH_TOKEN,
             { withCredentials: true },
@@ -132,7 +127,6 @@ export function useAxios() {
             }
           );
         } catch (error) {
-          console.log(error);
           navigate("/login?error=token_refresh_failed"); // gerer cette query ou remplacer la query par "/login?error=unauthorized"
         }
       }
@@ -146,7 +140,6 @@ export function useAxios() {
   /* Main response handler */
   customAxiosInstance.interceptors.response.use(
     (response) => {
-      console.log("yo man", response);
       return response;
     },
     (error) => {
@@ -155,8 +148,6 @@ export function useAxios() {
       const toastId = "error";
 
       if (toast.isActive(toastId)) return;
-
-      console.log("err:", error.response);
 
       if (config.url.includes(APP_ROUTES.SIGN_UP))
         // Sign up ok
@@ -172,16 +163,3 @@ export function useAxios() {
   );
   return customAxiosInstance;
 }
-
-// if (error.response && error.response.status === 499) {
-//   console.log("You have to connect with 2FA");
-//   navigate("/profile/me/two-fa");
-// }
-// if (error.response && error.response.status === 450) {
-//   console.log("You don't have 2FA enabled");
-//   navigate("/profile/me");
-// }
-// if (error.response && error.response.status === 451) {
-//   console.log("You are already verified!! What are you trying to do???");
-//   navigate("/profile/me");
-// }

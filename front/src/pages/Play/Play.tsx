@@ -90,7 +90,6 @@ const Play = () => {
 
   // Game useEffect
   useEffect(() => {
-    // console.log('Play:', gameStatePlay);
     if (gameStatePlay?.gameStatus) {
       game.pl1.score = gameStatePlay.gameParams.pl1.score === -1 ? 0 : gameStatePlay.gameParams.pl1.score;
       game.pl2.score = gameStatePlay.gameParams.pl2.score === -1 ? 0 : gameStatePlay.gameParams.pl2.score;
@@ -102,7 +101,6 @@ const Play = () => {
         setCentralText('Your opponent gave up!');
         setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false, status: 'giveUp' });
       } else {
-        console.log('1 YOU GAVE UP OK');
         setCentralText('You gave up :(');
         setGame({ ...game, isEnded: true, isPlaying: false, status: 'giveUp' });
       }
@@ -111,11 +109,9 @@ const Play = () => {
       setIsPlayerReady(true);
       if ((gameStatePlay.gameParams.pl1.isWinner === true && whichPlayer === 1)
         || (gameStatePlay.gameParams.pl2.isWinner === true && whichPlayer === 2)) {
-        console.log('Here ended 1');
         setCentralText('You win!!');
         setGame({ ...game, isUserWinner: true, isEnded: true, isPlaying: false });
       } else {
-        console.log('Here ended 2');
         setCentralText('You lose...');
         setGame({ ...game, isEnded: true, isPlaying: false, isUserWinner: false });
       }

@@ -1,7 +1,6 @@
 import React, { FormEvent, useState, useEffect } from 'react';
 import { MDBCardBody, MDBTypography } from 'mdb-react-ui-kit';
-import axios from 'axios';
-
+import { useAxios } from "utils/axiosConfig/axiosConfig";
 import QrCode from '../QrCode';
 import { UserData } from 'services/User/User';
 import { API_ROUTES, APP_ROUTES } from 'utils/routing/routing';
@@ -19,6 +18,7 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ userDat
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const history = useNavigate();
+  const customAxiosInstance = useAxios();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ userDat
       dataToSend.lastName = lastName;
 
     try {
-      const response = await axios.patch(
+      const response = await customAxiosInstance.patch(
         API_ROUTES.USER_PROFILE_EDIT,
         dataToSend,
         {
@@ -41,21 +41,7 @@ const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ userDat
       localStorage.setItem('userData', JSON.stringify(userData));
       setUserDataNew(response.data);
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
-    } catch (err: any) {
-      console.log(err.response?.data.message);
-      // if (!err?.response) {
-      //   setErrMsg('No Server Response');
-      // } else if (err.response?.status === 400) {
-      //   setErrMsg('Missing username');
-      // } else if (err.response?.status === 401) {
-      //   setErrMsg('Unauthorized');
-      // } else if (err.response?.status === 403) {
-      //   setErrMsg(`${err.response.data.message}`);
-      // }
-      // else {
-      //   setErrMsg('Login failed');
-      // }
-    }
+    } catch (err: any) { }
   };
 
   useEffect(() => {

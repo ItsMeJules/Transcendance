@@ -45,29 +45,22 @@ export class ChatEventsGateway {
     id: number;
     isTwoFactorAuthenticationVerified: boolean;
   }): Promise<User | { status: string }> {
-    console.log('validate socket');
     const user = await this.prismaService.findUserById(payload.id);
     if (!user) throw new BadRequestException('Bad token!!!!!');
     delete user.hash;
-    console.log('validate end');
     return user;
   }
 
   async setupConnection(client: Socket): Promise<User | null> {
-    console.log('guard');
     const token = extractAccessTokenFromCookie(client);
     let user;
-    console.log('canActivate begin');
     if (!token) {
       client.disconnect();
       return;
     }
 
     try {
-      console.log('juste avant');
       const payload = jwt.verify(token, process.env.jwtSecret) as JwtPayload;
-      console.log('try catch guard WebSocket');
-      console.log(' !!!!!!!!!!!!   payload: ', payload);
       if (
         typeof payload === 'object' &&
         'id' in payload &&
@@ -77,30 +70,12 @@ export class ChatEventsGateway {
       } else {
         throw new UnauthorizedException('Invalid token payload');
       }
-      console.log('canActivate end');
       return user;
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   }
-
-  // if (!access_token) {
-  //   client.disconnect();
-  //   throw new Error('No token, log again');
-  // }
-
-  // const user = await this.authService.validateJwtToken(access_token, true);
-  // if (!user) {
-  //   client.disconnect();
-  //   throw new Error('Unidentified token');
-  // }
-  // client.data = { id: user.id };
-
-  // this.userSocketsService.addUserSocket(client.data.id, client);
 
   // return user;
   async handleConnection(client: Socket): Promise<void> {
-    console.log('connection FDPPPPP');
 
     const user = await this.setupConnection(client);
     if (!user) {
@@ -153,9 +128,7 @@ export class ChatEventsGateway {
         userClient.id,
       );
       this.removeEventListeners(client);
-    } catch (error) {
-      // console.log(error);
-    }
+    } catch (error) { }
   }
 
   async leaveRoomAndRemoveUser(
@@ -180,7 +153,7 @@ export class ChatEventsGateway {
     ];
 
     eventTypes.forEach((eventType) => {
-      client.off(eventType, () => console.log(`${eventType} action !`));
+      client.off(eventType, () => {});
     });
   }
 
@@ -193,7 +166,6 @@ export class ChatEventsGateway {
       roomName: string;
     },
   ): Promise<void> {
-    console.log('Received payload: ', payload);
     await this.chatService.sendMessageToRoom(client, payload, this.server);
   }
 
@@ -203,7 +175,6 @@ export class ChatEventsGateway {
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
     const newPayload = { ...payload, server: this.server };
-    console.log('chat action payload: ', payload);
     if (newPayload.action === 'createRoom' && newPayload.type === 'PROTECTED') {
       newPayload.type = 'PUBLIC'; // careful
     }
@@ -220,7 +191,6 @@ export class ChatEventsGateway {
     @MessageBody() payload: PayloadActionDto,
   ): Promise<void> {
     const newPayload = { ...payload, server: this.server };
-    console.log('room action payload: ', payload);
     await ActionRoomHandlers[payload.action](
       this.chatService,
       client,

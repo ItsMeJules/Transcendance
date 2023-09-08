@@ -61,16 +61,13 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
   useEffect(() => {
     socket.game?.on('prepareToPlay', (data: GameSocket) => {
       setNoGame(false);
-      console.log('DATA PREPARE', data);
       setGameState(data);
     });
     socket.game?.on('refreshGame', (data: GameSocket) => {
-      console.log('DATA game', data);
       setNoGame(false);
       setGameState(data);
     });
     socket.game?.on('noGame', (data: noGame) => {
-      console.log('DATA no game', data);
       if (data.status === 'noGame') {
         setNoGame(true);
         setGameStatus('noGame');

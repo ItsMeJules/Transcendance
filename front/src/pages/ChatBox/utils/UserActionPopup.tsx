@@ -63,10 +63,7 @@ export default function UserActionPopup(props: UserActionProps) {
   };
 
   const onPromote = (promote: boolean) => {
-    console.log("isAdmin ==", localIsAdmin);
-    console.log("promote ==", promote);
     setLocalIsAdmin(promote);
-    console.log("isAdmin is now == ", localIsAdmin);
     if (sendData === null) return;
 
     sendData(RoomSocketActionType.PROMOTE, {

@@ -24,7 +24,6 @@ const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
 
   useEffect(() => {
     if (socketData === "") return;
-    console.log("hello");
     const dataString = JSON.stringify(socketData);
     const dataJSON = JSON.parse(dataString);
     localStorage.setItem("gameData", JSON.stringify(dataJSON.game));
@@ -40,7 +39,6 @@ const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
 
   const displayAcknowledgements = (payload: any) => {
     socket.chat?.on("answerInvitation", (payload2: any) => {
-      console.log("answer invite is ", payload2);
       if (payload2.message === "yes") {
         socket.chat?.off("answerInvitation"); // Remove the listener
         setSocketData(payload2);
@@ -96,7 +94,6 @@ const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
   useEffect(() => {
     socket.chat?.on("acknowledgements", (payload) => {
       if (payload.type === "invitation") displayAcknowledgements(payload);
-      else console.log("acknowledgements payload:", payload);
     });
     return () => {
       socket.chat?.off("acknowledgements");
@@ -106,7 +103,6 @@ const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
   // Socket on
   useEffect(() => {
     socket.game?.on("onlineGames", (data: any) => {
-      console.log("ONLINE GAMES RECEIVED:", data);
       setNoGame(false);
       setGamesData(data);
     });

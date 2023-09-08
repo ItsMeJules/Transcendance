@@ -34,7 +34,6 @@ const QrCode: React.FC = () => {
 
   const turnOff = async () => {
     try {
-      console.log("turnOff");
       await customAxiosInstance.post(
         API_ROUTES.DEACTIVATE_2FA,
         {},
@@ -74,10 +73,7 @@ const QrCode: React.FC = () => {
       try {
         const response = await customAxiosInstance.get(API_ROUTES.STATE_2FA);
         setIs2FAActive(response.data);
-        console.log("response.data.isTwoFactorAuthenticationEnabled", response.data);
-      } catch (error) {
-        console.log("Error: ", error);
-      }
+      } catch (error) { }
     };
 
     fetchData();

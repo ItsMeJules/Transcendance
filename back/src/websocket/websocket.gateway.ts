@@ -18,7 +18,6 @@ export class SocketEvents {
   ) {}
 
   async handleConnection(client: Socket) {
-    console.log('connection general gateway');
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -26,7 +25,6 @@ export class SocketEvents {
     }
     const user = await this.authService.validateJwtToken(access_token, true);
     if (!user) {
-      console.log('general gateway user not found');
       client.disconnect();
       return;
     }

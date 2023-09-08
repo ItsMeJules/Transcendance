@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-
+import { useAxios } from "utils/axiosConfig/axiosConfig";
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { UserData } from "services/User/User";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +13,7 @@ export const ProfileEdit: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const history = useNavigate();
+  const customAxiosInstance = useAxios();
 
   const resetErrMsg = () => {
     setErrMsg('');
@@ -21,7 +21,7 @@ export const ProfileEdit: React.FC = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get(API_ROUTES.USER_PROFILE,
+      const response = await customAxiosInstance.get(API_ROUTES.USER_PROFILE,
         {
           withCredentials: true
         });
@@ -31,22 +31,7 @@ export const ProfileEdit: React.FC = () => {
       setUsername(userData.username);
       setFirstName(userData.firstName);
       setLastName(userData.lastName);
-    } catch (err: any) {
-      console.log("Error:" + err.response.data.message);
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-      } else if (err.response?.status === 400) {
-        setErrMsg('Missing username');
-      } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized');
-        history(APP_ROUTES.HOME);
-      } else if (err.response?.status === 403) {
-        setErrMsg(`${err.response.data.message}`);
-      }
-      else {
-        setErrMsg('Login failed');
-      }
-    }
+    } catch (err: any) { }
   };
 
   useEffect(() => {
@@ -55,8 +40,7 @@ export const ProfileEdit: React.FC = () => {
 
   return (
     <>
-    <ProfileCard userData={userData} type="edit" fetchUserProfile={fetchUserProfile} />
-    <ToastError errMsg={errMsg} resetErrMsg={resetErrMsg} />
+      <ProfileCard userData={userData} type="edit" fetchUserProfile={fetchUserProfile} />
     </>
   );
 }

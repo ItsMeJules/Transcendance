@@ -196,7 +196,6 @@ export class PongEvents {
   async startDual(dualDto: DualDto): Promise<void> {
     try {
       const gameData = await this.pongService.dualCreate(dualDto);
-      console.log('DUAL CREATED');
       const game = new GameStruct(
         1,
         gameData.gameId,
@@ -235,7 +234,6 @@ export class PongEvents {
       await this.emitUpdateFriendsOf(player1.id);
       await this.emitUpdateFriendsOf(player2.id);
     } catch (error) {
-      console.log('ERROR IN JOIN GAME QUEUE:', error);
     }
   }
 

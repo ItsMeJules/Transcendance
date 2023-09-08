@@ -25,7 +25,6 @@ export enum RoomSocketActionType {
 }
 
 export const extractAccessTokenFromCookie = (client: Socket) => {
-  console.log('extractAccessTokenFromCookie');
   const cookieString = client.handshake.headers.cookie;
   if (!cookieString) return null;
 
@@ -33,7 +32,6 @@ export const extractAccessTokenFromCookie = (client: Socket) => {
   for (const cookie of cookies) {
     const [name, value] = cookie.split('=');
     if (name === 'access_token') {
-      console.log('access token value :', value);
       return value;
     }
   }

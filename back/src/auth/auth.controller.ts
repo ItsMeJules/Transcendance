@@ -159,7 +159,7 @@ export class AuthController {
       sameSite: 'lax',
     });
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
-    return res.redirect('/dashboard/profile/me');
+    return res.redirect('/dashboard/profile/me/edit');
   }
 
   /* google login - error management ok */
@@ -205,7 +205,7 @@ export class AuthController {
       sameSite: 'lax',
     });
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
-    return res.redirect('/dashboard/profile/me');
+    return res.redirect('/dashboard/profile/me/edit');
   }
 
   @Post('refresh-token')
@@ -234,7 +234,6 @@ export class AuthController {
       maxAge: 15 * 60 * 1000,
       sameSite: 'lax',
     });
-    console.log('RENEWING TOKEN');
     return {
       accessToken: accessToken,
       message: 'Access token refreshed successfully',
@@ -295,9 +294,7 @@ export class AuthController {
     if (!isCodeValid)
       throw new UnauthorizedException('Wrong authentication code');
     try {
-      console.log('userId:', user.id);
       const tokens = await this.authService.login(user, true);
-      console.log('access token:', tokens.access_token);
       const expirationTimestamp = Date.now() / 1000 + 15 * 60;
       res.cookie('expire_date_access_token', expirationTimestamp, {
         maxAge: 15 * 60 * 1000,
@@ -313,7 +310,6 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         sameSite: 'lax',
       });
-      console.log('give the token 2fa');
     } catch (error) {
       handleJwtError(error);
     }

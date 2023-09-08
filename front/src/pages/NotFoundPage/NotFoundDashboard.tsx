@@ -8,7 +8,6 @@ const NotFoundPageDashboard = () => {
 
   useEffect(() => {
     const checkToken = async () => {
-      console.log("fayaman de NotFoundDashboard");
       try {
         await customAxiosInstance.get(API_ROUTES.USER_PROFILE, {
           withCredentials: true,

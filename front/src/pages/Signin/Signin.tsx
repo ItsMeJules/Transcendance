@@ -28,7 +28,7 @@ export const Signin = () => {
 
   useEffect(() => {
     if (success) {
-      history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
+      history(APP_ROUTES.USER_PROFILE_EDIT_ABSOLUTE);
     }
   }, [success]);
 
@@ -62,7 +62,6 @@ export const Signin = () => {
       } catch (error) { };
     }
 
-    console.log('error message:', errorMessage);
     if (errorMessage === 'nouser')
       toast.error('No user found');
     if (errorMessage === 'passwordrequired')

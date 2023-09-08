@@ -17,7 +17,6 @@ const JoinGame = () => {
     if (socketData) {
       const dataString = JSON.stringify(socketData);
       const dataJSON = JSON.parse(dataString);
-      console.log("Received:", dataJSON);
       if (dataJSON.status === "JOINED") setInQueue(dataJSON.gameMode);
       else if (dataJSON.status === "LEAVE") setInQueue(0);
       else if (dataJSON.status === "INGAME") history(APP_ROUTES.PLAY_ABSOLUTE);
@@ -33,9 +32,7 @@ const JoinGame = () => {
   }, [socketData]);
 
   useEffect(() => {
-    console.log("SOCKET id:", socket.game?.id);
     socket.game?.on("joinGameQueue", (data: any) => {
-      console.log("SOCKET ON JOIN RECEIVED:", data);
       setSocketData(data);
     });
     socket.game?.emit("joinGameQueue", { gameMode: "query" });

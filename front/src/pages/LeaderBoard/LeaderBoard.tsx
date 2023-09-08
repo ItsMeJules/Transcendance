@@ -21,7 +21,6 @@ const LeaderBoard: React.FC = () => {
   // Socket on + emit
   useEffect(() => {
     if (socketData === "") return;
-    console.log("hello");
     const dataString = JSON.stringify(socketData);
     const dataJSON = JSON.parse(dataString);
     localStorage.setItem("gameData", JSON.stringify(dataJSON.game));
@@ -37,7 +36,6 @@ const LeaderBoard: React.FC = () => {
 
   const displayAcknowledgements = (payload: any) => {
     socket.chat?.on("answerInvitation", (payload2: any) => {
-      console.log("answer invite is ", payload2);
       if (payload2.message === "yes") {
         socket.chat?.off("answerInvitation"); // Remove the listener
         setSocketData(payload2);
@@ -92,13 +90,11 @@ const LeaderBoard: React.FC = () => {
 
   useEffect(() => {
     socket.game?.on("leaderboard", (data: any) => {
-      console.log("Leadbd:", data);
       setUserId(data.userId);
       setLeaderboardData(data.leaderboard);
     });
     socket.chat?.on("acknowledgements", (payload) => {
       if (payload.type === "invitation") displayAcknowledgements(payload);
-      else console.log("acknowledgements payload:", payload);
     });
     socket.game?.emit("leaderboard", { action: "status" });
     return () => {

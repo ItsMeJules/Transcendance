@@ -20,23 +20,18 @@ interface JwtPayload {
 @Injectable()
 export class WsJwtGuard implements CanActivate {
   constructor(private prismaService: PrismaService) {
-    console.log('guard constructor');
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('guard');
     const client = context.switchToWs().getClient();
     const token = extractAccessTokenFromCookie(client);
     let user;
-    console.log('canActivate begin');
     if (!token) {
       throw new UnauthorizedException('No token provided');
     }
 
     try {
-      console.log('juste avant');
       const payload = jwt.verify(token, process.env.jwtSecret);
-      console.log('try catch guard WebSocket');
       if (
         typeof payload === 'object' &&
         'id' in payload &&
@@ -50,7 +45,6 @@ export class WsJwtGuard implements CanActivate {
       // Attaching user to data for future reference if needed
       context.switchToWs().getData().user = user;
 
-      console.log('canActivate end');
       return true;
     } catch (err) {
       if (err instanceof jwt.JsonWebTokenError) {
@@ -65,7 +59,6 @@ export class WsJwtGuard implements CanActivate {
     id: number;
     isTwoFactorAuthenticationVerified: boolean;
   }): Promise<User | { status: string }> {
-    console.log('validate socket');
     const user = await this.prismaService.findUserById(payload.id);
     if (!user) throw new BadRequestException('Bad token!!!!!');
     if (
@@ -74,7 +67,6 @@ export class WsJwtGuard implements CanActivate {
     )
       throw new TwoFactorException();
     delete user.hash;
-    console.log('validate end');
     return user;
   }
 }

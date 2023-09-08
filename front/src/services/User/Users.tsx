@@ -29,7 +29,6 @@ class Users {
       newUser.setUserFromResponseData(userData);
       this.users.set(userId, newUser);
     }
-    console.log("Users Map:", this.users);
 
   }
 

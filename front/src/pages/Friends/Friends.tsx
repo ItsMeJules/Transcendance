@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useAxios } from "utils/axiosConfig/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import ToastMessage from "layout/ToastMessage/ToastMessage";
@@ -23,10 +23,10 @@ const Friends = () => {
   const socket = useWebsocketContext();
   const [socketData, setSocketData] = useState("");
   const navigate = useNavigate();
+  const customAxiosInstance = useAxios();
 
   useEffect(() => {
     if (socketData === "") return;
-    console.log("hello");
     const dataString = JSON.stringify(socketData);
     const dataJSON = JSON.parse(dataString);
     localStorage.setItem("gameData", JSON.stringify(dataJSON.game));
@@ -42,7 +42,6 @@ const Friends = () => {
 
   const displayAcknowledgements = (payload: any) => {
     socket.chat?.on("answerInvitation", (payload2: any) => {
-      console.log("answer invite is ", payload2);
       if (payload2.message === "yes") {
         socket.chat?.off("answerInvitation"); // Remove the listener
         setSocketData(payload2);
@@ -98,7 +97,6 @@ const Friends = () => {
   useEffect(() => {
     socket.chat?.on("acknowledgements", (payload) => {
       if (payload.type === "invitation") displayAcknowledgements(payload);
-      else console.log("acknowledgements payload:", payload);
     });
     return () => {
       socket.chat?.off("acknowledgements");
@@ -112,7 +110,6 @@ const Friends = () => {
   // Socket on + emit
   useEffect(() => {
     socket.game?.on("friends", (data: any) => {
-      console.log("friends received:", data.friends);
       setFriendsData(data.friends);
     });
     socket.game?.emit("friends", { action: "status" });
@@ -148,12 +145,11 @@ const Friends = () => {
   };
 
   useEffect(() => {
-    console.log("RMOVE FREND FLAG:", removeFlag, " id to rm:", idToRemove);
     const removeUser = async (id: string | undefined) => {
       const dataToSend: any = {};
       if (id) dataToSend.id = id;
       try {
-        const response = await axios.patch(API_ROUTES.ADD_FRIEND + id, dataToSend, {
+        const response = await customAxiosInstance.patch(API_ROUTES.ADD_FRIEND + id, dataToSend, {
           withCredentials: true,
         });
       } catch (err: any) {
@@ -170,7 +166,6 @@ const Friends = () => {
   const handleProfileClick = (user: User) => {
     setIdToRemove("none");
     resetNotifMsg();
-    console.log("Profile clicked");
     history(APP_ROUTES.GENERIC_USER_PROFILE + user.id);
   };
 

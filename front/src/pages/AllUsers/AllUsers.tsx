@@ -19,7 +19,6 @@ const AllUsers = () => {
 
   useEffect(() => {
     if (socketData === "") return;
-    console.log("hello");
     const dataString = JSON.stringify(socketData);
     const dataJSON = JSON.parse(dataString);
     localStorage.setItem("gameData", JSON.stringify(dataJSON.game));
@@ -35,7 +34,6 @@ const AllUsers = () => {
 
   const displayAcknowledgements = (payload: any) => {
     socket.chat?.on("answerInvitation", (payload2: any) => {
-      console.log("answer invite is ", payload2);
 
       if (payload2.message === "yes") {
         socket.chat?.off("answerInvitation"); // Remove the listener
@@ -92,7 +90,6 @@ const AllUsers = () => {
   useEffect(() => {
     socket.chat?.on("acknowledgements", (payload) => {
       if (payload.type === "invitation") displayAcknowledgements(payload);
-      else console.log("acknowledgements payload:", payload);
     });
     return () => {
       socket.chat?.off("acknowledgements");
@@ -102,7 +99,6 @@ const AllUsers = () => {
   // Socket on + emit
   useEffect(() => {
     socket.game?.on("allUsers", (data: any) => {
-      console.log("ALL USERS data:", data);
       setUserId(data.userId);
       setUsersData(data.allUsers);
     });

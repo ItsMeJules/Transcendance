@@ -15,7 +15,7 @@ export const Signup = () => {
 
   useEffect(() => {
     if (success) {
-      history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
+      history(APP_ROUTES.USER_PROFILE_EDIT_ABSOLUTE);
     }
   }, [success]);
 
@@ -43,7 +43,7 @@ export const Signup = () => {
             withCredentials: true
           })
         if (response.data.tokenState === 'HAS_TOKEN')
-          return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
+          return history(APP_ROUTES.USER_PROFILE_EDIT_ABSOLUTE);
       } catch (error) { };
     }
     // verifyToken();
