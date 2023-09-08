@@ -68,7 +68,6 @@ export const ChatBox = () => {
 
   useEffect(() => {
     if (socketData === "") return;
-    console.log("hello");
     const dataString = JSON.stringify(socketData);
     const dataJSON = JSON.parse(dataString);
     localStorage.setItem("gameData", JSON.stringify(dataJSON.game));
@@ -109,7 +108,6 @@ export const ChatBox = () => {
         });
         break;
       case "success":
-        console.log("doubleAcknowledgements");
         toast.success(`${payload.message}`, {
           position: "bottom-center",
           autoClose: 3000,
@@ -135,7 +133,6 @@ export const ChatBox = () => {
         break;
       case "invitation":
         chatSocket?.on("answerInvitation", (payload2: any) => {
-          console.log("answer invite is ", payload2);
           if (payload2.message === "yes") {
             chatSocket?.off("answerInvitation"); // Remove the listener
             setSocketData(payload2);
@@ -195,7 +192,6 @@ export const ChatBox = () => {
             }, 15000);
 
             const listener = (payload2: any) => {
-              console.log("answer invite is ", payload2);
               if (payload2.message === "yes") {
                 clearTimeout(timeoutId);
                 chatSocket?.off("answerInvitation");
@@ -259,7 +255,6 @@ export const ChatBox = () => {
       }
       displayAcknowledgements(payload);
     });
-    console.log("on success", chatSocket);
     chatSocket?.on(ChatSocketEventType.FETCH_MESSAGES, (payload: ChannelMessageData[]) => {
       dispatch(setActiveChannelMessages(payload)); // faire fonction
     });
@@ -294,8 +289,6 @@ export const ChatBox = () => {
       eventType = ChatSocketEventType.ROOM_ACTION;
     }
 
-    // console.log("data is :", data, "on eventType :", eventType);
-    console.log("sendData with action :", action, "and data :", data);
     chatSocket?.emit(eventType, data);
   };
 

@@ -81,9 +81,7 @@ const GenericUserProfile = () => {
     if (chatSocket) {
       chatSocket.emit("chat-action", {action: "block", targetId: targetId});
       isBlocked === true ? dispatch(removeUserBlocked(targetId)) : dispatch(addUserBlocked(targetId));
-    } else {
-      console.log("chatSocket is null");
-    }
+    } else { }
   }
 
   if (userNotFound) {

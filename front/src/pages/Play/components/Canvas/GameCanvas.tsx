@@ -3,7 +3,7 @@ import { Player } from '../../models/Player';
 import { GameProperties } from '../../models/Properties';
 import { Socket } from 'socket.io-client';
 
-interface PaddleCanvasProps {
+interface GameCanvasProps {
   game: GameProperties;
   player: Player;
   canvasRef: React.RefObject<HTMLCanvasElement>;
@@ -11,7 +11,7 @@ interface PaddleCanvasProps {
   socket: Socket | null;
 }
 
-const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, whichPlayer, socket }) => {
+const GameCanvas: React.FC<GameCanvasProps> = ({ game, player, canvasRef, whichPlayer, socket }) => {
   const continueAnimation = useRef(true);
 
   useEffect(() => {
@@ -19,6 +19,8 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
+    let resizeTimeout: NodeJS.Timeout | null = null;
+
     if (game.isEnded && ctx) {
       continueAnimation.current = false;
       ctx.clearRect(-game.board.width, -game.board.height, game.board.width * 2, game.board.height * 2);
@@ -82,11 +84,30 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       player.pad.refactorPaddle(game.board.factor);
 
       if (ctx) {
+        // Board
+        canvas.width = game.board.width;
+        canvas.height = game.board.height;
+        // Background
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Field borders
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+        // Center line
+        ctx.imageSmoothingEnabled = false;
+        ctx.setLineDash([5, 10]);
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, 0);
+        ctx.lineTo(canvas.width / 2, canvas.height);
+        ctx.stroke();
+
+        // Paddle
         ctx.fillStyle = 'white';
-        if (player.num === 1)
-          ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height); // Left paddle
-        else if (player.num === 2)
-          ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height); // Right paddle
+        // Player 1
+        ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height); // Left paddle
+        // Player 2
+        ctx.fillRect(player.pad.pos.x, player.pad.pos.y, player.pad.width, player.pad.height); // Right paddle
       }
       if (game.isEnded && ctx) {
         ctx.clearRect(-game.board.width, -game.board.height, game.board.width * 2, game.board.height * 2);
@@ -113,9 +134,9 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       }
       window.removeEventListener('resize', handleResize);
     };
-  }, [canvasRef, player, game.board.factor, game.isPlaying, game.isEnded]);
+  }, [canvasRef, player, game.board, game.isPlaying, game.isEnded, game.ball]);
 
   return null;
 };
 
-export default PaddleCanvas;
+export default GameCanvas;

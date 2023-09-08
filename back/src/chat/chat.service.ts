@@ -260,7 +260,6 @@ export class ChatService {
     server: Server,
   ): Promise<void> {
     try {
-      console.log('sendMessageToRoom function beginning');
       const room = await this.prismaService.returnCompleteRoom(
         sendMsgRoomDto.roomName,
       );
@@ -293,14 +292,6 @@ export class ChatService {
       server
         .to(sendMsgRoomDto.roomName)
         .emit(ChatSocketEventType.MESSAGE, pictureAndBlockedPayload);
-
-      console.log(
-        'message sent : ',
-        pictureAndBlockedPayload,
-        'to room : ',
-        sendMsgRoomDto.roomName,
-      );
-      console.log('sendMessageToRoom function end');
     } catch (error) {
       this.sendError(client, error);
     }
@@ -309,9 +300,7 @@ export class ChatService {
   async getCompleteRoom(roomName: string): Promise<CompleteRoom> {
     try {
       return this.prismaService.returnCompleteRoom(roomName);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) { }
   }
 
   async createOrReturnGeneralChat(): Promise<Room> {
@@ -331,7 +320,6 @@ export class ChatService {
     createRoomDto: ChatDtos.CreateRoomDto,
   ): Promise<Room> {
     try {
-      console.log('createRoom function beginning');
       let room = await this.prismaService.room.findUnique({
         where: { name: createRoomDto.roomName },
       });
@@ -366,7 +354,6 @@ export class ChatService {
         const parts = createRoomDto.roomName.split('-');
         const firstUser = parseInt(parts[1]);
         const secondUser = parseInt(parts[2]);
-        console.log('first & second: ', firstUser, secondUser);
         room = await this.prismaService.room.create({
           data: {
             type: RoomType[createRoomDto.type],
@@ -381,13 +368,11 @@ export class ChatService {
           password: createRoomDto.password,
           server: createRoomDto.server,
         });
-        console.log('createRoom for DMs function ending');
         return room;
       }
 
       if (createRoomDto.password) {
         createRoomDto.password = await argon.hash(createRoomDto.password);
-        console.log('password :', createRoomDto.password);
       }
 
       room = await this.prismaService.room.create({
@@ -421,7 +406,6 @@ export class ChatService {
         });
       }
 
-      console.log('createRoom function ending');
       this.sendSuccess(
         client,
         `${room.type} room "${room.name}" has been created`,
@@ -527,7 +511,6 @@ export class ChatService {
   ): Promise<Room> {
     // encode pw later + pay attention to behavior
     try {
-      console.log('joinRoom function beginning');
       const room = await this.prismaService.returnCompleteRoom(
         joinRoomDto.roomName,
       );
@@ -544,10 +527,8 @@ export class ChatService {
       let pwMatches = true;
 
       if (!room || !user) throw new Error('error name');
-      console.log('room password : ', room.password);
       if (room.password) {
         pwMatches = await argon.verify(room.password, joinRoomDto.password);
-        console.log(pwMatches);
       }
 
       if (
@@ -562,10 +543,8 @@ export class ChatService {
         throw new Error("user hasn't been invite in this room");
 
       await client.leave(user.currentRoom);
-      console.log('client id leaving room : ', user.currentRoom);
 
       await client.join(joinRoomDto.roomName);
-      console.log('client id joining room : ', joinRoomDto.roomName);
 
       await this.prismaService.user.update({
         where: { id: user.id },
@@ -610,7 +589,6 @@ export class ChatService {
 
   async leaveRoom(client: Socket, leaveDto: ChatDtos.LeaveDto): Promise<void> {
     try {
-      console.log('leaveRoom function begin');
       const room = await this.prismaService.returnCompleteRoom(
         leaveDto.roomName,
       );
@@ -639,7 +617,6 @@ export class ChatService {
         where: { id: client.data.id },
       });
       if (room.type !== RoomType.DIRECT && room.name !== 'general') {
-        console.log('room type is not direct');
         this.sendSuccess(
           client,
           'You left the room "' + room.name + '" and lost your privileges',
@@ -652,7 +629,6 @@ export class ChatService {
         );
       }
       await this.userJoinRoom(client.data.id, 'general', leaveDto.server);
-      console.log('leaveRoom function end');
     } catch (error) {
       this.sendError(client, error);
     }
@@ -660,7 +636,6 @@ export class ChatService {
 
   async blockUserToggle(client: Socket, blockDto: BlockDto): Promise<void> {
     // add REFETCH sur block pour instant blocked message
-    console.log('blockUserToggle function beginning');
     try {
       const blockedUsers = await this.prismaService.allBlockedUsersFromUser(
         client.data.id,
@@ -690,7 +665,6 @@ export class ChatService {
           this.userSocketsService.getUserSocket(String(targetUser.id)),
           `You have been unblocked by ${actingUser.username}`,
         );
-        console.log('unblocking');
       } else {
         await this.prismaService.user.update({
           where: { id: actingUser.id },
@@ -708,9 +682,7 @@ export class ChatService {
           this.userSocketsService.getUserSocket(String(targetUser.id)),
           'You have been blocked by ' + actingUser.username,
         );
-        console.log('blocking');
       }
-      console.log('blockUserToggle function end');
     } catch (error) {
       this.sendError(client, error);
     }
@@ -796,7 +768,6 @@ export class ChatService {
           ]),
         );
         //////////////// NOTIFICATIONS END \\\\\\\\\\\\\\\\
-        console.log(targetUser.username + ' is demoted');
       } else {
         await this.prismaService.room.update({
           where: { name: promoteDto.roomName },
@@ -823,7 +794,6 @@ export class ChatService {
           ]),
         );
         //////////////// NOTIFICATIONS END \\\\\\\\\\\\\\\\
-        console.log(targetUser.username + ' is promoted');
       }
     } catch (error) {
       this.sendError(client, error);
@@ -834,7 +804,6 @@ export class ChatService {
 
   async banUserToggle(client: Socket, banDto: ChatDtos.BanDto): Promise<void> {
     try {
-      console.log('banUserToggle function beginning');
       const room = await this.prismaService.returnCompleteRoom(banDto.roomName);
       if (room.type === RoomType.DIRECT) {
         throw new Error("You can't ban in dms channels");
@@ -892,8 +861,6 @@ export class ChatService {
             targetUser.id,
           ]),
         );
-        console.log('banned user:', targetUser.id);
-        // throw : You have been banned from the room : {roomName}
       } else {
         // VVVV adding 'visible' removing 'ban' VVVV
         await this.prismaService.room.update({
@@ -930,9 +897,7 @@ export class ChatService {
             targetUser.id,
           ]),
         );
-        console.log('unbanned user:', targetUser.id);
       }
-      console.log('banUserToggle function ending');
     } catch (error) {
       this.sendError(client, error);
     }
@@ -943,7 +908,6 @@ export class ChatService {
     muteDto: ChatDtos.MuteDto,
   ): Promise<void> {
     try {
-      console.log('muteUserFromRoomToggle function beginning');
       const room = await this.prismaService.returnCompleteRoom(
         muteDto.roomName,
       );
@@ -1025,7 +989,6 @@ export class ChatService {
           ]),
         );
       }
-      console.log('muteUserFromRoomToggle function ending');
     } catch (error) {
       this.sendError(client, error);
     }
@@ -1037,14 +1000,11 @@ export class ChatService {
     server: Server,
   ): Promise<boolean> {
     try {
-      console.log('userJoinRoom function beginning');
       const user = await this.prismaService.user.findUnique({
         where: { id: userId },
       });
       const userSocket = this.userSocketsService.getUserSocket(String(userId));
       const room = await this.prismaService.returnCompleteRoom(roomName);
-      console.log('user socket id : ', userSocket.id);
-      console.log('making him switch channel to ', roomName);
       // VVVV Change currentRoom VVVV
       await this.prismaService.user.update({
         where: {
@@ -1057,14 +1017,6 @@ export class ChatService {
       // VVVV Change Socket listening room VVVV
       await userSocket.leave(user.currentRoom);
       await userSocket.join(roomName);
-      console.log(
-        'user socket id : ',
-        userSocket.id,
-        'leaving room : ',
-        user.currentRoom,
-        'joining room : ',
-        roomName,
-      );
       // VVVV Emitting to the user joinRoom VVVV
       let roomDisplayname = room.name;
       if (room.type === RoomType.DIRECT) {
@@ -1091,7 +1043,6 @@ export class ChatService {
       server
         .to(userSocket.id)
         .emit(ChatSocketEventType.FETCH_MESSAGES, messagesWithClientId); // NOT SURE ABOUT THIS ONE
-      console.log('userJoinRoom function end');
       return true;
     } catch (error) {
       this.sendError(
@@ -1106,7 +1057,6 @@ export class ChatService {
     kickDto: ChatDtos.KickDto,
   ): Promise<boolean> {
     try {
-      console.log('begining kickUserRoom function');
       const room = await this.prismaService.returnCompleteRoom(
         kickDto.roomName,
       );
@@ -1124,7 +1074,6 @@ export class ChatService {
       }
       if (actingUser.id === targetUser.id)
         throw new Error("You can't kick yourself");
-      console.log(targetUser.currentRoom, room.name);
       if (this.hierarchyCheck(room, actingUser, targetUser)) {
         throw new Error("You don't have permission");
       }
@@ -1151,7 +1100,6 @@ export class ChatService {
         ]),
       );
       await this.userJoinRoom(targetUser.id, 'general', kickDto.server);
-      console.log('kicked');
       return true;
     } catch (error) {
       this.sendError(client, error);
@@ -1164,7 +1112,6 @@ export class ChatService {
   ): Promise<string> {
     // encode pw later
     try {
-      console.log('modifyPassword function beginning');
       const currentRoom = await this.prismaService.returnCompleteRoom(
         modifyPasswordDto.roomName,
       );
@@ -1193,7 +1140,6 @@ export class ChatService {
         });
         this.sendSuccess(client, 'You modified the password');
       }
-      console.log('modifyPassword function beginning');
       return 'euuuuh';
     } catch (error) {
       this.sendError(client, error);
@@ -1212,14 +1158,12 @@ export class ChatService {
         throw new Error("You can't invite in dms channels");
       }
       // Permission check behavior?
-      console.log('1');
       const actingUser = await this.prismaService.user.findUnique({
         where: { id: client.data.id },
       });
       const targetUser = await this.prismaService.returnCompleteUser(
         inviteDto.targetId,
       ); // careful target!
-      console.log('2');
       if (room.type !== RoomType.PRIVATE)
         throw new Error('you cannot invite in ' + room.type + 'S rooms');
       if (room.users.some((active) => active.id === targetUser.id)) {
@@ -1248,17 +1192,11 @@ export class ChatService {
           data: { users: { connect: { id: targetUser.id } } },
         });
       }
-      console.log('3');
       this.sendSuccess(
         client,
         'You invited ' + targetUser.username,
         targetUser.id,
         RoomSocketActionType.INVITE,
-      );
-      console.log('4');
-      console.log(
-        'usersocket = ',
-        this.userSocketsService.getUserSocket(String(targetUser.id)),
       );
       this.sendSuccess(
         this.userSocketsService.getUserSocket(String(targetUser.id)),
@@ -1268,7 +1206,6 @@ export class ChatService {
           room.name +
           '"',
       );
-      console.log('5');
     } catch (error) {
       this.sendError(client, error);
     }

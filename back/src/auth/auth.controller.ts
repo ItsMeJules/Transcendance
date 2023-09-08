@@ -65,10 +65,10 @@ export class AuthController {
       tokens.access_token,
       true,
     );
-    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+    const expirationTimestamp = Date.now() / 1000 + 90 * 60;
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     });
     res.cookie('refresh_token', tokens.refresh_token, {
@@ -77,7 +77,7 @@ export class AuthController {
       sameSite: 'lax',
     });
     res.cookie('expire_date_access_token', expirationTimestamp, {
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     });
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
@@ -96,10 +96,10 @@ export class AuthController {
       tokens.access_token,
       true,
     );
-    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+    const expirationTimestamp = Date.now() / 1000 + 90 * 60;
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     });
     res.cookie('refresh_token', tokens.refresh_token, {
@@ -108,7 +108,7 @@ export class AuthController {
       sameSite: 'lax',
     });
     res.cookie('expire_date_access_token', expirationTimestamp, {
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     }); // PARTOUT
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
@@ -135,7 +135,7 @@ export class AuthController {
       tokens.access_token,
       false,
     );
-    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+    const expirationTimestamp = Date.now() / 1000 + 90 * 60;
     if (!user) {
       const errorMessage = 'nouser'; // pourquoi ce check ici iacopo?
       return res.redirect(`/login?error=${errorMessage}`);
@@ -146,7 +146,7 @@ export class AuthController {
     }
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     });
     res.cookie('refresh_token', tokens.refresh_token, {
@@ -155,11 +155,11 @@ export class AuthController {
       sameSite: 'lax',
     });
     res.cookie('expire_date_access_token', expirationTimestamp, {
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     });
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
-    return res.redirect('/dashboard/profile/me');
+    return res.redirect('/dashboard/profile/me/edit');
   }
 
   /* google login - error management ok */
@@ -191,7 +191,7 @@ export class AuthController {
     }
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     });
     res.cookie('refresh_token', tokens.refresh_token, {
@@ -199,13 +199,13 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'lax',
     });
-    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+    const expirationTimestamp = Date.now() / 1000 + 90 * 60;
     res.cookie('expire_date_access_token', expirationTimestamp, {
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     });
     if (user) await this.authService.connectUserToAllPublicRooms(user.id);
-    return res.redirect('/dashboard/profile/me');
+    return res.redirect('/dashboard/profile/me/edit');
   }
 
   @Post('refresh-token')
@@ -214,7 +214,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ accessToken: string; message: string }> {
     const refresh_token = req.cookies['refresh_token'];
-    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+    const expirationTimestamp = Date.now() / 1000 + 90 * 60;
     const userPayload = await this.authService.verifyRefreshToken(
       refresh_token,
     );
@@ -227,14 +227,13 @@ export class AuthController {
     });
     res.cookie('access_token', accessToken, {
       httpOnly: true,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     });
     res.cookie('expire_date_access_token', expirationTimestamp, {
-      maxAge: 15 * 60 * 1000,
+      maxAge: 90 * 60 * 1000,
       sameSite: 'lax',
     });
-    console.log('RENEWING TOKEN');
     return {
       accessToken: accessToken,
       message: 'Access token refreshed successfully',
@@ -256,12 +255,12 @@ export class AuthController {
       const tokens = await this.authService.login(user, true);
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
-        maxAge: 15 * 60 * 1000,
+        maxAge: 90 * 60 * 1000,
         sameSite: 'lax',
       });
-      const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+      const expirationTimestamp = Date.now() / 1000 + 90 * 60;
       res.cookie('expire_date_access_token', expirationTimestamp, {
-        maxAge: 15 * 60 * 1000,
+        maxAge: 90 * 60 * 1000,
         sameSite: 'lax',
       });
       res.cookie('refresh_token', tokens.refresh_token, {
@@ -295,17 +294,15 @@ export class AuthController {
     if (!isCodeValid)
       throw new UnauthorizedException('Wrong authentication code');
     try {
-      console.log('userId:', user.id);
       const tokens = await this.authService.login(user, true);
-      console.log('access token:', tokens.access_token);
-      const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+      const expirationTimestamp = Date.now() / 1000 + 90 * 60;
       res.cookie('expire_date_access_token', expirationTimestamp, {
-        maxAge: 15 * 60 * 1000,
+        maxAge: 90 * 60 * 1000,
         sameSite: 'lax',
       });
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
-        maxAge: 15 * 60 * 1000,
+        maxAge: 90 * 60 * 1000,
         sameSite: 'lax',
       });
       res.cookie('refresh_token', tokens.refresh_token, {
@@ -313,7 +310,6 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         sameSite: 'lax',
       });
-      console.log('give the token 2fa');
     } catch (error) {
       handleJwtError(error);
     }
@@ -329,14 +325,14 @@ export class AuthController {
     try {
       await this.prismaService.turnOffTwoFactorAuthentication(user.id);
       const tokens = await this.authService.login(user, false);
-      const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+      const expirationTimestamp = Date.now() / 1000 + 90 * 60;
       res.cookie('expire_date_access_token', expirationTimestamp, {
-        maxAge: 15 * 60 * 1000,
+        maxAge: 90 * 60 * 1000,
         sameSite: 'lax',
       });
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
-        maxAge: 15 * 60 * 1000,
+        maxAge: 90 * 60 * 1000,
         sameSite: 'lax',
       });
       res.cookie('refresh_token', tokens.refresh_token, {

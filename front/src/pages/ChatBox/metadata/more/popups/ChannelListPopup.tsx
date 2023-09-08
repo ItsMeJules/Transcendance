@@ -1,6 +1,4 @@
-import axios from "axios";
 import { KeyboardEvent, useContext, useEffect, useState } from "react";
-
 import { API_ROUTES } from "utils/routing/routing";
 import { SendDataContext } from "pages/ChatBox/ChatBox";
 import { ChannelType } from "pages/ChatBox/models/Channel";
@@ -9,12 +7,14 @@ import ChannelsList from "pages/ChatBox/utils/ChannelsList";
 import Popup from "pages/ChatBox/utils/Popup";
 import { ChatSocketActionType } from "pages/ChatBox/models/TypesActionsEvents";
 import { useAppSelector } from "utils/redux/Store";
+import { useAxios } from "utils/axiosConfig/axiosConfig";
 
 export default function ChannelListPopup() {
   const [selectedChannelName, setSelectedChannelName] = useState<string | null>(null);
   const [passwordValue, setPasswordValue] = useState<string>("");
   const [visibleChannels, setVisibleChannels] = useState<ChannelInfoInList[]>([]);
   const [searchText, setSearchText] = useState("");
+  const customAxiosInstance = useAxios();
 
   const { currentRoom: activeChannelName, id: userId } = useAppSelector(store => store.user.userData)
   const sendData: null | ((action: string, data: any) => void) = useContext(SendDataContext)
@@ -22,7 +22,7 @@ export default function ChannelListPopup() {
   useEffect(() => {
     const requestVisibleChannels = async () => {
       try {
-        const response = await axios.get(API_ROUTES.VISIBLE_CHANNELS, {
+        const response = await customAxiosInstance.get(API_ROUTES.VISIBLE_CHANNELS, {
           withCredentials: true,
         });
         const filteredChannels = response.data.filter(
@@ -30,9 +30,7 @@ export default function ChannelListPopup() {
             channel.name !== activeChannelName &&
             channel.type !== ChannelType.DIRECT)
         setVisibleChannels(filteredChannels);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) { }
     };
 
     requestVisibleChannels()

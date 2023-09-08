@@ -14,29 +14,20 @@ const BoardCanvas: React.FC<BoardCanvasProps> = ({ game, canvasRef }) => {
     let resizeTimeout: NodeJS.Timeout | null = null;
 
     const handleResize = () => {
-      console.log('BOARD game status:', game.status);
       if (resizeTimeout) {
         clearTimeout(resizeTimeout);
       }
       resizeTimeout = setTimeout(() => {
-        // const newWidth = window.innerWidth * 0.8;
-        // const factor = game.board.updateDimensions(newWidth);
-
         if (ctx && canvas) {
-          // ctx.clearRect(0, 0, canvas.width, canvas.height);
-
           canvas.width = game.board.width;
           canvas.height = game.board.height;
-
           // Background
           ctx.fillStyle = 'black';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
-
           // Field borders
           ctx.strokeStyle = 'white';
           ctx.lineWidth = 4;
           ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
           // Center line
           ctx.imageSmoothingEnabled = false;
           ctx.setLineDash([5, 10]);

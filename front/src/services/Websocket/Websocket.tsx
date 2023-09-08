@@ -52,20 +52,15 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
     game: null,
   });
   const { id: userId } = useAppSelector((state) => state.user.userData);
-  // console.log("render-------------------", socketInstances.game)
   useEffect((): (() => void) => {
     const checkToken = async () => {
-      console.log("fayaman");
       await customAxiosInstance.get(API_ROUTES.USER_FRIENDS, {
         withCredentials: true,
       });
     };
     checkToken();
     if (!userId) {
-      console.log(">>>>>>>>>>>>>>>>> PROBLEM on socket <<<<<<<<<<<<<<");
     } else if (userId) {
-      // console.log("yo")
-      // console.log("yo" , OpenSocket("http://localhost:8000/chat"));
       const general =
         socketInstances.general?.connected !== true
           ? OpenSocket("http://localhost:8000/general")
@@ -78,12 +73,10 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
         socketInstances.game?.connected !== true
           ? OpenSocket("http://localhost:8000/game")
           : socketInstances.game;
-      // console.log('socketgame:', game);
       setSocketInstances({ general: general, chat: chat, game: game });
     } else {
       closeOpenSockets(socketInstances);
       setSocketInstances({ general: null, chat: null, game: null });
-      console.log();
     }
 
     return (): void => {

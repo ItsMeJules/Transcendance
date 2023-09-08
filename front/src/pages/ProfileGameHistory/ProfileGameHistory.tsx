@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import axios from 'axios';
-
+import { useAxios } from "utils/axiosConfig/axiosConfig";
 import { Link } from "react-router-dom";
 import { GlowText } from 'utils/cssAnimation/cssAnimation';
 import { API_ROUTES } from 'utils/routing/routing';
@@ -14,6 +13,7 @@ import { APP_ROUTES } from 'utils/routing/routing';
 import './ProfileGameHistory.scss'
 
 const ProfileGameHistory = () => {
+  const customAxiosInstance = useAxios();
 
   const { id } = useParams();
   const location = useLocation();
@@ -27,7 +27,7 @@ const ProfileGameHistory = () => {
     const fetchUserGameHistory = async (id: string | undefined) => {
 
       try {
-        const response = await axios.get(API_ROUTES.GENERIC_USER_PROFILE + id + API_ROUTES.GAME_HISTORY_SUFFIX,
+        const response = await customAxiosInstance.get(API_ROUTES.GENERIC_USER_PROFILE + id + API_ROUTES.GAME_HISTORY_SUFFIX,
         { withCredentials: true });
         setGameHistory(response.data.gameHistory);
         setIsLoadingGameHistory(false);

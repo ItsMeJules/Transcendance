@@ -43,16 +43,11 @@ export class AuthService {
       isTwoFactorAuthenticationVerified: isTwoFactorAuthenticationVerified,
     };
     const access_token = this.jwtService.sign(payload, {
-      expiresIn: '15m',
+      expiresIn: '90m',
     });
 
     const refreshPayload = { id: user.id };
 
-    console.log(
-      'my process envs: ',
-      process.env.jwtRefreshSecret,
-      process.env.jwtSecret,
-    );
     const refresh_token = this.jwtService.sign(refreshPayload, {
       secret: process.env.jwtRefreshSecret, // Ensure a separate secret for refresh tokens
       expiresIn: '7d',
@@ -129,16 +124,13 @@ export class AuthService {
 
   async verifyRefreshToken(refreshToken: string): Promise<User> {
     try {
-      console.log('my jwtRefresh Secret', process.env.jwtRefreshSecret);
       const secret = process.env.jwtRefreshSecret;
       const decodedToken: any = jwt.verify(refreshToken, secret);
       const { id } = decodedToken;
-      console.log('id = ', id);
       const user = await this.prisma.user.findUnique({
         where: { id },
         include: { friends: true },
       });
-      console.log('user : ', user);
       if (!user) throw new UnauthorizedException('User does not exist');
 
       return user;

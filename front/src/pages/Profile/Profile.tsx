@@ -21,7 +21,6 @@ export const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        console.log('here');
         const response = await customAxiosInstance.get(
           API_ROUTES.USER_COMPLETE,
           {
@@ -29,7 +28,6 @@ export const Profile: React.FC = () => {
           }
         );
         const userData = response.data;
-        console.log("response:", userData);
         dispatchUser(setUser(userData));
         localStorage.setItem("userData", JSON.stringify(userData));
         setUserDataProfile(userData);

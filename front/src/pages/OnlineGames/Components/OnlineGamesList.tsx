@@ -20,7 +20,6 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
     });
     socket.game?.on('inGame', (data: any) => {
       setInGame(true);
-      console.log('in game:', data);
     });
     return () => {
       socket.game?.off('watchGame');
@@ -29,9 +28,7 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
   }, [socket.game]);
 
   useEffect(() => {
-    console.log('2 inGame:', inGame);
     if (inGame) {
-      console.log('IN GAME OKKKKKK');
       history(APP_ROUTES.PLAY_ABSOLUTE);
       return;
     }
@@ -41,7 +38,6 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
     if (gameData) {
       const dataString = JSON.stringify(gameData);
       const dataJSON = JSON.parse(dataString);
-      console.log('WATCH GAME received:', dataJSON);
       if (dataJSON.status === "OK") {
         localStorage.setItem('gameDataWatch', JSON.stringify(dataJSON.gameState));
         localStorage.setItem('player1Watch', JSON.stringify(dataJSON.player1));
@@ -49,7 +45,6 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
         history(APP_ROUTES.SPECTATE_ABSOLUTE);
       }
     }
-    console.log('gameData:', gameData);
   }, [gameData]);
 
   return (

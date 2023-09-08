@@ -13,7 +13,6 @@ export const connectSocket = () => {
     });
 
     socket.on("general_online", (data: any) => {
-      console.log('data received:', data);
     });
 
     const user = localStorage.getItem('userData');
@@ -21,16 +20,13 @@ export const connectSocket = () => {
       let userJSON: any;
       userJSON = JSON.parse(user);
       socket.on(`user_${userJSON.id}`, (data: any) => {
-        console.log('data received:', data);
       });
-      console.log('test:', `user_${userJSON.id}`);
     }
     return socket;
   }
 };
 
 export const sendMessage = (message: string) => {
-  console.log("SEND MESSAGE");
   if (socket) {
     socket.emit('message', message);
   }
@@ -38,10 +34,8 @@ export const sendMessage = (message: string) => {
 
 export const getSocket = () => {
   if (!socket) {
-    console.log("NOOOOOOOOOOOOOO SOCKET");
     return;
   }
-  console.log("____SOCKET OK____")
 
   return socket;
 };
@@ -50,7 +44,6 @@ export const deregisterSocket = (
   socket: Socket
 ): void => {
   setTimeout(() => {
-    console.log("disconnect triggered");
     socket.disconnect();
   }, 5000);
   socket.off("connect");

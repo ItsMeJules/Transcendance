@@ -25,7 +25,6 @@ class GameHistoryArray {
       newGameHistory.setGameHistoryFromResponseData(gameHistoryData);
       this.gameHistoryArray.set(gameId, newGameHistory);
     }
-    console.log("GameHistoryArray Map:", this.gameHistoryArray);
 
   }
 
