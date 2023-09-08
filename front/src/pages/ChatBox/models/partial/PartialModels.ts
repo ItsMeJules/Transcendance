@@ -5,6 +5,7 @@ export type ChannelInfoInList = {
   type: ChannelType;
   userCount: number;
   ownerId: number,
+  hasPassword: boolean,
   adminsId: [],
   bannedId: [],
 };

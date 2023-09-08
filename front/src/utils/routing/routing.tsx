@@ -26,7 +26,7 @@ export const API_ROUTES = {
   HOME_CHECK_TOKEN: `${API_URL}/auth/home`,
 };
 
-export const APP_URL = "http://localhost:8000";
+export const APP_URL = `http://${process.env.LOCAL_IP}:8000`;
 
 export const SOCKET_GENERAL = "/general";
 export const SOCKET_GAME = "/game";

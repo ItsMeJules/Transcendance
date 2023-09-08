@@ -283,20 +283,24 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         },
         orderBy: { createdAt: 'asc' },
       });
+      
+      const roomsInfo = rooms.map((room) => {
+        const hasPassword =
+          room.password !== null && room.password.length !== 0;
 
-      const roomsInfo = rooms.map((room) => ({
-        name: room.name,
-        type:
-          room.type === RoomType.PUBLIC &&
-          room.password !== null &&
-          room.password.length !== 0
-            ? RoomType.PROTECTED
-            : room.type,
-        userCount: room.users.length,
-        ownerId: room.ownerId,
-        adminsId: room.admins.map((admin) => admin.id),
-        bannedId: room.bans.map((bans) => bans.id),
-      }));
+        return {
+          name: room.name,
+          type:
+            room.type === RoomType.PUBLIC && hasPassword
+              ? RoomType.PROTECTED
+              : room.type,
+          hasPassword: hasPassword,
+          userCount: room.users.length,
+          ownerId: room.ownerId,
+          adminsId: room.admins.map((admin) => admin.id),
+          bannedId: room.bans.map((bans) => bans.id),
+        };
+      });
 
       return roomsInfo;
     } catch (error) {

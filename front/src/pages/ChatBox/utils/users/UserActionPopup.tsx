@@ -125,7 +125,7 @@ export default function UserActionPopup({
             Kick
           </div>
           <div className={isMuted ? "mute" : "unmute"} onClick={onMute}>
-            {isMuted ? "Mute" : "Unmute"}
+            {isMuted ? "Un/mute" : "Un/mute"}
           </div>
           <div className={isAdmin ? "demote" : "promote"} onClick={onPromote}>
             {isAdmin ? "Remove from admins" : "Add to admins"}

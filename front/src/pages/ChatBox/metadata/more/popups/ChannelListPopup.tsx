@@ -39,7 +39,7 @@ export default function ChannelListPopup() {
   const userRequirePassword = (userId: number, channelName: string): boolean => {
     const channel: ChannelInfoInList | undefined = visibleChannels.find(value => value.name === channelName)
 
-    if (channel?.type !== ChannelType.PROTECTED)
+    if (!channel?.hasPassword)
       return false
     if (channel?.ownerId === userId)
       return false

@@ -219,6 +219,13 @@ export const ChatBox = () => {
   };
 
   useEffect(() => {
+    chatSocket?.emit(ChatSocketEventType.CHAT_ACTION, {
+      action: "joinRoom",
+      roomName: activeChannelName,
+    });
+  }, []);
+
+  useEffect(() => {
     // create payloads not any, create functions not callback in parameter
     chatSocket?.on(ChatSocketEventType.JOIN_ROOM, (payload: any) => {
       dispatch(setUserActiveChannel(payload.name));

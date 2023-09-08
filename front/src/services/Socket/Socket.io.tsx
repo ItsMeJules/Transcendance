@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const socketUrl = 'http://localhost:8000/general';
+const socketUrl = `http://${process.env.LOCAL_IP}:8000/general`;
 
 let socket: Socket | null = null;
 

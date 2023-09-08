@@ -8,6 +8,6 @@ export class TwoFactorAuthenticationFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    response.redirect('http://localhost:8000/');
+    response.redirect(`http://${process.env.LOCAL_IP}:8000/`);
   }
 }
