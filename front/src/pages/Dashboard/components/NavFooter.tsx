@@ -9,7 +9,11 @@ interface LeftNavFooterProps {
 }
 
 const NavFooter: React.FC<LeftNavFooterProps> = ({ setRightContent }) => {
-  const debouncedSetRightContent = useCallback(debounce(setRightContent, 10), [setRightContent]);
+    
+  const debouncedSetRightContent = useCallback(
+    (screen: APP_SCREENS) => debounce(() => setRightContent(screen), 10),
+    [setRightContent]
+  );
   const history = useNavigate();
 
   const handleMatchMakingClick = (() => {

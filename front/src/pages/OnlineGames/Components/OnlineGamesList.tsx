@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "utils/routing/routing";
 import { useWebsocketContext } from "services/Websocket/Websocket";
 import { useEffect, useState } from "react";
@@ -35,7 +35,7 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
       history(APP_ROUTES.PLAY_ABSOLUTE);
       return;
     }
-  }, [inGame]);
+  }, [inGame, history]);
 
   useEffect(() => {
     if (gameData) {
@@ -50,7 +50,7 @@ const OnlineGamesList: React.FC<OnlineGameInstanceProps> = ({ gamesList }) => {
       }
     }
     console.log('gameData:', gameData);
-  }, [gameData]);
+  }, [gameData, history]);
 
   return (
     <main className="games__instances">

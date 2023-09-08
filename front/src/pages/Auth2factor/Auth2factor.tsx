@@ -16,28 +16,29 @@ export const Auth2factor = () => {
   const errRef = useRef<HTMLParagraphElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
   const history = useNavigate();
+  const customAxiosInstance = useAxios();
 
   const [code, setCode] = useState<string>("");
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const fetchUserProfile = async () => {
-    try {
-      await customAxiosInstance.post(
-        API_ROUTES.AUTHENTICATE_2FA,
-        { twoFactorAuthentificationCode: "" },
-        { withCredentials: true }
-      );
-    } catch (err: any) { }
-  };
-
+  
   useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        await customAxiosInstance.post(
+          API_ROUTES.AUTHENTICATE_2FA,
+          { twoFactorAuthentificationCode: "" },
+          { withCredentials: true }
+        );
+      } catch (err: any) { }
+    };
     fetchUserProfile();
     if (codeRef.current)
       codeRef.current.focus();
     if (errorMessage === 'need2fa')
       toast.error('You have to connect with 2FA');
-  }, []);
+  }, [customAxiosInstance, errorMessage]);
 
   useEffect(() => {
     setErrMsg("");
@@ -47,9 +48,7 @@ export const Auth2factor = () => {
     if (success) {
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
-  }, [success]);
-
-  const customAxiosInstance = useAxios();
+  }, [success, history]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

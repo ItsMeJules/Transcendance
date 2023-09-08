@@ -112,6 +112,7 @@ export function useAxios() {
 
       if (toast.isActive(toastId)) return;
 
+      console.log('response:', response);
       console.log('err:', error.response);
 
       if (config.url.includes(APP_ROUTES.SIGN_UP))          // Sign up ok

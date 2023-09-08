@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { GameProperties } from "./models/Properties";
 import getParseLocalStorage from "utils/getParseLocalStorage/getParseLocalStorage";
 import { UserData } from "services/User/User";
-import ConfettisComponent from "./components/Confettis/ConfettisComponent";
 import GiveUp from "./components/GiveUp/GiveUp";
 import ScoreBoard from "./components/ScoreBoard/ScoreBoard";
 import './css/Play.scss'
@@ -40,7 +39,7 @@ const Play = () => {
   const [player1Data, setPlayer1Data] = useState<UserData | null>(null);
   const [player2Data, setPlayer2Data] = useState<UserData | null>(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
-  const [isOpponentReady, setIsOpponentReady] = useState(false);
+  const [, setIsOpponentReady] = useState(false);
 
   // const [socketPrepare, setSocketPrepare] = useState<SocketPrepare>();
   const [gameStatePrepare, setGameStatePrepare] = useState<GameSocket>();
@@ -48,7 +47,7 @@ const Play = () => {
   const [game, setGame] = useState(new GameProperties());
   const [noGame, setNoGame] = useState(false);
 
-  const [profileCardHeight, setProfileCardHeight] = useState(0);
+  const [profileCardHeight, ] = useState(0);
   const [centralText, setCentralText] = useState('');
   const history = useNavigate();
 
@@ -88,7 +87,7 @@ const Play = () => {
       socket.game?.off('refreshGame');
       socket.game?.off('noGame');
     };
-  }, [socket.game]);
+  }, [socket.game, game, whichPlayer]);
 
   // Game useEffect
   useEffect(() => {
@@ -129,7 +128,7 @@ const Play = () => {
       game.pl1.updatePlayer(game.board, gameStatePlay.gameParams.pl1);
       game.pl2.updatePlayer(game.board, gameStatePlay.gameParams.pl2);
     }
-  }, [gameStatePlay]);
+  }, [gameStatePlay, game, whichPlayer]);
 
   // Prepare useEffect
   useEffect(() => {
@@ -162,13 +161,11 @@ const Play = () => {
       if (socket.game) socket.game.off('prepareToPlay');
       setGame({ ...game, isPlaying: true });
     }
-  }, [gameStatePrepare, game.status]);
+  }, [gameStatePrepare, game.status, game, gameStatePlay?.gameStatus, history, socket.game]);
 
   // Window resizing
   useEffect(() => {
     const handleResize = () => {
-      const newWidth = window.innerWidth * 0.4;
-      const factor = game.board.updateDimensions(newWidth);
       setGame({ ...game });
     }
     window.addEventListener('resize', handleResize);
@@ -176,7 +173,7 @@ const Play = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [game]);
 
   return (
     <div className='pong-main-container'>

@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackgroundMoving from 'layout/BackgroundMoving/BackgroundMoving';
 import TextSection from './TextSection';
-import { useAxios } from "utils/axiosConfig/axiosConfig";
-import { API_ROUTES, APP_ROUTES } from 'utils/routing/routing';
+import { APP_ROUTES } from 'utils/routing/routing';
 
 const Home = () => {
-  const customAxiosInstance = useAxios();
   const history = useNavigate();
 
   const [screenSize, setScreenSize] = useState({

@@ -43,12 +43,12 @@ const OpenSocket = (namespace: string): Socket => {
 };
 
 export default function Websocket({ children }: WebsocketProps): JSX.Element {
+  const { id: userId } = useAppSelector(state => state.user.userData);
   const [socketInstances, setSocketInstances] = useState<OpenedSockets>({
     general: null,
     chat: null,
     game: null,
   });
-  const { id: userId } = useAppSelector(state => state.user.userData);
   // console.log("render-------------------", socketInstances.game)
   useEffect((): (() => void) => {
     if (!userId) {
@@ -81,7 +81,7 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
       closeOpenSockets(socketInstances);
       setSocketInstances({ general: null, chat: null, game: null });
     };
-  }, [userId]);
+  }, [userId, socketInstances]);
 
   return (
     <WebsocketContext.Provider value={socketInstances}>{children}</WebsocketContext.Provider>

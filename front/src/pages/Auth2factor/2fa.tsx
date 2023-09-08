@@ -9,27 +9,28 @@ export const TwoFa = () => {
   const errRef = useRef<HTMLParagraphElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
   const history = useNavigate();
+  const customAxiosInstance = useAxios();
 
   const [code, setCode] = useState<string>("");
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const fetchUserProfile = async () => {
-    try {
-      await customAxiosInstance.post(
-        API_ROUTES.AUTHENTICATE_2FA,
-        { twoFactorAuthentificationCode: "" },
-        { withCredentials: true }
-      );
-    } catch (err: any) {}
-  };
-
+  
   useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        await customAxiosInstance.post(
+          API_ROUTES.AUTHENTICATE_2FA,
+          { twoFactorAuthentificationCode: "" },
+          { withCredentials: true }
+        );
+      } catch (err: any) {}
+    };
     fetchUserProfile();
     if (codeRef.current) {
       codeRef.current.focus();
     }
-  }, []);
+  }, [customAxiosInstance]);
 
   useEffect(() => {
     setErrMsg("");
@@ -40,9 +41,8 @@ export const TwoFa = () => {
     if (success) {
       history("");
     }
-  }, [success]);
+  }, [success, history]);
 
-  const customAxiosInstance = useAxios();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

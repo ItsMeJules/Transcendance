@@ -32,7 +32,7 @@ export const Signin = () => {
     if (success) {
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
-  }, [success]);
+  }, [success, history]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -51,16 +51,16 @@ export const Signin = () => {
   }
 
   useEffect(() => {
-    const verifyToken = async () => {
-      try {
-        const response = await customAxiosInstance.get(API_ROUTES.HOME_CHECK_TOKEN,
-          {
-            withCredentials: true
-          })
-        if (response.data.tokenState === 'HAS_TOKEN')
-          return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
-      } catch (error) { };
-    }
+    // const verifyToken = async () => {
+    //   try {
+    //     const response = await customAxiosInstance.get(API_ROUTES.HOME_CHECK_TOKEN,
+    //       {
+    //         withCredentials: true
+    //       })
+    //     if (response.data.tokenState === 'HAS_TOKEN')
+    //       return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
+    //   } catch (error) { };
+    // }
 
     console.log('error message:', errorMessage);
     if (errorMessage === 'nouser')
@@ -70,7 +70,7 @@ export const Signin = () => {
     if (errorMessage === 'unauthorized')
       toast.error('Unauthorized. Please log in again.');
     // verifyToken();
-  }, [])
+  }, [errorMessage])
 
   return (
     <div className="login-container">

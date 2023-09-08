@@ -17,7 +17,7 @@ export const Signup = () => {
     if (success) {
       history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
     }
-  }, [success]);
+  }, [success, history]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,19 +35,19 @@ export const Signup = () => {
     } catch (err: any) { }
   }
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      try {
-        const response = await customAxiosInstance.get(API_ROUTES.HOME_CHECK_TOKEN,
-          {
-            withCredentials: true
-          })
-        if (response.data.tokenState === 'HAS_TOKEN')
-          return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
-      } catch (error) { };
-    }
-    // verifyToken();
-  }, [])
+  // useEffect(() => {
+  //   const verifyToken = async () => {
+  //     try {
+  //       const response = await customAxiosInstance.get(API_ROUTES.HOME_CHECK_TOKEN,
+  //         {
+  //           withCredentials: true
+  //         })
+  //       if (response.data.tokenState === 'HAS_TOKEN')
+  //         return history(APP_ROUTES.USER_PROFILE_ABSOLUTE);
+  //     } catch (error) { };
+  //   }
+  //   // verifyToken();
+  // }, [customAxiosInstance, history])
 
   return (
     <div className="signup-container">

@@ -14,7 +14,7 @@ interface EditUserFormValidationProps {
 
 const EditUserFormValidation: React.FC<EditUserFormValidationProps> = ({ userData }) => {
 
-  const [userDataNew, setUserDataNew] = useState<UserData | null>();
+  const [, setUserDataNew] = useState<UserData | null>();
   const [username, setUsername] = useState<string>('');
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');

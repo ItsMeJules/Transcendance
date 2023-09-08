@@ -1,7 +1,7 @@
 import React from "react";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
-import { useCallback, useEffect} from "react";
+import { useCallback} from "react";
 
 const BackgroundLinking = React.memo(({ style }) => {
 

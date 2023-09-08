@@ -5,7 +5,6 @@ import { APP_ROUTES } from "utils/routing/routing";
 import { useWebsocketContext } from "services/Websocket/Websocket";
 import "./css/JoinGame.scss";
 import LoadingAnimation from "./components/LoadingAnimation";
-import { HttpStatus } from "utils/HttpStatus/HttpStatus";
 
 const JoinGame = () => {
   const [socketData, setSocketData] = useState("");
@@ -30,7 +29,7 @@ const JoinGame = () => {
         history(APP_ROUTES.PLAY_ABSOLUTE);
       }
     }
-  }, [socketData]);
+  }, [socketData, history]);
 
   useEffect(() => {
     console.log("SOCKET id:", socket.game?.id);

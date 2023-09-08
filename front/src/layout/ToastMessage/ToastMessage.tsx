@@ -40,7 +40,7 @@ const ToastMessage: React.FC<ToastMessageProps> = ({ notifMsg, resetNotifMsg, ch
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [notifMsg, isToastVisible, resetNotifMsg]);
+  }, [notifMsg, isToastVisible, resetNotifMsg, resetIdToRemove]);
 
   const handleToastClick = () => {
     // Handle the click on the toast message here

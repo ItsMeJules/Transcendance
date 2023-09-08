@@ -40,7 +40,7 @@ export const Profile: React.FC = () => {
     if (errorMessage === 'no2fa')
       toast.error("You don't have 2FA enabled");
     fetchUserProfile();
-  }, []);
+  }, [customAxiosInstance, dispatchUser, errorMessage]);
 
   return (
     <>

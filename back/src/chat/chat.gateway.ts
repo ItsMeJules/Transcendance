@@ -70,7 +70,7 @@ export class ChatEventsGateway {
 
         let roomDisplayname = currentCompleteRoom.name;
         if (currentCompleteRoom.type === RoomType.DIRECT) {
-          const [_, topId, lowId] = currentCompleteRoom.name
+          const [, topId, lowId] = currentCompleteRoom.name
             .split('-')
             .map(Number);
           const targetId = topId === user.id ? lowId : topId;

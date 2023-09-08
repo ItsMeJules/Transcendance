@@ -54,7 +54,7 @@ const BoardCanvas: React.FC<BoardCanvasProps> = ({ game, canvasRef }) => {
       window.removeEventListener('resize', handleResize);
     };
 
-  }, [game.board, game.ball, canvasRef]);
+  }, [game.board, game.ball, canvasRef, game.status]);
 
     return null;
 };

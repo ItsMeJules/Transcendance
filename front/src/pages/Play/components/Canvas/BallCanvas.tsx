@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { GameProperties } from '../../models/Properties';
-import { time } from 'console';
 
 interface BallCanvasProps {
   game: GameProperties;
@@ -15,18 +14,15 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    let previousTimestamp = 0;
-
+    
     if (ctx && game.isEnded) {
       continueAnimation.current = false;
       ctx.clearRect(0, 0, game.board.width, game.board.height);
       return;
     }
-
+    
     const animateBall = (timestamp: number) => {
       if (!game.isPlaying && !game.isEnded) return;
-      const deltaTime = (timestamp - previousTimestamp) / 1000;
-      previousTimestamp = timestamp;
       if (ctx) {
         ctx.clearRect(0, 0, game.board.width, game.board.height);
         if (game.isEnded) return;
@@ -63,7 +59,7 @@ const BallCanvas: React.FC<BallCanvasProps> = ({ game, canvasRef }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [canvasRef, game.ball, game.board.factor, game.isPlaying, game.isEnded]);
+  }, [canvasRef, game.ball, game.board.factor, game.isPlaying, game.isEnded, game.board.height, game.board.width]);
 
   return null;
 };

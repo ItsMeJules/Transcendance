@@ -55,7 +55,7 @@ const GenericUserProfile = () => {
       } catch (err: any) { }
     };
     fetchUserProfile(id);
-  }, [id, location]);
+  }, [id, location, customAxiosInstance, navigate, userData]);
 
   const addFriend = async (id: string | undefined) => {
     const dataToSend: any = {};

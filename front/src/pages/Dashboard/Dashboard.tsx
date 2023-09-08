@@ -15,7 +15,6 @@ import GenericUserProfile from "pages/Profile/GenericUserProfile";
 import JoinGame from "pages/JoinGame/JoinGame";
 import Websocket from "services/Websocket/Websocket";
 import NotFoundPageDashboard from "pages/NotFoundPage/NotFoundDashboard";
-import RedirectPlay from "pages/Redirections/RedirectPlay";
 import { API_ROUTES } from 'utils/routing/routing';
 
 const Dashboard = () => {
@@ -36,7 +35,7 @@ const Dashboard = () => {
       } catch (error) { };
     }
     verifyToken();
-  }, [])
+  }, [customAxiosInstance, navigate])
 
   return (
     <Websocket>

@@ -10,7 +10,7 @@ import getProgressBarClass from "utils/progressBar/ProgressBar";
 const ProfileHeader = () => {
   const history = useNavigate();
   const [profilePicture, setProfilePicture] = useState('');  // Set default picture
-  const [errMsg, setErrMsg] = useState('');
+  const [, setErrMsg] = useState('');
   const [progressBarClass, setProgressBarClass] = useState('progress-bar-1');
   const [parsedUserLevel, setParsedUserLevel] = useState(1);
   const [winRatio, setWinRatio] = useState<number>(0);

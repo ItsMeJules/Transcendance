@@ -22,8 +22,6 @@ export default function ChatMetadata({ chatToggled }: ChatMetadataProps) {
   let ProtectedIcon = require("../assets/padlock.png");
   let PrivateIcon = require("../assets/private.png");
   let DmIcon = require("../assets/dm.png");
-  let PublicIcon = require("../assets/globe.png");
-
   const activeChannel = transformSliceToChannelData(
     useAppSelector((store) => store.channels.activeChannel)
   );

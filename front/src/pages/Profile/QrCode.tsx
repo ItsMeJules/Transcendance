@@ -87,7 +87,7 @@ const QrCode: React.FC = () => {
     };
 
     fetchData();
-  }, []); // customAxiosInstance for warning but learn how to add dependances?
+  }, [customAxiosInstance]);
 
   return (
     <div className="activate-and-deactivate">

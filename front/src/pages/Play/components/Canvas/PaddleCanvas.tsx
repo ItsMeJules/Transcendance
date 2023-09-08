@@ -115,7 +115,7 @@ const PaddleCanvas: React.FC<PaddleCanvasProps> = ({ game, player, canvasRef, wh
       }
       window.removeEventListener('resize', handleResize);
     };
-  }, [canvasRef, player, game.board.factor, game.isPlaying, game.isEnded]);
+  }, [canvasRef, player, game.board.factor, game.isPlaying, game.isEnded, game.board.height, game.board.width, socket, whichPlayer]);
 
   return null;
 };

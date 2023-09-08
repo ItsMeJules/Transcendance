@@ -27,7 +27,7 @@ const OnlineGames: React.FC<OnlineGamesProps> = ({ noGame, setNoGame }) => {
     return () => {
       socket.game?.off('onlineGames');
     }
-  }, [socket.game]);
+  }, [socket.game, setNoGame]);
 
   useEffect(() => {
     const tmpGameList = (Object.entries(gamesData) as Array<[string, any]>).map(

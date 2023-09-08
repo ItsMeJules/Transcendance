@@ -46,7 +46,7 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
   const [game, setGame] = useState(new GameProperties());
   const [gameStatus, setGameStatus] = useState('');
 
-  const [profileCardHeight, setProfileCardHeight] = useState(0);
+  const [profileCardHeight, ] = useState(0);
   const [centralText, setCentralText] = useState('Waiting for players');
 
   // Data parsing
@@ -83,7 +83,7 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
       socket.game?.off('refreshGame');
       socket.game?.off('noGame');
     };
-  }, [socket.game]);
+  }, [socket.game, setNoGame]);
 
   // Game useEffect
   useEffect(() => {
@@ -110,7 +110,7 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
       game.pl1.updatePlayer(game.board, gameState.gameParams.pl1);
       game.pl2.updatePlayer(game.board, gameState.gameParams.pl2);
     }
-  }, [gameState]);
+  }, [gameState, game]);
 
   // Prepare useEffect
   useEffect(() => {
@@ -132,13 +132,13 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
       setGame({ ...game, isPlaying: true });
     }
     return;
-  }, [gameState, gameStatus]);
+  }, [gameState, gameStatus, game, socket.game]);
 
   // Window resizing
   useEffect(() => {
     const handleResize = () => {
       const newWidth = window.innerWidth * 0.8;
-      const factor = game.board.updateDimensions(newWidth);
+      game.board.updateDimensions(newWidth);
       setGame({ ...game });
     }
     window.addEventListener('resize', handleResize);
@@ -146,7 +146,7 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [game]);
 
   return (
     <div className='pong-main-container'>
