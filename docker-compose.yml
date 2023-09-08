@@ -8,11 +8,11 @@ services:
       PORT: ${PORT}
       NODE_ENV: ${NODE_ENV}
       REACT_APP_CLIENT_ID: ${REACT_APP_CLIENT_ID}
-      REACT_APP_REDIRECT_URI: ${REACT_APP_CLIENT_ID}
-      REACT_APP_FOTRYTWO_LOGIN_URL: ${REACT_APP_CLIENT_ID}
-      REACT_APP_GOOGLE_LOGIN_URL: ${REACT_APP_CLIENT_ID}
-    volumes:
-      - ./front:/workspace/front
+      REACT_APP_REDIRECT_URI: ${REACT_APP_REDIRECT_URI}
+      REACT_APP_FOTRYTWO_LOGIN_URL: ${REACT_APP_FOTRYTWO_LOGIN_URL}
+      REACT_APP_GOOGLE_LOGIN_URL: ${REACT_APP_GOOGLE_LOGIN_URL}
+    # volumes:
+    #   - ./front:/workspace/front
     networks:
       - app
     command: bash -c "npm install -g serve && serve -s build"
@@ -35,8 +35,8 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       FORTYTWO_CLIENT_ID: ${FORTYTWO_CLIENT_ID}
       FORTYTWO_CLIENT_SECRET: ${FORTYTWO_CLIENT_SECRET}
-    volumes:
-      - ./back:/workspace/back
+    # volumes:
+    #   - ./back:/workspace/back
     networks:
       - app
     depends_on:
@@ -70,8 +70,6 @@ services:
     restart: always
 
 volumes:
-  # back:
-  # front:
   data:
 
 networks:

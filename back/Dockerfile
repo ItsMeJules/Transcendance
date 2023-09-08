@@ -9,6 +9,8 @@ COPY package.json ./
 
 COPY entrypoint.sh .
 
+COPY src .
+
 RUN npm install
 
 ENTRYPOINT ["bash", "entrypoint.sh"]
