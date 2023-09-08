@@ -59,7 +59,8 @@ export class ChatEventsGateway {
     let user;
     console.log('canActivate begin');
     if (!token) {
-      throw new UnauthorizedException('No token provided');
+      client.disconnect();
+      return;
     }
 
     try {
@@ -102,9 +103,13 @@ export class ChatEventsGateway {
     console.log('connection FDPPPPP');
 
     const user = await this.setupConnection(client);
+    if (!user) {
+      client.disconnect();
+      return;
+    }
     client.data = { id: user.id };
     await client.join(user.currentRoom);
-
+    this.userSocketsService.addUserSocket(client.data.id, client);
     const currentCompleteRoom = await this.chatService.getCompleteRoom(
       user.currentRoom,
     );

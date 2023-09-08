@@ -96,7 +96,10 @@ const LeaderBoard: React.FC = () => {
       setUserId(data.userId);
       setLeaderboardData(data.leaderboard);
     });
-    socket.chat?.on("acknowledgements", (payload) => displayAcknowledgements(payload));
+    socket.chat?.on("acknowledgements", (payload) => {
+      if (payload.type === "invitation") displayAcknowledgements(payload);
+      else console.log("acknowledgements payload:", payload);
+    });
     socket.game?.emit("leaderboard", { action: "status" });
     return () => {
       socket.chat?.off("acknowledgements");

@@ -96,7 +96,10 @@ const Friends = () => {
   };
 
   useEffect(() => {
-    socket.chat?.on("acknowledgements", (payload) => displayAcknowledgements(payload));
+    socket.chat?.on("acknowledgements", (payload) => {
+      if (payload.type === "invitation") displayAcknowledgements(payload);
+      else console.log("acknowledgements payload:", payload);
+    });
     return () => {
       socket.chat?.off("acknowledgements");
     };

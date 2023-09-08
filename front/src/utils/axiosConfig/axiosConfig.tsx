@@ -95,7 +95,7 @@ export function useAxios() {
       navigate("/dashboard/profile/me?error=alreadyverified");
       return ERROR.YES;
     } else if (err.response && err.response.status === 499) {
-      navigate("/profile/me/two-fa");
+      navigate("/profile/me/two-fa?error=unauthorized");
       return ERROR.YES;
     }
 
@@ -116,7 +116,7 @@ export function useAxios() {
     const currentTime = new Date();
     console.log("current : ", currentTime, " tokenExpiration : ", tokenExpiration);
     console.log("moins les deux ", Number(tokenExpiration) - Number(currentTime));
-    return Number(currentTime) + 880000 >= Number(tokenExpiration);
+    return Number(currentTime) >= Number(tokenExpiration);
   }
 
   customAxiosInstance.interceptors.request.use(
@@ -172,11 +172,6 @@ export function useAxios() {
   );
   return customAxiosInstance;
 }
-
-// if (error.response && error.response.status === 499) {
-//   console.log("You have to connect with 2FA");
-//   navigate("/profile/me/two-fa");
-// }
 
 // if (error.response && error.response.status === 499) {
 //   console.log("You have to connect with 2FA");

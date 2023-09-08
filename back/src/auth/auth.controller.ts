@@ -181,7 +181,6 @@ export class AuthController {
       tokens.access_token,
       false,
     );
-    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
     if (!user) {
       const errorMessage = 'nouser';
       return res.redirect(`/login?error=${errorMessage}`);
@@ -200,6 +199,7 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'lax',
     });
+    const expirationTimestamp = Date.now() / 1000 + 15 * 60;
     res.cookie('expire_date_access_token', expirationTimestamp, {
       maxAge: 15 * 60 * 1000,
       sameSite: 'lax',
@@ -259,7 +259,11 @@ export class AuthController {
         maxAge: 15 * 60 * 1000,
         sameSite: 'lax',
       });
-
+      const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+      res.cookie('expire_date_access_token', expirationTimestamp, {
+        maxAge: 15 * 60 * 1000,
+        sameSite: 'lax',
+      });
       res.cookie('refresh_token', tokens.refresh_token, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -294,7 +298,11 @@ export class AuthController {
       console.log('userId:', user.id);
       const tokens = await this.authService.login(user, true);
       console.log('access token:', tokens.access_token);
-
+      const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+      res.cookie('expire_date_access_token', expirationTimestamp, {
+        maxAge: 15 * 60 * 1000,
+        sameSite: 'lax',
+      });
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
         maxAge: 15 * 60 * 1000,
@@ -318,11 +326,14 @@ export class AuthController {
     @GetUser() user: User,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    await this.prismaService.turnOffTwoFactorAuthentication(user.id);
-
     try {
-      const tokens = await this.authService.login(user.id, false);
-
+      await this.prismaService.turnOffTwoFactorAuthentication(user.id);
+      const tokens = await this.authService.login(user, false);
+      const expirationTimestamp = Date.now() / 1000 + 15 * 60;
+      res.cookie('expire_date_access_token', expirationTimestamp, {
+        maxAge: 15 * 60 * 1000,
+        sameSite: 'lax',
+      });
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
         maxAge: 15 * 60 * 1000,

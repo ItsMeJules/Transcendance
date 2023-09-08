@@ -36,6 +36,7 @@ const AllUsers = () => {
   const displayAcknowledgements = (payload: any) => {
     socket.chat?.on("answerInvitation", (payload2: any) => {
       console.log("answer invite is ", payload2);
+
       if (payload2.message === "yes") {
         socket.chat?.off("answerInvitation"); // Remove the listener
         setSocketData(payload2);
@@ -89,7 +90,10 @@ const AllUsers = () => {
   };
 
   useEffect(() => {
-    socket.chat?.on("acknowledgements", (payload) => displayAcknowledgements(payload));
+    socket.chat?.on("acknowledgements", (payload) => {
+      if (payload.type === "invitation") displayAcknowledgements(payload);
+      else console.log("acknowledgements payload:", payload);
+    });
     return () => {
       socket.chat?.off("acknowledgements");
     };
