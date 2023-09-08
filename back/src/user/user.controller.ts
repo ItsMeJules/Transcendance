@@ -126,6 +126,8 @@ export class UserController {
   @Post('logout')
   async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
     res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+    res.clearCookie('expire_date_access_token');
     res.json({ message: 'Logout successful' });
   }
 
