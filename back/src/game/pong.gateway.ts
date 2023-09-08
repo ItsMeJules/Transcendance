@@ -246,7 +246,7 @@ export class PongEvents {
     const access_token = extractAccessTokenFromCookie(client);
     if (!client.data.id || !access_token) return;
     const user = await this.authService.validateJwtToken(access_token, true);
-    if (!user) client.disconnect();
+    if (!user) return;
     const gameId = this.playersMap.get(user.id);
     const gameStruct = this.pongService.getGameStructById(gameId);
     if (!gameId || !gameStruct) {
