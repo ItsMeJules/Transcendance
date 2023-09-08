@@ -49,6 +49,7 @@
     padding: 0;
     display: flex;
     list-style: none;
+    min-width: 100%;
 
     li.game {
       align-items: center;
@@ -80,7 +81,6 @@
         display: flex;
         height: 100%;
         width: 100%;
-
         .p1,
         .p2 {
           color: white;
@@ -89,6 +89,7 @@
           text-overflow: ellipsis;
           white-space: nowrap;
           padding: 10px;
+          flex : 1;
         }
 
         .p1 {
@@ -105,8 +106,10 @@
           align-items: center;
           justify-items: center;
           color: white;
-          font-size: 18pt;
-          min-width: 200px;
+          font-weight: bold;
+          font-size: 16pt;
+          flex-grow: 0; 
+          flex-shrink: 1;
         }
       }
     }
