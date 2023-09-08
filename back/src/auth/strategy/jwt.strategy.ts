@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -12,7 +16,15 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req) => {
-          return req.cookies?.access_token;
+          try {
+            const token = req.cookies?.access_token;
+            if (!token) {
+              throw new UnauthorizedException('No token provided');
+            }
+            return token;
+          } catch (error) {
+            //
+          }
         },
       ]),
       secretOrKey: process.env.jwtSecret,
@@ -25,7 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     isTwoFactorAuthenticationVerified: boolean;
   }): Promise<User | { status: string }> {
     const user = await this.prismaService.findUserById(payload.id);
-    if (!user) throw new BadRequestException('User not found');
+    if (!user) throw new BadRequestException('Bad token');
     if (
       user.isTwoFactorAuthenticationEnabled &&
       !payload.isTwoFactorAuthenticationVerified

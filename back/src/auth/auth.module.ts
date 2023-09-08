@@ -11,6 +11,7 @@ import {
 import { PassportModule } from '@nestjs/passport';
 import { TwoFaService } from './two-fa.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { WsJwtGuard } from './strategy/ws.jwt.strategy';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { PrismaModule } from 'src/prisma/prisma.module';
     JwtTwoFactorStrategy,
     AuthService,
     TwoFaService,
+    WsJwtGuard,
   ],
-  exports: [AuthService, JwtStrategy],
+  exports: [AuthService, JwtStrategy, WsJwtGuard],
 })
 export class AuthModule {}

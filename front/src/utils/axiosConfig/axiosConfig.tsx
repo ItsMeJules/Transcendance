@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from 'react-toastify';
-import { APP_ROUTES } from "utils/routing/routing";
+import { toast } from "react-toastify";
+import { API_ROUTES, APP_ROUTES } from "utils/routing/routing";
 import { HttpStatus } from "utils/HttpStatus/HttpStatus";
 
 enum ERROR {
@@ -20,13 +20,10 @@ export function useAxios() {
 
   /* Message error cleaner */
   function extractErrorMessage(err: any) {
-    if (!err.response
-      || !err.response.data
-      || !err.response.data.message) return undefined;
+    if (!err.response || !err.response.data || !err.response.data.message) return undefined;
 
     const { message } = err.response.data;
-    if (Array.isArray(message))
-      return message[0];
+    if (Array.isArray(message)) return message[0];
     return message;
   }
 
@@ -63,30 +60,34 @@ export function useAxios() {
         break;
 
       case 500: // Internal Server Error
-        toast.error(errorMessage || "Something went wrong on our end. Please try again later.", { toastId });
+        toast.error(
+          errorMessage || "Something went wrong on our end. Please try again later.",
+          { toastId }
+        );
         break;
 
       case 503: // Service Unavailable
-        toast.error(errorMessage || "Service unavailable. Please try again later.", { toastId });
+        toast.error(errorMessage || "Service unavailable. Please try again later.", {
+          toastId,
+        });
         break;
 
       default:
         toast.error(errorMessage || "An error occurred. Please try again later.", { toastId });
     }
-  }
+  };
 
   /* Components handler functions */
   const handleLoginErrors = (err: any, toastId: string) => {
-    if (err.response.status === HttpStatus.BAD_REQUEST
-      && err.response.data.message) {
+    if (err.response.status === HttpStatus.BAD_REQUEST && err.response.data.message) {
       toast.error(extractErrorMessage(err), { toastId });
       return ERROR.YES;
     }
     return ERROR.NO;
-  }
+  };
 
   const handle2FAErrors = (err: any, toastId: string) => {
-    console.log('error here 2fa:', err);
+    console.log("error here 2fa:", err);
     if (err.response && err.response.status === 450) {
       navigate("/dashboard/profile/me?error=no2fa");
       return ERROR.YES;
@@ -98,25 +99,70 @@ export function useAxios() {
       return ERROR.YES;
     }
 
-
     return ERROR.NO;
+  };
+
+  function needsTokenRefresh() {
+    const expireDateCookie = document.cookie
+      .split(";")
+      .find((row) => row.trim().startsWith("expire_date_access_token="));
+
+    console.log("cookies are : ", document.cookie);
+    if (!expireDateCookie) return false;
+
+    const tokenExpirationValue = expireDateCookie.split("=")[1];
+
+    const tokenExpiration = new Date(Number(tokenExpirationValue) * 1000);
+    const currentTime = new Date();
+    console.log("current : ", currentTime, " tokenExpiration : ", tokenExpiration);
+    console.log("moins les deux ", Number(tokenExpiration) - Number(currentTime));
+    return Number(currentTime) + 890000 >= Number(tokenExpiration);
   }
+
+  customAxiosInstance.interceptors.request.use(
+    async (config) => {
+      if (needsTokenRefresh()) {
+        try {
+          console.log("oulala");
+          await axios.post(
+            API_ROUTES.REFRESH_TOKEN,
+            { withCredentials: true },
+            {
+              withCredentials: true,
+            }
+          );
+        } catch (error) {
+          console.log(error);
+          navigate("/login?error=token_refresh_failed"); // gerer cette query ou remplacer la query par "/login?error=unauthorized"
+        }
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
 
   /* Main response handler */
   customAxiosInstance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      console.log("yo man", response);
+      return response;
+    },
     (error) => {
       const { response, config } = error;
       let errorValue: number = ERROR.NO;
-      const toastId = 'error';
+      const toastId = "error";
 
       if (toast.isActive(toastId)) return;
 
-      console.log('err:', error.response);
+      console.log("err:", error.response);
 
-      if (config.url.includes(APP_ROUTES.SIGN_UP))          // Sign up ok
+      if (config.url.includes(APP_ROUTES.SIGN_UP))
+        // Sign up ok
         errorValue = handleLoginErrors(error, toastId);
-      if (config.url.includes(APP_ROUTES.SIGN_IN))          // Sign in ok
+      if (config.url.includes(APP_ROUTES.SIGN_IN))
+        // Sign in ok
         errorValue = handleLoginErrors(error, toastId);
       errorValue = handle2FAErrors(error, toastId);
       if (!errorValue) handleGlobalErrors(error, toastId);
@@ -127,33 +173,20 @@ export function useAxios() {
   return customAxiosInstance;
 }
 
-
-
-
-
-
-
-
-
 // if (error.response && error.response.status === 499) {
 //   console.log("You have to connect with 2FA");
 //   navigate("/profile/me/two-fa");
 // }
 
-
-
-
-
-
-        // if (error.response && error.response.status === 499) {
-        //   console.log("You have to connect with 2FA");
-        //   navigate("/profile/me/two-fa");
-        // }
-        // if (error.response && error.response.status === 450) {
-        //   console.log("You don't have 2FA enabled");
-        //   navigate("/profile/me");
-        // }
-        // if (error.response && error.response.status === 451) {
-        //   console.log("You are already verified!! What are you trying to do???");
-        //   navigate("/profile/me");
-        // }
+// if (error.response && error.response.status === 499) {
+//   console.log("You have to connect with 2FA");
+//   navigate("/profile/me/two-fa");
+// }
+// if (error.response && error.response.status === 450) {
+//   console.log("You don't have 2FA enabled");
+//   navigate("/profile/me");
+// }
+// if (error.response && error.response.status === 451) {
+//   console.log("You are already verified!! What are you trying to do???");
+//   navigate("/profile/me");
+// }
