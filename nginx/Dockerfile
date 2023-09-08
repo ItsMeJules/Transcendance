@@ -11,8 +11,5 @@ RUN rm /etc/nginx/nginx.conf  # Remove the existing nginx.conf
 COPY nginx.conf /etc/nginx/conf.d/
 COPY nginx-main.conf /etc/nginx/nginx.conf
 
-# Expose port 80 for Nginx
-EXPOSE 8000
-
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

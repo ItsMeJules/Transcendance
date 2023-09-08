@@ -1,12 +1,8 @@
 FROM node:lts AS builder
 
 WORKDIR /workspace/front
-COPY package*.json ./
-# RUN npm install react-scripts@latest
-# RUN npm i
-# RUN npm ci
-# COPY . .
-# RUN npm run build
 
+COPY package.json ./
+COPY entrypoint.sh .
 
-CMD ["npm", "run", "start"]
+CMD ["bash", "entrypoint.sh"]

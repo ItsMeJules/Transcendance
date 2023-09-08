@@ -13,9 +13,9 @@ services:
       REACT_APP_GOOGLE_LOGIN_URL: ${REACT_APP_CLIENT_ID}
     volumes:
       - ./front:/workspace/front
-      - ./front/node_modules:/workspace/front/node_modules
     networks:
       - app
+    command: bash -c "npm install -g serve && serve -s build"
     depends_on:
       - backend
     restart: always
@@ -35,8 +35,6 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       FORTYTWO_CLIENT_ID: ${FORTYTWO_CLIENT_ID}
       FORTYTWO_CLIENT_SECRET: ${FORTYTWO_CLIENT_SECRET}
-    ports:
-      - 5555:5555
     volumes:
       - ./back:/workspace/back
     networks:
@@ -65,8 +63,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - 5432:5432
     volumes:
       - data:/var/lib/postgresql/data
     networks:
