@@ -59,20 +59,20 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
       });
     };
     checkToken();
-    console.log(`http://${process.env.LOCAL_IP}:8000/general`);
+    console.log(`http://${process.env.REACT_APP_LOCAL_IP}:8000/general`);
     if (!userId) {
     } else if (userId) {
       const general =
         socketInstances.general?.connected !== true
-          ? OpenSocket(`http://${process.env.LOCAL_IP}:8000/general`)
+          ? OpenSocket(`http://${process.env.REACT_APP_LOCAL_IP}:8000/general`)
           : socketInstances.general;
       const chat =
         socketInstances.chat?.connected !== true
-          ? OpenSocket(`http://${process.env.LOCAL_IP}:8000/chat`)
+          ? OpenSocket(`http://${process.env.REACT_APP_LOCAL_IP}:8000/chat`)
           : socketInstances.chat;
       const game =
         socketInstances.game?.connected !== true
-          ? OpenSocket(`http://${process.env.LOCAL_IP}:8000/game`)
+          ? OpenSocket(`http://${process.env.REACT_APP_LOCAL_IP}:8000/game`)
           : socketInstances.game;
       setSocketInstances({ general: general, chat: chat, game: game });
     } else {

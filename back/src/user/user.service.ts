@@ -62,6 +62,7 @@ export class UserService {
       originalname: file.originalname,
       filename: file.filename,
     };
+    let errorFlag = false;
     const oldPictureObj = user.profilePicture;
     try {
       const fileExtension = file.originalname.split('.').pop()?.toLowerCase();
@@ -72,19 +73,16 @@ export class UserService {
         compressionOptions = {
           quality: 50,
         };
-      } else if (fileExtension === 'png') {
-        compressionOptions = {
-          quality: 50,
-          progressive: true,
-          compressionLevel: 9,
-        };
       } else {
-        throw new Error('File format not supported');
+        errorFlag = true;
+        throw new ForbiddenException('Wrong format provide a jpeg/jpg file');
       }
-      await sharp(file.path)
-        .toFormat(fileExtension)
-        .jpeg(compressionOptions)
-        .toFile(newPicPath);
+      try {
+        await sharp(file.path)
+          .toFormat(fileExtension)
+          .jpeg(compressionOptions)
+          .toFile(newPicPath);
+      } catch (err) { return; }
       await this.prismaService.user.update({
         where: {
           id: user.id,
@@ -95,8 +93,9 @@ export class UserService {
       });
       userServiceEmitter.emit('refreshHeader', { userId: user.id });
       fs.unlinkSync(file.path);
-    } catch (error) { }
+    } catch (error) { throw (error); }
     try {
+      if (errorFlag) return;
       const pathToDelete =
         '/workspace/back/public' + oldPictureObj.replace('/api', '');
       if (pathToDelete !== '/workspace/back/public/images/logo.png')

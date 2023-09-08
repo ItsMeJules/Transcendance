@@ -4,13 +4,15 @@ services:
     build:
       context: ./front
       dockerfile: ./Dockerfile
+    env_file:
+      - ./front/.env
     environment:
       PORT: ${PORT}
       NODE_ENV: ${NODE_ENV}
-      REACT_APP_CLIENT_ID: ${REACT_APP_CLIENT_ID}
-      REACT_APP_FOTRYTWO_LOGIN_URL: ${REACT_APP_FOTRYTWO_LOGIN_URL}
-      REACT_APP_GOOGLE_LOGIN_URL: ${REACT_APP_GOOGLE_LOGIN_URL}
-      LOCAL_IP: ${LOCAL_IP}
+      REACT_APP_CLIENT_ID: ${CLIENT_ID}
+      REACT_APP_FOTRYTWO_LOGIN_URL: ${FOTRYTWO_LOGIN_URL}
+      REACT_APP_GOOGLE_LOGIN_URL: ${GOOGLE_LOGIN_URL}
+      REACT_APP_LOCAL_IP: ${LOCAL_IP}
     # volumes:
     #   - ./front:/workspace/front
     networks:
@@ -74,6 +76,7 @@ services:
 
 volumes:
   data:
+
 
 networks:
   app:

@@ -10,7 +10,6 @@ npm-debug.log
 .coverage
 .coverage.*
 bdd.env
-.env
 .aws
 node_modules
 **/npm-debug.log
