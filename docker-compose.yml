@@ -5,16 +5,7 @@ services:
       context: ./front
       dockerfile: ./Dockerfile
     env_file:
-      - ./front/.env
-    environment:
-      PORT: ${PORT}
-      NODE_ENV: ${NODE_ENV}
-      REACT_APP_CLIENT_ID: ${CLIENT_ID}
-      REACT_APP_FOTRYTWO_LOGIN_URL: ${FOTRYTWO_LOGIN_URL}
-      REACT_APP_GOOGLE_LOGIN_URL: ${GOOGLE_LOGIN_URL}
-      REACT_APP_LOCAL_IP: ${LOCAL_IP}
-    # volumes:
-    #   - ./front:/workspace/front
+      - ./.env
     networks:
       - app
     command: bash -c "npm install -g serve && serve -s build"
@@ -28,20 +19,7 @@ services:
       context: ./back
       dockerfile: ./Dockerfile
     env_file:
-      - ./back/.env
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
-      jwtSecret: ${jwtSecret}
-      jwtRefreshSecret: ${jwtRefreshSecret}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      FORTYTWO_CLIENT_ID: ${FORTYTWO_CLIENT_ID}
-      FORTYTWO_CLIENT_SECRET: ${FORTYTWO_CLIENT_SECRET}
-      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
-      FORTYTWO_CALLBACK_URL: ${FORTYTWO_CALLBACK_URL}
-      LOCAL_IP: ${LOCAL_IP}
-    # volumes:
-    #   - ./back:/workspace/back
+      - ./.env
     networks:
       - app
     depends_on:
@@ -64,10 +42,8 @@ services:
   bdd:
     container_name: bdd
     image: postgres:latest
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - ./.env
     volumes:
       - data:/var/lib/postgresql/data
     networks:
@@ -76,7 +52,6 @@ services:
 
 volumes:
   data:
-
 
 networks:
   app:
