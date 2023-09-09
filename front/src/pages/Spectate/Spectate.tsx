@@ -55,7 +55,7 @@ const Spectate: React.FC<SpectateProps> = ({ noGame, setNoGame }) => {
     const player2Data = getParseLocalStorage('player2Watch');
     setPlayer1Data(player1Data);
     setPlayer2Data(player2Data);
-  }, []);
+  }, [localStorage.getItem('player1Watch')]);
 
   // Sockets on
   useEffect(() => {

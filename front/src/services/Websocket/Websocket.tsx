@@ -59,7 +59,6 @@ export default function Websocket({ children }: WebsocketProps): JSX.Element {
       });
     };
     checkToken();
-    console.log(`http://${process.env.REACT_APP_LOCAL_IP}:8000/general`);
     if (!userId) {
     } else if (userId) {
       const general =

@@ -17,7 +17,6 @@ export const Signin = () => {
   const customAxiosInstance = useAxios();
 
   function RequestURI42() {
-    // console.log('LOCAL IP:', process.env.REACT_APP_LOCAL_IP);
     let url = "/api/auth/42/login";
     if (url) document.location = url;
   }
