@@ -39,24 +39,24 @@ export default function ChannelCreationPopup() {
         </div>
 
         <div className="images">
-        <img
-          className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
-          src="/images/globe.png"
-          alt="Public"
-          onClick={() => setChannelType(ChannelType.PUBLIC)}
+          <img
+            className={`public ${channelType === ChannelType.PUBLIC ? "selected" : ""}`}
+            src="/images/globe.png"
+            alt="Public"
+            onClick={() => setChannelType(ChannelType.PUBLIC)}
           />
-        <img
-          className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
-          src="/images/private.png"
-          alt="Private"
-          onClick={() => setChannelType(ChannelType.PRIVATE)}
+          <img
+            className={`private ${channelType === ChannelType.PRIVATE ? "selected" : ""}`}
+            src="/images/private.png"
+            alt="Private"
+            onClick={() => setChannelType(ChannelType.PRIVATE)}
           />
-        <img
-          className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
-          src="/images/padlock.png"
-          alt="Protected"
-          onClick={() => setChannelType(ChannelType.PROTECTED)}
-        />
+          <img
+            className={`protected ${channelType === ChannelType.PROTECTED ? "selected" : ""}`}
+            src="/images/padlock.png"
+            alt="Protected"
+            onClick={() => setChannelType(ChannelType.PROTECTED)}
+          />
         </div>
 
       </div>
@@ -67,7 +67,7 @@ export default function ChannelCreationPopup() {
           onChange={(e) => setChannelName(e.target.value)}
           value={channelName}
           required
-          maxLength=200
+          maxLength={200}
         />
       </div>
 
@@ -78,7 +78,7 @@ export default function ChannelCreationPopup() {
             onChange={(e) => setChannelPassword(e.target.value)}
             value={channelPassword}
             required
-            maxLength=200
+            maxLength={200}
           />
         </div>
       )}

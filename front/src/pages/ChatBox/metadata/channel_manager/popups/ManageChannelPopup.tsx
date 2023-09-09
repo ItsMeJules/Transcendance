@@ -46,7 +46,7 @@ const ManageChannelPopup: React.FC<ChannelPopupProps> = ({
         onChange={(e) => setChannelPassword(e.target.value)}
         value={channelPassword}
         required
-        maxLength=200
+        maxLength={200}
       />
 
       <div className="confirm">

@@ -94,7 +94,7 @@ export default function ChannelUsersPopup({ channelData }: ChannelUsersPopupProp
           placeholder="Search users..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          maxLength=200
+          maxLength={200}
         />
         <ChannelUsersList
           users={channelUsers}

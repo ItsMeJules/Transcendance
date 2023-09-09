@@ -69,7 +69,7 @@ export default function ChannelCreationPopup() {
           onChange={(e) => setChannelName(e.target.value)}
           value={channelName}
           required
-          maxLength=200
+          maxLength={200}
         />
       </div>
 
@@ -80,7 +80,7 @@ export default function ChannelCreationPopup() {
             onChange={(e) => setChannelPassword(e.target.value)}
             value={channelPassword}
             required
-            maxLength=200
+            maxLength={200}
           />
         </div>
       )}
