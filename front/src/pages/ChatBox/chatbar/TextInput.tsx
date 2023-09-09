@@ -36,7 +36,8 @@ const TextInput = () => {
         placeholder="Write here..."
         onChange={(e) => setValue(e.target.value)}
         value={value}
-        onKeyDown={(e) => handleEnterPressed(e)}
+        onKeyDown={(e) => handleEnterPressed(e)
+        maxLength=200}
       />
       <TextSend hasText={!!value.trim()} handleSend={handleSend} />
     </div>

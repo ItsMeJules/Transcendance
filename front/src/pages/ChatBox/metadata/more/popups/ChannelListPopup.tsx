@@ -75,6 +75,7 @@ export default function ChannelListPopup() {
           placeholder="Search channel..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
+          maxLength=200
         />
         <ChannelsList
           channels={visibleChannels}
@@ -97,6 +98,7 @@ export default function ChannelListPopup() {
                 onChange={(e) => setPasswordValue(e.target.value)}
                 value={passwordValue}
                 onKeyDown={(e) => handleEnterPressed(e)}
+                maxLength=200
               />
             </div>
 

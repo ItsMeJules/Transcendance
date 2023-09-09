@@ -28,6 +28,7 @@ export default function AllUsers() {
         placeholder="Search user..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
+        maxLength=200
       />
       <UsersList
         users={users}
