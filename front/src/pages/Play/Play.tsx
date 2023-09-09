@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserData } from "services/User/User";
+import { useWebsocketContext } from "services/Websocket/Websocket";
+import getParseLocalStorage from "utils/getParseLocalStorage/getParseLocalStorage";
+import { useAppSelector } from "utils/redux/Store";
+import { APP_ROUTES } from "utils/routing/routing";
+import AllCanvas from "./components/Canvas/AllCanvas";
+import GiveUp from "./components/GiveUp/GiveUp";
+import NoGame from "./components/NoGame/NoGame";
+import ProfilesHeader from "./components/PlayersProfile/ProfilesHeader";
+import ScoreBoard from "./components/ScoreBoard/ScoreBoard";
+import './css/Play.scss';
 import { Ball } from "./models/Ball";
 import { Player } from "./models/Player";
-import { useWebsocketContext } from "services/Websocket/Websocket";
-import { useNavigate } from "react-router-dom";
 import { GameProperties } from "./models/Properties";
-import getParseLocalStorage from "utils/getParseLocalStorage/getParseLocalStorage";
-import { UserData } from "services/User/User";
-import ConfettisComponent from "./components/Confettis/ConfettisComponent";
-import GiveUp from "./components/GiveUp/GiveUp";
-import ScoreBoard from "./components/ScoreBoard/ScoreBoard";
-import './css/Play.scss'
-import { APP_ROUTES } from "utils/routing/routing";
-import ProfilesHeader from "./components/PlayersProfile/ProfilesHeader";
-import AllCanvas from "./components/Canvas/AllCanvas";
-import NoGame from "./components/NoGame/NoGame";
 
 interface GameParams {
   pl1: Player;
@@ -49,22 +49,22 @@ const Play = () => {
   const [profileCardHeight, setProfileCardHeight] = useState(0);
   const [centralText, setCentralText] = useState('');
   const history = useNavigate();
+  const { id: userId } = useAppSelector((store) => store.user.userData);
 
   // Data parsing
   useEffect(() => {
-    const userData = getParseLocalStorage('userData');
     const player1Data = getParseLocalStorage('player1');
     const player2Data = getParseLocalStorage('player2');
     setPlayer1Data(player1Data);
     setPlayer2Data(player2Data);
     
     if (player1Data !== null) {
-      if (player1Data.id === userData.id)
+      if (player1Data.id === userId)
         setWhichPlayer(1);
       else
         setWhichPlayer(2);
     }
-  }, [localStorage.getItem('player1')]);
+  }, [localStorage.getItem('player1'), userId]);
 
   // Sockets on
   useEffect(() => {
