@@ -1,25 +1,24 @@
 services:
   frontend:
     container_name: frontend
+    env_file:
+      - ./.env
     build:
       context: ./front
       dockerfile: ./Dockerfile
-    env_file:
-      - ./.env
     networks:
       - app
-    command: bash -c "npm install -g serve && serve -s build"
     depends_on:
       - backend
     restart: always
 
   backend:
     container_name: backend
+    env_file:
+      - ./.env
     build:
       context: ./back
       dockerfile: ./Dockerfile
-    env_file:
-      - ./.env
     networks:
       - app
     depends_on:
@@ -41,9 +40,9 @@ services:
 
   bdd:
     container_name: bdd
-    image: postgres:latest
     env_file:
       - ./.env
+    image: postgres:latest
     volumes:
       - data:/var/lib/postgresql/data
     networks:
